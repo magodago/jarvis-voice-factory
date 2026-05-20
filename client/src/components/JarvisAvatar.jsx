@@ -58,7 +58,7 @@ export default function JarvisAvatar({ status = 'idle' }) {
         transition={{ duration: cfg.speed, repeat: Infinity, ease: 'easeInOut' }}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-[#0a0020] via-[#0d0030] to-[#060015]" />
-        <img src="/jarvis-face.png" alt="JARVIS" className="absolute inset-0 w-full h-full object-cover rounded-full" />
+        <img src={new URL('/jarvis-face.png', import.meta.url).href} alt="JARVIS" className="absolute inset-0 w-full h-full object-cover rounded-full" />
         <motion.div className="absolute left-0 right-0 h-[1px]"
           style={{ background: `linear-gradient(90deg, transparent, ${cfg.ring}, transparent)` }}
           animate={{ top: ['0%', '100%', '0%'] }}

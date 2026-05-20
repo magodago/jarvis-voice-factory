@@ -72,12 +72,17 @@ export default function useOpenAIRealtime() {
       const hostname = window.location.hostname;
       const isGitHubPages = hostname.includes('github.io');
       
-      // Build WebSocket URL: local dev → proxy, GitHub Pages → public tunnel
+      // Build WebSocket URL: local dev → proxy, GitHub Pages → try tunnel
       let wsUrl;
       if (isGitHubPages) {
-        // Use public tunnel for WebSocket (wss://tunnel → backend WS relay)
-        wsUrl = 'wss://jarvis-neo-david.loca.lt/realtime';
-        setDebugInfo('Conectando vía túnel público...');
+        // Try tunnel URLs in order — user can configure via env
+        const tunnelUrls = [
+          'wss://jarvis-neo-david.loca.lt/realtime',
+          'wss://jarvis-neo-david.serveo.net/realtime',
+        ];
+        // Try the first one; if it fails, user sees error with instructions
+        wsUrl = tunnelUrls[0];
+        setDebugInfo('Conectando via tunel publico...');
       } else {
         wsUrl = `${protocol}//${window.location.host}/realtime`;
       }
@@ -108,7 +113,13 @@ export default function useOpenAIRealtime() {
         setIsCallActive(false);
       };
 
-      ws.onerror = () => { setError('Error de conexión con JARVIS.'); };
+      ws.onerror = () => { 
+        if (isGitHubPages) {
+          setError('Tunel no disponible. Ejecuta jarvis-start en WSL para activar el tunel publico y poder llamar.');
+        } else {
+          setError('Error de conexion con JARVIS. Verifica que el servidor backend este corriendo en :4000.');
+        }
+      };
 
       processor.onaudioprocess = (event) => {
         if (ws.readyState !== WebSocket.OPEN) return;

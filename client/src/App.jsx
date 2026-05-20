@@ -54,14 +54,14 @@ function AppContent() {
 
       {/* GitHub Pages banner — conectando vía túnel público */}
       {isGitHubPages && !dismissedBanner && (
-        <div className="fixed top-10 left-0 right-0 z-50 mx-4 mt-2 bg-cyber-green/10 border border-cyber-green/30 rounded-2xl p-3 backdrop-blur-xl">
+        <div className="fixed top-10 left-0 right-0 z-50 mx-4 mt-2 bg-cyber-cyan/10 border border-cyber-cyan/30 rounded-2xl p-3 backdrop-blur-xl">
           <div className="flex items-start gap-3">
             <span className="text-lg">🌐</span>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-display tracking-[0.1em] text-cyber-green mb-1">CONECTADO VÍA TÚNEL</p>
+              <p className="text-xs font-display tracking-[0.1em] text-cyber-cyan mb-1">JARVIS DAVID OS</p>
               <p className="text-[11px] text-cyber-white/60 font-body">
-                Llamadas y noticias funcionando a través de túnel público.{' '}
-                <span className="text-cyber-cyan/70">jarvis-neo-david.loca.lt</span>
+                Noticias siempre disponibles (RSS directo).{' '}
+                <span className="text-cyber-cyan/70">Llamadas requieren túnel activo</span>
               </p>
             </div>
             <button onClick={() => setDismissedBanner(true)} className="text-cyber-muted/50 hover:text-cyber-white shrink-0">✕</button>

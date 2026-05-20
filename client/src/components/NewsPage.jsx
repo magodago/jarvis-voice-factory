@@ -11,15 +11,50 @@ const TOPICS = [
   { id: 'realmadrid', label: 'Real Madrid', icon: Trophy, desc: 'Fútbol, fichajes, resultados' },
 ];
 
-// Detect backend URL based on environment
-function getBackendUrl() {
-  if (typeof window === 'undefined') return '';
+// RSS sources per topic — used as fallback when backend is unreachable
+const RSS_SOURCES = {
+  ai: [
+    'https://www.xataka.com/tag/inteligencia-artificial/rss2.xml',
+    'https://www.xataka.com/index.xml',
+    'https://hipertextual.com/feed.xml',
+  ],
+  science: [
+    'https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml',
+    'https://www.xataka.com/tag/medicina/rss2.xml',
+    'https://www.agenciasinc.es/rss',
+  ],
+  tech: [
+    'https://www.xataka.com/index.xml',
+    'https://www.genbeta.com/index.xml',
+    'https://hipertextual.com/feed.xml',
+  ],
+  spain: [
+    'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada',
+    'https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml',
+    'https://www.eldiario.es/rss/',
+  ],
+  world: [
+    'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/internacional',
+    'https://feeds.bbci.co.uk/mundo/rss.xml',
+  ],
+  realmadrid: [
+    'https://e00-marca.uecdn.es/rss/futbol/real-madrid.xml',
+    'https://www.mundodeportivo.com/rss/futbol/real-madrid',
+  ],
+};
+
+// Backend URLs to try (in order)
+function getBackendUrls() {
+  if (typeof window === 'undefined') return [];
   const host = window.location.hostname;
-  // Local dev: use Vite proxy
-  if (host === 'localhost' || host === '127.0.0.1') return '';
-  // Production: use public tunnel
-  return 'https://jarvis-neo-david.loca.lt';
+  if (host === 'localhost' || host === '127.0.0.1') return ['']; // use Vite proxy
+  return [
+    'https://jarvis-neo-david.loca.lt',
+    'https://jarvis-neo-david.serveo.net',
+  ];
 }
+
+const CORS_PROXY = 'https://corsproxy.io/?';
 
 const RELATIVE_TIME = (dateStr) => {
   if (!dateStr) return '';
@@ -32,75 +67,141 @@ const RELATIVE_TIME = (dateStr) => {
   if (diffMin < 60) return `Hace ${diffMin} min`;
   if (diffHrs < 24) return `Hace ${diffHrs}h`;
   if (diffDays === 1) return 'Ayer';
-  if (diffDays < 7) return `Hace ${diffDays} días`;
+  if (diffDays < 7) return `Hace ${diffDays} dias`;
   return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
 };
+
+const SOURCE_COLORS = {
+  'Xataka': '#00d4ff', 'Genbeta': '#7b00ff', 'Hipertextual': '#40f0ff',
+  'El País': '#00d4ff', 'El Mundo': '#40f0ff', 'elDiario.es': '#ffb347',
+  'Marca': '#00d4ff', 'Mundo Dep.': '#ffb347', 'BBC Mundo': '#ffb347',
+  'ScienceDaily': '#00ff88', 'SINC': '#40f0ff', 'Nature': '#00d4ff',
+};
+
+function getSourceName(url) {
+  if (url.includes('xataka')) return 'Xataka';
+  if (url.includes('genbeta')) return 'Genbeta';
+  if (url.includes('hipertextual')) return 'Hipertextual';
+  if (url.includes('elpais')) return 'El País';
+  if (url.includes('elmundo')) return 'El Mundo';
+  if (url.includes('eldiario')) return 'elDiario.es';
+  if (url.includes('marca')) return 'Marca';
+  if (url.includes('mundodeportivo')) return 'Mundo Dep.';
+  if (url.includes('bbci')) return 'BBC Mundo';
+  if (url.includes('sciencedaily')) return 'ScienceDaily';
+  if (url.includes('agenciasinc')) return 'SINC';
+  if (url.includes('nature')) return 'Nature';
+  return 'Noticias';
+}
 
 export default function NewsPage({ isOpen, onClose }) {
   const [activeTopic, setActiveTopic] = useState('ai');
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [usingFallback, setUsingFallback] = useState(false);
   const seenRef = useRef(new Set());
-  const backendUrl = useMemo(() => getBackendUrl(), []);
+  const backendUrls = useMemo(() => getBackendUrls(), []);
 
   useEffect(() => {
     if (!isOpen) return;
     fetchFeed(activeTopic);
   }, [isOpen, activeTopic]);
 
+  const tryBackend = async (topic) => {
+    for (const baseUrl of backendUrls) {
+      try {
+        const url = baseUrl 
+          ? `${baseUrl}/news/feed?topic=${topic}`
+          : `/news/feed?topic=${topic}`;
+        const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+        if (!res.ok) continue;
+        const data = await res.json();
+        if (data.articles?.length > 0) {
+          return data.articles.map(a => ({
+            ...a,
+            source: a.source || getSourceName(a.url || ''),
+            sourceColor: a.sourceColor || SOURCE_COLORS[a.source] || '#00d4ff',
+          }));
+        }
+      } catch {}
+    }
+    return null;
+  };
+
+  const fetchViaCORSProxy = async (topic) => {
+    const sources = RSS_SOURCES[topic] || RSS_SOURCES.ai;
+    const allArticles = [];
+    
+    const fetchPromises = sources.map(async (srcUrl) => {
+      try {
+        const proxyUrl = CORS_PROXY + encodeURIComponent(srcUrl);
+        const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+        if (!res.ok) return [];
+        const xml = await res.text();
+        return parseRSSClient(xml, srcUrl);
+      } catch {
+        return [];
+      }
+    });
+
+    const results = await Promise.allSettled(fetchPromises);
+    for (const r of results) {
+      if (r.status === 'fulfilled') allArticles.push(...r.value);
+    }
+
+    return allArticles;
+  };
+
   const fetchFeed = async (topic) => {
     setLoading(true);
     setError(null);
-    try {
-      const url = backendUrl 
-        ? `${backendUrl}/news/feed?topic=${topic}`
-        : `/news/feed?topic=${topic}`;
-      
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      
-      if (!data.articles || data.articles.length === 0) {
-        setArticles([]);
-        setError('No se encontraron noticias. Reintentando...');
-        setLoading(false);
-        return;
-      }
-      
-      const fresh = data.articles.filter(a => {
-        if (seenRef.current.has(a.url)) return false;
-        seenRef.current.add(a.url);
-        return true;
-      });
-      
-      if (seenRef.current.size > 200) {
-        const entries = [...seenRef.current];
-        seenRef.current = new Set(entries.slice(-100));
-      }
-      
-      if (fresh.length === 0) {
-        setError('Ya has visto todas las noticias de esta categoria. ¡Prueba otra!');
-        setArticles([]);
-      } else {
-        setArticles(fresh);
-        setError(null);
-      }
-    } catch (err) {
-      console.error('[News] Error:', err);
-      if (backendUrl) {
-        setError('No se pudo conectar al servidor JARVIS. El túnel puede haberse desconectado.');
-      } else {
-        setError('Error de conexión. Verifica que el servidor esté corriendo en localhost:4000.');
-      }
+    setUsingFallback(false);
+
+    // Try backend first
+    let articles = await tryBackend(topic);
+
+    // If backend fails, use CORS proxy (direct RSS)
+    if (!articles || articles.length === 0) {
+      setUsingFallback(true);
+      articles = await fetchViaCORSProxy(topic);
+    }
+
+    if (!articles || articles.length === 0) {
       setArticles([]);
+      setError('No se encontraron noticias. Verifica tu conexion.');
+      setLoading(false);
+      return;
+    }
+
+    // Dedup
+    const fresh = articles.filter(a => {
+      const key = a.url || a.link || '';
+      if (!key || seenRef.current.has(key)) return false;
+      seenRef.current.add(key);
+      return true;
+    });
+
+    // Sort by date
+    fresh.sort((a, b) => {
+      const da = a.pubDate ? new Date(a.pubDate) : 0;
+      const db = b.pubDate ? new Date(b.pubDate) : 0;
+      return db - da;
+    });
+
+    if (seenRef.current.size > 300) {
+      const entries = [...seenRef.current];
+      seenRef.current = new Set(entries.slice(-150));
+    }
+
+    setArticles(fresh.slice(0, 30));
+    if (fresh.length === 0) {
+      setError('Ya has visto todas las noticias. Prueba otra categoria.');
     }
     setLoading(false);
   };
 
   if (!isOpen) return null;
-
-  const activeLabel = TOPICS.find(t => t.id === activeTopic);
 
   return (
     <motion.div
@@ -120,8 +221,8 @@ export default function NewsPage({ isOpen, onClose }) {
               NOTICIAS
             </h2>
             <p className="text-[10px] text-cyber-cyan/50 font-body tracking-wide">
-              RSS Live • {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
-              {backendUrl && <span className="text-cyber-green/60 ml-1">• vía túnel</span>}
+              {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+              {usingFallback && <span className="text-cyber-amber/60 ml-1">• modo directo</span>}
             </p>
           </div>
         </div>
@@ -130,7 +231,7 @@ export default function NewsPage({ isOpen, onClose }) {
         </button>
       </div>
 
-      {/* Topic tabs — 2 rows */}
+      {/* Topic tabs */}
       <div className="flex flex-wrap gap-2 px-5 py-4 border-b border-cyber-cyan/10">
         {TOPICS.map((t) => {
           const Icon = t.icon;
@@ -151,10 +252,12 @@ export default function NewsPage({ isOpen, onClose }) {
         })}
       </div>
 
-      {/* Active topic description */}
-      {activeLabel && (
+      {/* Topic description */}
+      {TOPICS.find(t => t.id === activeTopic)?.desc && (
         <div className="px-5 py-2 border-b border-cyber-cyan/5">
-          <p className="text-[10px] text-cyber-cyan/40 font-body italic">{activeLabel.desc}</p>
+          <p className="text-[10px] text-cyber-cyan/40 font-body italic">
+            {TOPICS.find(t => t.id === activeTopic)?.desc}
+          </p>
         </div>
       )}
 
@@ -162,11 +265,8 @@ export default function NewsPage({ isOpen, onClose }) {
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {loading && (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <div className="relative">
-              <Loader2 size={32} className="animate-spin text-cyber-cyan" />
-              <div className="absolute inset-0 blur-xl bg-cyber-cyan/30 rounded-full" />
-            </div>
-            <span className="text-sm font-body text-cyber-cyan/70">Cargando titulares del día...</span>
+            <Loader2 size={32} className="animate-spin text-cyber-cyan" />
+            <span className="text-sm font-body text-cyber-cyan/70">Cargando titulares...</span>
           </div>
         )}
 
@@ -180,8 +280,8 @@ export default function NewsPage({ isOpen, onClose }) {
         <AnimatePresence>
           {!loading && articles.map((a, i) => (
             <motion.a
-              key={a.url}
-              href={a.url}
+              key={a.url || a.link || i}
+              href={a.url || a.link || '#'}
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, x: -15 }}
@@ -200,7 +300,7 @@ export default function NewsPage({ isOpen, onClose }) {
                         backgroundColor: (a.sourceColor || '#00d4ff') + '08',
                       }}
                     >
-                      {a.source}
+                      {a.source || getSourceName(a.url || '')}
                     </span>
                     {a.pubDate && (
                       <span className="text-[10px] font-mono text-cyber-muted/50">
@@ -231,7 +331,7 @@ export default function NewsPage({ isOpen, onClose }) {
         )}
       </div>
 
-      {/* Matrix cascade background */}
+      {/* Matrix cascade */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-25">
         {Array.from({ length: 30 }).map((_, i) => (
           <motion.div
@@ -250,4 +350,78 @@ export default function NewsPage({ isOpen, onClose }) {
       </div>
     </motion.div>
   );
+}
+
+// Client-side RSS parser (used as fallback)
+function parseRSSClient(xml, sourceUrl) {
+  const articles = [];
+  const sourceName = getSourceName(sourceUrl);
+  const sourceColor = SOURCE_COLORS[sourceName] || '#00d4ff';
+
+  // RSS items
+  const itemRegex = /<item>([\s\S]*?)<\/item>/gi;
+  let match;
+  while ((match = itemRegex.exec(xml)) !== null) {
+    const item = match[1];
+    const title = extractTag(item, 'title');
+    const link = extractTag(item, 'link');
+    const desc = stripHtml(extractTag(item, 'description') || '');
+    const pubDate = extractTag(item, 'pubDate');
+    if (title && link) {
+      articles.push({
+        title: decodeHtml(title).slice(0, 150),
+        snippet: desc.slice(0, 250),
+        url: link,
+        link,
+        source: sourceName,
+        sourceColor,
+        pubDate: pubDate ? new Date(pubDate).toISOString() : null,
+      });
+    }
+  }
+
+  // Atom entries  
+  if (articles.length === 0) {
+    const entryRegex = /<entry>([\s\S]*?)<\/entry>/gi;
+    while ((match = entryRegex.exec(xml)) !== null) {
+      const entry = match[1];
+      const title = extractTag(entry, 'title');
+      const summary = stripHtml(extractTag(entry, 'summary') || extractTag(entry, 'content') || '');
+      const pubDate = extractTag(entry, 'published') || extractTag(entry, 'updated');
+      const linkMatch = entry.match(/<link[^>]*href="([^"]*)"[^>]*\/?>/i);
+      const link = linkMatch ? linkMatch[1] : '';
+      if (title && link) {
+        articles.push({
+          title: decodeHtml(title).slice(0, 150),
+          snippet: summary.slice(0, 250),
+          url: link,
+          link,
+          source: sourceName,
+          sourceColor,
+          pubDate: pubDate ? new Date(pubDate).toISOString() : null,
+        });
+      }
+    }
+  }
+
+  return articles;
+}
+
+function extractTag(xml, tagName) {
+  const regex = new RegExp(`<${tagName}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tagName}>|<${tagName}[^>]*>([\\s\\S]*?)</${tagName}>`, 'i');
+  const m = xml.match(regex);
+  return m ? (m[1] || m[2] || '').trim() : '';
+}
+
+function stripHtml(html) {
+  return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function decodeHtml(text) {
+  return text
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+    .replace(/&aacute;/gi, 'a').replace(/&eacute;/gi, 'e').replace(/&iacute;/gi, 'i')
+    .replace(/&oacute;/gi, 'o').replace(/&uacute;/gi, 'u').replace(/&ntilde;/gi, 'n')
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)));
 }

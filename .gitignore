@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+*.pem
+*.crt
+tasks/
+uploads/*
+!uploads/.gitkeep
+.DS_Store
+*.log

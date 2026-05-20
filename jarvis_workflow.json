@@ -1,0 +1,47 @@
+{
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": { "ckpt_name": "flux1-schnell.safetensors" }
+  },
+  "2": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "hyperrealistic humanoid robot face, AI assistant, sleek metallic surface, glowing cyan eyes, dark background, cinematic lighting, photorealistic 8K render, Iron Man JARVIS inspired, elegant futuristic android, subtle magenta circuit traces on temples, calm expression, symmetrical face, subsurface scattering on synthetic skin, dramatic rim lighting",
+      "clip": ["1", 1]
+    }
+  },
+  "3": {
+    "class_type": "EmptyLatentImage",
+    "inputs": { "width": 1024, "height": 1024, "batch_size": 1 }
+  },
+  "4": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 42,
+      "steps": 4,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": ["1", 0],
+      "positive": ["2", 0],
+      "negative": ["7", 0],
+      "latent_image": ["3", 0]
+    }
+  },
+  "5": {
+    "class_type": "VAEDecode",
+    "inputs": { "samples": ["4", 0], "vae": ["1", 2] }
+  },
+  "6": {
+    "class_type": "SaveImage",
+    "inputs": { "filename_prefix": "jarvis_face", "images": ["5", 0] }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "blurry, low quality, distorted, ugly, text, watermark, multiple faces",
+      "clip": ["1", 1]
+    }
+  }
+}

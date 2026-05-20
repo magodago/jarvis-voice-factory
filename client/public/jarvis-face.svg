@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#1a1040"/>
+      <stop offset="100%" stop-color="#080015"/>
+    </radialGradient>
+    <radialGradient id="faceGlow" cx="50%" cy="45%">
+      <stop offset="0%" stop-color="#2a1560" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <linearGradient id="metalDark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3a3060"/>
+      <stop offset="50%" stop-color="#1a1040"/>
+      <stop offset="100%" stop-color="#2a2060"/>
+    </linearGradient>
+    <linearGradient id="metalLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5a40a0"/>
+      <stop offset="100%" stop-color="#2a1560"/>
+    </linearGradient>
+    <linearGradient id="eyeGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00ffff"/>
+      <stop offset="50%" stop-color="#00d4ff"/>
+      <stop offset="100%" stop-color="#0088cc"/>
+    </linearGradient>
+    <linearGradient id="magentaAccent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d040ff"/>
+      <stop offset="100%" stop-color="#8000cc"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <ellipse cx="200" cy="180" rx="150" ry="160" fill="url(#faceGlow)"/>
+
+  <!-- Head shape -->
+  <ellipse cx="200" cy="190" rx="120" ry="140" fill="url(#metalDark)" stroke="url(#metalLight)" stroke-width="2"/>
+
+  <!-- Forehead plate -->
+  <path d="M140 140 Q200 110 260 140 L250 170 Q200 155 150 170 Z" fill="url(#metalLight)" opacity="0.6"/>
+
+  <!-- Jaw line -->
+  <path d="M140 230 Q200 280 260 230" fill="none" stroke="url(#magentaAccent)" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Eyes -->
+  <!-- Left eye socket -->
+  <ellipse cx="160" cy="180" rx="35" ry="18" fill="#0a0020" stroke="url(#metalLight)" stroke-width="1.5"/>
+  <!-- Left eye glow -->
+  <ellipse cx="160" cy="180" rx="28" ry="12" fill="url(#eyeGlow)" filter="url(#glow)" opacity="0.9"/>
+  <ellipse cx="160" cy="180" rx="20" ry="8" fill="#00ffff" filter="url(#softGlow)" opacity="0.6"/>
+  <!-- Left pupil -->
+  <circle cx="162" cy="180" r="5" fill="#ffffff" opacity="0.8"/>
+
+  <!-- Right eye socket -->
+  <ellipse cx="240" cy="180" rx="35" ry="18" fill="#0a0020" stroke="url(#metalLight)" stroke-width="1.5"/>
+  <!-- Right eye glow -->
+  <ellipse cx="240" cy="180" rx="28" ry="12" fill="url(#eyeGlow)" filter="url(#glow)" opacity="0.9"/>
+  <ellipse cx="240" cy="180" rx="20" ry="8" fill="#00ffff" filter="url(#softGlow)" opacity="0.6"/>
+  <!-- Right pupil -->
+  <circle cx="242" cy="180" r="5" fill="#ffffff" opacity="0.8"/>
+
+  <!-- Brow line -->
+  <path d="M125 165 Q200 155 275 165" fill="none" stroke="url(#metalLight)" stroke-width="2"/>
+
+  <!-- Nose bridge -->
+  <line x1="200" y1="165" x2="200" y2="205" stroke="url(#metalLight)" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Cheek plates -->
+  <ellipse cx="140" cy="210" rx="20" ry="12" fill="url(#metalDark)" stroke="url(#magentaAccent)" stroke-width="0.8" opacity="0.5"/>
+  <ellipse cx="260" cy="210" rx="20" ry="12" fill="url(#metalDark)" stroke="url(#magentaAccent)" stroke-width="0.8" opacity="0.5"/>
+
+  <!-- Mouth / speaker grille -->
+  <rect x="170" y="220" width="60" height="8" rx="4" fill="#0a0020" stroke="url(#metalLight)" stroke-width="1"/>
+  <line x1="180" y1="224" x2="180" y2="224" stroke="url(#eyeGlow)" stroke-width="1" opacity="0.4"/>
+  <line x1="190" y1="224" x2="190" y2="224" stroke="url(#eyeGlow)" stroke-width="1" opacity="0.4"/>
+  <line x1="200" y1="224" x2="200" y2="224" stroke="url(#eyeGlow)" stroke-width="1" opacity="0.4"/>
+  <line x1="210" y1="224" x2="210" y2="224" stroke="url(#eyeGlow)" stroke-width="1" opacity="0.4"/>
+  <line x1="220" y1="224" x2="220" y2="224" stroke="url(#eyeGlow)" stroke-width="1" opacity="0.4"/>
+
+  <!-- Chin -->
+  <path d="M160 260 Q200 280 240 260" fill="none" stroke="url(#metalLight)" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- Side panels -->
+  <path d="M80 160 Q70 200 80 240" fill="none" stroke="url(#metalLight)" stroke-width="2" opacity="0.4"/>
+  <path d="M320 160 Q330 200 320 240" fill="none" stroke="url(#metalLight)" stroke-width="2" opacity="0.4"/>
+
+  <!-- Top arc reactor-like circle -->
+  <circle cx="200" cy="120" r="12" fill="none" stroke="url(#magentaAccent)" stroke-width="1.5" opacity="0.6"/>
+  <circle cx="200" cy="120" r="6" fill="url(#magentaAccent)" opacity="0.4" filter="url(#glow)"/>
+
+  <!-- Circuit patterns -->
+  <path d="M160 130 L140 110 L135 110" fill="none" stroke="url(#metalLight)" stroke-width="0.5" opacity="0.3"/>
+  <path d="M240 130 L260 110 L265 110" fill="none" stroke="url(#metalLight)" stroke-width="0.5" opacity="0.3"/>
+  
+  <!-- Ear / side modules -->
+  <rect x="75" y="170" width="10" height="25" rx="5" fill="url(#metalDark)" stroke="url(#metalLight)" stroke-width="1" opacity="0.6"/>
+  <rect x="315" y="170" width="10" height="25" rx="5" fill="url(#metalDark)" stroke="url(#metalLight)" stroke-width="1" opacity="0.6"/>
+
+  <!-- Ambient glow behind head -->
+  <circle cx="200" cy="190" r="130" fill="none" stroke="url(#magentaAccent)" stroke-width="0.5" opacity="0.15"/>
+  <circle cx="200" cy="190" r="145" fill="none" stroke="url(#magentaAccent)" stroke-width="0.3" opacity="0.08"/>
+</svg>

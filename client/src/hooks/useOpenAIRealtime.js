@@ -18,6 +18,7 @@ export default function useOpenAIRealtime() {
   const userSpeechCallbackRef = useRef(null);
   const assistantBufferRef = useRef('');
   const audioLogIntervalRef = useRef(null);
+  const currentModeRef = useRef('jarvis');
 
   useEffect(() => { return () => { endCall(); }; }, []);
 
@@ -31,6 +32,7 @@ export default function useOpenAIRealtime() {
       setUserTranscript('');
       setAssistantTranscript('');
       assistantBufferRef.current = '';
+      currentModeRef.current = mode;
 
       // Check browser support
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -134,7 +136,7 @@ export default function useOpenAIRealtime() {
 
       ws.onopen = () => {
         setDebugInfo('WS conectado, enviando start...');
-        ws.send(JSON.stringify({ type: 'start', instructions, voice: 'alloy', mode }));
+        ws.send(JSON.stringify({ type: 'start', instructions, voice: 'nova', mode }));
       };
 
       ws.onmessage = (event) => {
@@ -189,7 +191,7 @@ export default function useOpenAIRealtime() {
   const endCall = useCallback(() => {
     if (audioLogIntervalRef.current) { clearInterval(audioLogIntervalRef.current); audioLogIntervalRef.current = null; }
     if (wsRef.current) {
-      try { wsRef.current.send(JSON.stringify({ type: 'stop' })); wsRef.current.close(); } catch (e) {}
+      try { wsRef.current.send(JSON.stringify({ type: 'stop', mode: currentModeRef.current })); wsRef.current.close(); } catch (e) {}
       wsRef.current = null;
     }
     if (processorRef.current) { try { processorRef.current.disconnect(); } catch (e) {}; processorRef.current = null; }

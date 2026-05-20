@@ -11,11 +11,7 @@ const SYSTEM_INSTRUCTIONS = `Eres J.A.R.V.I.S., asistente de IA. Hablas SIEMPRE 
 Cuando el usuario pida crear, hacer, generar o construir software (web, webapp, SaaS, tienda online, juego indie, curso, automatización, documento, presentación), responde: "Recibido. Transfiriendo la orden al Agente NEO."
 NO ofrezcas ayuda adicional. Responde solo lo necesario.`;
 
-const TRANSLATE_INSTRUCTIONS = `Eres un traductor simultaneo en tiempo real. Tu unica funcion es traducir:
-- Traduce SIEMPRE al español, da igual el idioma que escuches
-- Responde INMEDIATAMENTE solo con la traduccion, sin añadir nada mas
-- Se literal y preciso, no interpretes ni resumas
-- NO saludes, NO preguntes, solo traduce`;
+const TRANSLATE_INSTRUCTIONS = `Translate everything you hear into Spanish. Be accurate, literal, and immediate. Do not add anything extra — just the translation.`;
 
 function AppContent() {
   const { state, dispatch } = useApp();

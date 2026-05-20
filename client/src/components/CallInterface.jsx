@@ -112,22 +112,22 @@ export default function CallInterface({
 
             {/* Translation button — simultaneous interpretation */}
             <motion.button onClick={() => onStartCall('translate')} whileTap={{ scale: 0.9 }} className="relative group">
-              <div className="absolute -inset-2 rounded-full bg-cyber-green/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute -inset-2 rounded-full bg-cyber-magenta/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <motion.div
-                className="relative w-[55px] h-[55px] rounded-full bg-gradient-to-br from-cyber-green to-green-700 flex items-center justify-center"
+                className="relative w-[55px] h-[55px] rounded-full bg-gradient-to-br from-cyber-magenta-bright to-cyber-magenta flex items-center justify-center"
                 animate={{
                   boxShadow: [
-                    '0 0 15px rgba(0,255,136,0.3), 0 0 25px rgba(0,255,136,0.15)',
-                    '0 0 30px rgba(0,255,136,0.5), 0 0 50px rgba(0,255,136,0.25)',
-                    '0 0 15px rgba(0,255,136,0.3), 0 0 25px rgba(0,255,136,0.15)',
+                    '0 0 15px rgba(255,21,208,0.4), 0 0 25px rgba(255,21,208,0.2)',
+                    '0 0 35px rgba(255,21,208,0.7), 0 0 60px rgba(255,64,240,0.4)',
+                    '0 0 15px rgba(255,21,208,0.4), 0 0 25px rgba(255,21,208,0.2)',
                   ],
                 }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <Languages size={22} className="text-white" />
+                <Languages size={22} className="text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]" />
               </motion.div>
             </motion.button>
-            <p className="text-[10px] text-cyber-green/40 font-body tracking-wide">Traduccion simultanea</p>
+            <p className="text-[10px] text-cyber-magenta/50 font-body tracking-wide">Traduccion simultanea</p>
 
             {/* Action buttons */}
             <div className="flex items-center gap-2">

@@ -3,17 +3,11 @@ import { WebSocketServer, WebSocket as WSClient } from 'ws';
 /**
  * WebSocket relay for OpenAI Realtime API (GA — May 2026)
  *
- * Architecture:
- *   Browser ←WS→ Our Server ←WS→ OpenAI Realtime API
+ * Two modes:
+ * - Voice Agent: /v1/realtime?model=gpt-realtime (JARVIS assistant)
+ * - Translation: /v1/realtime/translations?model=gpt-realtime-translate
  *
- * Critical GA differences from beta:
- * - Model: gpt-realtime (not gpt-4o-realtime-preview)
- * - session.type must be "realtime"
- * - output_modalities: ['audio'] OR ['text'], not both
- * - turn_detection is inside audio.input, not top-level
- * - voice is inside audio.output, not top-level
- * - input_audio_buffer.append: audio is base64 PCM16
- * - Transcription: audio.input.transcription { model: 'whisper-1' }
+ * Browser connects to our WS relay, we connect to OpenAI.
  */
 
 export function setupRealtimeWS(server) {
@@ -55,20 +49,114 @@ export function setupRealtimeWS(server) {
 
             const apiKey = process.env.OPENAI_API_KEY;
             if (!apiKey) {
-              browserWs.send(JSON.stringify({
-                type: 'error',
-                message: 'OPENAI_API_KEY no configurada.',
-              }));
+              browserWs.send(JSON.stringify({ type: 'error', message: 'OPENAI_API_KEY no configurada.' }));
               return;
             }
 
+            const mode = msg.mode || 'jarvis';
+
+            // === TRANSLATION MODE ===
+            if (mode === 'translate') {
+              const translateModel = 'gpt-realtime-translate';
+              const openaiUrl = `wss://api.openai.com/v1/realtime/translations?model=${translateModel}`;
+
+              openaiWs = new WSClient(openaiUrl, [], {
+                headers: {
+                  'Authorization': `Bearer ${apiKey}`,
+                  'OpenAI-Safety-Identifier': 'jarvis-translate-user',
+                },
+              });
+
+              openaiWs.on('open', () => {
+                console.log('[Realtime] Translation session connected');
+                isActive = true;
+                browserWs.send(JSON.stringify({ type: 'connected' }));
+
+                // Configure: target language = Spanish
+                openaiWs.send(JSON.stringify({
+                  type: 'session.update',
+                  session: {
+                    target_language: 'es',
+                  },
+                }));
+              });
+
+              openaiWs.on('message', (openaiData, isBinaryMsg) => {
+                if (isBinaryMsg) {
+                  if (browserWs.readyState === 1) {
+                    browserWs.send(openaiData, { binary: true });
+                  }
+                  return;
+                }
+
+                try {
+                  const event = JSON.parse(openaiData.toString());
+                  switch (event.type) {
+                    case 'session.output_audio.delta':
+                      // Translated audio → binary to browser
+                      if (event.delta && browserWs.readyState === 1) {
+                        const audioBuffer = Buffer.from(event.delta, 'base64');
+                        browserWs.send(audioBuffer, { binary: true });
+                      }
+                      break;
+                    case 'session.output_transcript.delta':
+                      // Translated text delta
+                      browserWs.send(JSON.stringify({
+                        type: 'transcript.assistant_delta',
+                        delta: event.delta || '',
+                      }));
+                      break;
+                    case 'session.output_transcript.done':
+                      browserWs.send(JSON.stringify({ type: 'transcript.assistant_done' }));
+                      break;
+                    case 'session.closed':
+                      isActive = false;
+                      browserWs.send(JSON.stringify({ type: 'disconnected' }));
+                      break;
+                    case 'error':
+                      console.error('[Realtime] Translation error:', JSON.stringify(event.error));
+                      browserWs.send(JSON.stringify({
+                        type: 'error',
+                        message: event.error?.message || 'Translation error',
+                      }));
+                      break;
+                    default:
+                      // Forward debug events
+                      if (browserWs.readyState === 1) {
+                        browserWs.send(JSON.stringify({
+                          type: 'debug',
+                          event: event.type,
+                        }));
+                      }
+                  }
+                } catch (e) {}
+              });
+
+              openaiWs.on('close', (code) => {
+                console.log(`[Realtime] Translation disconnected: ${code}`);
+                isActive = false;
+                if (browserWs.readyState === 1) {
+                  browserWs.send(JSON.stringify({ type: 'disconnected', code }));
+                }
+              });
+
+              openaiWs.on('error', (err) => {
+                console.error('[Realtime] Translation WS error:', err.message);
+                isActive = false;
+                if (browserWs.readyState === 1) {
+                  browserWs.send(JSON.stringify({ type: 'error', message: err.message }));
+                }
+              });
+
+              break;
+            }
+
+            // === JARVIS VOICE AGENT MODE ===
             const model = 'gpt-realtime';
             const openaiUrl = `wss://api.openai.com/v1/realtime?model=${model}`;
 
             openaiWs = new WSClient(openaiUrl, [], {
-              headers: {
-                'Authorization': `Bearer ${apiKey}`,
-              },
+              headers: { 'Authorization': `Bearer ${apiKey}` },
             });
 
             openaiWs.on('open', () => {
@@ -77,10 +165,9 @@ export function setupRealtimeWS(server) {
               browserWs.send(JSON.stringify({ type: 'connected' }));
             });
 
-            openaiWs.on('message', (openaiData, isBinary) => {
-              if (isBinary) {
-                // Binary audio from OpenAI assistant voice
-                console.log('[Realtime] Audio binary chunk received, size:', openaiData.length);
+            openaiWs.on('message', (openaiData, isBinaryMsg) => {
+              if (isBinaryMsg) {
+                console.log('[Realtime] Audio binary chunk, size:', openaiData.length);
                 if (browserWs.readyState === 1) {
                   browserWs.send(openaiData, { binary: true });
                 }
@@ -90,20 +177,18 @@ export function setupRealtimeWS(server) {
               try {
                 const event = JSON.parse(openaiData.toString());
                 const eventType = event.type || 'unknown';
-                
-                // Forward ALL events to browser for debugging
-                if (browserWs.readyState === 1 && 
-                    eventType !== 'session.created' && 
+
+                if (browserWs.readyState === 1 &&
+                    eventType !== 'session.created' &&
                     eventType !== 'session.updated') {
                   browserWs.send(JSON.stringify({
                     type: 'debug',
                     event: eventType,
-                    detail: event.item?.type || event.part?.type || event.error?.code || '',
+                    detail: event.item?.type || event.part?.type || '',
                   }));
                 }
 
                 switch (event.type) {
-                  // Session created — send configuration
                   case 'session.created': {
                     console.log('[Realtime] Session created:', event.session?.id);
                     openaiWs.send(JSON.stringify({
@@ -111,133 +196,78 @@ export function setupRealtimeWS(server) {
                       session: {
                         type: 'realtime',
                         output_modalities: ['audio'],
-                        instructions: msg.instructions || 'Eres J.A.R.V.I.S., el asistente de inteligencia artificial de Tony Stark.',
+                        instructions: msg.instructions || 'Eres J.A.R.V.I.S.',
                         audio: {
                           input: {
-                            transcription: { model: 'whisper-1', language: msg.mode === 'translate' ? 'auto' : 'es' },
+                            transcription: { model: 'whisper-1', language: 'es' },
                           },
                           output: {
-                            voice: msg.voice || 'alloy',
+                            voice: msg.voice || 'nova',
                           },
                         },
-                        // Faster turn detection for translation mode
-                        ...(msg.mode === 'translate' ? {
-                          turn_detection: {
-                            type: 'server_vad',
-                            threshold: 0.3,
-                            prefix_padding_ms: 100,
-                            silence_duration_ms: 250,
-                          }
-                        } : {}),
                       },
                     }));
                     break;
                   }
 
-                  case 'session.updated': {
+                  case 'session.updated':
                     console.log('[Realtime] Session configured');
                     break;
-                  }
 
-                  // User speech transcription (complete phrase)
                   case 'conversation.item.input_audio_transcription.completed': {
                     const text = event.transcript || '';
                     if (text.trim()) {
                       console.log('[Realtime] User said:', text);
-                      browserWs.send(JSON.stringify({
-                        type: 'transcript.user',
-                        text: text.trim(),
-                      }));
+                      browserWs.send(JSON.stringify({ type: 'transcript.user', text: text.trim() }));
                     }
                     break;
                   }
 
-                  // User speech transcription (partial - for display)
                   case 'conversation.item.input_audio_transcription.delta': {
-                    browserWs.send(JSON.stringify({
-                      type: 'transcript.user_delta',
-                      delta: event.delta || '',
-                    }));
+                    browserWs.send(JSON.stringify({ type: 'transcript.user_delta', delta: event.delta || '' }));
                     break;
                   }
 
-                  // Assistant text transcript (GA event name)
                   case 'response.output_audio_transcript.delta': {
-                    browserWs.send(JSON.stringify({
-                      type: 'transcript.assistant_delta',
-                      delta: event.delta || '',
-                    }));
+                    browserWs.send(JSON.stringify({ type: 'transcript.assistant_delta', delta: event.delta || '' }));
                     break;
                   }
 
                   case 'response.output_audio_transcript.done': {
-                    browserWs.send(JSON.stringify({
-                      type: 'transcript.assistant_done',
-                    }));
+                    browserWs.send(JSON.stringify({ type: 'transcript.assistant_done' }));
                     break;
                   }
 
-                  // Audio delta from assistant — base64 in JSON (GA format)
                   case 'response.output_audio.delta': {
                     const audioBase64 = event.delta || '';
                     if (audioBase64 && browserWs.readyState === 1) {
-                      // Convert base64 to binary and forward
                       const audioBuffer = Buffer.from(audioBase64, 'base64');
                       browserWs.send(audioBuffer, { binary: true });
                     }
                     break;
                   }
 
-                  case 'response.output_audio.done': {
+                  case 'response.output_audio.done':
                     console.log('[Realtime] Audio response complete');
                     browserWs.send(JSON.stringify({ type: 'debug', event: 'audio.done' }));
                     break;
-                  }
 
                   case 'response.text.delta': {
-                    browserWs.send(JSON.stringify({
-                      type: 'transcript.assistant_delta',
-                      delta: event.delta || '',
-                    }));
+                    browserWs.send(JSON.stringify({ type: 'transcript.assistant_delta', delta: event.delta || '' }));
                     break;
                   }
 
-                  // Response lifecycle events (debug)
                   case 'response.created':
-                    console.log('[Realtime] Response started');
-                    browserWs.send(JSON.stringify({ type: 'debug', event: 'response.created' }));
-                    break;
                   case 'response.output_item.added':
-                    console.log('[Realtime] Output item:', event.item?.type);
-                    browserWs.send(JSON.stringify({ type: 'debug', event: 'output_item.' + event.item?.type }));
-                    break;
                   case 'response.content_part.added':
-                    console.log('[Realtime] Content part:', event.part?.type);
-                    browserWs.send(JSON.stringify({ type: 'debug', event: 'content_part.' + event.part?.type }));
-                    break;
                   case 'response.audio.delta':
-                    // Audio deltas come as binary, but there might be JSON metadata too
-                    break;
                   case 'response.audio.done':
-                    console.log('[Realtime] Audio response complete');
-                    browserWs.send(JSON.stringify({ type: 'debug', event: 'audio.done' }));
-                    break;
                   case 'response.done':
-                    console.log('[Realtime] Response complete');
-                    browserWs.send(JSON.stringify({ type: 'debug', event: 'response.done' }));
                     break;
 
-                  // Input audio buffer events (debug)
                   case 'input_audio_buffer.speech_started':
-                    console.log('[Realtime] Speech detected');
-                    browserWs.send(JSON.stringify({ type: 'debug', event: 'speech_started' }));
-                    break;
                   case 'input_audio_buffer.speech_stopped':
-                    console.log('[Realtime] Speech ended, waiting for response...');
-                    browserWs.send(JSON.stringify({ type: 'debug', event: 'speech_stopped' }));
-                    break;
                   case 'input_audio_buffer.committed':
-                    console.log('[Realtime] Audio buffer committed');
                     break;
 
                   case 'error': {
@@ -250,24 +280,16 @@ export function setupRealtimeWS(server) {
                   }
 
                   default:
-                    // Log unknown events for debugging
-                    console.log('[Realtime] Unknown event:', event.type);
                     break;
                 }
-              } catch (e) {
-                // Non-JSON, ignore
-              }
+              } catch (e) {}
             });
 
             openaiWs.on('close', (code, reason) => {
               console.log(`[Realtime] OpenAI disconnected: ${code}`);
               isActive = false;
               if (browserWs.readyState === 1) {
-                browserWs.send(JSON.stringify({
-                  type: 'disconnected',
-                  code,
-                  reason: reason?.toString() || '',
-                }));
+                browserWs.send(JSON.stringify({ type: 'disconnected', code, reason: reason?.toString() || '' }));
               }
             });
 
@@ -275,10 +297,7 @@ export function setupRealtimeWS(server) {
               console.error('[Realtime] OpenAI WS error:', err.message);
               isActive = false;
               if (browserWs.readyState === 1) {
-                browserWs.send(JSON.stringify({
-                  type: 'error',
-                  message: err.message,
-                }));
+                browserWs.send(JSON.stringify({ type: 'error', message: err.message }));
               }
             });
 
@@ -288,15 +307,16 @@ export function setupRealtimeWS(server) {
           case 'stop': {
             isActive = false;
             if (openaiWs) {
-              try { openaiWs.close(); } catch (e) { /* ignore */ }
+              // For translation: send session.close first
+              if (msg.mode === 'translate') {
+                try { openaiWs.send(JSON.stringify({ type: 'session.close' })); } catch (e) {}
+              }
+              try { openaiWs.close(); } catch (e) {}
               openaiWs = null;
             }
             browserWs.send(JSON.stringify({ type: 'disconnected' }));
             break;
           }
-
-          default:
-            break;
         }
       } catch (err) {
         console.error('[Realtime] Browser msg error:', err);
@@ -307,7 +327,7 @@ export function setupRealtimeWS(server) {
       console.log('[Realtime] Browser disconnected');
       isActive = false;
       if (openaiWs) {
-        try { openaiWs.close(); } catch (e) { /* ignore */ }
+        try { openaiWs.close(); } catch (e) {}
         openaiWs = null;
       }
     });
@@ -317,5 +337,5 @@ export function setupRealtimeWS(server) {
     });
   });
 
-  console.log('[Realtime] WebSocket relay ready');
+  console.log('[Realtime] WebSocket relay ready (voice + translation)');
 }

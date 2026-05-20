@@ -1,23 +1,33 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Newspaper, ExternalLink, Loader2, Cpu, Globe, Landmark, X, Zap, Monitor } from 'lucide-react';
+import { Newspaper, ExternalLink, Loader2, Cpu, Globe, Landmark, X, Zap, Monitor, Trophy, FlaskConical } from 'lucide-react';
 
 const TOPICS = [
-  { id: 'ai', label: 'IA & Tecnología', icon: Cpu },
-  { id: 'tech', label: 'Tech & Ciencia', icon: Monitor },
-  { id: 'spain', label: 'España', icon: Landmark },
-  { id: 'world', label: 'Internacional', icon: Globe },
+  { id: 'ai', label: 'IA & LLMs', icon: Cpu, desc: 'OpenAI, Anthropic, Google, modelos, asistentes' },
+  { id: 'science', label: 'Ciencia + Med', icon: FlaskConical, desc: 'Avances médicos, Nature, papers' },
+  { id: 'tech', label: 'Tech & Tools', icon: Monitor, desc: 'Nuevas herramientas, modelos baratos' },
+  { id: 'spain', label: 'España', icon: Landmark, desc: 'Política y actualidad nacional' },
+  { id: 'world', label: 'Internacional', icon: Globe, desc: 'Geopolítica y mundo' },
+  { id: 'realmadrid', label: 'Real Madrid', icon: Trophy, desc: 'Fútbol, fichajes, resultados' },
 ];
+
+// Detect backend URL based on environment
+function getBackendUrl() {
+  if (typeof window === 'undefined') return '';
+  const host = window.location.hostname;
+  // Local dev: use Vite proxy
+  if (host === 'localhost' || host === '127.0.0.1') return '';
+  // Production: use public tunnel
+  return 'https://jarvis-neo-david.loca.lt';
+}
 
 const RELATIVE_TIME = (dateStr) => {
   if (!dateStr) return '';
   const date = new Date(dateStr);
   const now = new Date();
-  const diffMs = now - date;
-  const diffMin = Math.floor(diffMs / 60000);
-  const diffHrs = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
-  
+  const diffMin = Math.floor((now - date) / 60000);
+  const diffHrs = Math.floor((now - date) / 3600000);
+  const diffDays = Math.floor((now - date) / 86400000);
   if (diffMin < 1) return 'Ahora';
   if (diffMin < 60) return `Hace ${diffMin} min`;
   if (diffHrs < 24) return `Hace ${diffHrs}h`;
@@ -32,6 +42,7 @@ export default function NewsPage({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const seenRef = useRef(new Set());
+  const backendUrl = useMemo(() => getBackendUrl(), []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -42,40 +53,54 @@ export default function NewsPage({ isOpen, onClose }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/news/feed?topic=${topic}`);
+      const url = backendUrl 
+        ? `${backendUrl}/news/feed?topic=${topic}`
+        : `/news/feed?topic=${topic}`;
+      
+      const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       
       if (!data.articles || data.articles.length === 0) {
         setArticles([]);
-        setError('No se encontraron noticias para este tema. Intenta con otro.');
+        setError('No se encontraron noticias. Reintentando...');
         setLoading(false);
         return;
       }
       
-      // Filter out already seen articles (dedup across topic switches)
       const fresh = data.articles.filter(a => {
         if (seenRef.current.has(a.url)) return false;
         seenRef.current.add(a.url);
         return true;
       });
       
-      // Keep seen set from growing too large
       if (seenRef.current.size > 200) {
         const entries = [...seenRef.current];
         seenRef.current = new Set(entries.slice(-100));
       }
       
-      setArticles(fresh);
+      if (fresh.length === 0) {
+        setError('Ya has visto todas las noticias de esta categoria. ¡Prueba otra!');
+        setArticles([]);
+      } else {
+        setArticles(fresh);
+        setError(null);
+      }
     } catch (err) {
       console.error('[News] Error:', err);
-      setError('Error de conexión. Verifica que el servidor esté corriendo.');
+      if (backendUrl) {
+        setError('No se pudo conectar al servidor JARVIS. El túnel puede haberse desconectado.');
+      } else {
+        setError('Error de conexión. Verifica que el servidor esté corriendo en localhost:4000.');
+      }
       setArticles([]);
     }
     setLoading(false);
   };
 
   if (!isOpen) return null;
+
+  const activeLabel = TOPICS.find(t => t.id === activeTopic);
 
   return (
     <motion.div
@@ -94,7 +119,10 @@ export default function NewsPage({ isOpen, onClose }) {
             <h2 className="font-display text-base tracking-[0.15em] text-cyber-cyan drop-shadow-[0_0_6px_rgba(0,212,255,0.4)]">
               NOTICIAS
             </h2>
-            <p className="text-[10px] text-cyber-cyan/50 font-body tracking-wide">RSS Live • {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+            <p className="text-[10px] text-cyber-cyan/50 font-body tracking-wide">
+              RSS Live • {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+              {backendUrl && <span className="text-cyber-green/60 ml-1">• vía túnel</span>}
+            </p>
           </div>
         </div>
         <button onClick={onClose} className="p-2.5 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/20 hover:bg-cyber-cyan/20 transition-all">
@@ -102,15 +130,15 @@ export default function NewsPage({ isOpen, onClose }) {
         </button>
       </div>
 
-      {/* Topic tabs */}
-      <div className="flex gap-2 px-5 py-4 overflow-x-auto border-b border-cyber-cyan/10">
+      {/* Topic tabs — 2 rows */}
+      <div className="flex flex-wrap gap-2 px-5 py-4 border-b border-cyber-cyan/10">
         {TOPICS.map((t) => {
           const Icon = t.icon;
           return (
             <button
               key={t.id}
               onClick={() => { setActiveTopic(t.id); setArticles([]); }}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-body whitespace-nowrap transition-all ${
+              className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-body whitespace-nowrap transition-all ${
                 activeTopic === t.id
                   ? 'bg-cyber-cyan/15 border-2 border-cyber-cyan/40 text-cyber-cyan shadow-[0_0_15px_rgba(0,212,255,0.15)]'
                   : 'bg-cyber-panel/50 border border-cyber-border/30 text-cyber-muted hover:border-cyber-cyan/30 hover:text-cyber-white/70'
@@ -123,6 +151,13 @@ export default function NewsPage({ isOpen, onClose }) {
         })}
       </div>
 
+      {/* Active topic description */}
+      {activeLabel && (
+        <div className="px-5 py-2 border-b border-cyber-cyan/5">
+          <p className="text-[10px] text-cyber-cyan/40 font-body italic">{activeLabel.desc}</p>
+        </div>
+      )}
+
       {/* Articles */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {loading && (
@@ -131,14 +166,14 @@ export default function NewsPage({ isOpen, onClose }) {
               <Loader2 size={32} className="animate-spin text-cyber-cyan" />
               <div className="absolute inset-0 blur-xl bg-cyber-cyan/30 rounded-full" />
             </div>
-            <span className="text-sm font-body text-cyber-cyan/70">Cargando titulares...</span>
+            <span className="text-sm font-body text-cyber-cyan/70">Cargando titulares del día...</span>
           </div>
         )}
 
         {error && !loading && (
-          <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <Zap size={32} className="text-cyber-muted/40" />
-            <span className="text-sm font-body text-cyber-muted/60 text-center px-4">{error}</span>
+          <div className="flex flex-col items-center justify-center py-16 gap-3 px-4">
+            <Zap size={28} className="text-cyber-amber/40" />
+            <span className="text-sm font-body text-cyber-amber/60 text-center">{error}</span>
           </div>
         )}
 
@@ -157,7 +192,6 @@ export default function NewsPage({ isOpen, onClose }) {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2">
-                    {/* Source badge */}
                     <span
                       className="text-[10px] font-mono px-2 py-0.5 rounded-md border"
                       style={{
@@ -168,7 +202,6 @@ export default function NewsPage({ isOpen, onClose }) {
                     >
                       {a.source}
                     </span>
-                    {/* Time */}
                     {a.pubDate && (
                       <span className="text-[10px] font-mono text-cyber-muted/50">
                         {RELATIVE_TIME(a.pubDate)}
@@ -198,7 +231,7 @@ export default function NewsPage({ isOpen, onClose }) {
         )}
       </div>
 
-      {/* Matrix-style cascade in background */}
+      {/* Matrix cascade background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-25">
         {Array.from({ length: 30 }).map((_, i) => (
           <motion.div

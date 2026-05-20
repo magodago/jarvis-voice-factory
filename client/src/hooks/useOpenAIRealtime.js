@@ -69,17 +69,19 @@ export default function useOpenAIRealtime() {
       silenceGain.connect(audioCtx.destination);
 
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      // Use same host:port as the page — Vite proxies /realtime to the backend WS
       const hostname = window.location.hostname;
       const isGitHubPages = hostname.includes('github.io');
       
+      // Build WebSocket URL: local dev → proxy, GitHub Pages → public tunnel
+      let wsUrl;
       if (isGitHubPages) {
-        throw new Error(
-          'Estás en GitHub Pages (solo UI estática). Para llamadas de voz necesitas acceder desde localhost:5173.'
-        );
+        // Use public tunnel for WebSocket (wss://tunnel → backend WS relay)
+        wsUrl = 'wss://jarvis-neo-david.loca.lt/realtime';
+        setDebugInfo('Conectando vía túnel público...');
+      } else {
+        wsUrl = `${protocol}//${window.location.host}/realtime`;
       }
       
-      const wsUrl = `${protocol}//${window.location.host}/realtime`;
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
       ws.binaryType = 'arraybuffer';

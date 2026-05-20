@@ -75,42 +75,53 @@ export default function useOpenAIRealtime() {
       // Build WebSocket URL: local dev → proxy, GitHub Pages → auto-discover tunnel
       let wsUrl;
       if (isGitHubPages) {
-        // Try to discover the active tunnel by probing known candidates
-        setDebugInfo('Buscando túnel activo...');
-        const tunnelCandidates = [
-          'https://jarvis-neo-david.loca.lt',
-          'https://jarvis-neo-david.serveo.net',
-        ];
+        setDebugInfo('Buscando tunel activo...');
         
+        // First try: read tunnel.json from our own GitHub Pages (updated by jarvis-start)
         let foundTunnel = null;
-        for (const candidate of tunnelCandidates) {
-          try {
-            const resp = await fetch(`${candidate}/tunnel-url`, { signal: AbortSignal.timeout(4000) });
-            if (resp.ok) {
-              const data = await resp.json();
-              if (data.active && data.tunnelUrl) {
+        try {
+          const resp = await fetch('/jarvis-voice-factory/tunnel.json', { signal: AbortSignal.timeout(3000) });
+          if (resp.ok) {
+            const data = await resp.json();
+            if (data.tunnelUrl) {
+              const testResp = await fetch(`${data.tunnelUrl}/health`, { signal: AbortSignal.timeout(3000) });
+              if (testResp.ok) {
                 foundTunnel = data.tunnelUrl;
-                break;
               }
             }
-          } catch {}
-          // Also try direct health check
-          try {
-            const resp = await fetch(`${candidate}/health`, { signal: AbortSignal.timeout(3000) });
-            if (resp.ok) {
-              foundTunnel = candidate;
-              break;
-            }
-          } catch {}
+          }
+        } catch {}
+        
+        // Second try: known candidates via /tunnel-url endpoint
+        if (!foundTunnel) {
+          const candidates = [
+            'https://jarvis-neo-david.loca.lt',
+          ];
+          for (const candidate of candidates) {
+            try {
+              const resp = await fetch(`${candidate}/tunnel-url`, { signal: AbortSignal.timeout(3000) });
+              if (resp.ok) {
+                const data = await resp.json();
+                if (data.active && data.tunnelUrl) {
+                  foundTunnel = data.tunnelUrl;
+                  break;
+                }
+              }
+            } catch {}
+            try {
+              const resp = await fetch(`${candidate}/health`, { signal: AbortSignal.timeout(2000) });
+              if (resp.ok) { foundTunnel = candidate; break; }
+            } catch {}
+          }
         }
         
         if (foundTunnel) {
           const wsProto = foundTunnel.startsWith('https') ? 'wss' : 'ws';
           wsUrl = `${wsProto}://${new URL(foundTunnel).host}/realtime`;
-          setDebugInfo('Túnel encontrado: ' + new URL(foundTunnel).host);
+          setDebugInfo('Tunel: ' + new URL(foundTunnel).host);
         } else {
           throw new Error(
-            'Túnel no disponible. Ejecuta jarvis-start en WSL para activar el túnel público y poder llamar desde GitHub Pages.'
+            'Tunel no disponible. Ejecuta jarvis-start en WSL para activarlo.'
           );
         }
       } else {

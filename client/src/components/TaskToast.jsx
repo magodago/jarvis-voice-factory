@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, CheckCircle, Loader2, Zap } from 'lucide-react';
+import { Sparkles, CheckCircle, Loader2, Zap, ExternalLink } from 'lucide-react';
 
 export default function TaskToast({ tasks = [] }) {
   if (tasks.length === 0) return null;
@@ -15,7 +15,7 @@ export default function TaskToast({ tasks = [] }) {
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
             className={`
               pointer-events-auto rounded-2xl px-4 py-3 border backdrop-blur-xl
-              flex items-center gap-3 shadow-2xl max-w-[380px] w-full
+              flex items-start gap-3 shadow-2xl max-w-[380px] w-full
               ${task.status === 'completed'
                 ? 'bg-cyber-green/10 border-cyber-green/30 shadow-cyber-green/10'
                 : task.status === 'processing'
@@ -24,7 +24,7 @@ export default function TaskToast({ tasks = [] }) {
               }
             `}
           >
-            <div className="relative shrink-0">
+            <div className="relative shrink-0 mt-0.5">
               {task.status === 'completed' ? (
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400 }}>
                   <CheckCircle size={22} className="text-cyber-green" />
@@ -55,6 +55,31 @@ export default function TaskToast({ tasks = [] }) {
                     transition={{ duration: 0.5 }}
                   />
                 </div>
+              )}
+              {/* Show URL when completed */}
+              {task.status === 'completed' && task.result?.url && (
+                <a
+                  href={task.result.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-mono text-cyber-cyan/80 hover:text-cyber-cyan bg-cyber-cyan/5 border border-cyber-cyan/20 rounded-lg px-2.5 py-1.5 transition-colors"
+                >
+                  <ExternalLink size={12} />
+                  <span className="truncate max-w-[200px]">{task.result.url.replace('https://', '')}</span>
+                </a>
+              )}
+              {task.status === 'completed' && !task.result?.url && task.result?.repo && (
+                <a
+                  href={task.result.repo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-mono text-cyber-cyan/80 hover:text-cyber-cyan bg-cyber-cyan/5 border border-cyber-cyan/20 rounded-lg px-2.5 py-1.5 transition-colors"
+                >
+                  <ExternalLink size={12} />
+                  Repo GitHub
+                </a>
               )}
             </div>
           </motion.div>

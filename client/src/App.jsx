@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import CallInterface from './components/CallInterface';
 import TaskToast from './components/TaskToast';
@@ -44,9 +44,30 @@ function AppContent() {
   const now = new Date();
   const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
 
+  // Detect if running on GitHub Pages (static) vs localhost (full features)
+  const isGitHubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
+  const [dismissedBanner, setDismissedBanner] = useState(false);
+
   return (
     <div className="min-h-screen bg-cyber-bg text-cyber-white overflow-hidden relative no-overscroll touch-none">
       <CyanRain />
+
+      {/* GitHub Pages banner — warn about limited features */}
+      {isGitHubPages && !dismissedBanner && (
+        <div className="fixed top-10 left-0 right-0 z-50 mx-4 mt-2 bg-cyber-amber/15 border border-cyber-amber/40 rounded-2xl p-3 backdrop-blur-xl">
+          <div className="flex items-start gap-3">
+            <span className="text-lg">⚠️</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-display tracking-[0.1em] text-cyber-amber mb-1">VISTA PREVIA ESTÁTICA</p>
+              <p className="text-[11px] text-cyber-white/60 font-body">
+                Las llamadas de voz y noticias requieren el servidor local.{' '}
+                <span className="text-cyber-cyan/70">Accede desde localhost:5173</span> para funcionalidad completa.
+              </p>
+            </div>
+            <button onClick={() => setDismissedBanner(true)} className="text-cyber-muted/50 hover:text-cyber-white shrink-0">✕</button>
+          </div>
+        </div>
+      )}
 
       <TaskToast tasks={recentTasks.filter(t => t.status !== 'idle')} />
 

@@ -60,7 +60,8 @@ export default function useOpenAIRealtime() {
       audioContextRef.current = audioCtx;
 
       const source = audioCtx.createMediaStreamSource(stream);
-      const bufferSize = 4096;
+      // Smaller buffer for translation (lower latency), normal for voice
+      const bufferSize = mode === 'translate' ? 1024 : 4096;
       const processor = audioCtx.createScriptProcessor(bufferSize, 1, 1);
       processorRef.current = processor;
       source.connect(processor);

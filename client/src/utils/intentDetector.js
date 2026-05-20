@@ -11,7 +11,9 @@
 const ACTION_STEMS = [
   'cre', 'hac', 'gener', 'constru', 'desarroll', 'program', 'mont',
   'create', 'build', 'make', 'develop', 'generate', 'code',
-  'quiero', 'necesito', 'quisiera', 'me gustaría',
+  'quiero', 'necesito', 'quisiera', 'me gustaria', 'me gustaría',
+  'solicit', 'pid', 'encarg', 'prepar', 'diseñ', 'disen',
+  'request', 'prepare', 'design',
 ];
 
 // Product targets
@@ -61,8 +63,9 @@ export function detectProductIntent(text) {
   // Stronger patterns get higher confidence
   const strongPatterns = [
     /(?:crea|haz|genera|construye|create|build|make|generate)\s+(?:una|un)\s+/i,
-    /(?:quiero|necesito|quisiera)\s+(?:que\s+)?(?:crees|hagas|generes|construyas)\s+(?:una|un)\s+/i,
-    /(?:me\s+)?(?:puedes|podr[ií]as)\s+(?:crear|hacer|generar|construir|desarrollar)\s+(?:una|un)\s+/i,
+    /(?:quiero|necesito|quisiera|solicito|pido|encargo)\s+(?:que\s+)?(?:crees|hagas|generes|construyas)\s+(?:una|un)\s+/i,
+    /(?:me\s+)?(?:puedes|podr[ií]as)\s+(?:crear|hacer|generar|construir|desarrollar|solicitar|pedir)\s+(?:una|un)\s+/i,
+    /(?:solicit[éeoa]|pid[oae]|encarg[oae])\s+(?:una|un)\s+/i,
   ];
   if (strongPatterns.some(p => p.test(normalized))) confidence = 0.95;
 
@@ -81,8 +84,8 @@ export function detectProductIntent(text) {
 export function extractProjectPrompt(command) {
   let cleaned = command
     .replace(/^(?:crea|haz|genera|construye|create|build|make|generate|develop|desarrolla|programa|monta)\s+(?:una|un|me)?\s*/i, '')
-    .replace(/^(?:quiero|necesito|me gustaría|quisiera)\s+(?:que\s+)?(?:crees|hagas|generes|construyas|desarrolles|programes)?\s*(?:una|un)?\s*/i, '')
-    .replace(/^(?:me\s+)?(?:puedes|podrías|podrias)\s+(?:crear|hacer|generar|construir|desarrollar|programar)\s+(?:una|un)?\s*/i, '')
+    .replace(/^(?:quiero|necesito|me gustaría|quisiera|solicito|pido|encargo)\s+(?:que\s+)?(?:crees|hagas|generes|construyas|desarrolles|programes)?\s*(?:una|un)?\s*/i, '')
+    .replace(/^(?:me\s+)?(?:puedes|podrías|podrias)\s+(?:crear|hacer|generar|construir|desarrollar|programar|solicitar|pedir)\s+(?:una|un)?\s*/i, '')
     .replace(/\b(?:por favor|please|gracias|thanks)\b/gi, '')
     .trim();
 

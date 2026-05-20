@@ -78,10 +78,16 @@ export function setupRealtimeWS(server) {
                 isActive = true;
                 browserWs.send(JSON.stringify({ type: 'connected' }));
 
-                // Configure: target language = Spanish
+                // Configure: output language = Spanish
                 openaiWs.send(JSON.stringify({
                   type: 'session.update',
-                  target_language: 'es',
+                  session: {
+                    audio: {
+                      output: {
+                        language: 'es',
+                      },
+                    },
+                  },
                 }));
               });
 

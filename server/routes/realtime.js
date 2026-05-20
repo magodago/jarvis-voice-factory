@@ -208,7 +208,7 @@ export function setupRealtimeWS(server) {
                             transcription: { model: 'whisper-1', language: 'es' },
                           },
                           output: {
-                            voice: msg.voice || 'nova',
+                            voice: msg.voice || 'coral',
                           },
                         },
                       },

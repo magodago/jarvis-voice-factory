@@ -136,7 +136,7 @@ export default function useOpenAIRealtime() {
 
       ws.onopen = () => {
         setDebugInfo('WS conectado, enviando start...');
-        ws.send(JSON.stringify({ type: 'start', instructions, voice: 'nova', mode }));
+        ws.send(JSON.stringify({ type: 'start', instructions, voice: 'coral', mode }));
       };
 
       ws.onmessage = (event) => {

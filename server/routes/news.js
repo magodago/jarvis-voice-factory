@@ -7,12 +7,12 @@ const router = Router();
 const SOURCES = {
   ai: [
     { id: 'xataka', name: 'Xataka', url: 'https://www.xataka.com/index.xml', color: '#00d4ff', topic: 'ai' },
-    { id: 'hipertextual', name: 'Hipertextual', url: 'https://hipertextual.com/rss.xml', color: '#40f0ff', topic: 'ai' },
+    { id: 'hipertextual', name: 'Hipertextual', url: 'https://hipertextual.com/feed.xml', color: '#40f0ff', topic: 'ai' },
     { id: 'genbeta', name: 'Genbeta', url: 'https://www.genbeta.com/index.xml', color: '#7b00ff', topic: 'ai' },
   ],
   tech: [
     { id: 'xataka', name: 'Xataka', url: 'https://www.xataka.com/index.xml', color: '#00d4ff', topic: 'tech' },
-    { id: 'hipertextual', name: 'Hipertextual', url: 'https://hipertextual.com/rss.xml', color: '#40f0ff', topic: 'tech' },
+    { id: 'hipertextual', name: 'Hipertextual', url: 'https://hipertextual.com/feed.xml', color: '#40f0ff', topic: 'tech' },
     { id: 'microsiervos', name: 'Microsiervos', url: 'https://www.microsiervos.com/index.xml', color: '#ffb347', topic: 'tech' },
   ],
   spain: [
@@ -44,7 +44,11 @@ router.get('/feed', async (req, res) => {
       try {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 8000);
-        const response = await fetch(src.url, { signal: controller.signal });
+        const response = await fetch(src.url, { 
+          signal: controller.signal,
+          redirect: 'follow',
+          headers: { 'User-Agent': 'JARVIS-News/1.0' }
+        });
         clearTimeout(timeout);
         
         if (!response.ok) return [];

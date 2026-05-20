@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import CallInterface from './components/CallInterface';
 import TaskToast from './components/TaskToast';
@@ -11,11 +11,11 @@ const SYSTEM_INSTRUCTIONS = `Eres J.A.R.V.I.S., asistente de IA. Hablas SIEMPRE 
 Cuando el usuario pida crear, hacer, generar o construir software (web, webapp, SaaS, tienda online, juego indie, curso, automatización, documento, presentación), responde: "Recibido. Transfiriendo la orden al Agente NEO."
 NO ofrezcas ayuda adicional. Responde solo lo necesario.`;
 
-const TRANSLATE_INSTRUCTIONS = `Eres un traductor simultaneo en tiempo real. Traduce todo lo que escuches:
-- Si escuchas español → traduce a ingles
-- Si escuchas ingles → traduce a español
-- Si escuchas otro idioma → traduce a español
-Responde UNICAMENTE con la traduccion, sin añadir nada mas. Se conciso y preciso.`;
+const TRANSLATE_INSTRUCTIONS = `Eres un traductor simultaneo en tiempo real. Tu unica funcion es traducir:
+- Traduce SIEMPRE al español, da igual el idioma que escuches
+- Responde INMEDIATAMENTE solo con la traduccion, sin añadir nada mas
+- Se literal y preciso, no interpretes ni resumas
+- NO saludes, NO preguntes, solo traduce`;
 
 function AppContent() {
   const { state, dispatch } = useApp();
@@ -53,30 +53,9 @@ function AppContent() {
   const now = new Date();
   const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
 
-  // Detect if running on GitHub Pages (static) vs localhost (full features)
-  const isGitHubPages = typeof window !== 'undefined' && window.location.hostname.includes('github.io');
-  const [dismissedBanner, setDismissedBanner] = useState(false);
-
   return (
     <div className="min-h-screen bg-cyber-bg text-cyber-white overflow-hidden relative no-overscroll touch-none">
       <CyanRain />
-
-      {/* GitHub Pages banner — conectando vía túnel público */}
-      {isGitHubPages && !dismissedBanner && (
-        <div className="fixed top-10 left-0 right-0 z-50 mx-4 mt-2 bg-cyber-cyan/10 border border-cyber-cyan/30 rounded-2xl p-3 backdrop-blur-xl">
-          <div className="flex items-start gap-3">
-            <span className="text-lg">🌐</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-display tracking-[0.1em] text-cyber-cyan mb-1">JARVIS DAVID OS</p>
-              <p className="text-[11px] text-cyber-white/60 font-body">
-                Noticias siempre disponibles (RSS directo).{' '}
-                <span className="text-cyber-cyan/70">Llamadas requieren túnel activo</span>
-              </p>
-            </div>
-            <button onClick={() => setDismissedBanner(true)} className="text-cyber-muted/50 hover:text-cyber-white shrink-0">✕</button>
-          </div>
-        </div>
-      )}
 
       <TaskToast tasks={recentTasks.filter(t => t.status !== 'idle')} />
 

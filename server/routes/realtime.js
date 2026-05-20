@@ -111,20 +111,24 @@ export function setupRealtimeWS(server) {
                       session: {
                         type: 'realtime',
                         output_modalities: ['audio'],
-                        instructions: msg.instructions || `Eres J.A.R.V.I.S., el asistente de inteligencia artificial de Tony Stark.
-Hablas SIEMPRE en español con un tono profesional, eficiente y con un toque de humor seco británico.
-Responde en 1-2 frases máximo, sé conciso.
-Cuando el usuario te pida explícitamente crear, hacer, generar o construir software (una web, webapp, SaaS, tienda online, juego indie, curso online, automatización, documento, presentación, aplicación), responde exactamente: "Recibido. Transfiriendo la orden al Agente NEO para construir el proyecto."
-NO ofrezcas ayuda adicional a menos que te la pidan.
-NUNCA digas "¿en qué puedo ayudarte?" más de una vez por conversación.`,
+                        instructions: msg.instructions || 'Eres J.A.R.V.I.S., el asistente de inteligencia artificial de Tony Stark.',
                         audio: {
                           input: {
-                            transcription: { model: 'whisper-1', language: 'es' },
+                            transcription: { model: 'whisper-1', language: msg.mode === 'translate' ? 'auto' : 'es' },
                           },
                           output: {
                             voice: msg.voice || 'alloy',
                           },
                         },
+                        // Faster turn detection for translation mode
+                        ...(msg.mode === 'translate' ? {
+                          turn_detection: {
+                            type: 'server_vad',
+                            threshold: 0.4,
+                            prefix_padding_ms: 200,
+                            silence_duration_ms: 400,
+                          }
+                        } : {}),
                       },
                     }));
                     break;

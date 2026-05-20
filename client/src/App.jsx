@@ -11,6 +11,12 @@ const SYSTEM_INSTRUCTIONS = `Eres J.A.R.V.I.S., asistente de IA. Hablas SIEMPRE 
 Cuando el usuario pida crear, hacer, generar o construir software (web, webapp, SaaS, tienda online, juego indie, curso, automatización, documento, presentación), responde: "Recibido. Transfiriendo la orden al Agente NEO."
 NO ofrezcas ayuda adicional. Responde solo lo necesario.`;
 
+const TRANSLATE_INSTRUCTIONS = `Eres un traductor simultaneo en tiempo real. Traduce todo lo que escuches:
+- Si escuchas español → traduce a ingles
+- Si escuchas ingles → traduce a español
+- Si escuchas otro idioma → traduce a español
+Responde UNICAMENTE con la traduccion, sin añadir nada mas. Se conciso y preciso.`;
+
 function AppContent() {
   const { state, dispatch } = useApp();
   const { sendCommand } = useHermesBridge();
@@ -37,7 +43,10 @@ function AppContent() {
   const { processTranscript } = useIntentDetector(handleCommandDetected);
   useEffect(() => { onUserSpeech((text) => { processTranscript(text); }); }, [onUserSpeech, processTranscript]);
 
-  const handleStartCall = useCallback(() => { startCall(SYSTEM_INSTRUCTIONS); }, [startCall]);
+  const handleStartCall = useCallback((mode = 'jarvis') => { 
+    const instructions = mode === 'translate' ? TRANSLATE_INSTRUCTIONS : SYSTEM_INSTRUCTIONS;
+    startCall(instructions, mode); 
+  }, [startCall]);
   const handleEndCall = useCallback(() => { endCall(); dispatch({ type: 'CLEAR_TRANSCRIPT' }); }, [endCall, dispatch]);
 
   const recentTasks = state.tasks.slice(0, 5);

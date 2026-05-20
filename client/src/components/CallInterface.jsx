@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, PhoneOff, MessageCircle, Upload, Newspaper } from 'lucide-react';
+import { Phone, PhoneOff, MessageCircle, Upload, Newspaper, Languages } from 'lucide-react';
 import JarvisAvatar from './JarvisAvatar';
 import NeoChat from './NeoChat';
 import FileUpload from './FileUpload';
@@ -109,6 +109,25 @@ export default function CallInterface({
             </motion.button>
 
             <p className="text-[11px] text-cyber-muted/50 font-body tracking-wide">Toca para llamar</p>
+
+            {/* Translation button — simultaneous interpretation */}
+            <motion.button onClick={() => onStartCall('translate')} whileTap={{ scale: 0.9 }} className="relative group">
+              <div className="absolute -inset-2 rounded-full bg-cyber-green/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <motion.div
+                className="relative w-[55px] h-[55px] rounded-full bg-gradient-to-br from-cyber-green to-green-700 flex items-center justify-center"
+                animate={{
+                  boxShadow: [
+                    '0 0 15px rgba(0,255,136,0.3), 0 0 25px rgba(0,255,136,0.15)',
+                    '0 0 30px rgba(0,255,136,0.5), 0 0 50px rgba(0,255,136,0.25)',
+                    '0 0 15px rgba(0,255,136,0.3), 0 0 25px rgba(0,255,136,0.15)',
+                  ],
+                }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <Languages size={22} className="text-white" />
+              </motion.div>
+            </motion.button>
+            <p className="text-[10px] text-cyber-green/40 font-body tracking-wide">Traduccion simultanea</p>
 
             {/* Action buttons */}
             <div className="flex items-center gap-2">

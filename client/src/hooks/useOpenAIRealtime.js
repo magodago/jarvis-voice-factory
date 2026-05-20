@@ -23,7 +23,7 @@ export default function useOpenAIRealtime() {
 
   const onUserSpeech = useCallback((fn) => { userSpeechCallbackRef.current = fn; }, []);
 
-  const startCall = useCallback(async (instructions) => {
+  const startCall = useCallback(async (instructions, mode = 'jarvis') => {
     try {
       setError(null);
       setDebugInfo('');
@@ -134,7 +134,7 @@ export default function useOpenAIRealtime() {
 
       ws.onopen = () => {
         setDebugInfo('WS conectado, enviando start...');
-        ws.send(JSON.stringify({ type: 'start', instructions, voice: 'alloy' }));
+        ws.send(JSON.stringify({ type: 'start', instructions, voice: 'alloy', mode }));
       };
 
       ws.onmessage = (event) => {

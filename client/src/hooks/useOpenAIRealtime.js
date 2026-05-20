@@ -72,17 +72,47 @@ export default function useOpenAIRealtime() {
       const hostname = window.location.hostname;
       const isGitHubPages = hostname.includes('github.io');
       
-      // Build WebSocket URL: local dev → proxy, GitHub Pages → try tunnel
+      // Build WebSocket URL: local dev → proxy, GitHub Pages → auto-discover tunnel
       let wsUrl;
       if (isGitHubPages) {
-        // Try tunnel URLs in order — user can configure via env
-        const tunnelUrls = [
-          'wss://jarvis-neo-david.loca.lt/realtime',
-          'wss://jarvis-neo-david.serveo.net/realtime',
+        // Try to discover the active tunnel by probing known candidates
+        setDebugInfo('Buscando túnel activo...');
+        const tunnelCandidates = [
+          'https://jarvis-neo-david.loca.lt',
+          'https://jarvis-neo-david.serveo.net',
         ];
-        // Try the first one; if it fails, user sees error with instructions
-        wsUrl = tunnelUrls[0];
-        setDebugInfo('Conectando via tunel publico...');
+        
+        let foundTunnel = null;
+        for (const candidate of tunnelCandidates) {
+          try {
+            const resp = await fetch(`${candidate}/tunnel-url`, { signal: AbortSignal.timeout(4000) });
+            if (resp.ok) {
+              const data = await resp.json();
+              if (data.active && data.tunnelUrl) {
+                foundTunnel = data.tunnelUrl;
+                break;
+              }
+            }
+          } catch {}
+          // Also try direct health check
+          try {
+            const resp = await fetch(`${candidate}/health`, { signal: AbortSignal.timeout(3000) });
+            if (resp.ok) {
+              foundTunnel = candidate;
+              break;
+            }
+          } catch {}
+        }
+        
+        if (foundTunnel) {
+          const wsProto = foundTunnel.startsWith('https') ? 'wss' : 'ws';
+          wsUrl = `${wsProto}://${new URL(foundTunnel).host}/realtime`;
+          setDebugInfo('Túnel encontrado: ' + new URL(foundTunnel).host);
+        } else {
+          throw new Error(
+            'Túnel no disponible. Ejecuta jarvis-start en WSL para activar el túnel público y poder llamar desde GitHub Pages.'
+          );
+        }
       } else {
         wsUrl = `${protocol}//${window.location.host}/realtime`;
       }
@@ -114,11 +144,7 @@ export default function useOpenAIRealtime() {
       };
 
       ws.onerror = () => { 
-        if (isGitHubPages) {
-          setError('Tunel no disponible. Ejecuta jarvis-start en WSL para activar el tunel publico y poder llamar.');
-        } else {
-          setError('Error de conexion con JARVIS. Verifica que el servidor backend este corriendo en :4000.');
-        }
+        setError('Error de conexion con JARVIS. Verifica que el servidor backend este corriendo en :4000.');
       };
 
       processor.onaudioprocess = (event) => {

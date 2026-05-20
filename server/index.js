@@ -35,8 +35,20 @@ app.use('/push', pushRoutes);
 app.use('/upload', uploadRoutes);
 app.use('/uploads', express.static('uploads'));
 
-// News proxy (DuckDuckGo)
+// News proxy (RSS feeds)
 app.use('/news', newsRoutes);
+
+// Tunnel URL endpoint — frontend auto-discovers active tunnel
+app.get('/tunnel-url', async (_req, res) => {
+  try {
+    const fs = await import('fs');
+    const url = fs.readFileSync('/tmp/jarvis-tunnel-url.txt', 'utf-8').trim();
+    if (url && url.startsWith('https://')) {
+      return res.json({ tunnelUrl: url, active: true });
+    }
+  } catch {}
+  res.json({ tunnelUrl: null, active: false });
+});
 
 // Serve push sw.js with correct content type
 app.get('/sw.js', (_, res) => {

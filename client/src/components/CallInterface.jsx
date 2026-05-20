@@ -86,7 +86,7 @@ export default function CallInterface({
             )}
 
             {/* BIG Call button with heartbeat — CYAN */}
-            <motion.button onClick={onStartCall} whileTap={{ scale: 0.9 }} className="relative group mt-2">
+            <motion.button onClick={() => onStartCall()} whileTap={{ scale: 0.9 }} className="relative group mt-2">
               <div className="absolute -inset-4 rounded-full bg-cyber-cyan/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <motion.div
                 className="relative w-[90px] h-[90px] rounded-full bg-gradient-to-br from-cyber-cyan to-cyan-600 flex items-center justify-center"

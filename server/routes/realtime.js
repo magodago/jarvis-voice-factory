@@ -81,9 +81,7 @@ export function setupRealtimeWS(server) {
                 // Configure: target language = Spanish
                 openaiWs.send(JSON.stringify({
                   type: 'session.update',
-                  session: {
-                    target_language: 'es',
-                  },
+                  target_language: 'es',
                 }));
               });
 

@@ -39,6 +39,9 @@ export function setupRealtimeWS(server) {
               type: 'input_audio_buffer.append',
               audio: base64Audio,
             }));
+            if (currentMode === 'translate') {
+              console.log('[Translate] Audio sent:', data.length, 'bytes');
+            }
           }
           return;
         }
@@ -84,6 +87,8 @@ export function setupRealtimeWS(server) {
 
                 try {
                   const event = JSON.parse(openaiData.toString());
+                  // Log ALL events from translate model for debugging
+                  console.log('[Translate] Event:', event.type, event.delta ? '(delta:' + (event.delta?.length || '?') + ')' : '');
                   switch (event.type) {
                     case 'session.created':
                       // Session ready — notify browser, start translating immediately
@@ -296,7 +301,13 @@ export function setupRealtimeWS(server) {
                   case 'response.audio.delta':
                   case 'response.audio.done':
                   case 'response.done':
+                  case 'response.audio_transcript.delta':
                     break;
+
+                  case 'response.text.delta': {
+                    browserWs.send(JSON.stringify({ type: 'transcript.assistant_delta', delta: event.delta || '' }));
+                    break;
+                  }
 
                   case 'input_audio_buffer.speech_started':
                   case 'input_audio_buffer.speech_stopped':

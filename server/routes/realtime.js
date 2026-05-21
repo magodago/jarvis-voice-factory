@@ -142,10 +142,21 @@ export function setupRealtimeWS(server) {
                         }));
                       }
                       break;
-                    case 'session.created':
-                    case 'session.updated':
+                    case 'conversation.item.added':
+                      // Translate model returns translated text in conversation items
+                      if (event.item?.content) {
+                        const text = event.item.content.map(c => c.text || c.transcript || '').join(' ');
+                        if (text.trim()) {
+                          browserWs.send(JSON.stringify({
+                            type: 'transcript.assistant_delta',
+                            delta: text,
+                          }));
+                        }
+                      }
                       break;
-                    case 'response.created':
+                    case 'conversation.item.done':
+                      browserWs.send(JSON.stringify({ type: 'transcript.assistant_done' }));
+                      break;
                     case 'response.output_item.added':
                     case 'response.content_part.added':
                     case 'response.audio.delta':

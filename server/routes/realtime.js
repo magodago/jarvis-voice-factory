@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket as WSClient } from 'ws';
  * WebSocket relay for OpenAI Realtime API (GA — May 2026)
  *
  * Two modes:
- * - Voice Agent: /v1/realtime?model=gpt-realtime (JARVIS assistant)
+ * - Voice Agent: /v1/realtime?model=gpt-realtime-2 (JARVIS assistant) — recommended model
  * - Translation: /v1/realtime/translations?model=gpt-realtime-translate
  *
  * Browser connects to our WS relay, we connect to OpenAI.
@@ -135,7 +135,7 @@ export function setupRealtimeWS(server) {
             }
 
             // === JARVIS VOICE AGENT MODE ===
-            const model = 'gpt-realtime';
+            const model = 'gpt-realtime-2';
             const openaiUrl = `wss://api.openai.com/v1/realtime?model=${model}`;
 
             openaiWs = new WSClient(openaiUrl, [], {

@@ -60,18 +60,18 @@ function cf(){return floors[floorNum]}
 // ── INPUT ──
 function setJump(v){jumpWanted=v;if(v)debugJump++}
 function setShoot(v){shootHeld=v}
+// Jump: ONLY set on press, consumed in update() (no up/leave handlers!)
 btnJ.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();setJump(true)});
-btnJ.addEventListener('pointerup',e=>{e.preventDefault();setJump(false)});
-btnJ.addEventListener('pointerleave',e=>{setJump(false)});
 btnJ.addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();setJump(true)});
-btnJ.addEventListener('touchend',e=>{e.preventDefault();setJump(false)});
 btnJ.addEventListener('mousedown',e=>{e.preventDefault();e.stopPropagation();setJump(true)});
+// Shoot: hold to shoot
 btnS.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();setShoot(true)});
 btnS.addEventListener('pointerup',e=>{e.preventDefault();setShoot(false)});
 btnS.addEventListener('pointerleave',e=>{setShoot(false)});
 btnS.addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();setShoot(true)});
 btnS.addEventListener('touchend',e=>{e.preventDefault();setShoot(false)});
 btnS.addEventListener('mousedown',e=>{e.preventDefault();e.stopPropagation();setShoot(true)});
+btnS.addEventListener('mouseup',e=>{e.preventDefault();setShoot(false)});
 
 window.addEventListener('keydown',e=>{
  if(e.key==='ArrowLeft'||e.key==='a')setJump(true);

@@ -6,673 +6,263 @@
 <title>NEON ASH</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#060010;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#060010;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
+#game{position:relative;width:100%;height:100%}
 canvas{display:block;width:100%;height:100%}
+.btn{position:absolute;bottom:16px;border-radius:50%;width:68px;height:68px;display:flex;align-items:center;justify-content:center;font:bold 11px monospace;color:#fff;border:2px solid;z-index:10;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
+#btnJump{left:20px;background:rgba(0,212,255,0.2);border-color:rgba(0,212,255,0.5);color:#00d4ff}
+#btnJump:active{background:rgba(0,212,255,0.5)}
+#btnShoot{right:20px;background:rgba(255,21,208,0.2);border-color:rgba(255,21,208,0.5);color:#ff15d0}
+#btnShoot:active{background:rgba(255,21,208,0.5)}
 </style>
 </head>
 <body>
+<div id="game">
 <canvas id="c"></canvas>
+<button id="btnJump" class="btn">SALTAR</button>
+<button id="btnShoot" class="btn">DISPARO</button>
+</div>
 <script>
 // ═══════════════════════════════════════
-// NEON ASH — Cyber Tower Arcade v2
-// Crazy Bill mechanics
+// NEON ASH v3
 // ═══════════════════════════════════════
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+const btnJump=document.getElementById('btnJump'),btnShoot=document.getElementById('btnShoot');
 
-let W, H, scale;
-let gameState = 'intro'; // intro | playing | dead | climbing
-let score = 0, floorNum = 0, highScore = parseInt(localStorage.getItem('neonash_hs')||0);
-let cameraY = 0;
-let climbTimer = 0, climbFromY = 0, climbToY = 0;
-let shakeTimer = 0, shakeIntensity = 0;
-let introTimer = 0;
+let W,H,scale,gameState='intro',score=0,floorNum=0;
+let highScore=parseInt(localStorage.getItem('neonash_hs')||0);
+let cameraY=0,climbTimer=0,climbFromY=0,climbToY=0,shakeTimer=0,shakeIntensity=0,introTimer=0;
+let jumpPressed=false,shootPressed=false;
 
-const FLOOR_W = 340; // fixed floor width
-const FLOOR_H = 8;
-const FLOOR_GAP = 92; // vertical gap between floors
-const WALL_W = 10;
-const CLIMB_DURATION = 120; // ~2 seconds at 60fps
+const FLOOR_W=340,FLOOR_H=8,FLOOR_GAP=92,WALL_W=10,CLIMB_DURATION=120;
+const C={bg:'#060010',cyan:'#00d4ff',magenta:'#ff15d0',white:'#e8e0ff',green:'#00ff88',amber:'#ffb347',red:'#ff4466',dim:'#1a0030',panel:'#0a0020',purple:'#7b00ff',wall:'#0d0030'};
 
-const C = {
-  bg:'#060010', cyan:'#00d4ff', magenta:'#ff15d0', white:'#e8e0ff',
-  green:'#00ff88', amber:'#ffb347', red:'#ff4466', dim:'#1a0030',
-  panel:'#0a0020', purple:'#7b00ff', wall:'#0d0030',
-};
+const player={x:0,y:0,w:24,h:32,vx:1.5,vy:0,dir:-1,jumping:false,onGround:false,hp:3,maxHp:3,shootCooldown:0,invincible:0};
+let bullets=[],enemyBullets=[],particles=[];
 
-const player = {
-  x:0, y:0, w:24, h:32, vx:2, vy:0, dir:1,
-  jumping:false, onGround:false, hp:3, maxHp:3,
-  shootCooldown:0, invincible:0,
-};
-let bullets = [];
-let enemies = [];
-let enemyBullets = [];
-let hazards = [];
-let elevators = [];
-let particles = [];
-let visibleFloors = []; // only current + next floor
+// ── BUTTONS ──
+btnJump.addEventListener('pointerdown',e=>{e.preventDefault();jumpPressed=true});
+btnJump.addEventListener('pointerup',e=>{e.preventDefault();jumpPressed=false});
+btnJump.addEventListener('pointerleave',e=>{jumpPressed=false});
+btnShoot.addEventListener('pointerdown',e=>{e.preventDefault();shootPressed=true});
+btnShoot.addEventListener('pointerup',e=>{e.preventDefault();shootPressed=false});
+btnShoot.addEventListener('pointerleave',e=>{shootPressed=false});
 
-// Input
-let jumpPressed = false, shootPressed = false;
-
-// ── FLOOR SYSTEM ──
-function getFloorY(n) { return -(n * FLOOR_GAP); }
-
-function buildFloor(n) {
-  const y = getFloorY(n);
-  return {
-    n, y, w: FLOOR_W, x: (400 - FLOOR_W) / 2, // centered in 400px world
-    hasElevator: Math.random() < 0.5,
-    elevatorOpen: false, elevatorTimer: 400 + Math.random()*400,
-    hasHazard: Math.random() < 0.35,
-    hazardX: 0,
-    enemies: [],
-  };
-}
-
-function spawnEnemyForFloor(f) {
-  const type = Math.random() < 0.3 ? 'shooter' : 'walker';
-  return {
-    x: f.x + 40 + Math.random()*(f.w-80), y: f.y - 28, w: 20, h: 28,
-    vx: (Math.random()>0.5?1:-1)*1.0, type,
-    shootTimer: type==='shooter' ? 80+Math.random()*100 : 999,
-    hp: type==='shooter' ? 1 : 2,
-    floorN: f.n,
-  };
-}
-
-// All floors (pre-generated up to floor 100)
-let allFloors = [];
-for (let i = 0; i <= 100; i++) {
-  const f = buildFloor(i);
-  if (Math.random() < 0.3 + i*0.015) f.enemies.push(spawnEnemyForFloor(f));
-  if (Math.random() < 0.2 + i*0.01) f.enemies.push(spawnEnemyForFloor(f));
-  if (f.hasHazard) f.hazardX = f.x + 30 + Math.random()*(f.w-60);
-  allFloors.push(f);
-}
-
-function getFloor(n) { return allFloors[n] || buildFloor(n); }
-function currentFloor() { return getFloor(floorNum); }
-
-// ── STAIRS ──
-function stairLeft(f) { return { x: f.x + 10, y: f.y - 36, w: 30, h: 36, side:'left' }; }
-function stairRight(f) { return { x: f.x + f.w - 40, y: f.y - 36, w: 30, h: 36, side:'right' }; }
-
-// ── RESIZE ──
-function resize() {
-  W = window.innerWidth;
-  H = window.innerHeight;
-  canvas.width = W;
-  canvas.height = H;
-  scale = Math.min(W/400, H/600, 1);
-}
-window.addEventListener('resize', resize);
-
-// ── TOUCH ──
-function handleTouchStart(e) {
-  e.preventDefault();
-  for (const t of e.changedTouches) {
-    if (t.clientX < W/2) jumpPressed = true;
-    else shootPressed = true;
-  }
-  if (gameState==='intro' && introTimer > 30) startGame();
-  if (gameState==='dead') restartGame();
-}
-function handleTouchEnd(e) {
-  e.preventDefault();
-  jumpPressed = false; shootPressed = false;
-  for (const t of e.touches) {
-    if (t.clientX < W/2) jumpPressed = true;
-    else shootPressed = true;
-  }
-}
-function handleTouchMove(e) { e.preventDefault(); }
-canvas.addEventListener('touchstart', handleTouchStart, {passive:false});
-canvas.addEventListener('touchend', handleTouchEnd, {passive:false});
-canvas.addEventListener('touchmove', handleTouchMove, {passive:false});
-canvas.addEventListener('touchcancel', () => { jumpPressed=false; shootPressed=false; });
-
-// ── KEYBOARD ──
-window.addEventListener('keydown', e => {
-  if (e.key==='ArrowLeft'||e.key==='a') jumpPressed = true;
-  if (e.key==='ArrowRight'||e.key==='d'||e.key===' ') shootPressed = true;
-  if (e.key==='Enter'||e.key===' ') {
-    if (gameState==='intro' && introTimer > 30) startGame();
-    if (gameState==='dead') restartGame();
-  }
+// Keyboard
+window.addEventListener('keydown',e=>{
+ if(e.key==='ArrowLeft'||e.key==='a')jumpPressed=true;
+ if(e.key==='ArrowRight'||e.key==='d'||e.key===' ')shootPressed=true;
+ if((e.key==='Enter'||e.key===' ')&&gameState==='intro'&&introTimer>30)startGame();
+ if((e.key==='Enter'||e.key===' ')&&gameState==='dead')restartGame();
 });
-window.addEventListener('keyup', e => {
-  if (e.key==='ArrowLeft'||e.key==='a') jumpPressed = false;
-  if (e.key==='ArrowRight'||e.key==='d'||e.key===' ') shootPressed = false;
+window.addEventListener('keyup',e=>{
+ if(e.key==='ArrowLeft'||e.key==='a')jumpPressed=false;
+ if(e.key==='ArrowRight'||e.key==='d'||e.key===' ')shootPressed=false;
 });
 
-// ── PARTICLES ──
-function spawnParticles(x, y, color, count) {
-  for (let i=0;i<count;i++) {
-    particles.push({ x, y, vx:(Math.random()-0.5)*3, vy:(Math.random()-0.5)*3-2, life:15+Math.random()*15, color, size:1+Math.random()*2 });
+// Tap canvas to start
+canvas.addEventListener('click',()=>{
+ if(gameState==='intro'&&introTimer>30)startGame();
+ if(gameState==='dead')restartGame();
+});
+
+function resize(){W=window.innerWidth;H=window.innerHeight;canvas.width=W;canvas.height=H;scale=Math.min(W/400,H/600,1)}
+window.addEventListener('resize',resize);
+
+function spawnP(x,y,color,n){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*3,vy:(Math.random()-.5)*3-2,life:10+Math.random()*15,color,size:1+Math.random()*2})}
+
+function getFloorY(n){return -(n*FLOOR_GAP)}
+function buildFloor(n){
+ const y=getFloorY(n);
+ return {n,y,w:FLOOR_W,x:(400-FLOOR_W)/2,
+  hasElevator:false,elevatorOpen:false,elevatorTimer:0,
+  hasHazard:Math.random()<0.35,hazardX:0,enemies:[]};
+}
+let allFloors=[];
+for(let i=0;i<=100;i++){
+ const f=buildFloor(i);
+ // Elevator: 20% chance
+ if(Math.random()<0.2){f.hasElevator=true;f.elevatorTimer=500+Math.random()*500}
+ if(f.hasHazard)f.hazardX=f.x+40+Math.random()*(f.w-80);
+ // Enemies: chance increases with floor
+ const eCount=Math.random()<0.25+i*0.01?2:Math.random()<0.35+i*0.015?1:0;
+ for(let j=0;j<eCount;j++){
+  const type=Math.random()<0.3?'shooter':'walker';
+  f.enemies.push({
+   x:f.x+30+Math.random()*(f.w-80),y:y-28,w:20,h:28,
+   vx:(Math.random()>.5?1:-1)*0.8,type,shootTimer:type==='shooter'?100+Math.random()*100:999,hp:type==='shooter'?1:2
+  });
+ }
+ allFloors.push(f);
+}
+function getFloor(n){return allFloors[n]||buildFloor(n)}
+function currFloor(){return getFloor(floorNum)}
+
+function stairL(f){return{x:f.x+10,y:f.y-36,w:30,h:36,side:'left'}}
+function stairR(f){return{x:f.x+f.w-40,y:f.y-36,w:30,h:36,side:'right'}}
+
+function startGame(){
+ gameState='playing';score=0;floorNum=0;
+ player.hp=player.maxHp;player.invincible=0;player.shootCooldown=0;
+ player.dir=-1;player.vx=1.5;bullets=[];enemyBullets=[];particles=[];
+ const f=currFloor();
+ player.x=f.x+f.w-40;player.y=f.y-player.h;player.vy=0;player.onGround=true;player.jumping=false;
+ cameraY=f.y-H*0.4;climbTimer=0;
+}
+function restartGame(){gameState='intro';introTimer=0;player.hp=player.maxHp;floorNum=0;score=0;bullets=[];enemyBullets=[];particles=[];cameraY=0}
+function die(){gameState='dead';if(score>highScore){highScore=score;localStorage.setItem('neonash_hs',highScore)}spawnP(player.x,player.y,C.magenta,30);shakeTimer=30;shakeIntensity=10}
+function startClimb(){gameState='climbing';climbFromY=getFloorY(floorNum);climbToY=getFloorY(floorNum+1);climbTimer=0;player.vx=0}
+
+function update(){
+ if(gameState==='intro'){introTimer++;if(introTimer>300)introTimer=300;return}
+ if(gameState==='dead'){if(shakeTimer>0)shakeTimer--;return}
+
+ if(gameState==='climbing'){
+  climbTimer++;const t=Math.min(climbTimer/CLIMB_DURATION,1);
+  const fy=climbFromY+(climbToY-climbFromY)*t;
+  player.y=fy-player.h;
+  if(t>=1){floorNum++;score+=100;gameState='playing';player.y=climbToY-player.h;player.vx=1.5;player.dir=-1;player.onGround=true;spawnP(player.x,player.y,C.cyan,10);const f=currFloor();if(f.enemies.length===0&&Math.random()<0.4)f.enemies.push({x:f.x+30+Math.random()*(f.w-80),y:f.y-28,w:20,h:28,vx:(Math.random()>.5?1:-1)*0.8,type:'walker',shootTimer:999,hp:1})}
+  return;
+ }
+
+ const f=currFloor(),floorY=f.y,leftWall=f.x+WALL_W,rightWall=f.x+f.w-WALL_W;
+
+ // Move player
+ player.x+=player.vx*player.dir;
+ if(player.x<=leftWall){player.dir=1;player.x=leftWall}
+ if(player.x+player.w>=rightWall){player.dir=-1;player.x=rightWall-player.w}
+
+ // Stairs trigger — ONLY at edges, not center
+ const sl=stairL(f),sr=stairR(f);
+ const atLeft=player.x<=leftWall+12;
+ const atRight=player.x+player.w>=rightWall-12;
+
+ if(atLeft&&player.y+player.h>sl.y&&player.y<sl.y+sl.h){startClimb();return}
+ if(atRight&&player.y+player.h>sr.y&&player.y<sr.y+sr.h){startClimb();return}
+
+ // Gravity + ground
+ player.onGround=false;
+ if(player.y+player.h>=floorY&&player.y+player.h<=floorY+14){player.y=floorY-player.h;player.vy=0;player.jumping=false;player.onGround=true}
+ if(player.y+player.h>floorY+20){player.y=floorY-player.h;player.vy=0;player.onGround=true}
+ if(!player.onGround){player.vy+=0.5;player.y+=player.vy}
+
+ // Jump
+ if(jumpPressed&&player.onGround){player.vy=-8;player.jumping=true;player.onGround=false}
+
+ // Shoot
+ if(shootPressed&&player.shootCooldown<=0){bullets.push({x:player.x+player.w/2,y:player.y+player.h/2,vx:player.dir*7,vy:0,w:10,h:3});player.shootCooldown=14;spawnP(bullets[bullets.length-1].x,bullets[bullets.length-1].y,C.cyan,2)}
+ if(player.shootCooldown>0)player.shootCooldown--;
+
+ // Elevator — visible, only when hasElevator
+ if(f.hasElevator){
+  f.elevatorTimer--;
+  const ex=f.x+f.w/2-14,ey=f.y-20;
+  if(!f.elevatorOpen&&f.elevatorTimer<=0){f.elevatorOpen=true;f.elevatorTimer=280}
+  if(f.elevatorOpen){
+   f.elevatorTimer--;
+   if(player.x+player.w>ex&&player.x<ex+28&&player.y+player.h>ey&&player.y<ey+20){floorNum+=10;score+=1000;player.y=getFloorY(floorNum)-player.h;cameraY=player.y-H*0.4;f.elevatorOpen=false;f.elevatorTimer=700;spawnP(player.x,player.y,C.magenta,25)}
+   if(f.elevatorTimer<=0){f.elevatorOpen=false;f.elevatorTimer=500+Math.random()*600}
   }
+ }
+
+ // Bullets
+ for(const b of bullets)b.x+=b.vx;bullets=bullets.filter(b=>b.x>-50&&b.x<450);
+ for(const eb of enemyBullets)eb.x+=eb.vx;enemyBullets=enemyBullets.filter(eb=>eb.x>-50&&eb.x<450);
+
+ // Enemies
+ for(const e of f.enemies){
+  e.x+=e.vx;
+  if(e.x<leftWall+5||e.x+e.w>rightWall-5)e.vx*=-1;
+  e.shootTimer--;
+  if(e.shootTimer<=0&&e.type==='shooter'){enemyBullets.push({x:e.x+e.w/2,y:e.y+e.h/2,vx:(player.x>e.x?1:-1)*3,vy:0,w:7,h:3});e.shootTimer=100+Math.random()*80}
+  // Hit by player
+  for(let bi=bullets.length-1;bi>=0;bi--){const b=bullets[bi];if(b.x<e.x+e.w&&b.x+b.w>e.x&&b.y+1<e.y+e.h&&b.y+b.h>e.y+1){e.hp--;bullets.splice(bi,1);spawnP(e.x+e.w/2,e.y+e.h/2,C.magenta,5);shakeTimer=4;shakeIntensity=2;if(e.hp<=0){f.enemies=f.enemies.filter(en=>en!==e);score+=250;spawnP(e.x+e.w/2,e.y+e.h/2,C.red,10)}break}}
+  // Hit player
+  if(player.invincible<=0&&e.x<player.x+player.w&&e.x+e.w>player.x&&e.y<player.y+player.h&&e.y+e.h>player.y){player.hp--;player.invincible=50;spawnP(player.x+player.w/2,player.y+player.h/2,C.red,10);shakeTimer=12;shakeIntensity=7;if(player.hp<=0)die()}
+ }
+
+ // Enemy bullets hit player
+ for(let ei=enemyBullets.length-1;ei>=0;ei--){const eb=enemyBullets[ei];if(player.invincible<=0&&eb.x<player.x+player.w&&eb.x+eb.w>player.x&&eb.y+1<player.y+player.h&&eb.y+eb.h>player.y+1){player.hp--;player.invincible=50;enemyBullets.splice(ei,1);shakeTimer=10;shakeIntensity=6;spawnP(player.x+player.w/2,player.y+player.h/2,C.magenta,8);if(player.hp<=0)die()}}
+ if(player.invincible>0)player.invincible--;
+
+ // Hazard
+ if(f.hasHazard){const hx=f.hazardX,hy=f.y-12;if(player.invincible<=0&&player.x+player.w>hx&&player.x<hx+16&&player.y+player.h>hy&&player.y<hy+14){player.hp--;player.invincible=35;spawnP(player.x+player.w/2,player.y+player.h/2,C.amber,10);if(player.hp<=0)die()}}
+
+ for(const p of particles){p.x+=p.vx;p.y+=p.vy;p.life--}
+ particles=particles.filter(p=>p.life>0);
+ if(shakeTimer>0)shakeTimer--;
+ cameraY+=(f.y-H*0.5-cameraY)*0.08;
 }
 
-// ── GAME START ──
-function startGame() {
-  gameState = 'playing';
-  score = 0; floorNum = 0;
-  player.hp = player.maxHp;
-  player.invincible = 0;
-  player.shootCooldown = 0;
-  player.dir = 1;
-  player.vx = 2;
-  bullets = []; enemyBullets = []; particles = [];
-  const f = currentFloor();
-  player.x = f.x + f.w/2;
-  player.y = f.y - player.h;
-  player.vy = 0;
-  player.onGround = true;
-  player.jumping = false;
-  cameraY = f.y - H*0.4;
-  climbTimer = 0;
+function draw(){
+ ctx.save();
+ const sx=shakeTimer>0?(Math.random()-.5)*shakeIntensity:0,sy=shakeTimer>0?(Math.random()-.5)*shakeIntensity:0;
+ ctx.translate(sx,sy);ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
+ const ox=(W-400)/2;
+ const f=currFloor(),fNext=getFloor(floorNum+1);
+
+ for(const fn of[f,fNext]){
+  if(!fn)continue;const fy=fn.y-cameraY;if(fy<-120||fy>H+120)continue;
+  // Floor
+  ctx.fillStyle=C.panel;ctx.fillRect(ox+fn.x,fy,fn.w,FLOOR_H);
+  ctx.strokeStyle=C.cyan+'40';ctx.lineWidth=1;ctx.strokeRect(ox+fn.x,fy,fn.w,FLOOR_H);
+  ctx.strokeStyle=C.cyan+'20';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(ox+fn.x,fy);ctx.lineTo(ox+fn.x+fn.w,fy);ctx.stroke();
+  // Walls
+  ctx.fillStyle=C.wall;ctx.fillRect(ox+fn.x,fy-FLOOR_GAP+8,WALL_W,FLOOR_GAP-8);ctx.fillRect(ox+fn.x+fn.w-WALL_W,fy-FLOOR_GAP+8,WALL_W,FLOOR_GAP-8);
+  ctx.strokeStyle=C.cyan+'12';for(let wy=fy-FLOOR_GAP+16;wy<fy;wy+=16){ctx.beginPath();ctx.moveTo(ox+fn.x,wy);ctx.lineTo(ox+fn.x+WALL_W,wy);ctx.stroke();ctx.beginPath();ctx.moveTo(ox+fn.x+fn.w-WALL_W,wy);ctx.lineTo(ox+fn.x+fn.w,wy);ctx.stroke()}
+  // Stairs
+  for(const s of[stairL(fn),stairR(fn)]){const sy=s.y-cameraY;ctx.fillStyle=C.dim;ctx.fillRect(ox+s.x,sy,s.w,s.h);ctx.strokeStyle=C.cyan+'30';ctx.strokeRect(ox+s.x,sy,s.w,s.h);for(let i=0;i<4;i++){ctx.fillStyle=C.cyan+'15';ctx.fillRect(ox+s.x+3,sy+s.h-(i+1)*8,s.w-6,4)}}
+  // Elevator (only if floor has one)
+  if(fn.hasElevator){
+   const ex=fn.x+fn.w/2-14,ey=fn.y-20;ctx.fillStyle=fn.elevatorOpen?C.magenta+'25':C.dim;
+   ctx.fillRect(ox+ex,ey-cameraY,28,20);ctx.strokeStyle=fn.elevatorOpen?C.magenta+'70':C.cyan+'25';ctx.lineWidth=fn.elevatorOpen?2:1;ctx.strokeRect(ox+ex,ey-cameraY,28,20);
+   if(fn.elevatorOpen){ctx.fillStyle=C.magenta;ctx.font='9px monospace';ctx.textAlign='center';ctx.fillText('↑10',ox+ex+14,ey-cameraY-3)}
+  }
+  // Hazard
+  if(fn.hasHazard){const hx=ox+fn.hazardX,hy=fn.y-12-cameraY,fl=Math.sin(Date.now()*0.02+fn.n)*3;ctx.globalAlpha=0.7+Math.random()*.3;for(let i=0;i<3;i++){ctx.fillStyle=C.amber;ctx.fillRect(hx+i*5,hy-fl-i*3,5,10+i*3)}ctx.globalAlpha=1}
+  // Enemies
+  for(const e of fn.enemies){const ey=e.y-cameraY,ec=e.type==='shooter'?C.magenta:C.purple;ctx.fillStyle=ec;ctx.fillRect(ox+e.x+2,ey+6,e.w-4,e.h-10);ctx.fillRect(ox+e.x+5,ey,10,9);ctx.fillStyle=e.type==='shooter'?C.red:C.amber;ctx.fillRect(ox+e.x+6,ey+2,3,3);ctx.fillRect(ox+e.x+11,ey+2,3,3);if(e.type==='shooter'){ctx.fillStyle=C.red;ctx.fillRect(ox+e.x+(e.vx>0?e.w:0),ey+13,7,2)}}
+ }
+
+ // Player
+ if(gameState==='playing'||gameState==='climbing'){const a=player.invincible>0?.4+Math.sin(Date.now()*.3)*.3:1;ctx.globalAlpha=a;const px=ox+player.x,py=player.y-cameraY;ctx.fillStyle=C.cyan;ctx.fillRect(px,py+9,player.w,player.h-12);ctx.fillRect(px+7,py,10,10);ctx.fillStyle=C.white;ctx.fillRect(px+9,py+2,6,3);const lo=Math.sin(Date.now()*.015)*3;ctx.fillStyle=C.cyan+'80';ctx.fillRect(px+3,py+player.h-5,7,7+lo);ctx.fillRect(px+14,py+player.h-5,7,7-lo);ctx.fillStyle=C.magenta;if(player.dir>0)ctx.fillRect(px+player.w,py+14,9,3);else ctx.fillRect(px-9,py+14,9,3);ctx.globalAlpha=1}
+
+ // Bullets
+ for(const b of bullets){ctx.fillStyle=C.cyan;ctx.fillRect(ox+b.x,b.y-cameraY,b.w,b.h)}
+ for(const eb of enemyBullets){ctx.fillStyle=C.magenta;ctx.fillRect(ox+eb.x,eb.y-cameraY,eb.w,eb.h)}
+ for(const p of particles){ctx.fillStyle=p.color;ctx.globalAlpha=p.life/30;ctx.fillRect(ox+p.x,p.y-cameraY,p.size,p.size)}
+ ctx.globalAlpha=1;ctx.restore();
+
+ // HUD
+ ctx.fillStyle=C.panel+'CC';ctx.fillRect(0,0,W,38);ctx.strokeStyle=C.cyan+'25';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,38);ctx.lineTo(W,38);ctx.stroke();
+ ctx.fillStyle=C.cyan;ctx.font='bold 12px monospace';ctx.textAlign='left';ctx.fillText(`PISO ${Math.max(0,floorNum)}`,10,26);
+ ctx.fillStyle=C.white;ctx.font='10px monospace';ctx.textAlign='center';ctx.fillText(`${score}`,W/2,26);
+ ctx.textAlign='right';ctx.font='12px monospace';let h='';for(let i=0;i<player.maxHp;i++)h+=i<player.hp?'♥':'♡';ctx.fillStyle=C.red;ctx.fillText(h,W-10,26);
 }
 
-function restartGame() {
-  gameState = 'intro'; introTimer = 0; player.hp = player.maxHp;
-  floorNum = 0; score = 0;
-  bullets = []; enemyBullets = []; particles = [];
-  cameraY = 0;
+function drawIntro(){
+ ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);const ox=(W-400)/2,doorX=ox+180,doorY=H*.55;
+ ctx.fillStyle=C.dim;ctx.fillRect(ox+60,0,280,H);
+ for(let i=0;i<12;i++){const y=H*.35-i*25+Math.sin(Date.now()*.002+i)*3;ctx.fillStyle=C.cyan+(10+i*2).toString(16);ctx.fillRect(ox+80,y,240,1)}
+ ctx.fillStyle=C.magenta+'40';ctx.fillRect(doorX-15,doorY,50,H-doorY);ctx.strokeStyle=C.magenta;ctx.lineWidth=2;ctx.strokeRect(doorX-15,doorY,50,H-doorY);
+ ctx.fillStyle=C.magenta;ctx.font='8px monospace';ctx.textAlign='center';ctx.fillText('ENTRADA',doorX+10,doorY+25);
+ ctx.fillStyle=C.cyan;ctx.font='bold 26px monospace';ctx.textAlign='center';ctx.fillText('NEON ASH',W/2,H*.2);
+ ctx.fillStyle=C.magenta;ctx.font='11px monospace';ctx.fillText('cyber tower',W/2,H*.2+20);
+ if(introTimer>30){const p=Math.sin(Date.now()*.005)*3;ctx.fillStyle=C.cyan;ctx.font='bold 13px monospace';ctx.fillText('▶ TOCA PARA ENTRAR',W/2,doorY-20+p)}
+ if(highScore>0){ctx.fillStyle=C.amber;ctx.font='10px monospace';ctx.fillText('🏆 '+highScore,W/2,H-30)}
+ ctx.fillStyle=C.white+'30';ctx.font='8px monospace';ctx.fillText('◄ SALTAR         DISPARO ►',W/2,H-12);
 }
 
-function die() {
-  gameState = 'dead';
-  if (score > highScore) { highScore = score; localStorage.setItem('neonash_hs', highScore); }
-  spawnParticles(player.x, player.y, C.magenta, 30);
-  shakeTimer = 30; shakeIntensity = 10;
+function drawDead(){
+ ctx.fillStyle=C.bg+'DD';ctx.fillRect(0,0,W,H);ctx.fillStyle=C.red;ctx.font='bold 22px monospace';ctx.textAlign='center';ctx.fillText('MUERTO',W/2,H/2-45);
+ ctx.fillStyle=C.cyan;ctx.font='14px monospace';ctx.fillText(`Piso ${floorNum}`,W/2,H/2-15);
+ ctx.fillStyle=C.white;ctx.font='20px monospace';ctx.fillText(`${score}`,W/2,H/2+15);
+ if(score>=highScore&&score>0){ctx.fillStyle=C.amber;ctx.font='9px monospace';ctx.fillText('🏆 NUEVO RÉCORD',W/2,H/2+35)}
+ const a=.4+Math.sin(Date.now()*.004)*.3;ctx.fillStyle=C.white+Math.floor(a*255).toString(16).padStart(2,'0');ctx.font='9px monospace';ctx.fillText('toca para reiniciar',W/2,H/2+60);
 }
 
-// ── CLIMBING ──
-function startClimb() {
-  gameState = 'climbing';
-  climbFromY = getFloorY(floorNum);
-  climbToY = getFloorY(floorNum + 1);
-  climbTimer = 0;
-  player.vx = 0; // stop moving during climb
-}
-
-// ── UPDATE ──
-function update() {
-  if (gameState === 'intro') {
-    introTimer++;
-    if (introTimer > 300) introTimer = 300;
-    return;
-  }
-  if (gameState === 'dead') {
-    if (shakeTimer > 0) shakeTimer--;
-    return;
-  }
-
-  // ── CLIMBING ──
-  if (gameState === 'climbing') {
-    climbTimer++;
-    const t = Math.min(climbTimer / CLIMB_DURATION, 1);
-    const fy = climbFromY + (climbToY - climbFromY) * t;
-    player.y = fy - player.h;
-    player.x += (currentFloor().x + currentFloor().w/2 - player.x) * 0.05; // center
-    if (t >= 1) {
-      floorNum++;
-      score += 100;
-      gameState = 'playing';
-      player.y = climbToY - player.h;
-      player.vx = 2;
-      player.dir = 1;
-      player.onGround = true;
-      spawnParticles(player.x, player.y, C.cyan, 10);
-      // Spawn enemies for new floor if not already
-      const f = currentFloor();
-      if (f.enemies.length === 0 && Math.random() < 0.5) f.enemies.push(spawnEnemyForFloor(f));
-    }
-    return;
-  }
-
-  // ── PLAYING ──
-  const f = currentFloor();
-  const floorY = f.y;
-  const leftWall = f.x + WALL_W;
-  const rightWall = f.x + f.w - WALL_W;
-
-  // Player movement
-  player.x += player.vx * player.dir;
-
-  // Bounce between walls
-  if (player.x <= leftWall) { player.dir = 1; player.x = leftWall; }
-  if (player.x + player.w >= rightWall) { player.dir = -1; player.x = rightWall - player.w; }
-
-  // Check stairs — trigger climb when touching stair + at edge
-  const sl = stairLeft(f), sr = stairRight(f);
-  const atLeftEdge = player.x <= leftWall + 15;
-  const atRightEdge = player.x + player.w >= rightWall - 15;
-
-  if (atLeftEdge && player.y + player.h > sl.y && player.y < sl.y + sl.h) {
-    startClimb(); return;
-  }
-  if (atRightEdge && player.y + player.h > sr.y && player.y < sr.y + sr.h) {
-    startClimb(); return;
-  }
-
-  // Gravity + ground
-  player.onGround = false;
-  if (player.y + player.h >= floorY && player.y + player.h <= floorY + 14) {
-    player.y = floorY - player.h;
-    player.vy = 0;
-    player.jumping = false;
-    player.onGround = true;
-  }
-  // CANNOT fall below current floor
-  if (player.y + player.h > floorY + 20) {
-    player.y = floorY - player.h;
-    player.vy = 0;
-    player.onGround = true;
-  }
-  if (!player.onGround) {
-    player.vy += 0.5;
-    player.y += player.vy;
-  }
-
-  // Jump
-  if (jumpPressed && player.onGround) {
-    player.vy = -8;
-    player.jumping = true;
-    player.onGround = false;
-  }
-
-  // Shoot
-  if (shootPressed && player.shootCooldown <= 0) {
-    bullets.push({ x:player.x+player.w/2, y:player.y+player.h/2, vx:player.dir*7, vy:0, w:10, h:3 });
-    player.shootCooldown = 14;
-    spawnParticles(bullets[bullets.length-1].x, bullets[bullets.length-1].y, C.cyan, 2);
-  }
-  if (player.shootCooldown > 0) player.shootCooldown--;
-
-  // Elevator
-  if (f.hasElevator) {
-    f.elevatorTimer--;
-    if (!f.elevatorOpen && f.elevatorTimer <= 0) { f.elevatorOpen = true; f.elevatorTimer = 250; }
-    if (f.elevatorOpen) {
-      f.elevatorTimer--;
-      const ex = f.x + f.w/2 - 16, ey = f.y - 20;
-      if (player.x+player.w > ex && player.x < ex+32 && player.y+player.h > ey && player.y < ey+20 && f.elevatorOpen) {
-        // Boost
-        floorNum += 10;
-        score += 1000;
-        player.y = getFloorY(floorNum) - player.h;
-        cameraY = player.y - H*0.4;
-        f.elevatorOpen = false;
-        f.elevatorTimer = 600;
-        spawnParticles(player.x, player.y, C.magenta, 25);
-      }
-      if (f.elevatorTimer <= 0) { f.elevatorOpen = false; f.elevatorTimer = 400+Math.random()*500; }
-    }
-  }
-
-  // ── Bullets ──
-  for (const b of bullets) b.x += b.vx;
-  bullets = bullets.filter(b => b.x > -50 && b.x < 450);
-
-  // ── Enemies on current floor ──
-  for (const e of f.enemies) {
-    e.x += e.vx;
-    if (e.x < leftWall+5 || e.x+e.w > rightWall-5) e.vx *= -1;
-
-    // Shoot
-    e.shootTimer--;
-    if (e.shootTimer <= 0 && e.type === 'shooter') {
-      enemyBullets.push({ x:e.x+e.w/2, y:e.y+e.h/2, vx:(player.x>e.x?1:-1)*3.5, vy:0, w:7, h:3 });
-      e.shootTimer = 90 + Math.random()*70;
-    }
-
-    // Hit by player
-    for (let bi=bullets.length-1; bi>=0; bi--) {
-      const b = bullets[bi];
-      if (b.x < e.x+e.w && b.x+b.w > e.x && b.y+1 < e.y+e.h && b.y+b.h > e.y+1) {
-        e.hp--; bullets.splice(bi,1);
-        spawnParticles(e.x+e.w/2, e.y+e.h/2, C.magenta, 5);
-        shakeTimer = 4; shakeIntensity = 2;
-        if (e.hp <= 0) {
-          f.enemies = f.enemies.filter(en => en !== e);
-          score += 250;
-          spawnParticles(e.x+e.w/2, e.y+e.h/2, C.red, 12);
-        }
-        break;
-      }
-    }
-
-    // Hit player
-    if (player.invincible <= 0 && e.x < player.x+player.w && e.x+e.w > player.x &&
-        e.y < player.y+player.h && e.y+e.h > player.y) {
-      player.hp--; player.invincible = 50;
-      spawnParticles(player.x+player.w/2, player.y+player.h/2, C.red, 10);
-      shakeTimer = 12; shakeIntensity = 7;
-      if (player.hp <= 0) die();
-    }
-  }
-
-  // ── Enemy bullets ──
-  for (const eb of enemyBullets) eb.x += eb.vx;
-  enemyBullets = enemyBullets.filter(eb => eb.x > -50 && eb.x < 450);
-  for (let ei=enemyBullets.length-1; ei>=0; ei--) {
-    const eb = enemyBullets[ei];
-    if (player.invincible <= 0 && eb.x < player.x+player.w && eb.x+eb.w > player.x &&
-        eb.y+1 < player.y+player.h && eb.y+eb.h > player.y+1) {
-      player.hp--; player.invincible = 50;
-      enemyBullets.splice(ei,1);
-      shakeTimer = 10; shakeIntensity = 6;
-      spawnParticles(player.x+player.w/2, player.y+player.h/2, C.magenta, 8);
-      if (player.hp <= 0) die();
-    }
-  }
-  if (player.invincible > 0) player.invincible--;
-
-  // ── Hazard ──
-  if (f.hasHazard) {
-    const hx = f.hazardX, hy = f.y - 12;
-    if (player.invincible <= 0 && player.x+player.w > hx && player.x < hx+16 && player.y+player.h > hy && player.y < hy+14) {
-      player.hp--; player.invincible = 35;
-      spawnParticles(player.x+player.w/2, player.y+player.h/2, C.amber, 10);
-      if (player.hp <= 0) die();
-    }
-  }
-
-  // ── Particles ──
-  for (const p of particles) { p.x+=p.vx; p.y+=p.vy; p.life--; }
-  particles = particles.filter(p => p.life > 0);
-
-  if (shakeTimer > 0) shakeTimer--;
-
-  // Camera — show current + next floor
-  const targetY = f.y - H * 0.5;
-  cameraY += (targetY - cameraY) * 0.08;
-}
-
-// ── DRAW ──
-function draw() {
-  ctx.save();
-  const sx = shakeTimer>0 ? (Math.random()-0.5)*shakeIntensity : 0;
-  const sy = shakeTimer>0 ? (Math.random()-0.5)*shakeIntensity : 0;
-  ctx.translate(sx, sy);
-
-  // Background
-  ctx.fillStyle = C.bg;
-  ctx.fillRect(0,0,W,H);
-
-  // World offset
-  const ox = (W - 400) / 2; // center 400px world
-
-  // ── Visible floors (current + next) ──
-  const f = currentFloor();
-  const fNext = getFloor(floorNum + 1);
-
-  for (const fn of [f, fNext]) {
-    if (!fn) continue;
-    const fy = fn.y - cameraY;
-    if (fy < -100 || fy > H+100) continue;
-
-    // Floor platform
-    ctx.fillStyle = C.panel;
-    ctx.fillRect(ox + fn.x, fy, fn.w, FLOOR_H);
-    ctx.strokeStyle = C.cyan + '40';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(ox + fn.x, fy, fn.w, FLOOR_H);
-    // Top edge glow
-    ctx.strokeStyle = C.cyan + '20';
-    ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(ox+fn.x, fy); ctx.lineTo(ox+fn.x+fn.w, fy); ctx.stroke();
-
-    // Walls
-    ctx.fillStyle = C.wall;
-    ctx.fillRect(ox+fn.x, fy-FLOOR_GAP+8, WALL_W, FLOOR_GAP-8);
-    ctx.fillRect(ox+fn.x+fn.w-WALL_W, fy-FLOOR_GAP+8, WALL_W, FLOOR_GAP-8);
-    // Wall details
-    ctx.strokeStyle = C.cyan + '15';
-    for (let wy = fy-FLOOR_GAP+16; wy < fy; wy += 16) {
-      ctx.beginPath(); ctx.moveTo(ox+fn.x, wy); ctx.lineTo(ox+fn.x+WALL_W, wy); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(ox+fn.x+fn.w-WALL_W, wy); ctx.lineTo(ox+fn.x+fn.w, wy); ctx.stroke();
-    }
-
-    // Stairs
-    for (const s of [stairLeft(fn), stairRight(fn)]) {
-      const sy = s.y - cameraY;
-      ctx.fillStyle = C.dim;
-      ctx.fillRect(ox+s.x, sy, s.w, s.h);
-      ctx.strokeStyle = C.cyan + '30';
-      ctx.strokeRect(ox+s.x, sy, s.w, s.h);
-      for (let i=0; i<4; i++) {
-        ctx.fillStyle = C.cyan + '18';
-        ctx.fillRect(ox+s.x+3, sy+s.h-(i+1)*8, s.w-6, 4);
-      }
-    }
-
-    // Elevator
-    if (fn.hasElevator) {
-      const ex = fn.x + fn.w/2 - 14, ey = fn.y - 20;
-      const esx = ox+ex, esy = ey-cameraY;
-      ctx.fillStyle = fn.elevatorOpen ? C.magenta + '25' : C.dim;
-      ctx.fillRect(esx, esy, 28, 20);
-      ctx.strokeStyle = fn.elevatorOpen ? C.magenta + '70' : C.cyan + '25';
-      ctx.lineWidth = fn.elevatorOpen ? 2 : 1;
-      ctx.strokeRect(esx, esy, 28, 20);
-      if (fn.elevatorOpen) {
-        ctx.fillStyle = C.magenta;
-        ctx.font = '9px monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText('↑10', esx+14, esy-3);
-      }
-    }
-
-    // Hazard (fire)
-    if (fn.hasHazard) {
-      const hx = ox+fn.hazardX, hy = fn.y - 12 - cameraY;
-      const flicker = Math.sin(Date.now()*0.02+fn.n)*3;
-      ctx.globalAlpha = 0.7 + Math.random()*0.3;
-      for (let i=0; i<3; i++) {
-        ctx.fillStyle = C.amber;
-        ctx.fillRect(hx+i*5, hy-flicker-i*3, 5, 10+i*3);
-      }
-      ctx.globalAlpha = 1;
-    }
-
-    // Enemies on floor
-    if (fn === f || gameState === 'climbing') {
-      for (const e of fn.enemies) {
-        const ey = e.y - cameraY;
-        const color = e.type==='shooter'?C.magenta:C.purple;
-        ctx.fillStyle = color;
-        ctx.fillRect(ox+e.x+2, ey+6, e.w-4, e.h-10);
-        ctx.fillRect(ox+e.x+5, ey, 10, 9);
-        ctx.fillStyle = e.type==='shooter'?C.red:C.amber;
-        ctx.fillRect(ox+e.x+6, ey+2, 3, 3);
-        ctx.fillRect(ox+e.x+11, ey+2, 3, 3);
-        if (e.type==='shooter') {
-          ctx.fillStyle = C.red;
-          ctx.fillRect(ox+e.x+(e.vx>0?e.w:0), ey+13, 7, 2);
-        }
-      }
-    }
-  }
-
-  // ── Player ──
-  if (gameState==='playing' || gameState==='climbing') {
-    const alpha = player.invincible>0 ? 0.4+Math.sin(Date.now()*0.3)*0.3 : 1;
-    ctx.globalAlpha = alpha;
-    const px = ox+player.x, py = player.y-cameraY;
-    ctx.fillStyle = C.cyan;
-    ctx.fillRect(px, py+9, player.w, player.h-12);
-    ctx.fillRect(px+7, py, 10, 10);
-    ctx.fillStyle = C.white;
-    ctx.fillRect(px+9, py+2, 6, 3);
-    const lo = Math.sin(Date.now()*0.015)*3;
-    ctx.fillStyle = C.cyan+'80';
-    ctx.fillRect(px+3, py+player.h-5, 7, 7+lo);
-    ctx.fillRect(px+14, py+player.h-5, 7, 7-lo);
-    ctx.fillStyle = C.magenta;
-    if (player.dir>0) ctx.fillRect(px+player.w, py+14, 9, 3);
-    else ctx.fillRect(px-9, py+14, 9, 3);
-    ctx.globalAlpha = 1;
-  }
-
-  // ── Bullets ──
-  for (const b of bullets) {
-    const by = b.y - cameraY;
-    ctx.fillStyle = C.cyan;
-    ctx.fillRect(ox+b.x, by, b.w, b.h);
-  }
-  for (const eb of enemyBullets) {
-    const eby = eb.y - cameraY;
-    ctx.fillStyle = C.magenta;
-    ctx.fillRect(ox+eb.x, eby, eb.w, eb.h);
-  }
-
-  // ── Particles ──
-  for (const p of particles) {
-    ctx.fillStyle = p.color;
-    ctx.globalAlpha = p.life/30;
-    ctx.fillRect(ox+p.x, p.y-cameraY, p.size, p.size);
-  }
-  ctx.globalAlpha = 1;
-
-  ctx.restore();
-
-  // ── HUD ──
-  ctx.fillStyle = C.panel+'CC';
-  ctx.fillRect(0,0,W,38);
-  ctx.strokeStyle = C.cyan+'25';
-  ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(0,38); ctx.lineTo(W,38); ctx.stroke();
-
-  ctx.fillStyle = C.cyan;
-  ctx.font = 'bold 12px monospace';
-  ctx.textAlign = 'left';
-  ctx.fillText(`PISO ${Math.max(0,floorNum)}`, 10, 26);
-
-  ctx.fillStyle = C.white;
-  ctx.font = '10px monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText(`${score}`, W/2, 26);
-
-  ctx.textAlign = 'right';
-  ctx.font = '12px monospace';
-  let hearts = '';
-  for (let i=0;i<player.maxHp;i++) hearts += i<player.hp?'♥':'♡';
-  ctx.fillStyle = C.red;
-  ctx.fillText(hearts, W-10, 26);
-
-  // ── Touch buttons ──
-  if (gameState==='playing' || gameState==='climbing') {
-    ctx.globalAlpha = 0.25;
-    ctx.fillStyle = C.cyan;
-    ctx.beginPath(); ctx.arc(55, H-55, 35, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = C.white;
-    ctx.font = 'bold 14px monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('SALTAR', 55, H-49);
-
-    ctx.fillStyle = C.magenta;
-    ctx.beginPath(); ctx.arc(W-55, H-55, 35, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = C.white;
-    ctx.fillText('DISPARO', W-55, H-49);
-    ctx.globalAlpha = 1;
-  }
-}
-
-function drawIntro() {
-  ctx.fillStyle = C.bg; ctx.fillRect(0,0,W,H);
-
-  // Building entrance
-  const ox = (W-400)/2;
-  const doorX = ox+180, doorY = H*0.55;
-  // Tower
-  ctx.fillStyle = C.dim;
-  ctx.fillRect(ox+60, 0, 280, H);
-  // Neon lines
-  for (let i=0;i<12;i++) {
-    const y = H*0.35 - i*25 + Math.sin(Date.now()*0.002+i)*3;
-    ctx.fillStyle = C.cyan+(10+i*2).toString(16);
-    ctx.fillRect(ox+80, y, 240, 1);
-  }
-  // Door
-  ctx.fillStyle = C.magenta+'40';
-  ctx.fillRect(doorX-15, doorY, 50, H-doorY);
-  ctx.strokeStyle = C.magenta;
-  ctx.lineWidth = 2;
-  ctx.strokeRect(doorX-15, doorY, 50, H-doorY);
-  ctx.fillStyle = C.magenta;
-  ctx.font = '8px monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText('ENTRADA', doorX+10, doorY+25);
-
-  // Title
-  ctx.fillStyle = C.cyan;
-  ctx.font = 'bold 26px monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText('NEON ASH', W/2, H*0.2);
-  ctx.fillStyle = C.magenta;
-  ctx.font = '11px monospace';
-  ctx.fillText('cyber tower', W/2, H*0.2+20);
-
-  // Start hint
-  if (introTimer > 30) {
-    const pulse = Math.sin(Date.now()*0.005)*3;
-    ctx.fillStyle = C.cyan;
-    ctx.font = 'bold 13px monospace';
-    ctx.fillText('▶ TOCA PARA ENTRAR', W/2, doorY-20+pulse);
-  }
-
-  if (highScore>0) {
-    ctx.fillStyle = C.amber;
-    ctx.font = '10px monospace';
-    ctx.fillText('🏆 '+highScore, W/2, H-30);
-  }
-
-  // Instructions
-  ctx.fillStyle = C.white+'30';
-  ctx.font = '8px monospace';
-  ctx.fillText('◄ SALTAR         DISPARO ►', W/2, H-12);
-}
-
-function drawDead() {
-  ctx.fillStyle = C.bg+'DD';
-  ctx.fillRect(0,0,W,H);
-  ctx.fillStyle = C.red;
-  ctx.font = 'bold 22px monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText('MUERTO', W/2, H/2-45);
-  ctx.fillStyle = C.cyan;
-  ctx.font = '14px monospace';
-  ctx.fillText(`Piso ${floorNum}`, W/2, H/2-15);
-  ctx.fillStyle = C.white;
-  ctx.font = '20px monospace';
-  ctx.fillText(`${score}`, W/2, H/2+15);
-  if (score>=highScore && score>0) {
-    ctx.fillStyle = C.amber;
-    ctx.font = '9px monospace';
-    ctx.fillText('🏆 NUEVO RÉCORD', W/2, H/2+35);
-  }
-  const a = 0.4+Math.sin(Date.now()*0.004)*0.3;
-  ctx.fillStyle = C.white+Math.floor(a*255).toString(16).padStart(2,'0');
-  ctx.font = '9px monospace';
-  ctx.fillText('toca para reiniciar', W/2, H/2+60);
-}
-
-// ── LOOP ──
-function loop() {
-  resize(); update();
-  ctx.clearRect(0,0,W,H);
-
-  if (gameState==='intro') drawIntro();
-  else if (gameState==='dead') { draw(); drawDead(); }
-  else draw();
-
-  requestAnimationFrame(loop);
-}
-
-resize(); loop();
+function loop(){resize();update();ctx.clearRect(0,0,W,H);if(gameState==='intro')drawIntro();else if(gameState==='dead'){draw();drawDead()}else draw();requestAnimationFrame(loop)}
+resize();loop();
 </script>
 </body>
 </html>

@@ -69,20 +69,8 @@ export function setupRealtimeWS(server) {
               });
 
               openaiWs.on('open', () => {
-                console.log('[Realtime] Translate GA session starting');
-                isActive = true;
-                browserWs.send(JSON.stringify({ type: 'connected' }));
-
-                // Minimal config: just set Spanish as output language
-                // The translate model has its own defaults — don't override turn_detection/modalities
-                openaiWs.send(JSON.stringify({
-                  type: 'session.update',
-                  session: {
-                    audio: {
-                      output: { language: 'es' },
-                    },
-                  },
-                }));
+                console.log('[Realtime] Translate GA connected');
+                // Wait for session.created before configuring
               });
 
               openaiWs.on('message', (openaiData, isBinaryMsg) => {
@@ -97,7 +85,23 @@ export function setupRealtimeWS(server) {
                 try {
                   const event = JSON.parse(openaiData.toString());
                   switch (event.type) {
-                    // GA API events (new protocol)
+                    case 'session.created':
+                      // Session ready — configure for translation
+                      console.log('[Realtime] Translate session created:', event.session?.id);
+                      isActive = true;
+                      browserWs.send(JSON.stringify({ type: 'connected' }));
+                      openaiWs.send(JSON.stringify({
+                        type: 'session.update',
+                        session: {
+                          type: 'realtime',
+                          audio: {
+                            output: { language: 'es' },
+                          },
+                        },
+                      }));
+                      break;
+                    case 'session.updated':
+                      break;
                     case 'response.output_audio.delta':
                       if (event.delta && browserWs.readyState === 1) {
                         const audioBuffer = Buffer.from(event.delta, 'base64');

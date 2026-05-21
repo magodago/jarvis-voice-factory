@@ -506,7 +506,7 @@ export default function NewsPage({ isOpen, onClose }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex flex-col bg-[#060010]/98 backdrop-blur-2xl"
+            className="fixed inset-0 z-50 flex flex-col bg-[#060010]"
           >
             {/* Header */}
             <div className="px-5 pt-5 pb-3 border-b border-white/10 flex items-center justify-between">

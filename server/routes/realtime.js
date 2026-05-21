@@ -61,10 +61,9 @@ export function setupRealtimeWS(server) {
             const mode = msg.mode || 'jarvis';
             currentMode = mode;
 
-            // === TRANSLATION MODE ===
+            // === TRANSLATION MODE (GA — /v1/realtime) ===
             if (mode === 'translate') {
-              const translateModel = 'gpt-realtime-translate';
-              const openaiUrl = `wss://api.openai.com/v1/realtime/translations?model=${translateModel}`;
+              const openaiUrl = 'wss://api.openai.com/v1/realtime?model=gpt-realtime';
 
               openaiWs = new WSClient(openaiUrl, [], {
                 headers: {
@@ -74,21 +73,28 @@ export function setupRealtimeWS(server) {
               });
 
               openaiWs.on('open', () => {
-                console.log('[Realtime] Translation session connected');
+                console.log('[Realtime] Translate GA session starting');
                 isActive = true;
                 browserWs.send(JSON.stringify({ type: 'connected' }));
 
-                // Configure session BEFORE any audio arrives:
-                // - turn_detection: null = continuous streaming, no pause detection
-                // - language: Spanish output
+                // Configure for real-time translation:
+                // - turn_detection: null = NO esperar silencios, traducir cada palabra
+                // - instructions = traducir a español en tiempo real
+                // - voice: coral for output audio
+                // - input transcription disabled (we don't need STT)
                 openaiWs.send(JSON.stringify({
                   type: 'session.update',
                   session: {
                     turn_detection: null,
                     modalities: ['text', 'audio'],
+                    instructions: 'You are a real-time simultaneous translator. Translate EVERYTHING you hear into Spanish IMMEDIATELY, word by word, without waiting for pauses or sentence completion. Do not add commentary. Just translate as you hear each word.',
                     audio: {
+                      input: {
+                        format: { type: 'pcm16', sample_rate: 24000, channels: 1 },
+                      },
                       output: {
-                        language: 'es',
+                        voice: 'coral',
+                        format: { type: 'pcm16', sample_rate: 24000, channels: 1 },
                       },
                     },
                   },
@@ -97,6 +103,7 @@ export function setupRealtimeWS(server) {
 
               openaiWs.on('message', (openaiData, isBinaryMsg) => {
                 if (isBinaryMsg) {
+                  // Binary = PCM16 audio from OpenAI
                   if (browserWs.readyState === 1) {
                     browserWs.send(openaiData, { binary: true });
                   }
@@ -106,48 +113,62 @@ export function setupRealtimeWS(server) {
                 try {
                   const event = JSON.parse(openaiData.toString());
                   switch (event.type) {
-                    case 'session.output_audio.delta':
-                      // Translated audio → binary to browser
+                    case 'response.output_audio.delta':
+                      // Audio delta → send as binary PCM16
                       if (event.delta && browserWs.readyState === 1) {
                         const audioBuffer = Buffer.from(event.delta, 'base64');
                         browserWs.send(audioBuffer, { binary: true });
                       }
                       break;
-                    case 'session.output_transcript.delta':
-                      // Translated text delta
+                    case 'response.output_audio_transcript.delta':
+                      // Translated text
                       browserWs.send(JSON.stringify({
                         type: 'transcript.assistant_delta',
                         delta: event.delta || '',
                       }));
                       break;
-                    case 'session.output_transcript.done':
+                    case 'response.output_audio_transcript.done':
                       browserWs.send(JSON.stringify({ type: 'transcript.assistant_done' }));
                       break;
-                    case 'session.closed':
-                      isActive = false;
-                      browserWs.send(JSON.stringify({ type: 'disconnected' }));
+                    case 'conversation.item.input_audio_transcription.completed':
+                      // Original speech detected (optional — just for logging)
+                      if (event.transcript) {
+                        browserWs.send(JSON.stringify({
+                          type: 'debug',
+                          event: 'heard: ' + event.transcript.slice(0, 40),
+                        }));
+                      }
+                      break;
+                    case 'session.created':
+                    case 'session.updated':
+                      break;
+                    case 'response.created':
+                    case 'response.output_item.added':
+                    case 'response.content_part.added':
+                    case 'response.audio.delta':
+                    case 'response.audio.done':
+                    case 'response.done':
+                    case 'input_audio_buffer.speech_started':
+                    case 'input_audio_buffer.speech_stopped':
+                    case 'input_audio_buffer.committed':
                       break;
                     case 'error':
-                      console.error('[Realtime] Translation error:', JSON.stringify(event.error));
+                      console.error('[Realtime] Translate error:', JSON.stringify(event.error));
                       browserWs.send(JSON.stringify({
                         type: 'error',
                         message: event.error?.message || 'Translation error',
                       }));
                       break;
                     default:
-                      // Forward debug events
                       if (browserWs.readyState === 1) {
-                        browserWs.send(JSON.stringify({
-                          type: 'debug',
-                          event: event.type,
-                        }));
+                        browserWs.send(JSON.stringify({ type: 'debug', event: event.type }));
                       }
                   }
-                } catch (e) {}
+                } catch {}
               });
 
               openaiWs.on('close', (code) => {
-                console.log(`[Realtime] Translation disconnected: ${code}`);
+                console.log(`[Realtime] Translate disconnected: ${code}`);
                 isActive = false;
                 if (browserWs.readyState === 1) {
                   browserWs.send(JSON.stringify({ type: 'disconnected', code }));
@@ -155,7 +176,7 @@ export function setupRealtimeWS(server) {
               });
 
               openaiWs.on('error', (err) => {
-                console.error('[Realtime] Translation WS error:', err.message);
+                console.error('[Realtime] Translate WS error:', err.message);
                 isActive = false;
                 if (browserWs.readyState === 1) {
                   browserWs.send(JSON.stringify({ type: 'error', message: err.message }));
@@ -321,10 +342,7 @@ export function setupRealtimeWS(server) {
           case 'stop': {
             isActive = false;
             if (openaiWs) {
-              // For translation: send session.close first
-              if (msg.mode === 'translate') {
-                try { openaiWs.send(JSON.stringify({ type: 'session.close' })); } catch (e) {}
-              }
+              // GA API: just close the WebSocket
               try { openaiWs.close(); } catch (e) {}
               openaiWs = null;
             }

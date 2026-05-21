@@ -89,7 +89,7 @@ for(let i=0;i<=100;i++){
  for(let j=0;j<eCount;j++){
   const type=Math.random()<0.3?'shooter':'walker';
   f.enemies.push({
-   x:f.x+30+Math.random()*(f.w-80),y:y-28,w:20,h:28,
+   x:f.x+30+Math.random()*(f.w-80),y:f.y-28,w:20,h:28,
    vx:(Math.random()>.5?1:-1)*0.8,type,shootTimer:type==='shooter'?100+Math.random()*100:999,hp:type==='shooter'?1:2
   });
  }

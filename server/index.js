@@ -57,6 +57,52 @@ app.get('/realtime/key', (_req, res) => {
   res.json({ key });
 });
 
+// === WebRTC Session endpoint (JARVIS voice agent) ===
+// Browser POSTs SDP offer → server exchanges with OpenAI → returns answer SDP
+app.post('/session', express.text({ type: ['application/sdp', 'text/plain'] }), async (req, res) => {
+  try {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
+
+    const sessionConfig = JSON.stringify({
+      type: 'realtime',
+      model: 'gpt-realtime-2',
+      audio: {
+        output: { voice: 'coral' },
+        input: {
+          transcription: { model: 'whisper-1', language: 'es' },
+        },
+      },
+    });
+
+    const fd = new FormData();
+    fd.set('sdp', req.body);
+    fd.set('session', sessionConfig);
+
+    const r = await fetch('https://api.openai.com/v1/realtime/calls', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'OpenAI-Safety-Identifier': 'jarvis-voice-user',
+      },
+      body: fd,
+    });
+
+    if (!r.ok) {
+      const errText = await r.text();
+      console.error('[WebRTC] OpenAI error:', errText);
+      return res.status(502).json({ error: 'OpenAI rejected session', detail: errText });
+    }
+
+    const answerSdp = await r.text();
+    console.log('[WebRTC] Session created, SDP answer length:', answerSdp.length);
+    res.type('application/sdp').send(answerSdp);
+  } catch (err) {
+    console.error('[WebRTC] Session error:', err);
+    res.status(500).json({ error: 'Session creation failed' });
+  }
+});
+
 // Serve push sw.js with correct content type
 app.get('/sw.js', (_, res) => {
   res.setHeader('Content-Type', 'application/javascript');

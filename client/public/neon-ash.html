@@ -36,7 +36,7 @@ let W,H,gameState='intro',score=0,floorNum=0,highScore=parseInt(localStorage.get
 let cameraY=0,shakeT=0,shakeI=0,introT=0;
 let jumpWanted=false,shootHeld=false;
 let climbing=false,climbT=0,climbFromX=0,climbFromY=0,climbToX=0,climbToY=0,climbNextDir=0;
-let debugJump=0,debugFrame=0; // debug counters
+let debugJump=0,debugJumpDone=0,debugFrame=0;
 
 const FW=340,FH=8,FG=92,WW=10,PW=24,PH=32,CLIMB_SPEED=0.016;
 const C={bg:'#060010',cyan:'#00d4ff',magenta:'#ff15d0',white:'#e8e0ff',green:'#00ff88',amber:'#ffb347',red:'#ff4466',dim:'#1a0030',panel:'#0a0020',purple:'#7b00ff',wall:'#0d0030'};
@@ -145,7 +145,7 @@ function update(){
  if(!P.onGround){P.vy+=0.5;P.y+=P.vy}
 
  // Jump
- if(jumpWanted && P.onGround){P.vy=-9;jumpWanted=false;P.onGround=false}
+ if(jumpWanted && P.onGround){P.vy=-9;jumpWanted=false;P.onGround=false;debugJumpDone++}
 
  // Shoot
  if(shootHeld && P.shootCd<=0){bullets.push({x:P.x+P.w/2,y:P.y+P.h/2,vx:P.dir*7,vy:0,w:10,h:3});P.shootCd=14;sp(bullets[bullets.length-1].x,bullets[bullets.length-1].y,C.cyan,2)}
@@ -207,7 +207,7 @@ function draw(){
  ctx.fillStyle=C.cyan;ctx.font='bold 12px monospace';ctx.textAlign='left';ctx.fillText(`PISO ${Math.max(0,floorNum)}`,10,26);
  ctx.fillStyle=C.white;ctx.font='10px monospace';ctx.textAlign='center';ctx.fillText(`${score}`,W/2,26);
  ctx.textAlign='right';ctx.font='12px monospace';let h='';for(let i=0;i<P.maxHp;i++)h+=i<P.hp?'♥':'♡';ctx.fillStyle=C.red;ctx.fillText(h,W-10,26);
- dbg.textContent='PISO:'+floorNum+' ONG:'+P.onGround+' JMP:'+jumpWanted+'('+debugJump+') CLIMB:'+climbing;
+ dbg.textContent='PISO:'+floorNum+' ONG:'+P.onGround+' REQ:'+debugJump+' DONE:'+debugJumpDone+' CLIMB:'+climbing;
 }
 
 function drawIntro(){

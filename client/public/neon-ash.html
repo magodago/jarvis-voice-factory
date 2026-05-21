@@ -138,14 +138,14 @@ function update(){
 
  // Gravity + floor
  P.onGround=false;
- if(P.y+P.h>=fy-2&&P.y+P.h<=fy+16){P.y=fy-P.h;P.vy=0;P.onGround=true}
+ if(P.y+P.h>=fy-2&&P.y+P.h<=fy+16&&P.vy>=0){P.y=fy-P.h;P.vy=0;P.onGround=true}
  if(P.y+P.h>fy+24){P.y=fy-P.h;P.vy=0;P.onGround=true}
  // Ceiling
  if(P.y<fy-FG+FH){P.y=fy-FG+FH;P.vy=0}
  if(!P.onGround){P.vy+=0.5;P.y+=P.vy}
 
  // Jump
- if(jumpWanted && P.onGround){P.vy=-9;jumpWanted=false;P.onGround=false;debugJumpDone++}
+ if(jumpWanted && P.onGround){P.vy=-9;P.y-=2;jumpWanted=false;P.onGround=false;debugJumpDone++}
 
  // Shoot
  if(shootHeld && P.shootCd<=0){bullets.push({x:P.x+P.w/2,y:P.y+P.h/2,vx:P.dir*7,vy:0,w:10,h:3});P.shootCd=14;sp(bullets[bullets.length-1].x,bullets[bullets.length-1].y,C.cyan,2)}

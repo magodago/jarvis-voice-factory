@@ -144,8 +144,14 @@ export function setupRealtimeWS(server) {
                       break;
                     case 'conversation.item.added':
                       // Translate model returns translated text in conversation items
+                      console.log('[Translate] Item added:', JSON.stringify(event.item).slice(0, 500));
                       if (event.item?.content) {
-                        const text = event.item.content.map(c => c.text || c.transcript || '').join(' ');
+                        const content = event.item.content;
+                        // content can be string, array, or object
+                        let text = '';
+                        if (typeof content === 'string') text = content;
+                        else if (Array.isArray(content)) text = content.map(c => typeof c === 'string' ? c : (c.text || c.transcript || c.value || '')).join(' ');
+                        else if (typeof content === 'object') text = content.text || content.transcript || '';
                         if (text.trim()) {
                           browserWs.send(JSON.stringify({
                             type: 'transcript.assistant_delta',
@@ -306,7 +312,9 @@ export function setupRealtimeWS(server) {
                     break;
                   }
 
-                  case 'response.created':
+                    case 'response.created':
+                      console.log('[Translate] Response created:', JSON.stringify(event.response || event).slice(0, 500));
+                      break;
                   case 'response.output_item.added':
                   case 'response.content_part.added':
                   case 'response.audio.delta':

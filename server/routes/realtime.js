@@ -61,9 +61,9 @@ export function setupRealtimeWS(server) {
             const mode = msg.mode || 'jarvis';
             currentMode = mode;
 
-            // === TRANSLATION MODE (GA — /v1/realtime) ===
+            // === TRANSLATION MODE (GA — /v1/realtime + model=gpt-realtime-translate) ===
             if (mode === 'translate') {
-              const openaiUrl = 'wss://api.openai.com/v1/realtime?model=gpt-realtime';
+              const openaiUrl = 'wss://api.openai.com/v1/realtime?model=gpt-realtime-translate';
 
               openaiWs = new WSClient(openaiUrl, [], {
                 headers: {
@@ -113,15 +113,14 @@ export function setupRealtimeWS(server) {
                 try {
                   const event = JSON.parse(openaiData.toString());
                   switch (event.type) {
+                    // GA API events (new protocol)
                     case 'response.output_audio.delta':
-                      // Audio delta → send as binary PCM16
                       if (event.delta && browserWs.readyState === 1) {
                         const audioBuffer = Buffer.from(event.delta, 'base64');
                         browserWs.send(audioBuffer, { binary: true });
                       }
                       break;
                     case 'response.output_audio_transcript.delta':
-                      // Translated text
                       browserWs.send(JSON.stringify({
                         type: 'transcript.assistant_delta',
                         delta: event.delta || '',
@@ -130,8 +129,27 @@ export function setupRealtimeWS(server) {
                     case 'response.output_audio_transcript.done':
                       browserWs.send(JSON.stringify({ type: 'transcript.assistant_done' }));
                       break;
+                    // Legacy translate events (session.* protocol)
+                    case 'session.output_audio.delta':
+                      if (event.delta && browserWs.readyState === 1) {
+                        const audioBuffer = Buffer.from(event.delta, 'base64');
+                        browserWs.send(audioBuffer, { binary: true });
+                      }
+                      break;
+                    case 'session.output_transcript.delta':
+                      browserWs.send(JSON.stringify({
+                        type: 'transcript.assistant_delta',
+                        delta: event.delta || '',
+                      }));
+                      break;
+                    case 'session.output_transcript.done':
+                      browserWs.send(JSON.stringify({ type: 'transcript.assistant_done' }));
+                      break;
+                    case 'session.closed':
+                      isActive = false;
+                      browserWs.send(JSON.stringify({ type: 'disconnected' }));
+                      break;
                     case 'conversation.item.input_audio_transcription.completed':
-                      // Original speech detected (optional — just for logging)
                       if (event.transcript) {
                         browserWs.send(JSON.stringify({
                           type: 'debug',

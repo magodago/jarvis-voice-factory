@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>NEON ASH</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#060010;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+canvas{display:block;width:100%;height:100%}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+// ═══════════════════════════════════════
+// NEON ASH — Cyber Tower Arcade
+// ═══════════════════════════════════════
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+let W, H, scale;
+let gameState = 'menu'; // menu | playing | dead
+let score = 0, floorNum = 1, highScore = parseInt(localStorage.getItem('neonash_hs')||0);
+let cameraY = 0;
+let shakeTimer = 0, shakeIntensity = 0;
+
+// ── Colores ──
+const C = {
+  bg:'#060010', cyan:'#00d4ff', magenta:'#ff15d0', white:'#e8e0ff',
+  green:'#00ff88', amber:'#ffb347', red:'#ff4466', dim:'#1a0030',
+  panel:'#0a0020', purple:'#7b00ff',
+};
+
+// ── Player ──
+const player = {
+  x:0, y:0, w:28, h:36, vx:2, vy:0, dir:1,
+  jumping:false, onGround:false, hp:3, maxHp:3,
+  shootCooldown:0, invincible:0, animFrame:0,
+};
+let bullets = [];
+
+// ── World ──
+let floors = [];        // platforms
+let enemies = [];
+let enemyBullets = [];
+let hazards = [];       // fire
+let elevators = [];
+let stairs = [];
+let particles = [];
+let powerUps = [];
+
+// ── Input ──
+const keys = {};
+let touchLeft = false, touchRight = false;
+
+// ── SPAWN HELPERS ──
+function spawnFloor(y, width, xOffset=0) {
+  const w = width || (60 + Math.random() * (W - 120));
+  const x = (W - w) / 2 + (xOffset || (Math.random()-0.5)*40);
+  return { x, y, w, h: 8 };
+}
+
+function spawnStairs(f, side) {
+  return { x: side==='left' ? f.x - 24 : f.x + f.w, y: f.y - 40, w: 24, h: 40 };
+}
+
+function spawnElevator(f) {
+  return { x: f.x + f.w/2 - 16, y: f.y - 20, w: 32, h: 20, open: false, timer: 300 + Math.random()*400 };
+}
+
+function spawnHazard(f) {
+  return { x: f.x + 20 + Math.random()*(f.w-40), y: f.y - 12, w: 18, h: 12, timer: 0 };
+}
+
+function spawnEnemy(f) {
+  const type = Math.random() < 0.3 ? 'shooter' : 'walker';
+  return {
+    x: f.x + 10 + Math.random()*(f.w-40), y: f.y - 30, w: 24, h: 30,
+    vx: (Math.random()>0.5?1:-1)*1.2, type,
+    shootTimer: type==='shooter' ? 60+Math.random()*80 : 999,
+    hp: type==='shooter' ? 1 : 2,
+    color: type==='shooter' ? C.magenta : C.purple,
+  };
+}
+
+// ── BUILD WORLD ──
+function buildWorld(startFloor) {
+  floors = []; stairs = []; enemies = []; hazards = []; elevators = []; powerUps = [];
+  const fh = 72; // floor height gap
+  for (let i = 0; i < 25; i++) {
+    const fy = -(startFloor + i) * fh;
+    const f = spawnFloor(fy);
+    floors.push(f);
+
+    // Stairs at both ends
+    stairs.push(spawnStairs(f, 'left'));
+    stairs.push(spawnStairs(f, 'right'));
+
+    // Elevator (50% chance)
+    if (Math.random() < 0.5) elevators.push(spawnElevator(f));
+
+    // Hazard (40% chance)
+    if (Math.random() < 0.4) hazards.push(spawnHazard(f));
+
+    // Enemies (60% chance, more on higher floors)
+    if (Math.random() < 0.4 + i*0.02) enemies.push(spawnEnemy(f));
+  }
+}
+
+// ── RESIZE ──
+function resize() {
+  W = window.innerWidth;
+  H = window.innerHeight;
+  scale = Math.min(W/400, 1);
+  canvas.width = W;
+  canvas.height = H;
+}
+window.addEventListener('resize', resize);
+
+// ── TOUCH ──
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  for (const t of e.changedTouches) {
+    if (t.clientX < W/2) touchLeft = true;
+    else touchRight = true;
+  }
+  if (gameState==='menu') startGame();
+  if (gameState==='dead') { gameState='menu'; buildWorld(0); }
+});
+canvas.addEventListener('touchend', e => {
+  e.preventDefault();
+  touchLeft = false; touchRight = false;
+  for (const t of e.touches) {
+    if (t.clientX < W/2) touchLeft = true;
+    else touchRight = true;
+  }
+});
+canvas.addEventListener('touchcancel', () => { touchLeft=false; touchRight=false; });
+
+// ── KEYBOARD ──
+window.addEventListener('keydown', e => {
+  keys[e.key] = true;
+  if (e.key===' '||e.key==='Enter') {
+    if (gameState==='menu') startGame();
+    if (gameState==='dead') { gameState='menu'; buildWorld(0); }
+  }
+});
+window.addEventListener('keyup', e => keys[e.key]=false);
+
+// ── GAME ──
+function startGame() {
+  gameState = 'playing';
+  score = 0; floorNum = 1;
+  player.hp = player.maxHp;
+  player.invincible = 0;
+  bullets = []; enemyBullets = []; particles = [];
+  buildWorld(0);
+  // Place player on first floor
+  const f = floors[floors.length-1];
+  player.x = f.x + f.w/2;
+  player.y = f.y - player.h;
+  player.vx = 2; player.dir = 1;
+  cameraY = player.y - H/2;
+}
+
+function addParticles(x, y, color, count) {
+  for (let i=0;i<count;i++) {
+    particles.push({
+      x, y, vx:(Math.random()-0.5)*3, vy:(Math.random()-0.5)*3-2,
+      life:20+Math.random()*15, color, size:1+Math.random()*2
+    });
+  }
+}
+
+function update() {
+  if (gameState !== 'playing') return;
+
+  // ── Player movement ──
+  const jump = keys['ArrowLeft'] || keys['a'] || touchLeft;
+  const shoot = keys['ArrowRight'] || keys['d'] || keys[' '] || touchRight;
+
+  // Auto-run
+  player.x += player.vx * player.dir;
+
+  // Bounce off walls
+  if (player.x < 10) { player.dir = 1; player.x = 10; }
+  if (player.x > W - player.w - 10) { player.dir = -1; player.x = W - player.w - 10; }
+
+  // Gravity + ground check
+  player.onGround = false;
+  for (const f of floors) {
+    if (player.x + player.w > f.x && player.x < f.x + f.w) {
+      if (player.y + player.h >= f.y && player.y + player.h <= f.y + 16) {
+        player.y = f.y - player.h;
+        player.vy = 0;
+        player.jumping = false;
+        player.onGround = true;
+        // Climb stairs — move up a floor
+        for (const s of stairs) {
+          if (player.x + player.w > s.x && player.x < s.x + s.w &&
+              player.y + player.h > s.y && player.y < s.y + s.h) {
+            // Ascend
+            const nextFloor = floors.find(fl => fl.y < f.y - 20 && fl.y > f.y - 140);
+            if (nextFloor) {
+              player.y = nextFloor.y - player.h;
+              floorNum++;
+              score += 100;
+              addParticles(player.x+player.w/2, player.y, C.cyan, 8);
+            }
+            break;
+          }
+        }
+        // Enter elevator
+        for (const el of elevators) {
+          if (el.open && player.x + player.w > el.x && player.x < el.x + el.w &&
+              player.y + player.h > el.y && player.y < el.y + el.h) {
+            player.y -= 720; // boost 10 floors
+            floorNum += 10;
+            score += 1000;
+            cameraY -= 720;
+            addParticles(player.x+player.w/2, player.y, C.magenta, 20);
+            el.open = false;
+            el.timer = 600;
+          }
+        }
+        break;
+      }
+    }
+  }
+  if (!player.onGround) {
+    player.vy += 0.5;
+    player.y += player.vy;
+  }
+
+  // Jump
+  if (jump && player.onGround) {
+    player.vy = -9;
+    player.jumping = true;
+    player.onGround = false;
+  }
+
+  // ── Shooting ──
+  if (shoot && player.shootCooldown <= 0) {
+    bullets.push({
+      x: player.x + player.w/2, y: player.y + player.h/2,
+      vx: player.dir * 8, vy: 0, w: 12, h: 4
+    });
+    player.shootCooldown = 15;
+    addParticles(bullets[bullets.length-1].x, bullets[bullets.length-1].y, C.cyan, 3);
+  }
+  if (player.shootCooldown > 0) player.shootCooldown--;
+
+  // ── Bullets ──
+  for (const b of bullets) { b.x += b.vx; }
+  bullets = bullets.filter(b => b.x > -50 && b.x < W+50);
+
+  // ── Enemies ──
+  for (const e of enemies) {
+    // Move
+    e.x += e.vx;
+    if (e.x < 10 || e.x > W - e.w - 10) e.vx *= -1;
+
+    // Shoot
+    e.shootTimer--;
+    if (e.shootTimer <= 0 && e.type === 'shooter') {
+      const dir = player.x > e.x ? 1 : -1;
+      enemyBullets.push({ x:e.x+e.w/2, y:e.y+e.h/2, vx:dir*4, vy:0, w:8, h:4 });
+      e.shootTimer = 80 + Math.random()*60;
+    }
+
+    // Hit by player bullet
+    for (let bi = bullets.length-1; bi >= 0; bi--) {
+      const b = bullets[bi];
+      if (b.x < e.x+e.w && b.x+b.w > e.x && b.y < e.y+e.h && b.y+b.h > e.y) {
+        e.hp--;
+        bullets.splice(bi,1);
+        addParticles(e.x+e.w/2, e.y+e.h/2, e.color, 6);
+        shakeTimer = 5; shakeIntensity = 2;
+        if (e.hp <= 0) {
+          enemies = enemies.filter(en => en !== e);
+          score += 250;
+          addParticles(e.x+e.w/2, e.y+e.h/2, e.color, 15);
+        }
+        break;
+      }
+    }
+
+    // Hit player
+    if (player.invincible <= 0 && e.x < player.x+player.w && e.x+e.w > player.x &&
+        e.y < player.y+player.h && e.y+e.h > player.y) {
+      player.hp--;
+      player.invincible = 40;
+      addParticles(player.x+player.w/2, player.y+player.h/2, C.red, 10);
+      shakeTimer = 10; shakeIntensity = 6;
+      if (player.hp <= 0) die();
+    }
+  }
+
+  // ── Enemy bullets ──
+  for (const eb of enemyBullets) { eb.x += eb.vx; }
+  enemyBullets = enemyBullets.filter(eb => eb.x > -50 && eb.x < W+50);
+  for (let ei = enemyBullets.length-1; ei >= 0; ei--) {
+    const eb = enemyBullets[ei];
+    if (player.invincible <= 0 && eb.x < player.x+player.w && eb.x+eb.w > player.x &&
+        eb.y < player.y+player.h && eb.y+eb.h > player.y) {
+      player.hp--;
+      player.invincible = 40;
+      enemyBullets.splice(ei,1);
+      shakeTimer = 8; shakeIntensity = 5;
+      addParticles(player.x+player.w/2, player.y+player.h/2, C.magenta, 10);
+      if (player.hp <= 0) die();
+    }
+  }
+  if (player.invincible > 0) player.invincible--;
+
+  // ── Hazards ──
+  for (const hz of hazards) {
+    if (player.invincible <= 0 && player.x+player.w > hz.x && player.x < hz.x+hz.w &&
+        player.y+player.h > hz.y && player.y < hz.y+hz.h) {
+      player.hp--;
+      player.invincible = 30;
+      addParticles(player.x+player.w/2, player.y+player.h/2, C.amber, 12);
+      if (player.hp <= 0) die();
+    }
+  }
+
+  // ── Elevators ──
+  for (const el of elevators) {
+    if (!el.open) {
+      el.timer--;
+      if (el.timer <= 0) { el.open = true; el.timer = 200; }
+    } else {
+      el.timer--;
+      if (el.timer <= 0) { el.open = false; el.timer = 400+Math.random()*300; }
+    }
+  }
+
+  // ── Floor rising ──
+  const riseSpeed = 0.4;
+  for (const f of floors) f.y -= riseSpeed;
+  for (const s of stairs) s.y -= riseSpeed;
+  for (const el of elevators) el.y -= riseSpeed;
+  for (const hz of hazards) hz.y -= riseSpeed;
+  for (const e of enemies) e.y -= riseSpeed;
+  cameraY -= riseSpeed;
+
+  // Generate new floors ahead
+  const topFloor = floors.reduce((min,f) => f.y < min ? f.y : min, Infinity);
+  if (topFloor > cameraY - H) {
+    const fy = topFloor - 72;
+    const f = spawnFloor(fy);
+    floors.push(f);
+    stairs.push(spawnStairs(f, 'left'));
+    stairs.push(spawnStairs(f, 'right'));
+    if (Math.random()<0.5) elevators.push(spawnElevator(f));
+    if (Math.random()<0.4) hazards.push(spawnHazard(f));
+    if (Math.random()<0.5) enemies.push(spawnEnemy(f));
+  }
+
+  // Cleanup old floors below
+  floors = floors.filter(f => f.y < cameraY + H*2);
+  stairs = stairs.filter(s => s.y < cameraY + H*2);
+  elevators = elevators.filter(el => el.y < cameraY + H*2);
+  hazards = hazards.filter(hz => hz.y < cameraY + H*2);
+  enemies = enemies.filter(en => en.y < cameraY + H*2);
+
+  // ── Player falling off ──
+  if (player.y > cameraY + H + 100) die();
+
+  // ── Particles ──
+  for (const p of particles) { p.x += p.vx; p.y += p.vy; p.life--; }
+  particles = particles.filter(p => p.life > 0);
+
+  // ── Shake ──
+  if (shakeTimer > 0) shakeTimer--;
+}
+
+function die() {
+  gameState = 'dead';
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem('neonash_hs', highScore);
+  }
+  addParticles(player.x+player.w/2, player.y+player.h/2, C.magenta, 30);
+  shakeTimer = 30; shakeIntensity = 10;
+}
+
+function drawGame() {
+  ctx.save();
+  const sx = shakeTimer > 0 ? (Math.random()-0.5)*shakeIntensity : 0;
+  const sy = shakeTimer > 0 ? (Math.random()-0.5)*shakeIntensity : 0;
+  ctx.translate(sx, sy);
+
+  // Background
+  ctx.fillStyle = C.bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Neon grid lines
+  ctx.strokeStyle = C.cyan + '10';
+  ctx.lineWidth = 0.5;
+  for (let y = -cameraY % 80; y < H; y += 80) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // ── Floors ──
+  for (const f of floors) {
+    const fy = f.y - cameraY;
+    if (fy < -50 || fy > H+50) continue;
+    ctx.fillStyle = C.panel;
+    ctx.fillRect(f.x, fy, f.w, f.h);
+    ctx.strokeStyle = C.cyan + '40';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(f.x, fy, f.w, f.h);
+    // Neon edge glow
+    ctx.strokeStyle = C.cyan + '15';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(f.x, fy); ctx.lineTo(f.x+f.w, fy); ctx.stroke();
+  }
+
+  // ── Stairs ──
+  for (const s of stairs) {
+    const sy = s.y - cameraY;
+    if (sy < -50 || sy > H+50) continue;
+    ctx.fillStyle = C.dim;
+    ctx.fillRect(s.x, sy, s.w, s.h);
+    ctx.strokeStyle = C.cyan + '30';
+    ctx.strokeRect(s.x, sy, s.w, s.h);
+    // Steps
+    for (let i=0; i<3; i++) {
+      ctx.fillStyle = C.cyan + '20';
+      ctx.fillRect(s.x+2, sy + s.h - (i+1)*10, s.w-4, 5);
+    }
+  }
+
+  // ── Elevators ──
+  for (const el of elevators) {
+    const ey = el.y - cameraY;
+    if (ey < -50 || ey > H+50) continue;
+    ctx.fillStyle = el.open ? C.magenta + '30' : C.dim;
+    ctx.fillRect(el.x, ey, el.w, el.h);
+    ctx.strokeStyle = el.open ? C.magenta + '80' : C.cyan + '30';
+    ctx.lineWidth = el.open ? 2 : 1;
+    ctx.strokeRect(el.x, ey, el.w, el.h);
+    if (el.open) {
+      ctx.fillStyle = C.magenta;
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('↑↑', el.x+el.w/2, ey-4);
+    }
+  }
+
+  // ── Hazards (fire) ──
+  for (const hz of hazards) {
+    const hy = hz.y - cameraY;
+    if (hy < -50 || hy > H+50) continue;
+    // Animated fire effect
+    const flicker = Math.sin(Date.now()*0.02 + hz.x) * 3;
+    ctx.fillStyle = C.amber;
+    ctx.globalAlpha = 0.7 + Math.random()*0.3;
+    for (let i=0; i<3; i++) {
+      ctx.fillRect(hz.x + i*6, hy - flicker - i*4, 6, 12 + i*4);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // ── Enemies ──
+  for (const e of enemies) {
+    const ey = e.y - cameraY;
+    if (ey < -50 || ey > H+50) continue;
+    // Body
+    ctx.fillStyle = e.color;
+    ctx.fillRect(e.x+2, ey+6, e.w-4, e.h-8);
+    // Head
+    ctx.fillStyle = e.color;
+    ctx.fillRect(e.x+6, ey, 12, 10);
+    // Eyes
+    ctx.fillStyle = e.type==='shooter' ? C.red : C.amber;
+    ctx.fillRect(e.x+8, ey+2, 3, 3);
+    ctx.fillRect(e.x+13, ey+2, 3, 3);
+    // Legs
+    ctx.fillStyle = e.color + '80';
+    const legOffset = Math.sin(Date.now()*0.01 + e.x)*2;
+    ctx.fillRect(e.x+4, ey+e.h-4, 6, 6+legOffset);
+    ctx.fillRect(e.x+14, ey+e.h-4, 6, 6-legOffset);
+    // Gun for shooters
+    if (e.type === 'shooter') {
+      ctx.fillStyle = C.red;
+      ctx.fillRect(e.x + (e.vx>0?e.w:0), ey+14, 8, 3);
+    }
+  }
+
+  // ── Player ──
+  if (gameState === 'playing') {
+    const alpha = player.invincible > 0 ? 0.4 + Math.sin(Date.now()*0.3)*0.3 : 1;
+    ctx.globalAlpha = alpha;
+    const py = player.y - cameraY;
+    // Body
+    ctx.fillStyle = C.cyan;
+    ctx.fillRect(player.x, py+10, player.w, player.h-14);
+    // Head
+    ctx.fillStyle = C.cyan;
+    ctx.fillRect(player.x+8, py, 12, 12);
+    // Visor
+    ctx.fillStyle = C.white;
+    ctx.fillRect(player.x+10, py+2, 8, 4);
+    // Legs
+    const lo = Math.sin(Date.now()*0.015)*3;
+    ctx.fillStyle = C.cyan + '80';
+    ctx.fillRect(player.x+4, py+player.h-6, 8, 8+lo);
+    ctx.fillRect(player.x+16, py+player.h-6, 8, 8-lo);
+    ctx.globalAlpha = 1;
+
+    // Gun
+    ctx.fillStyle = C.magenta;
+    if (player.dir > 0) {
+      ctx.fillRect(player.x+player.w, py+16, 10, 4);
+    } else {
+      ctx.fillRect(player.x-10, py+16, 10, 4);
+    }
+  }
+
+  // ── Bullets ──
+  ctx.fillStyle = C.cyan;
+  for (const b of bullets) {
+    const by = b.y - cameraY;
+    ctx.fillRect(b.x, by, b.w, b.h);
+    // Glow
+    ctx.fillStyle = C.cyan + '40';
+    ctx.fillRect(b.x-2, by-1, b.w+4, b.h+2);
+    ctx.fillStyle = C.cyan;
+  }
+  ctx.fillStyle = C.magenta;
+  for (const eb of enemyBullets) {
+    const eby = eb.y - cameraY;
+    ctx.fillRect(eb.x, eby, eb.w, eb.h);
+  }
+
+  // ── Particles ──
+  for (const p of particles) {
+    const ppy = p.y - cameraY;
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.life / 35;
+    ctx.fillRect(p.x, ppy, p.size, p.size);
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.restore();
+
+  // ── HUD ──
+  ctx.fillStyle = C.panel + 'CC';
+  ctx.fillRect(0, 0, W, 36);
+  ctx.strokeStyle = C.cyan + '30';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, 36); ctx.lineTo(W, 36); ctx.stroke();
+
+  ctx.fillStyle = C.cyan;
+  ctx.font = 'bold 13px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText(`PISO ${floorNum}`, 12, 25);
+
+  ctx.fillStyle = C.white;
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(`${score}`, W/2, 25);
+
+  // Hearts
+  ctx.textAlign = 'right';
+  let hearts = '';
+  for (let i=0; i<player.maxHp; i++) hearts += i<player.hp ? '♥' : '♡';
+  ctx.fillStyle = C.red;
+  ctx.fillText(hearts, W-12, 25);
+
+  // ── Touch buttons (game) ──
+  if (gameState === 'playing') {
+    ctx.globalAlpha = 0.3;
+    // Left - Jump
+    ctx.fillStyle = C.cyan;
+    ctx.beginPath();
+    ctx.arc(60, H-60, 40, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = C.white;
+    ctx.font = 'bold 16px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('▲', 60, H-54);
+
+    // Right - Shoot
+    ctx.fillStyle = C.magenta;
+    ctx.beginPath();
+    ctx.arc(W-60, H-60, 40, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = C.white;
+    ctx.fillText('●', W-60, H-54);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawMenu() {
+  ctx.fillStyle = C.bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Animated cyan lines
+  for (let i=0; i<8; i++) {
+    const y = H/2 - 80 + i*20 + Math.sin(Date.now()*0.002 + i)*5;
+    ctx.fillStyle = C.cyan + (10 + i*3).toString(16);
+    ctx.fillRect(W*0.2, y, W*0.6, 1);
+  }
+
+  // Title
+  ctx.fillStyle = C.cyan;
+  ctx.font = `bold ${Math.floor(28*scale)}px monospace`;
+  ctx.textAlign = 'center';
+  ctx.fillText('NEON ASH', W/2, H/2 - 40);
+  ctx.fillStyle = C.magenta;
+  ctx.font = `${Math.floor(12*scale)}px monospace`;
+  ctx.fillText('cyber tower', W/2, H/2 - 18);
+
+  // Button
+  const btnY = H/2 + 30;
+  const pulse = Math.sin(Date.now()*0.005)*3;
+  ctx.strokeStyle = C.cyan;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(W/2-60, btnY-18, 120, 36);
+  ctx.fillStyle = C.cyan + '15';
+  ctx.fillRect(W/2-60, btnY-18, 120, 36);
+  ctx.fillStyle = C.cyan;
+  ctx.font = 'bold 14px monospace';
+  ctx.fillText('▶ JUGAR', W/2, btnY+6);
+
+  // Touch hint
+  ctx.fillStyle = C.white + '30';
+  ctx.font = '9px monospace';
+  ctx.fillText('toque o ESPACIO', W/2, btnY+40);
+
+  // High score
+  if (highScore > 0) {
+    ctx.fillStyle = C.amber;
+    ctx.font = '10px monospace';
+    ctx.fillText(`🏆 ${highScore}`, W/2, H/2 + 90);
+  }
+}
+
+function drawGameOver() {
+  ctx.fillStyle = C.bg + 'CC';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = C.red;
+  ctx.font = `bold ${Math.floor(24*scale)}px monospace`;
+  ctx.textAlign = 'center';
+  ctx.fillText('MUERTO', W/2, H/2 - 50);
+
+  ctx.fillStyle = C.cyan;
+  ctx.font = `${Math.floor(16*scale)}px monospace`;
+  ctx.fillText(`Piso ${floorNum}`, W/2, H/2 - 15);
+
+  ctx.fillStyle = C.white;
+  ctx.font = `${Math.floor(22*scale)}px monospace`;
+  ctx.fillText(`${score}`, W/2, H/2 + 20);
+
+  if (score >= highScore && score > 0) {
+    ctx.fillStyle = C.amber;
+    ctx.font = '10px monospace';
+    ctx.fillText('🏆 NUEVO RÉCORD', W/2, H/2 + 40);
+  }
+
+  // Restart hint
+  const alpha = 0.5 + Math.sin(Date.now()*0.004)*0.3;
+  ctx.fillStyle = C.white + Math.floor(alpha*255).toString(16).padStart(2,'0');
+  ctx.font = '10px monospace';
+  ctx.fillText('toque para reiniciar', W/2, H/2 + 70);
+}
+
+// ── GAME LOOP ──
+function loop() {
+  resize();
+  update();
+
+  // Camera follow
+  if (gameState === 'playing') {
+    cameraY += (player.y - H/2 - cameraY) * 0.1;
+  }
+
+  ctx.clearRect(0, 0, W, H);
+  if (gameState === 'menu') drawMenu();
+  else if (gameState === 'dead') { drawGame(); drawGameOver(); }
+  else drawGame();
+
+  requestAnimationFrame(loop);
+}
+
+resize();
+buildWorld(0);
+loop();
+</script>
+</body>
+</html>

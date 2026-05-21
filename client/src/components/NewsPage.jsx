@@ -55,6 +55,35 @@ function getBackendUrls() {
   return ['https://jarvis-neo-david.loca.lt', 'https://jarvis-neo-david.serveo.net'];
 }
 
+// Discover active backend URL (used for article fetching)
+async function discoverBackendUrl() {
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') return '';
+
+  // 1. tunnel.json
+  try {
+    const r = await fetch('/jarvis-voice-factory/tunnel.json', { signal: AbortSignal.timeout(3000) });
+    if (r.ok) {
+      const d = await r.json();
+      if (d.tunnelUrl) {
+        const t = await fetch(`${d.tunnelUrl}/health`, { signal: AbortSignal.timeout(3000) });
+        if (t.ok) return d.tunnelUrl;
+      }
+    }
+  } catch {}
+
+  // 2. Fallback candidates
+  const candidates = getBackendUrls().filter(Boolean);
+  for (const c of candidates) {
+    try {
+      const r = await fetch(`${c}/health`, { signal: AbortSignal.timeout(2000) });
+      if (r.ok) return c;
+    } catch {}
+  }
+
+  return null;
+}
+
 const CORS_PROXY = 'https://corsproxy.io/?';
 
 const RELATIVE_TIME = (dateStr) => {
@@ -127,14 +156,14 @@ export default function NewsPage({ isOpen, onClose }) {
     setArticleContent(null);
     setArticleLoading(true);
     try {
-      const baseUrl = backendUrls[0] || '';
+      const baseUrl = await discoverBackendUrl();
       const url = baseUrl ? `${baseUrl}/news/article?url=${encodeURIComponent(article.url || article.link)}` : `/news/article?url=${encodeURIComponent(article.url || article.link)}`;
       const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       setArticleContent(data);
     } catch (err) {
-      setArticleContent({ error: true, message: 'No se pudo cargar el artículo completo. Puedes abrirlo en el navegador.', url: article.url || article.link });
+      setArticleContent({ error: true, message: 'No se pudo cargar el artículo completo.', url: article.url || article.link });
     }
     setArticleLoading(false);
   };
@@ -493,11 +522,6 @@ export default function NewsPage({ isOpen, onClose }) {
                 <span className="text-[10px] text-white/30 font-mono">{RELATIVE_TIME(selectedArticle.pubDate)}</span>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => window.open(selectedArticle.url || selectedArticle.link, '_blank')}
-                  className="p-2 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/20 text-cyber-cyan/70 hover:bg-cyber-cyan/20 transition-all"
-                  title="Abrir en navegador">
-                  <ExternalLink size={16} />
-                </button>
                 <button onClick={() => { setSelectedArticle(null); setArticleContent(null); }}
                   className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
                   <X size={18} className="text-white/60" />
@@ -534,13 +558,6 @@ export default function NewsPage({ isOpen, onClose }) {
                       {p}
                     </motion.p>
                   ))}
-
-                  <div className="mt-8 pt-6 border-t border-white/5 text-center">
-                    <a href={selectedArticle.url || selectedArticle.link} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-xs text-cyber-cyan/60 hover:text-cyber-cyan transition-colors font-mono">
-                      <ExternalLink size={12} /> Ver fuente original
-                    </a>
-                  </div>
                 </div>
               )}
 

@@ -69,7 +69,7 @@ export function setupRealtimeWS(server) {
               openaiWs = new WSClient(openaiUrl, [], {
                 headers: {
                   'Authorization': `Bearer ${apiKey}`,
-                  'OpenAI-Safety-Identifier': 'jarvis-translate-user',
+                  'OpenAI-Beta': 'realtime=v1',
                 },
               });
 
@@ -78,10 +78,14 @@ export function setupRealtimeWS(server) {
                 isActive = true;
                 browserWs.send(JSON.stringify({ type: 'connected' }));
 
-                // Configure: output language = Spanish
+                // Configure session BEFORE any audio arrives:
+                // - turn_detection: null = continuous streaming, no pause detection
+                // - language: Spanish output
                 openaiWs.send(JSON.stringify({
                   type: 'session.update',
                   session: {
+                    turn_detection: null,
+                    modalities: ['text', 'audio'],
                     audio: {
                       output: {
                         language: 'es',

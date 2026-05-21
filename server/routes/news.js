@@ -2,32 +2,32 @@ import { Router } from 'express';
 
 const router = Router();
 
-// === RSS Sources — Organizadas por tema ===
+// === RSS Sources — SOLO ESPAÑOL, feeds específicos por categoría ===
 const SOURCES = {
-  // AI & LLMs — OpenAI, Anthropic, Google, nuevos modelos, asistentes
+  // AI & LLMs — feeds de tags específicos de IA
   ai: [
     { id: 'xataka-ia', name: 'Xataka IA', url: 'https://www.xataka.com/tag/inteligencia-artificial/rss2.xml', color: '#00d4ff', topic: 'ai' },
     { id: 'genbeta-ia', name: 'Genbeta IA', url: 'https://www.genbeta.com/tag/inteligencia-artificial/rss2.xml', color: '#7b00ff', topic: 'ai' },
-    { id: 'hipertextual', name: 'Hipertextual', url: 'https://hipertextual.com/feed.xml', color: '#40f0ff', topic: 'ai' },
-    { id: 'xataka', name: 'Xataka', url: 'https://www.xataka.com/index.xml', color: '#00d4ff', topic: 'ai' },
-    { id: 'techcrunch-ai', name: 'TechCrunch AI', url: 'https://techcrunch.com/category/artificial-intelligence/feed/', color: '#00ff88', topic: 'ai' },
-    { id: 'venturebeat-ai', name: 'VentureBeat AI', url: 'https://venturebeat.com/category/ai/feed/', color: '#ffb347', topic: 'ai' },
+    { id: 'hipertextual-ia', name: 'Hipertextual IA', url: 'https://hipertextual.com/tag/inteligencia-artificial/feed.xml', color: '#40f0ff', topic: 'ai' },
+    { id: 'muycomputer-ia', name: 'MuyComputer IA', url: 'https://www.muycomputer.com/tag/inteligencia-artificial/feed/', color: '#ffb347', topic: 'ai' },
+    { id: 'elconfidencial-tec', name: 'El Confidencial Tec', url: 'https://www.elconfidencial.com/rss/tecnologia/', color: '#7b00ff', topic: 'ai' },
   ],
-  // Ciencia + Medicina + AI
+  // Ciencia + Medicina (fuentes españolas)
   science: [
-    { id: 'nature-ai', name: 'Nature AI', url: 'https://www.nature.com/subjects/artificial-intelligence.rss', color: '#00d4ff', topic: 'science' },
-    { id: 'sciencedaily-ai', name: 'ScienceDaily AI', url: 'https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml', color: '#40f0ff', topic: 'science' },
-    { id: 'xataka-med', name: 'Xataka Medicina', url: 'https://www.xataka.com/tag/medicina/rss2.xml', color: '#00ff88', topic: 'science' },
     { id: 'agenciasinc', name: 'SINC Ciencia', url: 'https://www.agenciasinc.es/rss', color: '#ffb347', topic: 'science' },
-    { id: 'elconfidencial-tec', name: 'El Confidencial Tec', url: 'https://www.elconfidencial.com/rss/tecnologia/', color: '#7b00ff', topic: 'science' },
+    { id: 'xataka-med', name: 'Xataka Medicina', url: 'https://www.xataka.com/tag/medicina/rss2.xml', color: '#00ff88', topic: 'science' },
+    { id: 'elpais-ciencia', name: 'El País Ciencia', url: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/ciencia', color: '#00d4ff', topic: 'science' },
+    { id: 'elmundo-ciencia', name: 'El Mundo Ciencia', url: 'https://e00-elmundo.uecdn.es/elmundo/rss/ciencia.xml', color: '#40f0ff', topic: 'science' },
+    { id: 'nobbot-tech', name: 'Nobbot Tech', url: 'https://www.nobbot.com/feed/', color: '#7b00ff', topic: 'science' },
   ],
-  // Tecnología general + modelos baratos + herramientas nuevas
+  // Tecnología general
   tech: [
     { id: 'xataka', name: 'Xataka', url: 'https://www.xataka.com/index.xml', color: '#00d4ff', topic: 'tech' },
     { id: 'genbeta', name: 'Genbeta', url: 'https://www.genbeta.com/index.xml', color: '#7b00ff', topic: 'tech' },
     { id: 'hipertextual', name: 'Hipertextual', url: 'https://hipertextual.com/feed.xml', color: '#40f0ff', topic: 'tech' },
     { id: 'microsiervos', name: 'Microsiervos', url: 'https://www.microsiervos.com/index.xml', color: '#ffb347', topic: 'tech' },
     { id: 'muylinux', name: 'MuyLinux', url: 'https://www.muylinux.com/feed/', color: '#00ff88', topic: 'tech' },
+    { id: 'muycomputer', name: 'MuyComputer', url: 'https://www.muycomputer.com/feed/', color: '#7b00ff', topic: 'tech' },
   ],
   // Política España
   spain: [
@@ -55,6 +55,21 @@ const SOURCES = {
 const seenUrls = new Set();
 const MAX_SEEN = 500;
 
+// Detect if text is Spanish (not English)
+function isSpanishText(text) {
+  if (!text) return true;
+  const t = text.toLowerCase();
+  // Contains Spanish-specific chars → Spanish
+  if (/[áéíóúüñ]/.test(t)) return true;
+  // Count English stopwords — if 3+ appear, likely English
+  const englishWords = /\b(the|is|are|was|were|has|have|this|that|with|from|will|would|could|should|about|your|their|they|been|more|also|what|when|which|said|like|just|over|into|than|them|some|only|other|after|being|down|most|such|much|even|still)\b/g;
+  const matches = t.match(englishWords) || [];
+  if (matches.length >= 3) return false;
+  // Starts with English article/company → likely English
+  if (/^(The|How|What|Why|When|This|New|Apple|Google|Meta|Microsoft|OpenAI)\s/.test(text)) return false;
+  return true;
+}
+
 router.get('/feed', async (req, res) => {
   const { topic = 'ai' } = req.query;
   const sources = SOURCES[topic] || SOURCES.ai;
@@ -76,7 +91,6 @@ router.get('/feed', async (req, res) => {
         const xml = await response.text();
         return parseRSSArticles(xml, src);
       } catch (err) {
-        // Silent fail for individual sources
         return [];
       }
     });
@@ -88,7 +102,7 @@ router.get('/feed', async (req, res) => {
       }
     }
 
-    // Deduplicate + sort by date
+    // Deduplicate
     const unique = [];
     const urlSet = new Set();
     for (const a of allArticles) {
@@ -104,14 +118,18 @@ router.get('/feed', async (req, res) => {
       }
     }
 
-    unique.sort((a, b) => {
+    // Filter: only Spanish articles
+    const spanishArticles = unique.filter(a => isSpanishText(a.title));
+
+    // Sort by date
+    spanishArticles.sort((a, b) => {
       if (a.pubDate && b.pubDate) return new Date(b.pubDate) - new Date(a.pubDate);
       if (a.pubDate) return -1;
       if (b.pubDate) return 1;
       return 0;
     });
 
-    const sliced = unique.slice(0, 30);
+    const sliced = spanishArticles.slice(0, 30);
 
     res.json({ topic, count: sliced.length, articles: sliced, timestamp: new Date().toISOString() });
   } catch (err) {

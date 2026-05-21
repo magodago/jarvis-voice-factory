@@ -12,21 +12,28 @@ const TOPICS = [
 ];
 
 // RSS sources per topic — used as fallback when backend is unreachable
+// ALL Spanish-language sources, specific feeds per category
 const RSS_SOURCES = {
   ai: [
     'https://www.xataka.com/tag/inteligencia-artificial/rss2.xml',
-    'https://www.xataka.com/index.xml',
-    'https://hipertextual.com/feed.xml',
+    'https://www.genbeta.com/tag/inteligencia-artificial/rss2.xml',
+    'https://hipertextual.com/tag/inteligencia-artificial/feed.xml',
+    'https://www.muycomputer.com/tag/inteligencia-artificial/feed/',
+    'https://www.elconfidencial.com/rss/tecnologia/',
   ],
   science: [
-    'https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml',
-    'https://www.xataka.com/tag/medicina/rss2.xml',
     'https://www.agenciasinc.es/rss',
+    'https://www.xataka.com/tag/medicina/rss2.xml',
+    'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/ciencia',
+    'https://e00-elmundo.uecdn.es/elmundo/rss/ciencia.xml',
   ],
   tech: [
     'https://www.xataka.com/index.xml',
     'https://www.genbeta.com/index.xml',
     'https://hipertextual.com/feed.xml',
+    'https://www.microsiervos.com/index.xml',
+    'https://www.muylinux.com/feed/',
+    'https://www.muycomputer.com/feed/',
   ],
   spain: [
     'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada',
@@ -368,7 +375,7 @@ function parseRSSClient(xml, sourceUrl) {
     const desc = stripHtml(extractTag(item, 'description') || '');
     const pubDate = extractTag(item, 'pubDate');
     if (title && link) {
-      articles.push({
+      const article = {
         title: decodeHtml(title).slice(0, 150),
         snippet: desc.slice(0, 250),
         url: link,
@@ -376,7 +383,8 @@ function parseRSSClient(xml, sourceUrl) {
         source: sourceName,
         sourceColor,
         pubDate: pubDate ? new Date(pubDate).toISOString() : null,
-      });
+      };
+      if (isSpanishText(article.title)) articles.push(article);
     }
   }
 
@@ -391,7 +399,7 @@ function parseRSSClient(xml, sourceUrl) {
       const linkMatch = entry.match(/<link[^>]*href="([^"]*)"[^>]*\/?>/i);
       const link = linkMatch ? linkMatch[1] : '';
       if (title && link) {
-        articles.push({
+        const article = {
           title: decodeHtml(title).slice(0, 150),
           snippet: summary.slice(0, 250),
           url: link,
@@ -399,7 +407,8 @@ function parseRSSClient(xml, sourceUrl) {
           source: sourceName,
           sourceColor,
           pubDate: pubDate ? new Date(pubDate).toISOString() : null,
-        });
+        };
+        if (isSpanishText(article.title)) articles.push(article);
       }
     }
   }
@@ -423,5 +432,16 @@ function decodeHtml(text) {
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
     .replace(/&aacute;/gi, 'a').replace(/&eacute;/gi, 'e').replace(/&iacute;/gi, 'i')
     .replace(/&oacute;/gi, 'o').replace(/&uacute;/gi, 'u').replace(/&ntilde;/gi, 'n')
-    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)));
+    .replace(/&#(\\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)));
+}
+
+function isSpanishText(text) {
+  if (!text) return true;
+  const t = text.toLowerCase();
+  if (/[áéíóúüñ]/.test(t)) return true;
+  const englishWords = /\b(the|is|are|was|were|has|have|this|that|with|from|will|would|could|should|about|your|their|they|been|more|also|what|when|which|said|like|just|over|into|than|them|some|only|other|after|being|down|most|such|much|even|still)\b/g;
+  const matches = t.match(englishWords) || [];
+  if (matches.length >= 3) return false;
+  if (/^(The|How|What|Why|When|This|New|Apple|Google|Meta|Microsoft|OpenAI)\s/.test(text)) return false;
+  return true;
 }

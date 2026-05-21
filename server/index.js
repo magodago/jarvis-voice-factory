@@ -50,6 +50,13 @@ app.get('/tunnel-url', async (_req, res) => {
   res.json({ tunnelUrl: null, active: false });
 });
 
+// API key endpoint — used by frontend for direct OpenAI Realtime connection (translate mode)
+app.get('/realtime/key', (_req, res) => {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) return res.status(500).json({ error: 'API key not configured' });
+  res.json({ key });
+});
+
 // Serve push sw.js with correct content type
 app.get('/sw.js', (_, res) => {
   res.setHeader('Content-Type', 'application/javascript');

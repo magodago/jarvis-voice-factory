@@ -42,18 +42,7 @@ export default function CallInterface({
           >
             <JarvisAvatar status="idle" />
 
-            {/* News button — centered above text, below avatar */}
-            <motion.button
-              onClick={() => setNewsOpen(true)}
-              whileTap={{ scale: 0.92 }}
-              className="relative flex items-center gap-2.5 px-6 py-3 rounded-2xl bg-cyber-cyan/15 border-2 border-cyber-cyan/30 text-cyber-cyan shadow-[0_0_20px_rgba(0,212,255,0.15)] hover:bg-cyber-cyan/25 hover:border-cyber-cyan/50 hover:shadow-[0_0_35px_rgba(0,212,255,0.3)] transition-all group -mt-2"
-            >
-              <div className="absolute -inset-2 rounded-2xl bg-cyber-cyan/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <Newspaper size={22} className="text-cyber-cyan drop-shadow-[0_0_6px_rgba(0,212,255,0.5)]" />
-              <span className="text-sm font-display tracking-[0.12em] uppercase text-cyber-cyan">Noticias</span>
-            </motion.button>
-
-            <div className="text-center space-y-1 -mt-4">
+            <div className="text-center space-y-1 -mt-6">
               <h1 className="font-display text-2xl tracking-[0.12em] text-cyber-white text-glow-cyber">
                 J.A.R.V.I.S.
               </h1>
@@ -129,17 +118,12 @@ export default function CallInterface({
             </motion.button>
             <p className="text-[10px] text-cyber-magenta/50 font-body tracking-wide">Traduccion simultanea</p>
 
-            {/* Action buttons */}
-            <div className="flex items-center gap-2">
-              <motion.button onClick={() => setNeoChatOpen(true)} whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyber-purple/10 border border-cyber-purple/20 text-cyber-purple/80 hover:bg-cyber-purple/20 transition-all">
-                <MessageCircle size={14} />
-                <span className="text-[10px] font-body">Chat NEO</span>
-              </motion.button>
-              <motion.button onClick={() => setUploadOpen(true)} whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/20 text-cyber-cyan/80 hover:bg-cyber-cyan/20 transition-all">
-                <Upload size={14} />
-                <span className="text-[10px] font-body">Archivo</span>
+            {/* Action buttons — solo Noticias centrado */}
+            <div className="flex items-center justify-center">
+              <motion.button onClick={() => setNewsOpen(true)} whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/20 text-cyber-cyan/80 hover:bg-cyber-cyan/20 transition-all">
+                <Newspaper size={16} />
+                <span className="text-[11px] font-body">Noticias</span>
               </motion.button>
             </div>
 

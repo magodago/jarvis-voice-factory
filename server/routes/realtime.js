@@ -68,7 +68,6 @@ export function setupRealtimeWS(server) {
               openaiWs = new WSClient(openaiUrl, [], {
                 headers: {
                   'Authorization': `Bearer ${apiKey}`,
-                  'OpenAI-Beta': 'realtime=v1',
                 },
               });
 
@@ -77,25 +76,13 @@ export function setupRealtimeWS(server) {
                 isActive = true;
                 browserWs.send(JSON.stringify({ type: 'connected' }));
 
-                // Configure for real-time translation:
-                // - turn_detection: null = NO esperar silencios, traducir cada palabra
-                // - instructions = traducir a español en tiempo real
-                // - voice: coral for output audio
-                // - input transcription disabled (we don't need STT)
+                // Minimal config: just set Spanish as output language
+                // The translate model has its own defaults — don't override turn_detection/modalities
                 openaiWs.send(JSON.stringify({
                   type: 'session.update',
                   session: {
-                    turn_detection: null,
-                    modalities: ['text', 'audio'],
-                    instructions: 'You are a real-time simultaneous translator. Translate EVERYTHING you hear into Spanish IMMEDIATELY, word by word, without waiting for pauses or sentence completion. Do not add commentary. Just translate as you hear each word.',
                     audio: {
-                      input: {
-                        format: { type: 'pcm16', sample_rate: 24000, channels: 1 },
-                      },
-                      output: {
-                        voice: 'coral',
-                        format: { type: 'pcm16', sample_rate: 24000, channels: 1 },
-                      },
+                      output: { language: 'es' },
                     },
                   },
                 }));

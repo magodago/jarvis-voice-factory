@@ -34,14 +34,14 @@ export function setupRealtimeWS(server) {
           // Binary = audio PCM16 from browser mic
           if (openaiWs && openaiWs.readyState === 1 && isActive) {
             const base64Audio = Buffer.from(data).toString('base64');
-            // GA API: both modes use the same event type (no session. prefix)
+            // Translation endpoint uses session.* prefix; voice agent uses standard events
+            const eventType = currentMode === 'translate'
+              ? 'session.input_audio_buffer.append'
+              : 'input_audio_buffer.append';
             openaiWs.send(JSON.stringify({
-              type: 'input_audio_buffer.append',
+              type: eventType,
               audio: base64Audio,
             }));
-            if (currentMode === 'translate') {
-              console.log('[Translate] Audio sent:', data.length, 'bytes');
-            }
           }
           return;
         }

@@ -63,7 +63,11 @@ export default function useOpenAIRealtime() {
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
 
-    const sdpResponse = await fetch('/session', {
+    // Discover backend URL (needed for GitHub Pages → tunnel)
+    const baseUrl = await discoverBackendUrl();
+    const sessionUrl = baseUrl ? `${baseUrl}/session` : '/session';
+
+    const sdpResponse = await fetch(sessionUrl, {
       method: 'POST',
       body: offer.sdp,
       headers: { 'Content-Type': 'application/sdp' },
@@ -300,3 +304,20 @@ function playPCM16Audio(arrayBuffer, audioCtx) {
   } catch {}
 }
 playPCM16Audio._nextTime = 0;
+
+// Discover backend URL (tunnel for GitHub Pages, empty for localhost)
+async function discoverBackendUrl() {
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') return '';
+  try {
+    const r = await fetch('/jarvis-voice-factory/tunnel.json', { signal: AbortSignal.timeout(3000) });
+    if (r.ok) {
+      const d = await r.json();
+      if (d.tunnelUrl) {
+        const t = await fetch(`${d.tunnelUrl}/health`, { signal: AbortSignal.timeout(3000) });
+        if (t.ok) return d.tunnelUrl;
+      }
+    }
+  } catch {}
+  return null;
+}

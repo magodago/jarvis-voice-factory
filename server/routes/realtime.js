@@ -61,24 +61,23 @@ export function setupRealtimeWS(server) {
             const mode = msg.mode || 'jarvis';
             currentMode = mode;
 
-            // === TRANSLATION MODE (GA — /v1/realtime + model=gpt-realtime-translate) ===
+            // === TRANSLATION MODE (uses gpt-realtime with translation instructions) ===
             if (mode === 'translate') {
-              const openaiUrl = 'wss://api.openai.com/v1/realtime?model=gpt-realtime-translate';
+              // Use the same voice model but with translation system prompt
+              // gpt-realtime-translate model doesn't transcribe audio properly
+              const openaiUrl = 'wss://api.openai.com/v1/realtime?model=gpt-realtime';
 
               openaiWs = new WSClient(openaiUrl, [], {
-                headers: {
-                  'Authorization': `Bearer ${apiKey}`,
-                },
+                headers: { 'Authorization': `Bearer ${apiKey}` },
               });
 
               openaiWs.on('open', () => {
-                console.log('[Realtime] Translate GA connected');
-                // Wait for session.created before configuring
+                console.log('[Realtime] Translate (gpt-realtime) connected');
+                // Will configure on session.created
               });
 
               openaiWs.on('message', (openaiData, isBinaryMsg) => {
                 if (isBinaryMsg) {
-                  // Binary = PCM16 audio from OpenAI
                   if (browserWs.readyState === 1) {
                     browserWs.send(openaiData, { binary: true });
                   }
@@ -87,17 +86,35 @@ export function setupRealtimeWS(server) {
 
                 try {
                   const event = JSON.parse(openaiData.toString());
-                  // Log ALL events from translate model for debugging
-                  console.log('[Translate] Event:', event.type, event.delta ? '(delta:' + (event.delta?.length || '?') + ')' : '');
                   switch (event.type) {
                     case 'session.created':
-                      // Session ready — notify browser, start translating immediately
-                      console.log('[Realtime] Translate session created:', event.session?.id);
+                      console.log('[Realtime] Translate session:', event.session?.id);
                       isActive = true;
                       browserWs.send(JSON.stringify({ type: 'connected' }));
-                      // No session.update needed — translate model works out of the box
+                      // Configure: Spanish transcription + Spanish voice + translation prompt
+                      openaiWs.send(JSON.stringify({
+                        type: 'session.update',
+                        session: {
+                          type: 'realtime',
+                          output_modalities: ['audio'],
+                          instructions: 'Eres un traductor simultáneo. Traduce TODO lo que escuches al español INMEDIATAMENTE, palabra por palabra. No añadas comentarios. Solo traduce.',
+                          audio: {
+                            input: {
+                              transcription: { model: 'whisper-1', language: 'auto' },
+                            },
+                            output: {
+                              voice: 'coral',
+                            },
+                          },
+                        },
+                      }));
                       break;
                     case 'session.updated':
+                      break;
+                    case 'conversation.item.input_audio_transcription.completed':
+                      if (event.transcript) {
+                        browserWs.send(JSON.stringify({ type: 'debug', event: 'heard: ' + event.transcript.slice(0, 40) }));
+                      }
                       break;
                     case 'response.output_audio.delta':
                       if (event.delta && browserWs.readyState === 1) {
@@ -106,78 +123,26 @@ export function setupRealtimeWS(server) {
                       }
                       break;
                     case 'response.output_audio_transcript.delta':
-                      browserWs.send(JSON.stringify({
-                        type: 'transcript.assistant_delta',
-                        delta: event.delta || '',
-                      }));
+                      browserWs.send(JSON.stringify({ type: 'transcript.assistant_delta', delta: event.delta || '' }));
                       break;
                     case 'response.output_audio_transcript.done':
                       browserWs.send(JSON.stringify({ type: 'transcript.assistant_done' }));
                       break;
-                    // Legacy translate events (session.* protocol)
-                    case 'session.output_audio.delta':
-                      if (event.delta && browserWs.readyState === 1) {
-                        const audioBuffer = Buffer.from(event.delta, 'base64');
-                        browserWs.send(audioBuffer, { binary: true });
-                      }
-                      break;
-                    case 'session.output_transcript.delta':
-                      browserWs.send(JSON.stringify({
-                        type: 'transcript.assistant_delta',
-                        delta: event.delta || '',
-                      }));
-                      break;
-                    case 'session.output_transcript.done':
-                      browserWs.send(JSON.stringify({ type: 'transcript.assistant_done' }));
-                      break;
-                    case 'session.closed':
-                      isActive = false;
-                      browserWs.send(JSON.stringify({ type: 'disconnected' }));
-                      break;
-                    case 'conversation.item.input_audio_transcription.completed':
-                      if (event.transcript) {
-                        browserWs.send(JSON.stringify({
-                          type: 'debug',
-                          event: 'heard: ' + event.transcript.slice(0, 40),
-                        }));
-                      }
-                      break;
-                    case 'conversation.item.added':
-                      // Translate model returns translated text in conversation items
-                      console.log('[Translate] Item added:', JSON.stringify(event.item).slice(0, 500));
-                      if (event.item?.content) {
-                        const content = event.item.content;
-                        // content can be string, array, or object
-                        let text = '';
-                        if (typeof content === 'string') text = content;
-                        else if (Array.isArray(content)) text = content.map(c => typeof c === 'string' ? c : (c.text || c.transcript || c.value || '')).join(' ');
-                        else if (typeof content === 'object') text = content.text || content.transcript || '';
-                        if (text.trim()) {
-                          browserWs.send(JSON.stringify({
-                            type: 'transcript.assistant_delta',
-                            delta: text,
-                          }));
-                        }
-                      }
-                      break;
-                    case 'conversation.item.done':
-                      browserWs.send(JSON.stringify({ type: 'transcript.assistant_done' }));
-                      break;
-                    case 'response.output_item.added':
                     case 'response.content_part.added':
+                    case 'response.output_item.added':
+                    case 'response.created':
                     case 'response.audio.delta':
                     case 'response.audio.done':
                     case 'response.done':
                     case 'input_audio_buffer.speech_started':
                     case 'input_audio_buffer.speech_stopped':
                     case 'input_audio_buffer.committed':
+                    case 'conversation.item.added':
+                    case 'conversation.item.done':
                       break;
                     case 'error':
                       console.error('[Realtime] Translate error:', JSON.stringify(event.error));
-                      browserWs.send(JSON.stringify({
-                        type: 'error',
-                        message: event.error?.message || 'Translation error',
-                      }));
+                      browserWs.send(JSON.stringify({ type: 'error', message: event.error?.message || 'Translation error' }));
                       break;
                     default:
                       if (browserWs.readyState === 1) {

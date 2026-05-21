@@ -41,7 +41,7 @@ let debugJump=0,debugJumpDone=0,debugFrame=0;
 const FW=340,FH=8,FG=92,WW=10,PW=24,PH=32,CLIMB_SPEED=0.016;
 const C={bg:'#060010',cyan:'#00d4ff',magenta:'#ff15d0',white:'#e8e0ff',green:'#00ff88',amber:'#ffb347',red:'#ff4466',dim:'#1a0030',panel:'#0a0020',purple:'#7b00ff',wall:'#0d0030'};
 
-const P={x:0,y:0,w:PW,h:PH,dir:-1,vx:1.8,vy:0,onGround:false,hp:3,maxHp:3,shootCd:0,inv:0};
+const P={x:0,y:0,w:PW,h:PH,dir:-1,vx:1.3,vy:0,onGround:false,hp:3,maxHp:3,shootCd:0,inv:0};
 let bullets=[],eBullets=[],particles=[];
 
 // Pre-gen floors
@@ -51,9 +51,18 @@ for(let n=0;n<=100;n++){
 }
 for(const f of floors){
  if(f.n===0)continue;
+ // Stair zone: 80px from stair side — no fire/enemies here
+ const stairZone=f.stairSide==='left'?f.ex+80:f.ex+FW-80;
+ const safeMin=f.stairSide==='left'?stairZone:f.ex+40;
+ const safeMax=f.stairSide==='left'?f.ex+FW-40:stairZone;
  const cnt=Math.random()<0.25+f.n*0.01?2:Math.random()<0.35+f.n*0.015?1:0;
- for(let j=0;j<cnt;j++)f.enemies.push({x:f.ex+40+Math.random()*(FW-80),y:f.y-28,w:20,h:28,vx:(Math.random()>.5?1:-1)*0.6+0.2,type:Math.random()<0.3?'shooter':'walker',sTimer:Math.random()<0.3?100:999,hp:Math.random()<0.3?1:2});
- if(f.hasFire)f.fireX=f.ex+40+Math.random()*(FW-80);
+ for(let j=0;j<cnt;j++)f.enemies.push({
+  x:safeMin+Math.random()*(safeMax-safeMin-60),y:f.y-28,w:20,h:28,
+  vx:0,dir:1,type:Math.random()<0.3?'shooter':'walker',
+  sTimer:Math.random()<0.3?100:999,hp:Math.random()<0.3?1:2
+ });
+ // Fire: not near stairs
+ if(f.hasFire)f.fireX=safeMin+20+Math.random()*(safeMax-safeMin-60);
 }
 function cf(){return floors[floorNum]}
 
@@ -158,7 +167,8 @@ function update(){
 
  // Enemies
  for(const e of f.enemies){
-  e.x+=e.vx;if(e.x<lWall+5||e.x+e.w>rWall-5)e.vx*=-1;
+  // Always move opposite to player direction
+  e.vx=-P.dir*0.6;e.x+=e.vx;
   e.sTimer--;if(e.sTimer<=0&&e.type==='shooter'){eBullets.push({x:e.x+e.w/2,y:e.y+e.h/2,vx:(P.x>e.x?1:-1)*3,vy:0,w:7,h:3});e.sTimer=100+Math.random()*80}
   for(let bi=bullets.length-1;bi>=0;bi--){const b=bullets[bi];if(b.x<e.x+e.w&&b.x+b.w>e.x&&b.y+1<e.y+e.h&&b.y+b.h>e.y+1){e.hp--;bullets.splice(bi,1);sp(e.x+e.w/2,e.y+e.h/2,C.magenta,5);shakeT=4;shakeI=2;if(e.hp<=0){f.enemies=f.enemies.filter(x=>x!==e);score+=250;sp(e.x+e.w/2,e.y+e.h/2,C.red,10)}break}}
   if(P.inv<=0&&e.x<P.x+P.w&&e.x+e.w>P.x&&e.y<P.y+P.h&&e.y+e.h>P.y){P.hp--;P.inv=50;sp(P.x+P.w/2,P.y+P.h/2,C.red,10);shakeT=12;shakeI=7;if(P.hp<=0)die()}

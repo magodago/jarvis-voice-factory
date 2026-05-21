@@ -157,6 +157,37 @@ router.get('/search', async (req, res) => {
   }
 });
 
+// Article content proxy — fetches full article and extracts clean text
+router.get('/article', async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).json({ error: 'URL required' });
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    const response = await fetch(url, {
+      signal: controller.signal,
+      redirect: 'follow',
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; JARVIS-Reader/1.0)' },
+    });
+    clearTimeout(timeout);
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const html = await response.text();
+
+    // Extract article content
+    const content = extractArticleContent(html, url);
+    // Extract title
+    const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+    const title = titleMatch ? decodeHtml(titleMatch[1].trim()) : '';
+
+    res.json({ url, title, content, contentType: 'text' });
+  } catch (err) {
+    console.error('[News] Article fetch error:', err.message);
+    res.status(502).json({ error: 'FETCH_ERROR', message: 'No se pudo cargar el artículo.' });
+  }
+});
+
 // === XML Parser ===
 function parseRSSArticles(xml, source) {
   const articles = [];
@@ -234,6 +265,37 @@ function decodeHtml(text) {
     .replace(/&Aacute;/g, 'Á').replace(/&Eacute;/g, 'É').replace(/&Iacute;/g, 'Í')
     .replace(/&Oacute;/g, 'Ó').replace(/&Uacute;/g, 'Ú').replace(/&Ntilde;/g, 'Ñ')
     .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)));
+}
+
+// Extract clean article text from HTML
+function extractArticleContent(html, sourceUrl) {
+  let clean = html
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '')
+    .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '')
+    .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
+    .replace(/<aside[^>]*>[\s\S]*?<\/aside>/gi, '')
+    .replace(/<noscript[^>]*>[\s\S]*?<\/noscript>/gi, '');
+
+  let articleMatch = clean.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
+  if (!articleMatch) articleMatch = clean.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+  if (articleMatch) clean = articleMatch[1];
+
+  const paragraphs = [];
+  const pRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
+  let pm;
+  while ((pm = pRegex.exec(clean)) !== null) {
+    const text = stripHtml(decodeHtml(pm[1])).trim();
+    if (text.length > 30) paragraphs.push(text);
+  }
+
+  if (paragraphs.length === 0) {
+    const allText = stripHtml(decodeHtml(clean)).trim();
+    if (allText) paragraphs.push(allText);
+  }
+
+  return paragraphs.slice(0, 50);
 }
 
 export default router;

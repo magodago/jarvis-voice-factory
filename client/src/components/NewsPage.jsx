@@ -111,12 +111,33 @@ export default function NewsPage({ isOpen, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [usingFallback, setUsingFallback] = useState(false);
+  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [articleContent, setArticleContent] = useState(null);
+  const [articleLoading, setArticleLoading] = useState(false);
 
   // Cache: Map<topic, {articles, timestamp}>
   const cacheRef = useRef(new Map());
   const seenRef = useRef(new Set());
   const backendUrls = useMemo(() => getBackendUrls(), []);
   const activeTopicData = TOPICS.find(t => t.id === activeTopic) || TOPICS[0];
+
+  // Open article reader modal
+  const openArticle = async (article) => {
+    setSelectedArticle(article);
+    setArticleContent(null);
+    setArticleLoading(true);
+    try {
+      const baseUrl = backendUrls[0] || '';
+      const url = baseUrl ? `${baseUrl}/news/article?url=${encodeURIComponent(article.url || article.link)}` : `/news/article?url=${encodeURIComponent(article.url || article.link)}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      setArticleContent(data);
+    } catch (err) {
+      setArticleContent({ error: true, message: 'No se pudo cargar el artículo completo. Puedes abrirlo en el navegador.', url: article.url || article.link });
+    }
+    setArticleLoading(false);
+  };
 
   // When topic changes: show cache immediately, then refresh
   const switchTopic = useCallback((topicId) => {
@@ -343,16 +364,15 @@ export default function NewsPage({ isOpen, onClose }) {
           {articles.map((a, i) => {
             const sourceColor = a.sourceColor || SOURCE_COLORS[a.source] || '#00d4ff';
             return (
-              <motion.a
+              <motion.div
                 key={a.url || a.link || i}
-                href={a.url || a.link || '#'}
-                target="_blank" rel="noopener noreferrer"
+                onClick={() => openArticle(a)}
                 layout
                 initial={{ opacity: 0, y: 12, scale: 0.97 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ delay: Math.min(i * 0.02, 0.3), duration: 0.25 }}
-                className="group block relative overflow-hidden rounded-2xl border transition-all duration-200"
+                className="group block relative overflow-hidden rounded-2xl border transition-all duration-200 cursor-pointer"
                 style={{
                   backgroundColor: sourceColor + '06',
                   borderColor: sourceColor + '12',
@@ -411,7 +431,7 @@ export default function NewsPage({ isOpen, onClose }) {
                       className="shrink-0 mt-1 text-white/15 group-hover:text-white/60 transition-colors" />
                   </div>
                 </div>
-              </motion.a>
+              </motion.div>
             );
           })}
         </AnimatePresence>
@@ -449,6 +469,97 @@ export default function NewsPage({ isOpen, onClose }) {
           />
         ))}
       </div>
+
+      {/* === ARTICLE READER MODAL === */}
+      <AnimatePresence>
+        {selectedArticle && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex flex-col bg-[#060010]/98 backdrop-blur-2xl"
+          >
+            {/* Header */}
+            <div className="px-5 pt-5 pb-3 border-b border-white/10 flex items-center justify-between">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <span className="text-[10px] font-mono px-2 py-1 rounded-lg"
+                  style={{
+                    color: selectedArticle.sourceColor || '#00d4ff',
+                    backgroundColor: (selectedArticle.sourceColor || '#00d4ff') + '10',
+                    border: `1px solid ${(selectedArticle.sourceColor || '#00d4ff')}20`,
+                  }}>
+                  {selectedArticle.source || 'Noticia'}
+                </span>
+                <span className="text-[10px] text-white/30 font-mono">{RELATIVE_TIME(selectedArticle.pubDate)}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => window.open(selectedArticle.url || selectedArticle.link, '_blank')}
+                  className="p-2 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/20 text-cyber-cyan/70 hover:bg-cyber-cyan/20 transition-all"
+                  title="Abrir en navegador">
+                  <ExternalLink size={16} />
+                </button>
+                <button onClick={() => { setSelectedArticle(null); setArticleContent(null); }}
+                  className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+                  <X size={18} className="text-white/60" />
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto px-5 py-6">
+              {articleLoading && (
+                <div className="flex flex-col items-center justify-center py-20 gap-4">
+                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }}>
+                    <Loader2 size={36} className="text-cyber-cyan/60" />
+                  </motion.div>
+                  <span className="text-sm text-white/40">Cargando artículo...</span>
+                </div>
+              )}
+
+              {articleContent && !articleContent.error && (
+                <div className="max-w-2xl mx-auto">
+                  <h1 className="text-xl font-bold text-white/95 leading-tight mb-6 font-body"
+                    style={{ textShadow: '0 0 20px rgba(0,212,255,0.15)' }}>
+                    {articleContent.title || selectedArticle.title}
+                  </h1>
+
+                  {articleContent.content?.map((p, i) => (
+                    <motion.p
+                      key={i}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.03 }}
+                      className="text-[15px] text-white/75 leading-relaxed mb-4 font-body"
+                    >
+                      {p}
+                    </motion.p>
+                  ))}
+
+                  <div className="mt-8 pt-6 border-t border-white/5 text-center">
+                    <a href={selectedArticle.url || selectedArticle.link} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-xs text-cyber-cyan/60 hover:text-cyber-cyan transition-colors font-mono">
+                      <ExternalLink size={12} /> Ver fuente original
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {articleContent?.error && (
+                <div className="flex flex-col items-center justify-center py-20 gap-4 max-w-md mx-auto text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-white/3 border border-white/5 flex items-center justify-center">
+                    <Newspaper size={28} className="text-white/20" />
+                  </div>
+                  <p className="text-sm text-white/40 font-body">{articleContent.message}</p>
+                  <a href={articleContent.url} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/20 text-cyber-cyan text-xs font-body hover:bg-cyber-cyan/20 transition-all">
+                    <ExternalLink size={14} /> Abrir en navegador
+                  </a>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

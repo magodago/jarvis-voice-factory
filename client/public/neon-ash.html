@@ -14,219 +14,262 @@ canvas{display:block;width:100%;height:100%}
 <canvas id="c"></canvas>
 <script>
 // ═══════════════════════════════════════
-// NEON ASH — Cyber Tower Arcade
+// NEON ASH — Cyber Tower Arcade v2
+// Crazy Bill mechanics
 // ═══════════════════════════════════════
 const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 
 let W, H, scale;
-let gameState = 'menu'; // menu | playing | dead
-let score = 0, floorNum = 1, highScore = parseInt(localStorage.getItem('neonash_hs')||0);
+let gameState = 'intro'; // intro | playing | dead | climbing
+let score = 0, floorNum = 0, highScore = parseInt(localStorage.getItem('neonash_hs')||0);
 let cameraY = 0;
+let climbTimer = 0, climbFromY = 0, climbToY = 0;
 let shakeTimer = 0, shakeIntensity = 0;
+let introTimer = 0;
 
-// ── Colores ──
+const FLOOR_W = 340; // fixed floor width
+const FLOOR_H = 8;
+const FLOOR_GAP = 92; // vertical gap between floors
+const WALL_W = 10;
+const CLIMB_DURATION = 120; // ~2 seconds at 60fps
+
 const C = {
   bg:'#060010', cyan:'#00d4ff', magenta:'#ff15d0', white:'#e8e0ff',
   green:'#00ff88', amber:'#ffb347', red:'#ff4466', dim:'#1a0030',
-  panel:'#0a0020', purple:'#7b00ff',
+  panel:'#0a0020', purple:'#7b00ff', wall:'#0d0030',
 };
 
-// ── Player ──
 const player = {
-  x:0, y:0, w:28, h:36, vx:2, vy:0, dir:1,
+  x:0, y:0, w:24, h:32, vx:2, vy:0, dir:1,
   jumping:false, onGround:false, hp:3, maxHp:3,
-  shootCooldown:0, invincible:0, animFrame:0,
+  shootCooldown:0, invincible:0,
 };
 let bullets = [];
-
-// ── World ──
-let floors = [];        // platforms
 let enemies = [];
 let enemyBullets = [];
-let hazards = [];       // fire
+let hazards = [];
 let elevators = [];
-let stairs = [];
 let particles = [];
-let powerUps = [];
+let visibleFloors = []; // only current + next floor
 
-// ── Input ──
-const keys = {};
-let touchLeft = false, touchRight = false;
+// Input
+let jumpPressed = false, shootPressed = false;
 
-// ── SPAWN HELPERS ──
-function spawnFloor(y, width, xOffset=0) {
-  const w = width || (60 + Math.random() * (W - 120));
-  const x = (W - w) / 2 + (xOffset || (Math.random()-0.5)*40);
-  return { x, y, w, h: 8 };
-}
+// ── FLOOR SYSTEM ──
+function getFloorY(n) { return -(n * FLOOR_GAP); }
 
-function spawnStairs(f, side) {
-  return { x: side==='left' ? f.x - 24 : f.x + f.w, y: f.y - 40, w: 24, h: 40 };
-}
-
-function spawnElevator(f) {
-  return { x: f.x + f.w/2 - 16, y: f.y - 20, w: 32, h: 20, open: false, timer: 300 + Math.random()*400 };
-}
-
-function spawnHazard(f) {
-  return { x: f.x + 20 + Math.random()*(f.w-40), y: f.y - 12, w: 18, h: 12, timer: 0 };
-}
-
-function spawnEnemy(f) {
-  const type = Math.random() < 0.3 ? 'shooter' : 'walker';
+function buildFloor(n) {
+  const y = getFloorY(n);
   return {
-    x: f.x + 10 + Math.random()*(f.w-40), y: f.y - 30, w: 24, h: 30,
-    vx: (Math.random()>0.5?1:-1)*1.2, type,
-    shootTimer: type==='shooter' ? 60+Math.random()*80 : 999,
-    hp: type==='shooter' ? 1 : 2,
-    color: type==='shooter' ? C.magenta : C.purple,
+    n, y, w: FLOOR_W, x: (400 - FLOOR_W) / 2, // centered in 400px world
+    hasElevator: Math.random() < 0.5,
+    elevatorOpen: false, elevatorTimer: 400 + Math.random()*400,
+    hasHazard: Math.random() < 0.35,
+    hazardX: 0,
+    enemies: [],
   };
 }
 
-// ── BUILD WORLD ──
-function buildWorld(startFloor) {
-  floors = []; stairs = []; enemies = []; hazards = []; elevators = []; powerUps = [];
-  const fh = 72; // floor height gap
-  for (let i = 0; i < 25; i++) {
-    const fy = -(startFloor + i) * fh;
-    const f = spawnFloor(fy);
-    floors.push(f);
-
-    // Stairs at both ends
-    stairs.push(spawnStairs(f, 'left'));
-    stairs.push(spawnStairs(f, 'right'));
-
-    // Elevator (50% chance)
-    if (Math.random() < 0.5) elevators.push(spawnElevator(f));
-
-    // Hazard (40% chance)
-    if (Math.random() < 0.4) hazards.push(spawnHazard(f));
-
-    // Enemies (60% chance, more on higher floors)
-    if (Math.random() < 0.4 + i*0.02) enemies.push(spawnEnemy(f));
-  }
+function spawnEnemyForFloor(f) {
+  const type = Math.random() < 0.3 ? 'shooter' : 'walker';
+  return {
+    x: f.x + 40 + Math.random()*(f.w-80), y: f.y - 28, w: 20, h: 28,
+    vx: (Math.random()>0.5?1:-1)*1.0, type,
+    shootTimer: type==='shooter' ? 80+Math.random()*100 : 999,
+    hp: type==='shooter' ? 1 : 2,
+    floorN: f.n,
+  };
 }
+
+// All floors (pre-generated up to floor 100)
+let allFloors = [];
+for (let i = 0; i <= 100; i++) {
+  const f = buildFloor(i);
+  if (Math.random() < 0.3 + i*0.015) f.enemies.push(spawnEnemyForFloor(f));
+  if (Math.random() < 0.2 + i*0.01) f.enemies.push(spawnEnemyForFloor(f));
+  if (f.hasHazard) f.hazardX = f.x + 30 + Math.random()*(f.w-60);
+  allFloors.push(f);
+}
+
+function getFloor(n) { return allFloors[n] || buildFloor(n); }
+function currentFloor() { return getFloor(floorNum); }
+
+// ── STAIRS ──
+function stairLeft(f) { return { x: f.x + 10, y: f.y - 36, w: 30, h: 36, side:'left' }; }
+function stairRight(f) { return { x: f.x + f.w - 40, y: f.y - 36, w: 30, h: 36, side:'right' }; }
 
 // ── RESIZE ──
 function resize() {
   W = window.innerWidth;
   H = window.innerHeight;
-  scale = Math.min(W/400, 1);
   canvas.width = W;
   canvas.height = H;
+  scale = Math.min(W/400, H/600, 1);
 }
 window.addEventListener('resize', resize);
 
 // ── TOUCH ──
-canvas.addEventListener('touchstart', e => {
+function handleTouchStart(e) {
   e.preventDefault();
   for (const t of e.changedTouches) {
-    if (t.clientX < W/2) touchLeft = true;
-    else touchRight = true;
+    if (t.clientX < W/2) jumpPressed = true;
+    else shootPressed = true;
   }
-  if (gameState==='menu') startGame();
-  if (gameState==='dead') { gameState='menu'; buildWorld(0); }
-});
-canvas.addEventListener('touchend', e => {
+  if (gameState==='intro' && introTimer > 30) startGame();
+  if (gameState==='dead') restartGame();
+}
+function handleTouchEnd(e) {
   e.preventDefault();
-  touchLeft = false; touchRight = false;
+  jumpPressed = false; shootPressed = false;
   for (const t of e.touches) {
-    if (t.clientX < W/2) touchLeft = true;
-    else touchRight = true;
+    if (t.clientX < W/2) jumpPressed = true;
+    else shootPressed = true;
   }
-});
-canvas.addEventListener('touchcancel', () => { touchLeft=false; touchRight=false; });
+}
+function handleTouchMove(e) { e.preventDefault(); }
+canvas.addEventListener('touchstart', handleTouchStart, {passive:false});
+canvas.addEventListener('touchend', handleTouchEnd, {passive:false});
+canvas.addEventListener('touchmove', handleTouchMove, {passive:false});
+canvas.addEventListener('touchcancel', () => { jumpPressed=false; shootPressed=false; });
 
 // ── KEYBOARD ──
 window.addEventListener('keydown', e => {
-  keys[e.key] = true;
-  if (e.key===' '||e.key==='Enter') {
-    if (gameState==='menu') startGame();
-    if (gameState==='dead') { gameState='menu'; buildWorld(0); }
+  if (e.key==='ArrowLeft'||e.key==='a') jumpPressed = true;
+  if (e.key==='ArrowRight'||e.key==='d'||e.key===' ') shootPressed = true;
+  if (e.key==='Enter'||e.key===' ') {
+    if (gameState==='intro' && introTimer > 30) startGame();
+    if (gameState==='dead') restartGame();
   }
 });
-window.addEventListener('keyup', e => keys[e.key]=false);
+window.addEventListener('keyup', e => {
+  if (e.key==='ArrowLeft'||e.key==='a') jumpPressed = false;
+  if (e.key==='ArrowRight'||e.key==='d'||e.key===' ') shootPressed = false;
+});
 
-// ── GAME ──
-function startGame() {
-  gameState = 'playing';
-  score = 0; floorNum = 1;
-  player.hp = player.maxHp;
-  player.invincible = 0;
-  bullets = []; enemyBullets = []; particles = [];
-  buildWorld(0);
-  // Place player on first floor
-  const f = floors[floors.length-1];
-  player.x = f.x + f.w/2;
-  player.y = f.y - player.h;
-  player.vx = 2; player.dir = 1;
-  cameraY = player.y - H/2;
-}
-
-function addParticles(x, y, color, count) {
+// ── PARTICLES ──
+function spawnParticles(x, y, color, count) {
   for (let i=0;i<count;i++) {
-    particles.push({
-      x, y, vx:(Math.random()-0.5)*3, vy:(Math.random()-0.5)*3-2,
-      life:20+Math.random()*15, color, size:1+Math.random()*2
-    });
+    particles.push({ x, y, vx:(Math.random()-0.5)*3, vy:(Math.random()-0.5)*3-2, life:15+Math.random()*15, color, size:1+Math.random()*2 });
   }
 }
 
+// ── GAME START ──
+function startGame() {
+  gameState = 'playing';
+  score = 0; floorNum = 0;
+  player.hp = player.maxHp;
+  player.invincible = 0;
+  player.shootCooldown = 0;
+  player.dir = 1;
+  player.vx = 2;
+  bullets = []; enemyBullets = []; particles = [];
+  const f = currentFloor();
+  player.x = f.x + f.w/2;
+  player.y = f.y - player.h;
+  player.vy = 0;
+  player.onGround = true;
+  player.jumping = false;
+  cameraY = f.y - H*0.4;
+  climbTimer = 0;
+}
+
+function restartGame() {
+  gameState = 'intro'; introTimer = 0; player.hp = player.maxHp;
+  floorNum = 0; score = 0;
+  bullets = []; enemyBullets = []; particles = [];
+  cameraY = 0;
+}
+
+function die() {
+  gameState = 'dead';
+  if (score > highScore) { highScore = score; localStorage.setItem('neonash_hs', highScore); }
+  spawnParticles(player.x, player.y, C.magenta, 30);
+  shakeTimer = 30; shakeIntensity = 10;
+}
+
+// ── CLIMBING ──
+function startClimb() {
+  gameState = 'climbing';
+  climbFromY = getFloorY(floorNum);
+  climbToY = getFloorY(floorNum + 1);
+  climbTimer = 0;
+  player.vx = 0; // stop moving during climb
+}
+
+// ── UPDATE ──
 function update() {
-  if (gameState !== 'playing') return;
+  if (gameState === 'intro') {
+    introTimer++;
+    if (introTimer > 300) introTimer = 300;
+    return;
+  }
+  if (gameState === 'dead') {
+    if (shakeTimer > 0) shakeTimer--;
+    return;
+  }
 
-  // ── Player movement ──
-  const jump = keys['ArrowLeft'] || keys['a'] || touchLeft;
-  const shoot = keys['ArrowRight'] || keys['d'] || keys[' '] || touchRight;
+  // ── CLIMBING ──
+  if (gameState === 'climbing') {
+    climbTimer++;
+    const t = Math.min(climbTimer / CLIMB_DURATION, 1);
+    const fy = climbFromY + (climbToY - climbFromY) * t;
+    player.y = fy - player.h;
+    player.x += (currentFloor().x + currentFloor().w/2 - player.x) * 0.05; // center
+    if (t >= 1) {
+      floorNum++;
+      score += 100;
+      gameState = 'playing';
+      player.y = climbToY - player.h;
+      player.vx = 2;
+      player.dir = 1;
+      player.onGround = true;
+      spawnParticles(player.x, player.y, C.cyan, 10);
+      // Spawn enemies for new floor if not already
+      const f = currentFloor();
+      if (f.enemies.length === 0 && Math.random() < 0.5) f.enemies.push(spawnEnemyForFloor(f));
+    }
+    return;
+  }
 
-  // Auto-run
+  // ── PLAYING ──
+  const f = currentFloor();
+  const floorY = f.y;
+  const leftWall = f.x + WALL_W;
+  const rightWall = f.x + f.w - WALL_W;
+
+  // Player movement
   player.x += player.vx * player.dir;
 
-  // Bounce off walls
-  if (player.x < 10) { player.dir = 1; player.x = 10; }
-  if (player.x > W - player.w - 10) { player.dir = -1; player.x = W - player.w - 10; }
+  // Bounce between walls
+  if (player.x <= leftWall) { player.dir = 1; player.x = leftWall; }
+  if (player.x + player.w >= rightWall) { player.dir = -1; player.x = rightWall - player.w; }
 
-  // Gravity + ground check
+  // Check stairs — trigger climb when touching stair + at edge
+  const sl = stairLeft(f), sr = stairRight(f);
+  const atLeftEdge = player.x <= leftWall + 15;
+  const atRightEdge = player.x + player.w >= rightWall - 15;
+
+  if (atLeftEdge && player.y + player.h > sl.y && player.y < sl.y + sl.h) {
+    startClimb(); return;
+  }
+  if (atRightEdge && player.y + player.h > sr.y && player.y < sr.y + sr.h) {
+    startClimb(); return;
+  }
+
+  // Gravity + ground
   player.onGround = false;
-  for (const f of floors) {
-    if (player.x + player.w > f.x && player.x < f.x + f.w) {
-      if (player.y + player.h >= f.y && player.y + player.h <= f.y + 16) {
-        player.y = f.y - player.h;
-        player.vy = 0;
-        player.jumping = false;
-        player.onGround = true;
-        // Climb stairs — move up a floor
-        for (const s of stairs) {
-          if (player.x + player.w > s.x && player.x < s.x + s.w &&
-              player.y + player.h > s.y && player.y < s.y + s.h) {
-            // Ascend
-            const nextFloor = floors.find(fl => fl.y < f.y - 20 && fl.y > f.y - 140);
-            if (nextFloor) {
-              player.y = nextFloor.y - player.h;
-              floorNum++;
-              score += 100;
-              addParticles(player.x+player.w/2, player.y, C.cyan, 8);
-            }
-            break;
-          }
-        }
-        // Enter elevator
-        for (const el of elevators) {
-          if (el.open && player.x + player.w > el.x && player.x < el.x + el.w &&
-              player.y + player.h > el.y && player.y < el.y + el.h) {
-            player.y -= 720; // boost 10 floors
-            floorNum += 10;
-            score += 1000;
-            cameraY -= 720;
-            addParticles(player.x+player.w/2, player.y, C.magenta, 20);
-            el.open = false;
-            el.timer = 600;
-          }
-        }
-        break;
-      }
-    }
+  if (player.y + player.h >= floorY && player.y + player.h <= floorY + 14) {
+    player.y = floorY - player.h;
+    player.vy = 0;
+    player.jumping = false;
+    player.onGround = true;
+  }
+  // CANNOT fall below current floor
+  if (player.y + player.h > floorY + 20) {
+    player.y = floorY - player.h;
+    player.vy = 0;
+    player.onGround = true;
   }
   if (!player.onGround) {
     player.vy += 0.5;
@@ -234,53 +277,68 @@ function update() {
   }
 
   // Jump
-  if (jump && player.onGround) {
-    player.vy = -9;
+  if (jumpPressed && player.onGround) {
+    player.vy = -8;
     player.jumping = true;
     player.onGround = false;
   }
 
-  // ── Shooting ──
-  if (shoot && player.shootCooldown <= 0) {
-    bullets.push({
-      x: player.x + player.w/2, y: player.y + player.h/2,
-      vx: player.dir * 8, vy: 0, w: 12, h: 4
-    });
-    player.shootCooldown = 15;
-    addParticles(bullets[bullets.length-1].x, bullets[bullets.length-1].y, C.cyan, 3);
+  // Shoot
+  if (shootPressed && player.shootCooldown <= 0) {
+    bullets.push({ x:player.x+player.w/2, y:player.y+player.h/2, vx:player.dir*7, vy:0, w:10, h:3 });
+    player.shootCooldown = 14;
+    spawnParticles(bullets[bullets.length-1].x, bullets[bullets.length-1].y, C.cyan, 2);
   }
   if (player.shootCooldown > 0) player.shootCooldown--;
 
-  // ── Bullets ──
-  for (const b of bullets) { b.x += b.vx; }
-  bullets = bullets.filter(b => b.x > -50 && b.x < W+50);
+  // Elevator
+  if (f.hasElevator) {
+    f.elevatorTimer--;
+    if (!f.elevatorOpen && f.elevatorTimer <= 0) { f.elevatorOpen = true; f.elevatorTimer = 250; }
+    if (f.elevatorOpen) {
+      f.elevatorTimer--;
+      const ex = f.x + f.w/2 - 16, ey = f.y - 20;
+      if (player.x+player.w > ex && player.x < ex+32 && player.y+player.h > ey && player.y < ey+20 && f.elevatorOpen) {
+        // Boost
+        floorNum += 10;
+        score += 1000;
+        player.y = getFloorY(floorNum) - player.h;
+        cameraY = player.y - H*0.4;
+        f.elevatorOpen = false;
+        f.elevatorTimer = 600;
+        spawnParticles(player.x, player.y, C.magenta, 25);
+      }
+      if (f.elevatorTimer <= 0) { f.elevatorOpen = false; f.elevatorTimer = 400+Math.random()*500; }
+    }
+  }
 
-  // ── Enemies ──
-  for (const e of enemies) {
-    // Move
+  // ── Bullets ──
+  for (const b of bullets) b.x += b.vx;
+  bullets = bullets.filter(b => b.x > -50 && b.x < 450);
+
+  // ── Enemies on current floor ──
+  for (const e of f.enemies) {
     e.x += e.vx;
-    if (e.x < 10 || e.x > W - e.w - 10) e.vx *= -1;
+    if (e.x < leftWall+5 || e.x+e.w > rightWall-5) e.vx *= -1;
 
     // Shoot
     e.shootTimer--;
     if (e.shootTimer <= 0 && e.type === 'shooter') {
-      const dir = player.x > e.x ? 1 : -1;
-      enemyBullets.push({ x:e.x+e.w/2, y:e.y+e.h/2, vx:dir*4, vy:0, w:8, h:4 });
-      e.shootTimer = 80 + Math.random()*60;
+      enemyBullets.push({ x:e.x+e.w/2, y:e.y+e.h/2, vx:(player.x>e.x?1:-1)*3.5, vy:0, w:7, h:3 });
+      e.shootTimer = 90 + Math.random()*70;
     }
 
-    // Hit by player bullet
-    for (let bi = bullets.length-1; bi >= 0; bi--) {
+    // Hit by player
+    for (let bi=bullets.length-1; bi>=0; bi--) {
       const b = bullets[bi];
-      if (b.x < e.x+e.w && b.x+b.w > e.x && b.y < e.y+e.h && b.y+b.h > e.y) {
-        e.hp--;
-        bullets.splice(bi,1);
-        addParticles(e.x+e.w/2, e.y+e.h/2, e.color, 6);
-        shakeTimer = 5; shakeIntensity = 2;
+      if (b.x < e.x+e.w && b.x+b.w > e.x && b.y+1 < e.y+e.h && b.y+b.h > e.y+1) {
+        e.hp--; bullets.splice(bi,1);
+        spawnParticles(e.x+e.w/2, e.y+e.h/2, C.magenta, 5);
+        shakeTimer = 4; shakeIntensity = 2;
         if (e.hp <= 0) {
-          enemies = enemies.filter(en => en !== e);
+          f.enemies = f.enemies.filter(en => en !== e);
           score += 250;
-          addParticles(e.x+e.w/2, e.y+e.h/2, e.color, 15);
+          spawnParticles(e.x+e.w/2, e.y+e.h/2, C.red, 12);
         }
         break;
       }
@@ -289,408 +347,332 @@ function update() {
     // Hit player
     if (player.invincible <= 0 && e.x < player.x+player.w && e.x+e.w > player.x &&
         e.y < player.y+player.h && e.y+e.h > player.y) {
-      player.hp--;
-      player.invincible = 40;
-      addParticles(player.x+player.w/2, player.y+player.h/2, C.red, 10);
-      shakeTimer = 10; shakeIntensity = 6;
+      player.hp--; player.invincible = 50;
+      spawnParticles(player.x+player.w/2, player.y+player.h/2, C.red, 10);
+      shakeTimer = 12; shakeIntensity = 7;
       if (player.hp <= 0) die();
     }
   }
 
   // ── Enemy bullets ──
-  for (const eb of enemyBullets) { eb.x += eb.vx; }
-  enemyBullets = enemyBullets.filter(eb => eb.x > -50 && eb.x < W+50);
-  for (let ei = enemyBullets.length-1; ei >= 0; ei--) {
+  for (const eb of enemyBullets) eb.x += eb.vx;
+  enemyBullets = enemyBullets.filter(eb => eb.x > -50 && eb.x < 450);
+  for (let ei=enemyBullets.length-1; ei>=0; ei--) {
     const eb = enemyBullets[ei];
     if (player.invincible <= 0 && eb.x < player.x+player.w && eb.x+eb.w > player.x &&
-        eb.y < player.y+player.h && eb.y+eb.h > player.y) {
-      player.hp--;
-      player.invincible = 40;
+        eb.y+1 < player.y+player.h && eb.y+eb.h > player.y+1) {
+      player.hp--; player.invincible = 50;
       enemyBullets.splice(ei,1);
-      shakeTimer = 8; shakeIntensity = 5;
-      addParticles(player.x+player.w/2, player.y+player.h/2, C.magenta, 10);
+      shakeTimer = 10; shakeIntensity = 6;
+      spawnParticles(player.x+player.w/2, player.y+player.h/2, C.magenta, 8);
       if (player.hp <= 0) die();
     }
   }
   if (player.invincible > 0) player.invincible--;
 
-  // ── Hazards ──
-  for (const hz of hazards) {
-    if (player.invincible <= 0 && player.x+player.w > hz.x && player.x < hz.x+hz.w &&
-        player.y+player.h > hz.y && player.y < hz.y+hz.h) {
-      player.hp--;
-      player.invincible = 30;
-      addParticles(player.x+player.w/2, player.y+player.h/2, C.amber, 12);
+  // ── Hazard ──
+  if (f.hasHazard) {
+    const hx = f.hazardX, hy = f.y - 12;
+    if (player.invincible <= 0 && player.x+player.w > hx && player.x < hx+16 && player.y+player.h > hy && player.y < hy+14) {
+      player.hp--; player.invincible = 35;
+      spawnParticles(player.x+player.w/2, player.y+player.h/2, C.amber, 10);
       if (player.hp <= 0) die();
     }
   }
 
-  // ── Elevators ──
-  for (const el of elevators) {
-    if (!el.open) {
-      el.timer--;
-      if (el.timer <= 0) { el.open = true; el.timer = 200; }
-    } else {
-      el.timer--;
-      if (el.timer <= 0) { el.open = false; el.timer = 400+Math.random()*300; }
-    }
-  }
-
-  // ── Floor rising ──
-  const riseSpeed = 0.4;
-  for (const f of floors) f.y -= riseSpeed;
-  for (const s of stairs) s.y -= riseSpeed;
-  for (const el of elevators) el.y -= riseSpeed;
-  for (const hz of hazards) hz.y -= riseSpeed;
-  for (const e of enemies) e.y -= riseSpeed;
-  cameraY -= riseSpeed;
-
-  // Generate new floors ahead
-  const topFloor = floors.reduce((min,f) => f.y < min ? f.y : min, Infinity);
-  if (topFloor > cameraY - H) {
-    const fy = topFloor - 72;
-    const f = spawnFloor(fy);
-    floors.push(f);
-    stairs.push(spawnStairs(f, 'left'));
-    stairs.push(spawnStairs(f, 'right'));
-    if (Math.random()<0.5) elevators.push(spawnElevator(f));
-    if (Math.random()<0.4) hazards.push(spawnHazard(f));
-    if (Math.random()<0.5) enemies.push(spawnEnemy(f));
-  }
-
-  // Cleanup old floors below
-  floors = floors.filter(f => f.y < cameraY + H*2);
-  stairs = stairs.filter(s => s.y < cameraY + H*2);
-  elevators = elevators.filter(el => el.y < cameraY + H*2);
-  hazards = hazards.filter(hz => hz.y < cameraY + H*2);
-  enemies = enemies.filter(en => en.y < cameraY + H*2);
-
-  // ── Player falling off ──
-  if (player.y > cameraY + H + 100) die();
-
   // ── Particles ──
-  for (const p of particles) { p.x += p.vx; p.y += p.vy; p.life--; }
+  for (const p of particles) { p.x+=p.vx; p.y+=p.vy; p.life--; }
   particles = particles.filter(p => p.life > 0);
 
-  // ── Shake ──
   if (shakeTimer > 0) shakeTimer--;
+
+  // Camera — show current + next floor
+  const targetY = f.y - H * 0.5;
+  cameraY += (targetY - cameraY) * 0.08;
 }
 
-function die() {
-  gameState = 'dead';
-  if (score > highScore) {
-    highScore = score;
-    localStorage.setItem('neonash_hs', highScore);
-  }
-  addParticles(player.x+player.w/2, player.y+player.h/2, C.magenta, 30);
-  shakeTimer = 30; shakeIntensity = 10;
-}
-
-function drawGame() {
+// ── DRAW ──
+function draw() {
   ctx.save();
-  const sx = shakeTimer > 0 ? (Math.random()-0.5)*shakeIntensity : 0;
-  const sy = shakeTimer > 0 ? (Math.random()-0.5)*shakeIntensity : 0;
+  const sx = shakeTimer>0 ? (Math.random()-0.5)*shakeIntensity : 0;
+  const sy = shakeTimer>0 ? (Math.random()-0.5)*shakeIntensity : 0;
   ctx.translate(sx, sy);
 
   // Background
   ctx.fillStyle = C.bg;
-  ctx.fillRect(0, 0, W, H);
+  ctx.fillRect(0,0,W,H);
 
-  // Neon grid lines
-  ctx.strokeStyle = C.cyan + '10';
-  ctx.lineWidth = 0.5;
-  for (let y = -cameraY % 80; y < H; y += 80) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-  }
+  // World offset
+  const ox = (W - 400) / 2; // center 400px world
 
-  // ── Floors ──
-  for (const f of floors) {
-    const fy = f.y - cameraY;
-    if (fy < -50 || fy > H+50) continue;
+  // ── Visible floors (current + next) ──
+  const f = currentFloor();
+  const fNext = getFloor(floorNum + 1);
+
+  for (const fn of [f, fNext]) {
+    if (!fn) continue;
+    const fy = fn.y - cameraY;
+    if (fy < -100 || fy > H+100) continue;
+
+    // Floor platform
     ctx.fillStyle = C.panel;
-    ctx.fillRect(f.x, fy, f.w, f.h);
+    ctx.fillRect(ox + fn.x, fy, fn.w, FLOOR_H);
     ctx.strokeStyle = C.cyan + '40';
     ctx.lineWidth = 1;
-    ctx.strokeRect(f.x, fy, f.w, f.h);
-    // Neon edge glow
+    ctx.strokeRect(ox + fn.x, fy, fn.w, FLOOR_H);
+    // Top edge glow
+    ctx.strokeStyle = C.cyan + '20';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(ox+fn.x, fy); ctx.lineTo(ox+fn.x+fn.w, fy); ctx.stroke();
+
+    // Walls
+    ctx.fillStyle = C.wall;
+    ctx.fillRect(ox+fn.x, fy-FLOOR_GAP+8, WALL_W, FLOOR_GAP-8);
+    ctx.fillRect(ox+fn.x+fn.w-WALL_W, fy-FLOOR_GAP+8, WALL_W, FLOOR_GAP-8);
+    // Wall details
     ctx.strokeStyle = C.cyan + '15';
-    ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.moveTo(f.x, fy); ctx.lineTo(f.x+f.w, fy); ctx.stroke();
-  }
-
-  // ── Stairs ──
-  for (const s of stairs) {
-    const sy = s.y - cameraY;
-    if (sy < -50 || sy > H+50) continue;
-    ctx.fillStyle = C.dim;
-    ctx.fillRect(s.x, sy, s.w, s.h);
-    ctx.strokeStyle = C.cyan + '30';
-    ctx.strokeRect(s.x, sy, s.w, s.h);
-    // Steps
-    for (let i=0; i<3; i++) {
-      ctx.fillStyle = C.cyan + '20';
-      ctx.fillRect(s.x+2, sy + s.h - (i+1)*10, s.w-4, 5);
+    for (let wy = fy-FLOOR_GAP+16; wy < fy; wy += 16) {
+      ctx.beginPath(); ctx.moveTo(ox+fn.x, wy); ctx.lineTo(ox+fn.x+WALL_W, wy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ox+fn.x+fn.w-WALL_W, wy); ctx.lineTo(ox+fn.x+fn.w, wy); ctx.stroke();
     }
-  }
 
-  // ── Elevators ──
-  for (const el of elevators) {
-    const ey = el.y - cameraY;
-    if (ey < -50 || ey > H+50) continue;
-    ctx.fillStyle = el.open ? C.magenta + '30' : C.dim;
-    ctx.fillRect(el.x, ey, el.w, el.h);
-    ctx.strokeStyle = el.open ? C.magenta + '80' : C.cyan + '30';
-    ctx.lineWidth = el.open ? 2 : 1;
-    ctx.strokeRect(el.x, ey, el.w, el.h);
-    if (el.open) {
-      ctx.fillStyle = C.magenta;
-      ctx.font = '10px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('↑↑', el.x+el.w/2, ey-4);
+    // Stairs
+    for (const s of [stairLeft(fn), stairRight(fn)]) {
+      const sy = s.y - cameraY;
+      ctx.fillStyle = C.dim;
+      ctx.fillRect(ox+s.x, sy, s.w, s.h);
+      ctx.strokeStyle = C.cyan + '30';
+      ctx.strokeRect(ox+s.x, sy, s.w, s.h);
+      for (let i=0; i<4; i++) {
+        ctx.fillStyle = C.cyan + '18';
+        ctx.fillRect(ox+s.x+3, sy+s.h-(i+1)*8, s.w-6, 4);
+      }
     }
-  }
 
-  // ── Hazards (fire) ──
-  for (const hz of hazards) {
-    const hy = hz.y - cameraY;
-    if (hy < -50 || hy > H+50) continue;
-    // Animated fire effect
-    const flicker = Math.sin(Date.now()*0.02 + hz.x) * 3;
-    ctx.fillStyle = C.amber;
-    ctx.globalAlpha = 0.7 + Math.random()*0.3;
-    for (let i=0; i<3; i++) {
-      ctx.fillRect(hz.x + i*6, hy - flicker - i*4, 6, 12 + i*4);
+    // Elevator
+    if (fn.hasElevator) {
+      const ex = fn.x + fn.w/2 - 14, ey = fn.y - 20;
+      const esx = ox+ex, esy = ey-cameraY;
+      ctx.fillStyle = fn.elevatorOpen ? C.magenta + '25' : C.dim;
+      ctx.fillRect(esx, esy, 28, 20);
+      ctx.strokeStyle = fn.elevatorOpen ? C.magenta + '70' : C.cyan + '25';
+      ctx.lineWidth = fn.elevatorOpen ? 2 : 1;
+      ctx.strokeRect(esx, esy, 28, 20);
+      if (fn.elevatorOpen) {
+        ctx.fillStyle = C.magenta;
+        ctx.font = '9px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('↑10', esx+14, esy-3);
+      }
     }
-    ctx.globalAlpha = 1;
-  }
 
-  // ── Enemies ──
-  for (const e of enemies) {
-    const ey = e.y - cameraY;
-    if (ey < -50 || ey > H+50) continue;
-    // Body
-    ctx.fillStyle = e.color;
-    ctx.fillRect(e.x+2, ey+6, e.w-4, e.h-8);
-    // Head
-    ctx.fillStyle = e.color;
-    ctx.fillRect(e.x+6, ey, 12, 10);
-    // Eyes
-    ctx.fillStyle = e.type==='shooter' ? C.red : C.amber;
-    ctx.fillRect(e.x+8, ey+2, 3, 3);
-    ctx.fillRect(e.x+13, ey+2, 3, 3);
-    // Legs
-    ctx.fillStyle = e.color + '80';
-    const legOffset = Math.sin(Date.now()*0.01 + e.x)*2;
-    ctx.fillRect(e.x+4, ey+e.h-4, 6, 6+legOffset);
-    ctx.fillRect(e.x+14, ey+e.h-4, 6, 6-legOffset);
-    // Gun for shooters
-    if (e.type === 'shooter') {
-      ctx.fillStyle = C.red;
-      ctx.fillRect(e.x + (e.vx>0?e.w:0), ey+14, 8, 3);
+    // Hazard (fire)
+    if (fn.hasHazard) {
+      const hx = ox+fn.hazardX, hy = fn.y - 12 - cameraY;
+      const flicker = Math.sin(Date.now()*0.02+fn.n)*3;
+      ctx.globalAlpha = 0.7 + Math.random()*0.3;
+      for (let i=0; i<3; i++) {
+        ctx.fillStyle = C.amber;
+        ctx.fillRect(hx+i*5, hy-flicker-i*3, 5, 10+i*3);
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    // Enemies on floor
+    if (fn === f || gameState === 'climbing') {
+      for (const e of fn.enemies) {
+        const ey = e.y - cameraY;
+        const color = e.type==='shooter'?C.magenta:C.purple;
+        ctx.fillStyle = color;
+        ctx.fillRect(ox+e.x+2, ey+6, e.w-4, e.h-10);
+        ctx.fillRect(ox+e.x+5, ey, 10, 9);
+        ctx.fillStyle = e.type==='shooter'?C.red:C.amber;
+        ctx.fillRect(ox+e.x+6, ey+2, 3, 3);
+        ctx.fillRect(ox+e.x+11, ey+2, 3, 3);
+        if (e.type==='shooter') {
+          ctx.fillStyle = C.red;
+          ctx.fillRect(ox+e.x+(e.vx>0?e.w:0), ey+13, 7, 2);
+        }
+      }
     }
   }
 
   // ── Player ──
-  if (gameState === 'playing') {
-    const alpha = player.invincible > 0 ? 0.4 + Math.sin(Date.now()*0.3)*0.3 : 1;
+  if (gameState==='playing' || gameState==='climbing') {
+    const alpha = player.invincible>0 ? 0.4+Math.sin(Date.now()*0.3)*0.3 : 1;
     ctx.globalAlpha = alpha;
-    const py = player.y - cameraY;
-    // Body
+    const px = ox+player.x, py = player.y-cameraY;
     ctx.fillStyle = C.cyan;
-    ctx.fillRect(player.x, py+10, player.w, player.h-14);
-    // Head
-    ctx.fillStyle = C.cyan;
-    ctx.fillRect(player.x+8, py, 12, 12);
-    // Visor
+    ctx.fillRect(px, py+9, player.w, player.h-12);
+    ctx.fillRect(px+7, py, 10, 10);
     ctx.fillStyle = C.white;
-    ctx.fillRect(player.x+10, py+2, 8, 4);
-    // Legs
+    ctx.fillRect(px+9, py+2, 6, 3);
     const lo = Math.sin(Date.now()*0.015)*3;
-    ctx.fillStyle = C.cyan + '80';
-    ctx.fillRect(player.x+4, py+player.h-6, 8, 8+lo);
-    ctx.fillRect(player.x+16, py+player.h-6, 8, 8-lo);
-    ctx.globalAlpha = 1;
-
-    // Gun
+    ctx.fillStyle = C.cyan+'80';
+    ctx.fillRect(px+3, py+player.h-5, 7, 7+lo);
+    ctx.fillRect(px+14, py+player.h-5, 7, 7-lo);
     ctx.fillStyle = C.magenta;
-    if (player.dir > 0) {
-      ctx.fillRect(player.x+player.w, py+16, 10, 4);
-    } else {
-      ctx.fillRect(player.x-10, py+16, 10, 4);
-    }
+    if (player.dir>0) ctx.fillRect(px+player.w, py+14, 9, 3);
+    else ctx.fillRect(px-9, py+14, 9, 3);
+    ctx.globalAlpha = 1;
   }
 
   // ── Bullets ──
-  ctx.fillStyle = C.cyan;
   for (const b of bullets) {
     const by = b.y - cameraY;
-    ctx.fillRect(b.x, by, b.w, b.h);
-    // Glow
-    ctx.fillStyle = C.cyan + '40';
-    ctx.fillRect(b.x-2, by-1, b.w+4, b.h+2);
     ctx.fillStyle = C.cyan;
+    ctx.fillRect(ox+b.x, by, b.w, b.h);
   }
-  ctx.fillStyle = C.magenta;
   for (const eb of enemyBullets) {
     const eby = eb.y - cameraY;
-    ctx.fillRect(eb.x, eby, eb.w, eb.h);
+    ctx.fillStyle = C.magenta;
+    ctx.fillRect(ox+eb.x, eby, eb.w, eb.h);
   }
 
   // ── Particles ──
   for (const p of particles) {
-    const ppy = p.y - cameraY;
     ctx.fillStyle = p.color;
-    ctx.globalAlpha = p.life / 35;
-    ctx.fillRect(p.x, ppy, p.size, p.size);
+    ctx.globalAlpha = p.life/30;
+    ctx.fillRect(ox+p.x, p.y-cameraY, p.size, p.size);
   }
   ctx.globalAlpha = 1;
 
   ctx.restore();
 
   // ── HUD ──
-  ctx.fillStyle = C.panel + 'CC';
-  ctx.fillRect(0, 0, W, 36);
-  ctx.strokeStyle = C.cyan + '30';
+  ctx.fillStyle = C.panel+'CC';
+  ctx.fillRect(0,0,W,38);
+  ctx.strokeStyle = C.cyan+'25';
   ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(0, 36); ctx.lineTo(W, 36); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,38); ctx.lineTo(W,38); ctx.stroke();
 
   ctx.fillStyle = C.cyan;
-  ctx.font = 'bold 13px monospace';
+  ctx.font = 'bold 12px monospace';
   ctx.textAlign = 'left';
-  ctx.fillText(`PISO ${floorNum}`, 12, 25);
+  ctx.fillText(`PISO ${Math.max(0,floorNum)}`, 10, 26);
 
   ctx.fillStyle = C.white;
-  ctx.font = '11px monospace';
+  ctx.font = '10px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText(`${score}`, W/2, 25);
+  ctx.fillText(`${score}`, W/2, 26);
 
-  // Hearts
   ctx.textAlign = 'right';
+  ctx.font = '12px monospace';
   let hearts = '';
-  for (let i=0; i<player.maxHp; i++) hearts += i<player.hp ? '♥' : '♡';
+  for (let i=0;i<player.maxHp;i++) hearts += i<player.hp?'♥':'♡';
   ctx.fillStyle = C.red;
-  ctx.fillText(hearts, W-12, 25);
+  ctx.fillText(hearts, W-10, 26);
 
-  // ── Touch buttons (game) ──
-  if (gameState === 'playing') {
-    ctx.globalAlpha = 0.3;
-    // Left - Jump
+  // ── Touch buttons ──
+  if (gameState==='playing' || gameState==='climbing') {
+    ctx.globalAlpha = 0.25;
     ctx.fillStyle = C.cyan;
-    ctx.beginPath();
-    ctx.arc(60, H-60, 40, 0, Math.PI*2);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(55, H-55, 35, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = C.white;
-    ctx.font = 'bold 16px monospace';
+    ctx.font = 'bold 14px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('▲', 60, H-54);
+    ctx.fillText('SALTAR', 55, H-49);
 
-    // Right - Shoot
     ctx.fillStyle = C.magenta;
-    ctx.beginPath();
-    ctx.arc(W-60, H-60, 40, 0, Math.PI*2);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(W-55, H-55, 35, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = C.white;
-    ctx.fillText('●', W-60, H-54);
+    ctx.fillText('DISPARO', W-55, H-49);
     ctx.globalAlpha = 1;
   }
 }
 
-function drawMenu() {
-  ctx.fillStyle = C.bg;
-  ctx.fillRect(0, 0, W, H);
+function drawIntro() {
+  ctx.fillStyle = C.bg; ctx.fillRect(0,0,W,H);
 
-  // Animated cyan lines
-  for (let i=0; i<8; i++) {
-    const y = H/2 - 80 + i*20 + Math.sin(Date.now()*0.002 + i)*5;
-    ctx.fillStyle = C.cyan + (10 + i*3).toString(16);
-    ctx.fillRect(W*0.2, y, W*0.6, 1);
+  // Building entrance
+  const ox = (W-400)/2;
+  const doorX = ox+180, doorY = H*0.55;
+  // Tower
+  ctx.fillStyle = C.dim;
+  ctx.fillRect(ox+60, 0, 280, H);
+  // Neon lines
+  for (let i=0;i<12;i++) {
+    const y = H*0.35 - i*25 + Math.sin(Date.now()*0.002+i)*3;
+    ctx.fillStyle = C.cyan+(10+i*2).toString(16);
+    ctx.fillRect(ox+80, y, 240, 1);
   }
+  // Door
+  ctx.fillStyle = C.magenta+'40';
+  ctx.fillRect(doorX-15, doorY, 50, H-doorY);
+  ctx.strokeStyle = C.magenta;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(doorX-15, doorY, 50, H-doorY);
+  ctx.fillStyle = C.magenta;
+  ctx.font = '8px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('ENTRADA', doorX+10, doorY+25);
 
   // Title
   ctx.fillStyle = C.cyan;
-  ctx.font = `bold ${Math.floor(28*scale)}px monospace`;
+  ctx.font = 'bold 26px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('NEON ASH', W/2, H/2 - 40);
+  ctx.fillText('NEON ASH', W/2, H*0.2);
   ctx.fillStyle = C.magenta;
-  ctx.font = `${Math.floor(12*scale)}px monospace`;
-  ctx.fillText('cyber tower', W/2, H/2 - 18);
+  ctx.font = '11px monospace';
+  ctx.fillText('cyber tower', W/2, H*0.2+20);
 
-  // Button
-  const btnY = H/2 + 30;
-  const pulse = Math.sin(Date.now()*0.005)*3;
-  ctx.strokeStyle = C.cyan;
-  ctx.lineWidth = 2;
-  ctx.strokeRect(W/2-60, btnY-18, 120, 36);
-  ctx.fillStyle = C.cyan + '15';
-  ctx.fillRect(W/2-60, btnY-18, 120, 36);
-  ctx.fillStyle = C.cyan;
-  ctx.font = 'bold 14px monospace';
-  ctx.fillText('▶ JUGAR', W/2, btnY+6);
+  // Start hint
+  if (introTimer > 30) {
+    const pulse = Math.sin(Date.now()*0.005)*3;
+    ctx.fillStyle = C.cyan;
+    ctx.font = 'bold 13px monospace';
+    ctx.fillText('▶ TOCA PARA ENTRAR', W/2, doorY-20+pulse);
+  }
 
-  // Touch hint
-  ctx.fillStyle = C.white + '30';
-  ctx.font = '9px monospace';
-  ctx.fillText('toque o ESPACIO', W/2, btnY+40);
-
-  // High score
-  if (highScore > 0) {
+  if (highScore>0) {
     ctx.fillStyle = C.amber;
     ctx.font = '10px monospace';
-    ctx.fillText(`🏆 ${highScore}`, W/2, H/2 + 90);
+    ctx.fillText('🏆 '+highScore, W/2, H-30);
   }
+
+  // Instructions
+  ctx.fillStyle = C.white+'30';
+  ctx.font = '8px monospace';
+  ctx.fillText('◄ SALTAR         DISPARO ►', W/2, H-12);
 }
 
-function drawGameOver() {
-  ctx.fillStyle = C.bg + 'CC';
-  ctx.fillRect(0, 0, W, H);
-
+function drawDead() {
+  ctx.fillStyle = C.bg+'DD';
+  ctx.fillRect(0,0,W,H);
   ctx.fillStyle = C.red;
-  ctx.font = `bold ${Math.floor(24*scale)}px monospace`;
+  ctx.font = 'bold 22px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('MUERTO', W/2, H/2 - 50);
-
+  ctx.fillText('MUERTO', W/2, H/2-45);
   ctx.fillStyle = C.cyan;
-  ctx.font = `${Math.floor(16*scale)}px monospace`;
-  ctx.fillText(`Piso ${floorNum}`, W/2, H/2 - 15);
-
+  ctx.font = '14px monospace';
+  ctx.fillText(`Piso ${floorNum}`, W/2, H/2-15);
   ctx.fillStyle = C.white;
-  ctx.font = `${Math.floor(22*scale)}px monospace`;
-  ctx.fillText(`${score}`, W/2, H/2 + 20);
-
-  if (score >= highScore && score > 0) {
+  ctx.font = '20px monospace';
+  ctx.fillText(`${score}`, W/2, H/2+15);
+  if (score>=highScore && score>0) {
     ctx.fillStyle = C.amber;
-    ctx.font = '10px monospace';
-    ctx.fillText('🏆 NUEVO RÉCORD', W/2, H/2 + 40);
+    ctx.font = '9px monospace';
+    ctx.fillText('🏆 NUEVO RÉCORD', W/2, H/2+35);
   }
-
-  // Restart hint
-  const alpha = 0.5 + Math.sin(Date.now()*0.004)*0.3;
-  ctx.fillStyle = C.white + Math.floor(alpha*255).toString(16).padStart(2,'0');
-  ctx.font = '10px monospace';
-  ctx.fillText('toque para reiniciar', W/2, H/2 + 70);
+  const a = 0.4+Math.sin(Date.now()*0.004)*0.3;
+  ctx.fillStyle = C.white+Math.floor(a*255).toString(16).padStart(2,'0');
+  ctx.font = '9px monospace';
+  ctx.fillText('toca para reiniciar', W/2, H/2+60);
 }
 
-// ── GAME LOOP ──
+// ── LOOP ──
 function loop() {
-  resize();
-  update();
+  resize(); update();
+  ctx.clearRect(0,0,W,H);
 
-  // Camera follow
-  if (gameState === 'playing') {
-    cameraY += (player.y - H/2 - cameraY) * 0.1;
-  }
-
-  ctx.clearRect(0, 0, W, H);
-  if (gameState === 'menu') drawMenu();
-  else if (gameState === 'dead') { drawGame(); drawGameOver(); }
-  else drawGame();
+  if (gameState==='intro') drawIntro();
+  else if (gameState==='dead') { draw(); drawDead(); }
+  else draw();
 
   requestAnimationFrame(loop);
 }
 
-resize();
-buildWorld(0);
-loop();
+resize(); loop();
 </script>
 </body>
 </html>

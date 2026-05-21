@@ -86,19 +86,11 @@ export function setupRealtimeWS(server) {
                   const event = JSON.parse(openaiData.toString());
                   switch (event.type) {
                     case 'session.created':
-                      // Session ready — configure for translation
+                      // Session ready — notify browser, start translating immediately
                       console.log('[Realtime] Translate session created:', event.session?.id);
                       isActive = true;
                       browserWs.send(JSON.stringify({ type: 'connected' }));
-                      openaiWs.send(JSON.stringify({
-                        type: 'session.update',
-                        session: {
-                          type: 'realtime',
-                          audio: {
-                            output: { language: 'es' },
-                          },
-                        },
-                      }));
+                      // No session.update needed — translate model works out of the box
                       break;
                     case 'session.updated':
                       break;

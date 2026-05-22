@@ -176,28 +176,28 @@ function draw(){
  cx.fillStyle=C.cy;cx.font='bold 9px monospace';cx.textAlign='center';cx.fillText('NEON ASH // CYBER TOWER',px+pw/2,20);
 
  // PHOSPHORESCENT FUTURISTIC GEOMETRY
- const pt=Date.now()*0.002;
+ const gt=Date.now()*0.002;
  // Pulsing grid
- cx.strokeStyle=C.cy+(12+Math.floor(Math.sin(pt)*6)).toString(16);cx.lineWidth=0.7;
+ cx.strokeStyle=C.cy+(12+Math.floor(Math.sin(gt)*6)).toString(16);cx.lineWidth=0.7;
  for(let y=0;y<H;y+=22){cx.beginPath();cx.moveTo(px,y);cx.lineTo(px+pw,y);cx.stroke()}
  for(let x=px;x<px+pw;x+=22){cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,H);cx.stroke()}
  // Diagonal vibrant beams
  for(let i=0;i<5;i++){
-  let a=(Math.sin(pt*0.7+i)+1)/2;
+  let a=(Math.sin(gt*0.7+i)+1)/2;
   cx.strokeStyle=C.mg+(8+Math.floor(a*20)).toString(16);cx.lineWidth=1+a*2;
   cx.beginPath();cx.moveTo(px+20,fl-120-i*25);cx.lineTo(px+220,fl-20-i*25);cx.stroke();
  }
  // Laser horizontal
- cx.strokeStyle=C.cy+(10+Math.floor(Math.sin(pt*1.3)*15)).toString(16);cx.lineWidth=1;
+ cx.strokeStyle=C.cy+(10+Math.floor(Math.sin(gt*1.3)*15)).toString(16);cx.lineWidth=1;
  for(let y=fl-80;y>20;y-=40){
-  cx.globalAlpha=0.3+Math.sin(pt+y)*0.2;
+  cx.globalAlpha=0.3+Math.sin(gt+y)*0.2;
   cx.beginPath();cx.moveTo(px+10,y);cx.lineTo(px+pw-10,y);cx.stroke();
  }
  cx.globalAlpha=1;
  // Pulsing orbs
  for(let i=0;i<4;i++){
-  let ox=px+100+i*100,oy=40+Math.sin(pt+i)*10;
-  let pulse=Math.sin(pt*2+i)+1;
+  let ox=px+100+i*100,oy=40+Math.sin(gt+i)*10;
+  let pulse=Math.sin(gt*2+i)+1;
   cx.fillStyle=C.mg+(5+Math.floor(pulse*12)).toString(16);
   cx.beginPath();cx.arc(ox,oy,3+pulse*2,0,Math.PI*2);cx.fill();
   cx.strokeStyle=C.mg+(15+Math.floor(pulse*20)).toString(16);cx.lineWidth=1;
@@ -205,7 +205,7 @@ function draw(){
  }
  // Hexagonal nodes pulsing
  for(let i=0;i<3;i++){
-  let nx=px+90+i*170,ny=fl-130-i*15,pulse=(Math.sin(pt*1.5+i)+1)/2;
+  let nx=px+90+i*170,ny=fl-130-i*15,pulse=(Math.sin(gt*1.5+i)+1)/2;
   cx.strokeStyle=C.cy+(20+Math.floor(pulse*40)).toString(16);cx.lineWidth=1+pulse*2;
   cx.shadowColor=C.cy;cx.shadowBlur=4+pulse*6;
   cx.beginPath();for(let a=0;a<6;a++){let ax=nx+Math.cos(a*Math.PI/3)*14,ay=ny+Math.sin(a*Math.PI/3)*14;if(a===0)cx.moveTo(ax,ay);else cx.lineTo(ax,ay)}cx.closePath();cx.stroke();

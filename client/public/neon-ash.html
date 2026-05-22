@@ -12,9 +12,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#060010;touch-action
 
 
 </style></head>
-<body><div style="color:#0f0;font:20px monospace;position:fixed;top:0;z-index:999">NEON ASH v1.8</div><div id="game"><canvas id="c"></canvas></div>
+<body><div style="color:#0f0;font:14px monospace;position:fixed;top:2px;left:2px;z-index:999">NEON ASH v1.8</div><div id="game"><canvas id="c"></canvas></div>
 
-<script>const _dbg=document.createElement('div');_dbg.style.cssText='position:fixed;top:0;left:0;color:#0f0;font:10px monospace;z-index:999;pointer-events:none;background:rgba(0,0,0,0.7);padding:4px';document.body.appendChild(_dbg);window.onerror=function(m,s2,l){_dbg.textContent='ERR:'+m+' L'+l;};_dbg.textContent='v1.8';
+<script>
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
 let W,H,gameState='intro',score=0,floorNum=0,highScore=parseInt(localStorage.getItem('neonash_hs')||0);
 let cameraY=0,shakeT=0,shakeI=0,introT=0,jumpWanted=false,shootHeld=false,bossFloor=0,bossActive=false,bossHP=0;
@@ -303,4 +303,4 @@ function drawIntro(){
 }
 function drawDead(){ctx.fillStyle=C.bg+'DD';ctx.fillRect(0,0,W,H);ctx.fillStyle=C.red;ctx.font='bold 26px monospace';ctx.textAlign='center';ctx.fillText('MUERTO',W/2,H/2-48);ctx.fillStyle=C.cyan;ctx.font='15px monospace';ctx.fillText('Piso '+floorNum,W/2,H/2-20);ctx.fillStyle=C.white;ctx.font='24px monospace';ctx.fillText(''+score,W/2,H/2+10);if(score>=highScore&&score>0){ctx.fillStyle=C.amber;ctx.font='10px monospace';ctx.fillText('🏆 NUEVO RÉCORD',W/2,H/2+32)}const a=.4+Math.sin(Date.now()*.004)*.3;ctx.fillStyle=C.white+Math.floor(a*255).toString(16).padStart(2,'0');ctx.font='10px monospace';ctx.fillText('toca para reiniciar',W/2,H/2+56)}
 function loop(){resize();update();ctx.clearRect(0,0,W,H);if(gameState==='intro')drawIntro();else if(gameState==='dead'){draw();drawDead()}else draw();requestAnimationFrame(loop)}
-resize();loop();</body></html>
+resize();loop();</script></body></html>

@@ -56,7 +56,7 @@ function resize(){W=window.innerWidth;H=window.innerHeight;canvas.width=W;canvas
 function sp(x,y,c,n){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*4,vy:-2-Math.random()*4,life:10+Math.random()*15,c,size:1+Math.random()*3})}
 
 function start(){
- gameState='playing';score=0;roomNum=0;P.hp=P.maxHp;P.inv=0;P.shootCd=0;P.dir=1;P.vx=1.5;P.vy=0;P.onGround=true;
+ gameState='playing';score=0;roomNum=0;P.hp=P.maxHp;P.inv=0;P.shootCd=0;P.dir=1;P.vx=1.0;P.vy=0;P.onGround=true;
  bullets=[];transitionTimer=0;spawnRoom();
  // Start on LEFT side of room (just entered from outside)
  P.x=room.left+20;P.y=H*0.8;
@@ -127,7 +127,7 @@ function draw(){
  // Walls
  ctx.fillStyle=C.wall;ctx.fillRect(px,0,14,H);ctx.fillRect(px+pw-14,0,14,H);
  // Floor - cyan heartbeat
- const hb=(Math.sin(Date.now()*0.004+roomNum)+1)/2;
+ const hb=(Math.sin(Date.now()*0.0015+roomNum)+1)/2;
  ctx.fillStyle=C.cyan+(20+Math.floor(hb*15)).toString(16);ctx.fillRect(px,floorY-4,pw,12);
  ctx.fillStyle=C.cyan+(10+Math.floor(hb*10)).toString(16);ctx.fillRect(px,floorY-2,pw,8);
  ctx.strokeStyle=C.cyan+'60';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px,floorY);ctx.lineTo(px+pw,floorY);ctx.stroke();

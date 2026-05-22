@@ -101,7 +101,7 @@ function shoot(){
 function update(){
  if(gameState==='intro'){if(window.innerHeight>window.innerWidth)return;introT++;return}
  if(gameState==='dead'){if(shakeT>0)shakeT--;return}
- if(touchL&&!jumpWanted&&P.jumpCd<=0)jumpWanted=true;if(touchR)shootHeld=true;if(!touchR)shootHeld=false;
+ if(touchL&&!jumpWanted&&P.jumpCd<=0){jumpWanted=true;touchL=false}if(touchR)shootHeld=true;if(!touchR)shootHeld=false;
 
  const f=cf(),fy=f.y,lW=wallW,rW=platformW-wallW;
  if(climbing){climbT++;const t=Math.min(climbT/80,1);P.x=climbFX+(climbTX-climbFX)*t;P.y=climbFY+(climbTY-climbFY)*t;P.onGround=false;P.vy=0;if(t>=1){climbT=0;climbing=false;floorNum++;score+=100;const nf=cf();P.x=climbTX;P.y=nf.y-P.h;P.dir=climbNDir;P.vx=1.2;P.vy=0;P.onGround=true;sp(P.x+P.w/2,P.y,C.cyan,10);
@@ -109,13 +109,13 @@ function update(){
   if(floorNum>0&&floorNum%20===0&&!bossActive){startBoss()}
  }cameraY+=(P.y-H*0.5-cameraY)*0.2;return}
  P.x+=P.vx*P.dir;if(P.x<=lW){P.dir=1;P.x=lW}if(P.x+P.w>=rW){P.dir=-1;P.x=rW-P.w}
- if(P.onGround&&((f.stairSide==='left'&&P.x<=lW+14)||(f.stairSide==='right'&&P.x+P.w>=rW-14))){
+ if(P.onGround&&P.vy>=0&&P.jumpCd<=5&&((f.stairSide==='left'&&P.x<=lW+8)||(f.stairSide==='right'&&P.x+P.w>=rW-8))){
   const nf=floors[floorNum+1];if(!nf)return;climbing=true;climbT=0;climbFX=P.x;climbFY=P.y;climbTX=nf.stairSide==='left'?platformW-wallW-P.w-12:wallW+12;climbTY=nf.y-P.h;climbNDir=nf.stairSide==='left'?-1:1;P.vx=0;return}
  P.onGround=false;if(P.y+P.h>=fy-2&&P.y+P.h<=fy+16&&P.vy>=0){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}
  if(P.y+P.h>fy+24){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}
  if(P.y<fy-FG+PH){P.y=fy-FG+PH;P.vy=0;P.vx=P.dir*1.2}
  if(!P.onGround){P.vy+=0.4;P.y+=P.vy}
- if(jumpWanted&&P.onGround&&P.jumpCd<=0){P.vy=-7;P.y-=2;P.vx=3;jumpWanted=false;P.onGround=false;P.jumpCd=0;sp(P.x+P.w/2,P.y+P.h,C.cyan,3)}
+ if(jumpWanted&&P.onGround&&P.jumpCd<=0){P.vy=-7;P.y-=2;P.vx=3;jumpWanted=false;P.onGround=false;P.jumpCd=15;sp(P.x+P.w/2,P.y+P.h,C.cyan,3)}
  if(shootHeld&&P.shootCd<=0&&P.ammo>0)shoot();
  if(P.shootCd>0)P.shootCd--;if(P.jumpCd>0)P.jumpCd--;if(P.inv>0)P.inv--;
  for(const b of bullets)b.x+=b.vx;bullets=bullets.filter(b=>b.x>-30&&b.x<W+30);
@@ -124,7 +124,7 @@ function update(){
  // Enemies
  for(const e of f.enemies){
   // AI: move opposite to player, chase if close
-  e.vx=-P.dir*e.speed;
+  e.vx=-P.dir*(e.speed||0.4);
   if(Math.abs(e.x-P.x)<50&&e.type==='walker')e.vx=-P.dir*e.speed*1.8; // charge
   e.x+=e.vx;
   e.sTimer--;if(e.sTimer<=0&&e.type==='shooter'){const dx=P.x-e.x;eBullets.push({x:e.x+e.w/2,y:e.y+e.h/2,vx:(dx>0?1:-1)*3,vy:0,w:7,h:3,dmg:e.damage});e.sTimer=100+Math.random()*80}

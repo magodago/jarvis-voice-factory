@@ -182,7 +182,7 @@ function draw(){
  const bgImg=BGS[room%3];
  if(bossActive&&BOSS_BG.complete&&BOSS_BG.naturalWidth>0){cx.globalAlpha=1;cx.drawImage(BOSS_BG,px,0,pw,H);cx.globalAlpha=1}else if(bgImg&&bgImg.complete&&bgImg.naturalWidth>0){cx.globalAlpha=1;cx.drawImage(bgImg,px,0,pw,H);cx.globalAlpha=1}
  // Color overlay + theme
- cx.globalAlpha=0.03;cx.fillStyle=theme==='alarm'?'#2a0010':theme==='toxic'?'#002015':theme==='void'?'#100030':theme==='neon'?'#150030':'#180040';cx.fillRect(px,0,pw,H);cx.globalAlpha=1;
+ cx.fillStyle='transparent';cx.fillRect(px,0,pw,H);cx.globalAlpha=1;
  // Weather
  if(weather==='rain'){for(let i=0;i<15;i++){let rx=px+Math.random()*pw,ry=Math.random()*H;cx.fillStyle=C.cy+'10';cx.fillRect(rx,ry,1,6+Math.random()*4)}}
  if(weather==='fog'){cx.fillStyle=C.cy+'04';cx.fillRect(px,0,pw,H);cx.fillStyle=C.wh+'03';cx.fillRect(px,0,pw,H)}
@@ -251,12 +251,12 @@ function draw(){
  // Dynamic music
  if(musicGain){let mv=0.015;if(bossActive)mv=0.04;if(comboCount>=2)mv+=comboCount*0.01;if(sniperActive>0)mv=0.005;musicGain.gain.linearRampToValueAtTime(mv,actx.currentTime+0.1)}
  // HUD
- cx.fillStyle=C.cy;cx.font='bold 11px monospace';cx.textAlign='left';cx.fillText('LVL '+playerLvl,10,18);
+ cx.fillStyle=C.cy;cx.font='bold 10px monospace';cx.textAlign='right';cx.fillText('LVL '+playerLvl,W-80,fl+20);
  // XP bar
  const xpNeeded=playerLvl*50;cx.fillStyle='#0a0020';cx.fillRect(10,28,80,4);cx.fillStyle=C.cy;cx.fillRect(10,28,80*Math.min(1,playerXP/xpNeeded),4);cx.strokeStyle=C.cy+'30';cx.strokeRect(10,28,80,4);
- cx.fillStyle=C.wh+'10';cx.font='8px monospace';cx.textAlign='left';cx.fillText('BEST '+best,60,18);
+ cx.fillStyle=C.wh+'08';cx.font='8px monospace';cx.textAlign='right';cx.fillText('BEST '+best,W-80,fl+35);
  // Room center
- const blink=Math.sin(Date.now()*0.006);cx.globalAlpha=0.6+Math.abs(blink)*0.4;cx.shadowColor=C.cy;cx.shadowBlur=15+Math.abs(blink)*15;cx.fillStyle=C.cy;cx.font='bold 28px monospace';cx.textAlign='center';cx.fillText('ROOM '+room,W/2,H*.15);cx.shadowBlur=5+Math.abs(Math.sin(Date.now()*0.004))*5;cx.fillStyle=C.mg;cx.font='bold 12px monospace';cx.fillText('CYBER TOWER',W/2,H*.15+30);cx.shadowBlur=0;cx.globalAlpha=1;
+ const blink=Math.sin(Date.now()*0.006);cx.globalAlpha=0.6+Math.abs(blink)*0.4;cx.shadowColor=C.cy;cx.shadowBlur=15+Math.abs(blink)*15;cx.fillStyle=C.cy;cx.font='bold 28px monospace';cx.textAlign='center';cx.fillText('ROOM '+room,W/2,H*.15);cx.shadowBlur=5+Math.abs(Math.sin(Date.now()*0.004))*5;cx.fillStyle=C.mg;cx.font='bold 12px monospace';cx.fillText('CYBER GAME',W/2,H*.15+30);cx.shadowBlur=0;cx.globalAlpha=1;
  // HP
  // Hearts - center of black zone with background panel
  cx.fillStyle='#0a0020';cx.fillRect(W/2-80,fl+8,160,36);
@@ -371,7 +371,7 @@ function drawIntro(){
  cx.beginPath();cx.moveTo(W*.25,H*.28-20);cx.lineTo(W*.75,H*.28-20);cx.stroke();
  cx.strokeStyle=C.mg+'15';cx.beginPath();cx.moveTo(W*.25,H*.39+10);cx.lineTo(W*.75,H*.39+10);cx.stroke();
  // Subtitle
- cx.fillStyle=C.wh+'25';cx.font='bold 13px monospace';cx.fillText('CYBER TOWER ARENA',W/2,H*.47);
+ cx.fillStyle=C.wh+'25';cx.font='bold 13px monospace';cx.fillText('CYBER GAME',W/2,H*.47);
  // Best score
  if(best>0){cx.fillStyle=C.am;cx.font='bold 11px monospace';cx.textAlign='right';cx.fillText('🏆 BEST '+best,W-30,30);cx.textAlign='center'}
  // Start button - premium

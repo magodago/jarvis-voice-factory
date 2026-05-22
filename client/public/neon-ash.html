@@ -14,7 +14,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#060010;touch-action
 </style></head>
 <body><div id="game"><canvas id="c"></canvas></div>
 
-<script>
+<script>const _dbg=document.createElement('div');_dbg.style.cssText='position:fixed;top:0;left:0;color:#0f0;font:10px monospace;z-index:999;pointer-events:none;background:rgba(0,0,0,0.7);padding:4px';document.body.appendChild(_dbg);window.onerror=function(m,s2,l){_dbg.textContent='ERR:'+m+' L'+l;};_dbg.textContent='v1.8';
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
 let W,H,gameState='intro',score=0,floorNum=0,highScore=parseInt(localStorage.getItem('neonash_hs')||0);
 let cameraY=0,shakeT=0,shakeI=0,introT=0,jumpWanted=false,shootHeld=false,bossFloor=0,bossActive=false,bossHP=0;

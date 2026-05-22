@@ -50,7 +50,7 @@ function newRoom(){
  else{spawnEnemies()}
  for(const e of enemies){e.x=r-30-e.w-Math.random()*(r-l-200-e.w);e.y=fl-e.h}
  // Platforms (always 2)
- for(let i=0;i<2;i++){let plX=l+40+Math.random()*(r-l-120);platforms.push({x:plX,y:fl-65-Math.random()*45,w:65+Math.random()*40,h:12})}
+ let plX1=l+30+Math.random()*((r-l-200)/2);platforms.push({x:plX1,y:fl-60-Math.random()*40,w:60+Math.random()*35,h:12});let plX2=plX1+100+Math.random()*((r-l-200)/2);if(plX2<r-90)platforms.push({x:plX2,y:fl-65-Math.random()*45,w:60+Math.random()*35,h:12})
  // Mines
  if(!bossActive&&!(room%15===0)){
   let mx1=l+80+Math.random()*((r-l-160)/2);mines.push({x:mx1,y:fl-12});
@@ -172,8 +172,27 @@ function draw(){
  cx.globalAlpha=0.8;cx.fillStyle=pGrd;cx.fillRect(dcx-6,dy2,30,dh);cx.globalAlpha=1;
  cx.strokeStyle=C.cy;cx.lineWidth=2;cx.shadowColor=C.cy;cx.shadowBlur=12;cx.beginPath();cx.ellipse(dcx+9,dy2+dh/2,17,dh/2,0,0,Math.PI*2);cx.stroke();cx.shadowBlur=0;
  cx.fillStyle=C.cy;cx.font='bold 9px monospace';cx.textAlign='center';cx.fillText('WARP',dcx+9,dy2-10);
- // Platforms
- for(const pl of platforms){let pg=cx.createLinearGradient(0,pl.y+pl.h,0,pl.y+pl.h+20);pg.addColorStop(0,C.cy+'30');pg.addColorStop(1,'transparent');cx.fillStyle=pg;cx.fillRect(pl.x-10,pl.y+pl.h,pl.w+20,20);cx.fillStyle=C.cy+'20';cx.fillRect(pl.x,pl.y,pl.w,pl.h);cx.fillStyle=C.cy+'50';cx.fillRect(pl.x+2,pl.y,pl.w-4,3);cx.strokeStyle=C.cy+'60';cx.lineWidth=2;cx.strokeRect(pl.x,pl.y,pl.w,pl.h);cx.fillStyle=C.cy+'10';cx.fillRect(pl.x+3,pl.y+pl.h,3,fl-pl.y-pl.h);cx.fillRect(pl.x+pl.w-6,pl.y+pl.h,3,fl-pl.y-pl.h)}
+ // PLATFORMS - solid neon with heartbeat
+ for(const pl of platforms){
+  const phb=(Math.sin(Date.now()*0.005+pl.x)+1)/2;
+  // Body
+  cx.fillStyle=C.cy+(20+Math.floor(phb*35)).toString(16);
+  cx.fillRect(pl.x,pl.y,pl.w,pl.h);
+  // Top glow line
+  cx.fillStyle=C.cy+(40+Math.floor(phb*50)).toString(16);
+  cx.fillRect(pl.x+2,pl.y-1,pl.w-4,3);
+  // Border pulse
+  cx.strokeStyle=C.cy+(40+Math.floor(phb*40)).toString(16);
+  cx.lineWidth=2+phb;cx.strokeRect(pl.x,pl.y,pl.w,pl.h);
+  // Bottom glow
+  let bglow=cx.createLinearGradient(0,pl.y+pl.h,0,pl.y+pl.h+15);
+  bglow.addColorStop(0,C.cy+'30');bglow.addColorStop(1,'transparent');
+  cx.fillStyle=bglow;cx.fillRect(pl.x-5,pl.y+pl.h,pl.w+10,15);
+  // Side dots
+  cx.fillStyle=C.cy+(30+Math.floor(phb*50)).toString(16);
+  cx.beginPath();cx.arc(pl.x+4,pl.y+pl.h/2,2,0,Math.PI*2);cx.fill();
+  cx.beginPath();cx.arc(pl.x+pl.w-4,pl.y+pl.h/2,2,0,Math.PI*2);cx.fill();
+ }
  // Mines
  for(const m of mines){const t=Date.now()*.003,hb=(Math.sin(t*3+m.x)+1)/2,hb2=Math.pow(hb,8);cx.fillStyle=C.mg+'30';cx.fillRect(m.x-10,m.y-2,20,4);let g2=cx.createRadialGradient(m.x,m.y,1,m.x,m.y,16+hb2*20);g2.addColorStop(0,C.mg);g2.addColorStop(0.3,C.mg+'80');g2.addColorStop(0.7,C.mg+'20');g2.addColorStop(1,'transparent');cx.fillStyle=g2;cx.fillRect(m.x-30,m.y-28,60,30);cx.fillStyle=C.wh;cx.beginPath();cx.arc(m.x,m.y,2+hb2*4,0,Math.PI*2);cx.fill();cx.fillStyle=C.mg;cx.beginPath();cx.arc(m.x,m.y,5+hb2*6,0,Math.PI*2);cx.fill();if(hb>0.8)sp(m.x,m.y,C.mg,2)}
  // Power-ups

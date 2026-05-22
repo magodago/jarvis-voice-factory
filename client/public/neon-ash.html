@@ -74,7 +74,7 @@ function sp(x,y,c,n){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.
 function start(){
  state='play';room=0;kills=0;startTime=Date.now();playerLvl=1;playerXP=0;
  P.hp=5;P.inv=0;P.shield=0;P.barrier=false;P.fireTimer=0;P.railAmmo=0;P.dashCd=0;
- P.cd=0;P.vx=1.4;P.vy=0;P.onGround=true;bullets=[];particles=[];
+ P.cd=0;P.vx=1.55;P.vy=0;P.onGround=true;bullets=[];particles=[];
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2;P.x=px+lw+10;newRoom();P.y=H*.82-P.h;
 }
 function restart(){state='intro';room=0;bullets=[];eb=[];particles=[];enemies=[];stopMusic()}
@@ -86,7 +86,7 @@ function update(){
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2,fl=H*.82,l=px+lw,r=px+pw-lw;
  if(touchL)jump=true;if(touchR)shoot=true;if(!touchR)shoot=false;
  if(P.dashCd<=0&&doubleTap>0&&Date.now()-doubleTap<500&&P.onGround){P.vx=3.5;P.dashCd=60;doubleTap=0;P.inv=15;sp(P.x,P.y,C.cy,10);sfx('dash')}
- if(P.dashCd>0){P.dashCd--;if(P.dashCd<40)P.vx=1.4}
+ if(P.dashCd>0){P.dashCd--;if(P.dashCd<40)P.vx=1.55}
  P.x+=P.vx;
  if(P.x<l)P.x=l;if(P.x+P.w>r){nextRoom();return}
  P.onGround=false;
@@ -110,7 +110,7 @@ function update(){
  for(const e of enemies){
   if(e.type==='boss'){e.x-=e.speed;e.cd--;if(e.cd<=0){eb.push({x:e.x,y:fl-e.h+24,vx:-3.5,w:8,h:4});e.cd=50}}
   else if(e.type==='suicide'){e.x-=e.speed;if(Math.abs(e.x-P.x)<30){e.hp=0;sp(e.x+e.w/2,fl-10,C.or,20);shake=18;sfx('mine');P.hp-=2;P.inv=50;if(P.hp<=0)die()}}
-  else{e.x-=e.speed;if(e.x<l+10){e.x=r-10}e.cd--;if(e.cd<=0&&e.type==='shooter'){eb.push({x:e.x,y:fl-e.h+22,vx:-3,w:6,h:3});e.cd=90+Math.random()*40}}
+  else{e.x-=e.speed;if(e.x<l+10){e.x=r-10}e.cd--;if(e.cd<=0&&e.type==='shooter'){eb.push({x:e.x,y:fl-e.h+26,vx:-3,w:6,h:3});e.cd=90+Math.random()*40}}
   // Hit by bullet
   for(let i=bullets.length-1;i>=0;i--){const b=bullets[i];if(b.x>e.x&&b.x<e.x+e.w&&Math.abs(b.y-(fl-e.h/2))<40){e.hp-=(b.dmg||1);if(!b.rail)bullets.splice(i,1);sp(e.x+e.w/2,fl-e.h/2,C.mg,4);shake=4;sfx('hit');if(e.hp<=0){enemies=enemies.filter(x=>x!==e);kills++;sp(e.x+e.w/2,fl-e.h/2,C.re,8);sfx('kill');
     if(e.type==='boss'){bossActive=false;for(let x=0;x<40;x++)particles.push({x:e.x+e.w/2,y:fl-e.h/2,vx:(Math.random()-.5)*8,vy:-4-Math.random()*8,life:20+Math.random()*30,c:C.re,sz:2+Math.random()*6});sp(e.x+e.w/2,fl-e.h/2,C.cy,30);shake=30;sfx('boss');for(let i=0;i<3;i++)powerUps.push({x:e.x+20+i*35,y:fl-40,type:i===0?'heal':i===1?'fire':'shield',life:300})}

@@ -50,8 +50,8 @@ function initFloors(){
   if(f.theme==='neon'){for(let d=0;d<3;d++)f.decorations.push({x:smin+30+Math.random()*(smax-smin-60),y:f.y-30-Math.random()*40,type:'neon_sign'})}
   else if(f.theme==='industrial'){for(let d=0;d<2;d++)f.decorations.push({x:smin+40+Math.random()*(smax-smin-80),y:f.y-20,type:'pipe'})}
   else if(f.theme==='hacker'){for(let d=0;d<3;d++)f.decorations.push({x:smin+30+Math.random()*(smax-smin-60),y:f.y-40-Math.random()*30,type:'code'})}
-  if(f.hasFire)f.fireX=smin+Math.random()*(smax-smin-40);
-  const cnt=2+Math.floor(Math.random()*2)+(f.n>10?1:0)+(f.n>30?1:0);
+  if(f.hasFire)f.fireX=smin+15+Math.random()*(smax-smin-50);
+  const cnt=3+Math.floor(Math.random()*3)+(f.n>15?1:0);
   for(let j=0;j<cnt;j++){
    const typeRand=Math.random();
    const type=typeRand<0.4?'walker':typeRand<0.75?'shooter':'heavy';
@@ -108,8 +108,10 @@ function update(){
   // Boss every 20 floors
   if(floorNum>0&&floorNum%20===0&&!bossActive){startBoss()}else if(floorNum>0&&floorNum%10===0&&Math.random()<0.4){let evt=Math.random()<0.5?'toxic':'alarm';if(evt==='toxic'){P.hp=Math.max(1,P.hp-1);sp(P.x+P.w/2,P.y+P.h/2,C.green,15)}else{score+=300;sp(P.x+P.w/2,P.y+P.h/2,C.amber,10)}}
  }cameraY+=(P.y-H*0.5-cameraY)*0.2;return}
- P.x+=P.vx*P.dir;if(P.x<=lW){P.dir=1;P.x=lW}if(P.x+P.w>=rW){P.dir=-1;P.x=rW-P.w}
- if((f.stairSide==='left'&&P.x<=lW+16)||(f.stairSide==='right'&&P.x+P.w>=rW-16)){
+ P.x+=P.vx*P.dir;// Allow walking into stair zone
+if(f.stairSide==='left'&&P.x<=lW-14){P.dir=1;P.x=lW-14}else if(P.x<=lW-4&&f.stairSide!=='left'){P.dir=1;P.x=lW}
+else if(f.stairSide==='right'&&P.x+P.w>=rW+14){P.dir=-1;P.x=rW+14-P.w}else if(P.x+P.w>=rW+4&&f.stairSide!=='right'){P.dir=-1;P.x=rW-P.w}
+ if((f.stairSide==='left'&&P.x<=lW&&P.x+P.w>lW+4)||(f.stairSide==='right'&&P.x+P.w>=rW&&P.x<rW-4)){
   const nf=floors[floorNum+1];if(!nf)return;climbing=true;climbT=0;climbFX=P.x;climbFY=P.y;climbTX=nf.stairSide==='left'?platformW-wallW-P.w-8:wallW+8;climbTY=nf.y-P.h;climbNDir=nf.stairSide==='left'?-1:1;P.vx=0;return}
  P.onGround=false;if(P.y+P.h>=fy-2&&P.y+P.h<=fy+16&&P.vy>=0){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}
  if(P.y+P.h>fy+24){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}
@@ -140,7 +142,7 @@ function update(){
  for(let ei=eBullets.length-1;ei>=0;ei--){const eb=eBullets[ei];if(P.inv<=0&&eb.x<P.x+P.w&&eb.x+eb.w>P.x&&eb.y+1<P.y+P.h&&eb.y+eb.h>P.y+1){P.hp-=(eb.dmg||1);P.inv=45;eBullets.splice(ei,1);shakeT=10;shakeI=6;sp(P.x+P.w/2,P.y+P.h/2,C.magenta,8);if(P.hp<=0)die()}}
 
  // Fire
- if(f.hasFire){const hx=platformW>0?f.fireX:0,hy=f.y-10;if(P.inv<=0&&platformW>0&&P.x+P.w>hx&&P.x<hx+16&&P.y+P.h>hy&&P.y<hy+14){P.hp--;P.inv=35;sp(P.x+P.w/2,P.y+P.h/2,C.amber,10);if(P.hp<=0)die()}}
+ if(f.hasFire){const hx=platformW>0?f.fireX+10:0,hy=f.y-4;const dx=P.x+P.w/2-hx,dy=P.y+P.h/2-hy;if(P.inv<=0&&platformW>0&&Math.sqrt(dx*dx+dy*dy)<16){P.hp--;P.inv=35;sp(P.x+P.w/2,P.y+P.h/2,C.magenta,15);if(P.hp<=0)die()}}
 
  // Power-ups
  for(let pi=powerUps.length-1;pi>=0;pi--){const pu=powerUps[pi];pu.life--;if(pu.life<=0){powerUps.splice(pi,1);continue}
@@ -242,22 +244,25 @@ ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx+3,fy-10);ct
   for(let i=0;i<12;i++){ctx.fillStyle=C.cyan+'08';ctx.fillRect(stX+2,stY+94-(i+1)*7,20,3.5)}ctx.fillStyle=C.cyan+'40';ctx.font='8px monospace';ctx.textAlign='center';ctx.fillText('▲',stX+12,stY-4);
   // Fire - animated with particles
   if(fn.hasFire){
- const hx=fx+fn.fireX,hy=fn.y-10-cameraY,t=Date.now()*0.005;
- ctx.globalAlpha=0.8+Math.random()*.2;
- // Multiple flame layers
- for(let f=0;f<3;f++){
-  let fy2=hy-Math.sin(t+fn.n+f)*8-f*6;
-  let fh=12+f*5;
-  ctx.fillStyle=f===0?C.amber+'EE':f===1?C.orange+'CC':C.red+'88';
-  ctx.fillRect(hx+2+f*2,fy2-fh,10-f*2,fh+Math.sin(t*2+f)*4);
-  // Flame tips
-  ctx.fillStyle=C.amber;
-  ctx.fillRect(hx+4+f,fy2-fh-4-Math.sin(t*3)*3,4,6);
- }
- // Base glow
- ctx.fillStyle=C.amber+'30';
- ctx.fillRect(hx-4,hy-2,24,6);
+ // Magenta heartbeat plate
+ const hx=fx+fn.fireX,hy=fn.y-4-cameraY;
+ const heartbeat=Math.abs(Math.sin(Date.now()*0.003+fn.n));
+ const pulse=16+heartbeat*10;
+ // Outer glow ring
+ ctx.globalAlpha=0.2+heartbeat*0.5;
+ let glow=ctx.createRadialGradient(hx+10,hy+4,4,hx+10,hy+4,pulse);
+ glow.addColorStop(0,C.magenta+'80');glow.addColorStop(0.5,C.magenta+'30');glow.addColorStop(1,'transparent');
+ ctx.fillStyle=glow;ctx.fillRect(hx-pulse,hy-pulse,pulse*2,pulse*2);
+ // Central plate
+ ctx.globalAlpha=0.8+heartbeat*0.2;
+ ctx.fillStyle=C.magenta;ctx.beginPath();ctx.arc(hx+10,hy+4,10+heartbeat*4,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle=C.magenta+'CC';ctx.lineWidth=2;ctx.beginPath();ctx.arc(hx+10,hy+4,10+heartbeat*4,0,Math.PI*2);ctx.stroke();
+ // Center dot
+ ctx.fillStyle=C.white;ctx.beginPath();ctx.arc(hx+10,hy+4,3,0,Math.PI*2);ctx.fill();
+ // Ring
+ ctx.strokeStyle=C.magenta;ctx.lineWidth=1;ctx.beginPath();ctx.arc(hx+10,hy+4,14+heartbeat*6,0,Math.PI*2);ctx.stroke();
  ctx.globalAlpha=1
+ // Hitbox: the circle
 }
   // Enemies
   for(const e of fn.enemies){const ey=e.y-cameraY;
@@ -277,7 +282,7 @@ if(eImg&&eImg.complete&&eImg.naturalWidth>0){ctx.drawImage(eImg,fx+e.x-2,ey-2,e.
  }
  // Player
  if(gameState==='playing'||gameState==='dead'){const a=P.inv>0?.4+Math.sin(Date.now()*.3)*.3:1;ctx.globalAlpha=a;const py=P.y-cameraY;
-  if(CHAR_SPRITE&&CHAR_SPRITE.complete&&CHAR_SPRITE.naturalWidth>0){ctx.save();const cx=P.x+P.w/2;ctx.translate(cx,py+23);if(P.dir>0)ctx.scale(-1,1);ctx.drawImage(CHAR_SPRITE,-20,-23,40,46);ctx.restore()}
+  if(CHAR_SPRITE&&CHAR_SPRITE.complete&&CHAR_SPRITE.naturalWidth>0){ctx.save();const cx=P.x+P.w/2;const bounce=P.onGround?Math.abs(Math.sin(Date.now()*0.008+P.x))*2:0;ctx.translate(cx,py+23+bounce);if(P.dir>0)ctx.scale(-1,1);ctx.drawImage(CHAR_SPRITE,-20,-23,40,46);ctx.restore()}
   else{ctx.fillStyle=C.cyan;ctx.fillRect(P.x,py+8,P.w,P.h-10);ctx.fillRect(P.x+6,py,10,10);ctx.fillStyle=C.white;ctx.fillRect(P.x+8,py+2,6,3);}
   const lo=Math.sin(Date.now()*.015)*3;ctx.fillStyle=C.cyan+'80';ctx.fillRect(P.x+2,py+P.h-5,6,6+lo);ctx.fillRect(P.x+P.w-8,py+P.h-5,6,6-lo);ctx.globalAlpha=1}
  for(const b of bullets){ctx.fillStyle=C.cyan;ctx.fillRect(b.x,b.y-cameraY,b.w,b.h)}for(const eb of eBullets){ctx.fillStyle=C.magenta;ctx.fillRect(eb.x,eb.y-cameraY,eb.w,eb.h)}

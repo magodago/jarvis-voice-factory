@@ -245,25 +245,16 @@ ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx+3,fy-10);ct
   // Fire - animated with particles
   if(fn.hasFire){
  const hx=fx+fn.fireX,hy=fn.y-4-cameraY,cx=hx+12,cy=hy+6;
- const t=Date.now()*0.004,beat=(Math.sin(t+fn.n)+1)/2; // 0→1 heartbeat
- const beat2=Math.pow(beat,3); // sharp pulse
- // Big outer glow
- ctx.globalAlpha=0.15+beat2*0.6;
- let g1=ctx.createRadialGradient(cx,cy,6,cx,cy,40+beat2*30);
- g1.addColorStop(0,C.magenta+'AA');g1.addColorStop(0.3,C.magenta+'50');g1.addColorStop(0.7,C.magenta+'10');g1.addColorStop(1,'transparent');
- ctx.fillStyle=g1;ctx.fillRect(cx-70,cy-70,140,140);
- // Shock ring
- ctx.globalAlpha=beat2*0.8;
- ctx.strokeStyle=C.magenta;ctx.lineWidth=2+beat2*4;
- ctx.beginPath();ctx.arc(cx,cy,22+beat2*25,0,Math.PI*2);ctx.stroke();
- // Main plate
- ctx.globalAlpha=0.7+beat2*0.3;
- ctx.fillStyle=C.magenta;ctx.beginPath();ctx.arc(cx,cy,12+beat2*2,0,Math.PI*2);ctx.fill();
- ctx.strokeStyle=C.white+'80';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,12+beat2*2,0,Math.PI*2);ctx.stroke();
- // Inner core
- ctx.fillStyle=C.white;ctx.beginPath();ctx.arc(cx,cy,4+beat2*2,0,Math.PI*2);ctx.fill();
- // Particles from plate
- if(beat>0.7){for(let p=0;p<3;p++){let a=Math.random()*Math.PI*2;let r=15+Math.random()*15;particles.push({x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r+cameraY,vx:(Math.random()-.5)*2,vy:-1-Math.random()*3,life:15+Math.random()*10,c:C.magenta,size:1+Math.random()*2})}}
+ const t=Date.now()*0.004,beat=(Math.sin(t+fn.n)+1)/2;
+ // Soft glowing cloud
+ ctx.globalAlpha=0.3+beat*0.4;
+ let g=ctx.createRadialGradient(cx,cy,3,cx,cy,15+beat*5);
+ g.addColorStop(0,C.magenta);g.addColorStop(0.5,C.magenta+'60');g.addColorStop(1,'transparent');
+ ctx.fillStyle=g;ctx.fillRect(cx-25,cy-25,50,50);
+ // Core
+ ctx.globalAlpha=0.6;
+ ctx.fillStyle=C.magenta;ctx.beginPath();ctx.arc(cx,cy,6+beat*3,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle=C.white;ctx.beginPath();ctx.arc(cx,cy,2+beat*2,0,Math.PI*2);ctx.fill();
  ctx.globalAlpha=1
 }
   // Enemies
@@ -287,9 +278,14 @@ if(eImg&&eImg.complete&&eImg.naturalWidth>0){ctx.drawImage(eImg,fx+e.x-2,ey-2,e.
   if(CHAR_SPRITE&&CHAR_SPRITE.complete&&CHAR_SPRITE.naturalWidth>0){ctx.save();const cx=P.x+P.w/2;const bounce=P.onGround?Math.abs(Math.sin(Date.now()*0.008+P.x))*2:0;ctx.translate(cx,py+23+bounce);if(P.dir>0)ctx.scale(-1,1);ctx.drawImage(CHAR_SPRITE,-20,-23,40,46);ctx.restore()}
   else{ctx.fillStyle=C.cyan;ctx.fillRect(P.x,py+8,P.w,P.h-10);ctx.fillRect(P.x+6,py,10,10);ctx.fillStyle=C.white;ctx.fillRect(P.x+8,py+2,6,3);}
   // Feet particles
-if(P.onGround&&Math.random()<0.6){particles.push({x:P.x+P.w/2,y:P.y+P.h+cameraY,vx:(Math.random()-.5)*1,vy:-Math.random()*2,life:8+Math.random()*8,c:C.cyan,size:1+Math.random()*2});}
 const lo=Math.sin(Date.now()*.015)*3;ctx.fillStyle=C.cyan+'60';ctx.fillRect(P.x+2,py+P.h-5,6,6+lo);ctx.fillRect(P.x+P.w-8,py+P.h-5,6,6-lo);ctx.globalAlpha=1}
- for(const b of bullets){ctx.fillStyle=C.cyan;ctx.fillRect(b.x,b.y-cameraY,b.w,b.h)}for(const eb of eBullets){ctx.fillStyle=C.magenta;ctx.fillRect(eb.x,eb.y-cameraY,eb.w,eb.h)}
+ // Foot trail particles (visible!)
+if(gameState==='playing'&&P.onGround){
+ for(let i=0;i<2;i++){
+  particles.push({x:P.x+P.w/2+(Math.random()-.5)*8,y:P.y+P.h+cameraY,vx:(Math.random()-.5)*1,vy:-1-Math.random()*2,life:15+Math.random()*10,c:C.cyan,size:2+Math.random()*2});
+ }
+}
+for(const b of bullets){ctx.fillStyle=C.cyan;ctx.fillRect(b.x,b.y-cameraY,b.w,b.h)}for(const eb of eBullets){ctx.fillStyle=C.magenta;ctx.fillRect(eb.x,eb.y-cameraY,eb.w,eb.h)}
  for(const pu of powerUps){const py=pu.y-cameraY;ctx.fillStyle=pu.type==='heal'?C.red:pu.type==='shield'?C.cyan:pu.type==='speed'?C.amber:C.green;
   ctx.beginPath();ctx.arc(pu.x,py,7,0,Math.PI*2);ctx.fill();ctx.fillStyle=C.white;ctx.font='7px monospace';ctx.textAlign='center';
   ctx.fillText(pu.type==='heal'?'❤':pu.type==='shield'?'🛡':pu.type==='speed'?'⚡':'🔫',pu.x,py+3)}

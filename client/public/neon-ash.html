@@ -63,7 +63,7 @@ function newRoom(){
 
 // Touch
 let touchL=false,touchR=false,lastTap=0;
-cv.addEventListener('touchstart',e=>{e.preventDefault();if(state==='intro'){if(!actx)try{actx=new AC()}catch(e){}if(actx&&actx.state==='suspended')actx.resume();start();startMusic();return}if(state==='dead'){restart();return}for(const t of e.changedTouches){if(t.clientX<W/2){touchL=true;let n=Date.now();if(n-lastTap<300){P.dashCd=0;doubleTap=n}lastTap=n}else touchR=true}});
+document.body.addEventListener('touchmove',e=>{e.preventDefault()},{passive:false});cv.addEventListener('touchstart',e=>{e.preventDefault();if(state==='intro'){if(!actx)try{actx=new AC()}catch(e){}if(actx&&actx.state==='suspended')actx.resume();start();startMusic();return}if(state==='dead'){restart();return}for(const t of e.changedTouches){if(t.clientX<W/2){touchL=true;let n=Date.now();if(n-lastTap<300){P.dashCd=0;doubleTap=n}lastTap=n}else touchR=true}});
 cv.addEventListener('touchend',e=>{e.preventDefault();touchL=false;touchR=false;for(const t of e.touches){if(t.clientX>=W/2)touchR=true}});
 cv.addEventListener('touchcancel',e=>{touchL=false;touchR=false});
 cv.addEventListener('mousedown',e=>{if(state==='intro'){if(!actx)try{actx=new AC()}catch(e){}if(actx&&actx.state==='suspended')actx.resume();start();startMusic();return}if(state==='dead'){restart();return}if(e.clientX<W/2){touchL=true;let n=Date.now();if(n-lastTap<300){P.dashCd=0;doubleTap=n}lastTap=n}else touchR=true});
@@ -150,12 +150,18 @@ else if(e.type==='suicide'){e.x-=e.speed;if(Math.abs(e.x-P.x)<30){e.hp=0;sp(e.x+
  // Power-ups
  for(let i=powerUps.length-1;i>=0;i--){const pu=powerUps[i];pu.life--;if(pu.life<=0){powerUps.splice(i,1);continue}
   if(Math.abs(P.x+P.w/2-pu.x)<22&&Math.abs(P.y+P.h/2-pu.y)<22){
-   if(pu.type==='heal')P.hp=Math.min(5,P.hp+2);else if(pu.type==='shield')P.shield=180;else if(pu.type==='fire'){P.fireTimer=300;for(let f=0;f<12;f++)particles.push({x:pu.x+(Math.random()-.5)*30,y:pu.y-10-Math.random()*30,vx:(Math.random()-.5)*2,vy:-2-Math.random()*3,life:25+Math.random()*15,c:C.or,sz:2+Math.random()*4})}else if(pu.type==='rail')P.railAmmo=Math.min(5,P.railAmmo+3);else if(pu.type==='barrier')P.barrier=true;else if(pu.type==='shotgun'){P.weapon='shotgun';sp(pu.x,pu.y,C.or,10)}else if(pu.type==='laser'){P.weapon='laser';sp(pu.x,pu.y,C.mg,10)}else if(pu.type==='sniper'){sniperActive=200;sp(pu.x,pu.y,C.cy,15);sfx('power')}
-   sp(pu.x,pu.y,pu.type==='fire'?C.or:pu.type==='shield'?C.cy:C.gn,8);powerUps.splice(i,1);sfx('power')
+   if(pu.type==='heal')P.hp=Math.min(5,P.hp+2);else if(pu.type==='shield')P.shield=180;else if(pu.type==='fire'){P.fireTimer=300;for(let f=0;f<12;f++)particles.push({x:pu.x+(Math.random()-.5)*30,y:pu.y-10-Math.random()*30,vx:(Math.random()-.5)*2,vy:-2-Math.random()*3,life:25+Math.random()*15,c:C.or,sz:2+Math.random()*4})}else if(pu.type==='rail')P.railAmmo=Math.min(5,P.railAmmo+3);else if(pu.type==='barrier')P.barrier=true;else if(pu.type==='shotgun'){P.weapon='shotgun';sp(pu.x,pu.y,C.or,10);achPopup=60;achMsg='🔫 ESCOPETA'}else if(pu.type==='laser'){P.weapon='laser';sp(pu.x,pu.y,C.mg,10);achPopup=60;achMsg='⚡ LÁSER'}else if(pu.type==='sniper'){sniperActive=200;sp(pu.x,pu.y,C.cy,15);sfx('power')}
+   sp(pu.x,pu.y,pu.type==='fire'?C.or:pu.type==='shield'?C.cy:C.gn,8);
+ if(pu.type==='heal')beep(600,0.08,'sine',0.05);
+ else if(pu.type==='shield')beep(800,0.08,'sine',0.05);
+ else if(pu.type==='fire')beep(400,0.1,'triangle',0.06);
+ else if(pu.type==='shotgun')beep(300,0.12,'square',0.05);
+ else if(pu.type==='laser')beep(900,0.06,'square',0.04);
+ powerUps.splice(i,1);sfx('power')
   }
  }
  // XP orbs
- for(let i=xpOrbs.length-1;i>=0;i--){const xo=xpOrbs[i];xo.life--;if(xo.life<=0){xpOrbs.splice(i,1);continue}if(Math.abs(P.x+P.w/2-xo.x)<14&&Math.abs(P.y+P.h/2-xo.y)<14){playerXP+=10+Math.floor(playerLvl/2);xpOrbs.splice(i,1);sp(xo.x,xo.y,C.cy,4);if(playerXP>=playerLvl*50){playerLvl++;playerXP=0;sp(P.x+P.w/2,P.y,C.cy,20);sfx('power');P.hp=Math.min(5,P.hp+1)}}}
+ for(let i=xpOrbs.length-1;i>=0;i--){const xo=xpOrbs[i];xo.life--;if(xo.life<=0){xpOrbs.splice(i,1);continue}if(Math.abs(P.x+P.w/2-xo.x)<14&&Math.abs(P.y+P.h/2-xo.y)<14){playerXP+=10+Math.floor(playerLvl/2);xpOrbs.splice(i,1);sp(xo.x,xo.y,C.cy,4);if(playerXP>=playerLvl*50){playerLvl++;playerXP=0;sp(P.x+P.w/2,P.y,C.cy,20);sfx('power');P.hp=Math.min(5,P.hp+1);achPopup=80;achMsg='⬆ NIVEL '+playerLvl}}}
  for(const p of particles){p.x+=p.vx;p.y+=p.vy;p.life--}particles=particles.filter(p=>p.life>0);
  if(shake>0)shake--;
  if(theme==='toxic'&&Math.random()<.005*Math.min(3,1+room/10)&&P.inv<=0){P.hp--;P.inv=20;sp(P.x+P.w/2,P.y,C.gn,5);if(P.hp<=0)die()}
@@ -235,6 +241,8 @@ function draw(){
  // HUD
  cx.fillStyle='#0a0020cc';cx.fillRect(0,0,W,44);
  cx.fillStyle=C.cy;cx.font='bold 13px monospace';cx.textAlign='left';cx.fillText('LVL '+playerLvl,10,20);
+ // XP bar
+ const xpNeeded=playerLvl*50;cx.fillStyle='#0a0020';cx.fillRect(10,28,80,4);cx.fillStyle=C.cy;cx.fillRect(10,28,80*Math.min(1,playerXP/xpNeeded),4);cx.strokeStyle=C.cy+'30';cx.strokeRect(10,28,80,4);
  cx.fillStyle=C.wh+'10';cx.font='8px monospace';cx.textAlign='right';cx.fillText('BEST '+best,W-10,40);
  // Room center
  const blink=Math.sin(Date.now()*0.006);cx.globalAlpha=0.6+Math.abs(blink)*0.4;cx.shadowColor=C.cy;cx.shadowBlur=15+Math.abs(blink)*15;cx.fillStyle=C.cy;cx.font='bold 28px monospace';cx.textAlign='center';cx.fillText('ROOM '+room,W/2,H*.15);cx.shadowBlur=5+Math.abs(Math.sin(Date.now()*0.004))*5;cx.fillStyle=C.mg;cx.font='bold 12px monospace';cx.fillText('CYBER TOWER',W/2,H*.15+30);cx.shadowBlur=0;cx.globalAlpha=1;

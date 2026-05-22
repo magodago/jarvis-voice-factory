@@ -56,7 +56,7 @@ function initFloors(){
    const typeRand=Math.random();
    const type=typeRand<0.4?'walker':typeRand<0.75?'shooter':'heavy';
    const hp=type==='heavy'?3:type==='shooter'?1:2;
-   const spd=type==='heavy'?0.1:type==='walker'?0.15:0.12;
+   const spd=type==='heavy'?0.06:type==='walker'?0.1:0.08;
    f.enemies.push({x:smin+Math.random()*(smax-smin-50),y:f.y-76,w:type==='heavy'?68:56,h:type==='heavy'?88:76,vx:0,
     type,hp,maxHp:hp,sTimer:type==='shooter'?80+Math.random()*100:999,speed:spd,damage:type==='heavy'?2:1});
   }
@@ -115,7 +115,7 @@ else if(f.stairSide==='right'&&P.x+P.w>=rW+14){P.dir=-1;P.x=rW+14-P.w}else if(P.
   const nf=floors[floorNum+1];if(!nf)return;climbing=true;climbT=0;climbFX=P.x;climbFY=P.y;climbTX=nf.stairSide==='left'?platformW-wallW-P.w-8:wallW+8;climbTY=nf.y-P.h;climbNDir=nf.stairSide==='left'?-1:1;P.vx=0;return}
  P.onGround=false;if(P.y+P.h>=fy-2&&P.y+P.h<=fy+16&&P.vy>=0){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}
  if(P.y+P.h>fy+24){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}
- if(P.y<fy-FG+PH){P.y=fy-FG+PH;P.vy=0;P.vx=P.dir*1.2}
+ // ceiling removed
  if(!P.onGround){P.vy+=0.4;P.y+=P.vy}
  if(jumpWanted&&P.onGround&&P.jumpCd<=0){P.vy=-7;P.y-=2;P.vx=3;jumpWanted=false;P.onGround=false;P.jumpCd=15;sp(P.x+P.w/2,P.y+P.h,C.cyan,3)}
  if(shootHeld&&P.shootCd<=0){if(P.ammo>0)shoot();else{P.shootCd=20;sp(P.x+P.w/2,P.y+P.h/2,C.white,3);for(const e of cf().enemies){if(Math.abs(e.x-P.x)<50&&Math.abs(e.y-P.y)<40){e.hp--;sp(e.x+e.w/2,e.y+e.h/2,C.white,8);if(e.hp<=0){cf().enemies=cf().enemies.filter(x=>x!==e);score+=250;P.ammo=Math.min(99,P.ammo+5)}break}}}}

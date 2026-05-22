@@ -50,8 +50,8 @@ function initFloors(){
   if(f.theme==='neon'){for(let d=0;d<3;d++)f.decorations.push({x:smin+30+Math.random()*(smax-smin-60),y:f.y-30-Math.random()*40,type:'neon_sign'})}
   else if(f.theme==='industrial'){for(let d=0;d<2;d++)f.decorations.push({x:smin+40+Math.random()*(smax-smin-80),y:f.y-20,type:'pipe'})}
   else if(f.theme==='hacker'){for(let d=0;d<3;d++)f.decorations.push({x:smin+30+Math.random()*(smax-smin-60),y:f.y-40-Math.random()*30,type:'code'})}
-  if(f.hasFire)f.fireX=smin+45+Math.random()*(smax-smin-80);
-  const cnt=Math.random()<0.25+f.n*0.015?2:Math.random()<0.35+f.n*0.02?1:0;
+  if(f.hasFire)f.fireX=smin+Math.random()*(smax-smin-40);
+  const cnt=(f.n<3?1:0)+(Math.random()<0.4+f.n*0.02?2:Math.random()<0.5+f.n*0.03?1:0);
   for(let j=0;j<cnt;j++){
    const typeRand=Math.random();
    const type=typeRand<0.4?'walker':typeRand<0.75?'shooter':'heavy';
@@ -109,7 +109,7 @@ function update(){
   if(floorNum>0&&floorNum%20===0&&!bossActive){startBoss()}else if(floorNum>0&&floorNum%10===0&&Math.random()<0.4){let evt=Math.random()<0.5?'toxic':'alarm';if(evt==='toxic'){P.hp=Math.max(1,P.hp-1);sp(P.x+P.w/2,P.y+P.h/2,C.green,15)}else{score+=300;sp(P.x+P.w/2,P.y+P.h/2,C.amber,10)}}
  }cameraY+=(P.y-H*0.5-cameraY)*0.2;return}
  P.x+=P.vx*P.dir;if(P.x<=lW){P.dir=1;P.x=lW}if(P.x+P.w>=rW){P.dir=-1;P.x=rW-P.w}
- if(P.onGround&&P.vy>=0&&P.jumpCd<=5&&((f.stairSide==='left'&&P.x<=lW+8)||(f.stairSide==='right'&&P.x+P.w>=rW-8))){
+ if(P.onGround&&((f.stairSide==='left'&&P.x<=lW+12)||(f.stairSide==='right'&&P.x+P.w>=rW-12))){
   const nf=floors[floorNum+1];if(!nf)return;climbing=true;climbT=0;climbFX=P.x;climbFY=P.y;climbTX=nf.stairSide==='left'?platformW-wallW-P.w-12:wallW+12;climbTY=nf.y-P.h;climbNDir=nf.stairSide==='left'?-1:1;P.vx=0;return}
  P.onGround=false;if(P.y+P.h>=fy-2&&P.y+P.h<=fy+16&&P.vy>=0){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}
  if(P.y+P.h>fy+24){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}
@@ -193,18 +193,33 @@ ctx.beginPath();ctx.moveTo(W-6,0);ctx.lineTo(W-6,H);ctx.stroke();
   ctx.strokeStyle=C.cyan+'25';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx+platformW,fy);ctx.stroke();
   // Walls
   // Walls with windows and details
-ctx.fillStyle='#0d0028';ctx.fillRect(fx,fy-FG+PH,wallW,FG-PH);ctx.fillRect(fx+platformW-wallW,fy-FG+PH,wallW,FG-PH);
-// Window rows on walls
-ctx.fillStyle=C.cyan+'06';
-for(let wy=fy-FG+PH+10;wy<fy-10;wy+=22){
- ctx.fillRect(fx+3,wy,8,8);ctx.fillRect(fx+platformW-wallW+3,wy,8,8);
- ctx.strokeStyle=C.cyan+'15';ctx.lineWidth=0.5;
- ctx.strokeRect(fx+3,wy,8,8);ctx.strokeRect(fx+platformW-wallW+3,wy,8,8);
+// Brick wall texture
+ctx.fillStyle='#252535';ctx.fillRect(fx,fy-FG+PH,wallW,FG-PH);ctx.fillRect(fx+platformW-wallW,fy-FG+PH,wallW,FG-PH);
+// Brick pattern
+for(let wy=fy-FG+PH+4;wy<fy;wy+=12){
+ for(let wx=fx;wx<fx+wallW;wx+=7){
+  ctx.fillStyle='#2a2a3a';ctx.fillRect(wx,wy,5,10);
+  ctx.strokeStyle='#1a1a2a';ctx.lineWidth=0.5;ctx.strokeRect(wx,wy,5,10);
+ }
+ for(let wx=fx+platformW-wallW;wx<fx+platformW;wx+=7){
+  ctx.fillStyle='#2a2a3a';ctx.fillRect(wx,wy,5,10);
+  ctx.strokeStyle='#1a1a2a';ctx.lineWidth=0.5;ctx.strokeRect(wx,wy,5,10);
+ }
 }
-// Neon accent line on wall edge
-ctx.strokeStyle=C.cyan+'20';ctx.lineWidth=1;
-ctx.beginPath();ctx.moveTo(fx+wallW,fy-FG+PH);ctx.lineTo(fx+wallW,fy);ctx.stroke();
-ctx.beginPath();ctx.moveTo(fx+platformW-wallW,fy-FG+PH);ctx.lineTo(fx+platformW-wallW,fy);ctx.stroke();
+// Windows with cyan glow
+for(let wy=fy-FG+20;wy<fy-16;wy+=30){
+ ctx.fillStyle=C.cyan+'10';ctx.fillRect(fx+2,wy,wallW-4,16);ctx.fillRect(fx+platformW-wallW+2,wy,wallW-4,16);
+ ctx.strokeStyle=C.cyan+'30';ctx.lineWidth=1;ctx.strokeRect(fx+2,wy,wallW-4,16);ctx.strokeRect(fx+platformW-wallW+2,wy,wallW-4,16);
+ // Window glow
+ ctx.fillStyle=C.cyan+'08';ctx.fillRect(fx+2,wy-2,wallW-4,20);ctx.fillRect(fx+platformW-wallW+2,wy-2,wallW-4,20);
+}
+// Wall lamps
+for(let wy=fy-FG+35;wy<fy-20;wy+=50){
+ ctx.fillStyle=C.amber+'30';ctx.beginPath();ctx.arc(fx+wallW-4,wy,4,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle=C.amber+'30';ctx.beginPath();ctx.arc(fx+platformW-wallW+4,wy,4,0,Math.PI*2);ctx.fill();
+}
+// Cable on left wall
+ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx+3,fy-10);ctx.lineTo(fx+6,fy-FG+30);ctx.lineTo(fx+3,fy-FG+10);ctx.stroke();
   // Decorations
   for(const d of fn.decorations||[]){
    const dy=d.y-cameraY;

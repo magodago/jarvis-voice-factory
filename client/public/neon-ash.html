@@ -200,7 +200,7 @@ ctx.beginPath();ctx.moveTo(W-6,0);ctx.lineTo(W-6,H);ctx.stroke();
   if(!fn)continue;const fy=fn.y-cameraY,fx=bgl+2;if(fy<-90||fy>H+90)continue;
   // Floor theme coloring
   const tc=fn.theme==='neon'?'#1a0040':fn.theme==='industrial'?'#1a2000':fn.theme==='darkcore'?'#200015':'#001a20';
-  const hb2=(Math.sin(Date.now()*0.004+fn.n)+1)/2;ctx.fillStyle=C.cyan+(20+Math.floor(hb2*25)).toString(16);ctx.fillRect(fx,fy-6,platformW,PH+12);ctx.fillStyle=C.cyan+(30+Math.floor(hb2*35)).toString(16);ctx.fillRect(fx,fy-2,platformW,PH+4);let fog2=ctx.createLinearGradient(0,fy-20,0,fy);fog2.addColorStop(0,"transparent");fog2.addColorStop(0.5,C.cyan+(5+Math.floor(hb2*10)).toString(16));fog2.addColorStop(1,C.cyan+"40");ctx.fillStyle=fog2;ctx.fillRect(fx,fy-20,platformW,20);
+  const hb2=(Math.sin(Date.now()*0.004+fn.n)+1)/2;ctx.fillStyle=C.cyan+(20+Math.floor(hb2*25)).toString(16);ctx.fillRect(fx,fy-6,platformW,PH+12);ctx.fillStyle=C.cyan+(30+Math.floor(hb2*35)).toString(16);ctx.fillRect(fx,fy-2,platformW,PH+4);let fog2=ctx.createLinearGradient(0,fy-20,0,fy);fog2.addColorStop(0,'transparent');fog2.addColorStop(0.5,C.cyan+(5+Math.floor(hb2*10)).toString(16));fog2.addColorStop(1,C.cyan+'40');ctx.fillStyle=fog2;ctx.fillRect(fx,fy-20,platformW,20);
   ctx.strokeStyle=C.cyan+'45';ctx.lineWidth=1;ctx.strokeRect(fx,fy,platformW,PH);
   ctx.strokeStyle=C.cyan+'25';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx+platformW,fy);ctx.stroke();
   // Walls

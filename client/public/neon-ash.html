@@ -40,7 +40,7 @@ for(let n=0;n<=100;n++){
   theme:FLOOR_THEMES[n%FLOOR_THEMES.length],decorations:[]});
 }
 function initFloors(){
- platformW=W-64;wallW=28;
+ platformW=520;wallW=28;
  for(const f of floors){
   if(f.n===0)continue;
   const sz=f.stairSide==='left'?90:platformW-90;

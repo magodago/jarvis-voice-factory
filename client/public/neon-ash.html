@@ -62,9 +62,9 @@ function update(){
  P.x+=P.vx*P.dir;if(P.x<=lW){P.dir=1;P.x=lW}if(P.x+P.w>=rW){P.dir=-1;P.x=rW-P.w}
  if(P.onGround&&((f.stairSide==='left'&&P.x<=lW+14)||(f.stairSide==='right'&&P.x+P.w>=rW-14))){
   const nf=floors[floorNum+1];if(!nf)return;climbing=true;climbT=0;climbFX=P.x;climbFY=P.y;climbTX=nf.stairSide==='left'?platformW-wallW-P.w-12:wallW+12;climbTY=nf.y-P.h;climbNDir=nf.stairSide==='left'?-1:1;P.vx=0;return}
- P.onGround=false;if(P.y+P.h>=fy-2&&P.y+P.h<=fy+16&&P.vy>=0){P.y=fy-P.h;P.vy=0;P.onGround=true}
- if(P.y+P.h>fy+24){P.y=fy-P.h;P.vy=0;P.onGround=true}if(P.y<fy-FG+PH){P.y=fy-FG+PH;P.vy=0}
- if(!P.onGround){P.vy+=0.4;P.y+=P.vy}if(jumpWanted&&P.onGround&&P.jumpCd<=0){P.vy=-7;P.y-=2;P.vx=P.dir*2.8;jumpWanted=false;P.onGround=false;P.jumpCd=0}
+ P.onGround=false;if(P.y+P.h>=fy-2&&P.y+P.h<=fy+16&&P.vy>=0){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}
+ if(P.y+P.h>fy+24){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}if(P.y<fy-FG+PH){P.y=fy-FG+PH;P.vy=0}
+ if(!P.onGround){P.vy+=0.4;P.y+=P.vy}if(jumpWanted&&P.onGround&&P.jumpCd<=0){P.vy=-7;P.y-=2;P.vx=3;jumpWanted=false;P.onGround=false;P.jumpCd=20}
  if(shootHeld&&P.shootCd<=0){bullets.push({x:P.x+P.w/2,y:P.y+P.h/2,vx:P.dir*6,vy:0,w:9,h:3});P.shootCd=14;sp(bullets[bullets.length-1].x,bullets[bullets.length-1].y,C.cyan,2)}
  if(P.shootCd>0)P.shootCd--;if(P.jumpCd>0)P.jumpCd--;if(P.inv>0)P.inv--;
  for(const b of bullets)b.x+=b.vx;bullets=bullets.filter(b=>b.x>-30&&b.x<W+30);

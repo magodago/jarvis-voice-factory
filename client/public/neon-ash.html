@@ -57,7 +57,7 @@ function initFloors(){
    const type=typeRand<0.4?'walker':typeRand<0.75?'shooter':'heavy';
    const hp=type==='heavy'?3:type==='shooter'?1:2;
    const spd=type==='heavy'?0.2:type==='walker'?0.3:0.2;
-   f.enemies.push({x:smin+Math.random()*(smax-smin-50),y:f.y-26,w:type==='heavy'?34:28,h:type==='heavy'?44:38,vx:0,
+   f.enemies.push({x:smin+Math.random()*(smax-smin-50),y:f.y-26,w:type==='heavy'?68:56,h:type==='heavy'?88:76,vx:0,
     type,hp,maxHp:hp,sTimer:type==='shooter'?80+Math.random()*100:999,speed:spd,damage:type==='heavy'?2:1});
   }
   if(f.enemies.length>1)for(let i=1;i<f.enemies.length;i++)f.enemies[i].x=Math.max(smin+10,Math.min(smax-f.enemies[i].w-10,f.enemies[i-1].x+40+Math.random()*40));

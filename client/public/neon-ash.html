@@ -52,7 +52,7 @@ function newRoom(){if(room===0)return;
  const themes=['normal','alarm','toxic','void','neon'];theme=room%5===0?themes[Math.floor(Math.random()*5)]:'normal';weatherTimer--;if(weatherTimer<=0){weather=['clear','clear','rain','fog','storm'][Math.floor(Math.random()*5)];weatherTimer=200+Math.random()*300}
  if(room===0){return}
  if(room>0&&room%15===0){for(let i=0;i<5;i++)powerUps.push({x:l+50+i*90,y:fl-20-Math.random()*20,type:['heal','fire','shield','rail','barrier'][i],life:500});achPopup=80;achMsg='💎 SALA DEL TESORO';return}
- if(room>0&&room%10===0){bossActive=true;qteActive=1;qtePhase=0;qteTimer=120;qteProgress=0;qteTaps=0;trans=20;enemies=[];enemies.push({x:r-200,y:fl-66,w:120,h:120,hp:15+playerLvl*3,type:'boss',cd:40,speed:0.15})}
+ if(room>0&&room%10===0){bossActive=true;qteActive=1;qtePhase=0;qteTimer=120;qteProgress=0;qteTaps=0;trans=0;enemies=[];enemies.push({x:r-200,y:fl-66,w:120,h:120,hp:15+playerLvl*3,type:'boss',cd:40,speed:0.15})}
  else if(room>0&&room%5===0){enemies.push({x:r-160,y:fl-80,w:90,h:90,hp:6+playerLvl*2,type:'boss',cd:50,speed:0.12})}
  else if(Math.random()<0.1+room*0.005){for(let i=0;i<6;i++)enemies.push({x:r-30-i*40,y:fl-48,w:36,h:48,hp:1,type:'walker',cd:999,speed:0.25})}
  else{spawnEnemies()}
@@ -179,7 +179,7 @@ else if(e.type==='suicide'){e.x-=e.speed;if(Math.abs(e.x-P.x)<30){e.hp=0;sp(e.x+
 function draw(){
  const dz=state==='dead'&&deathSlow>0?1+deathSlow*0.01:1;const s=(shake>0)?(Math.random()-.5)*shake*.5:0;cx.save();cx.translate(s,s);if(dz>1){cx.translate(W/2,H/2);cx.scale(dz,dz);cx.translate(-W/2,-H/2)}
  cx.fillStyle=C.bg;cx.fillRect(0,0,W,H);
- if(trans>0){cx.globalAlpha=trans/20;cx.fillStyle='#fff';cx.fillRect(0,0,W,H);cx.globalAlpha=1;cx.restore();return}
+ if(trans>0&&!qteActive){cx.globalAlpha=trans/20;cx.fillStyle='#fff';cx.fillRect(0,0,W,H);cx.globalAlpha=1;cx.restore();return}
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2,fl=H*.82,l=px,r=px+pw;
 
  // BG image

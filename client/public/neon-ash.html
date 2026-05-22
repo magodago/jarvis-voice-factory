@@ -19,7 +19,7 @@ const BOSS_SPRITE=new Image();BOSS_SPRITE.src='data:image/png;base64,iVBORw0KGgo
 let W,H,gameState='intro',score=0,roomNum=0,highScore=parseInt(localStorage.getItem('neonash_hs')||0);
 let shakeT=0,shakeI=0,introT=0,transitionTimer=0,jumpWanted=false,shootHeld=false;
 const C={bg:'#060010',cyan:'#00d4ff',magenta:'#ff15d0',white:'#e8e0ff',amber:'#ffb347',red:'#ff4466',purple:'#7b00ff',panel:'#0a0020',wall:'#0d0030'};
-const P={x:0,y:0,w:22,h:30,vx:1.5,vy:0,dir:1,onGround:false,hp:5,maxHp:5,shootCd:0,inv:0};
+const P={x:0,y:0,w:22,h:30,vx:1.0,vy:0,dir:1,onGround:false,hp:5,maxHp:5,shootCd:0,inv:0};
 let bullets=[],eBullets=[],enemies=[],particles=[],plates=[];
 
 function newRoom(n){

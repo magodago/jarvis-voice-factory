@@ -8,13 +8,18 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#060010;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;position:fixed}
 #game{width:100%;height:100%;position:relative}canvas{display:block;width:100%;height:100%}
-#rotate{display:none;position:fixed;top:0;left:0;width:100%;height:100%;color:#00d4ff;font:bold 22px monospace;text-align:center;z-index:9999;background:#060010}
-@media(orientation:portrait){#rotate{display:flex;align-items:center;justify-content:center;flex-direction:column}}
-@media(orientation:landscape){#rotate{display:none}}
+
+
+
 </style></head>
 <body><div id="game"><canvas id="c"></canvas></div>
-<div id="rotate">📱 GIRA EL MÓVIL<br><span style="font-size:14px;color:#ff15d0">modo horizontal</span></div>
+
 <script>
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+let W,H,gameState='intro',score=0,floorNum=0,highScore=parseInt(localStorage.getItem('neonash_hs')||0);
+let cameraY=0,shakeT=0,shakeI=0,introT=0,jumpWanted=false,shootHeld=false,bossFloor=0,bossActive=false,bossHP=0;
+let climbing=false,climbT=0,climbFX=0,climbFY=0,climbTX=0,climbTY=0,climbNDir=0;
+const FG=114,PH=10,FLOOR_THEMES=['neon','industrial','darkcore','
 const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
 let W,H,gameState='intro',score=0,floorNum=0,highScore=parseInt(localStorage.getItem('neonash_hs')||0);
 let cameraY=0,shakeT=0,shakeI=0,introT=0,jumpWanted=false,shootHeld=false,bossFloor=0,bossActive=false,bossHP=0;
@@ -99,7 +104,7 @@ function shoot(){
 }
 
 function update(){
- if(gameState==='intro'){if(window.innerHeight>window.innerWidth)return;introT++;return}
+ if(gameState==='intro'){introT++;return}
  if(gameState==='dead'){if(shakeT>0)shakeT--;return}
  if(touchL&&!jumpWanted&&P.jumpCd<=0){jumpWanted=true;touchL=false}if(touchR)shootHeld=true;if(!touchR)shootHeld=false;
 
@@ -303,4 +308,4 @@ function drawIntro(){
 }
 function drawDead(){ctx.fillStyle=C.bg+'DD';ctx.fillRect(0,0,W,H);ctx.fillStyle=C.red;ctx.font='bold 26px monospace';ctx.textAlign='center';ctx.fillText('MUERTO',W/2,H/2-48);ctx.fillStyle=C.cyan;ctx.font='15px monospace';ctx.fillText('Piso '+floorNum,W/2,H/2-20);ctx.fillStyle=C.white;ctx.font='24px monospace';ctx.fillText(''+score,W/2,H/2+10);if(score>=highScore&&score>0){ctx.fillStyle=C.amber;ctx.font='10px monospace';ctx.fillText('🏆 NUEVO RÉCORD',W/2,H/2+32)}const a=.4+Math.sin(Date.now()*.004)*.3;ctx.fillStyle=C.white+Math.floor(a*255).toString(16).padStart(2,'0');ctx.font='10px monospace';ctx.fillText('toca para reiniciar',W/2,H/2+56)}
 function loop(){resize();update();ctx.clearRect(0,0,W,H);if(gameState==='intro')drawIntro();else if(gameState==='dead'){draw();drawDead()}else draw();requestAnimationFrame(loop)}
-resize();loop();</script></body></html>
+resize();loop();

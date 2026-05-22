@@ -269,7 +269,7 @@ ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx+3,fy-10);ct
    }else{
     const ec=e.type==='shooter'?C.magenta:e.type==='heavy'?C.orange:C.purple;
     const eImg=e.type==='shooter'?ENEMY_SHOOTER:ENEMY_WALKER;
-if(eImg&&eImg.complete&&eImg.naturalWidth>0){ctx.drawImage(eImg,fx+e.x-2,ey-2,e.w+4,e.h+4)}else{ctx.fillStyle=ec;ctx.fillRect(fx+e.x+2,ey+5,e.w-6,e.h-12);ctx.fillRect(fx+e.x+6,ey,14,12);}
+if(eImg&&eImg.complete&&eImg.naturalWidth>0){ctx.drawImage(eImg,fx+e.x,ey,e.w,e.h)}
     ctx.fillStyle=e.type==='shooter'?C.red:C.amber;ctx.fillRect(fx+e.x+8,ey+3,4,4);ctx.fillRect(fx+e.x+16,ey+3,4,4);
     if(e.type==='heavy'){ctx.fillStyle=C.orange+'80';ctx.fillRect(fx+e.x,ey+e.h-2,e.w,4)}
     if(e.type==='shooter'){ctx.fillStyle=C.red;ctx.fillRect(fx+e.x+(e.vx>0?e.w:0),ey+18,8,3)}

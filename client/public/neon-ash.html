@@ -98,7 +98,7 @@ function update(){
  P.x+=P.vx;
  if(P.x<l)P.x=l;if(P.x+P.w>r){nextRoom();return}
  P.onGround=false;
- let onPlat=false;for(const pl of platforms){if(P.x+P.w>pl.x&&P.x<pl.x+pl.w&&P.y+P.h>=pl.y-2&&P.y+P.h<=pl.y+6&&P.vy>=0){P.y=pl.y-P.h;P.vy=0;P.onGround=true;onPlat=true;break}}if(!onPlat&&P.y+P.h>=fl-2&&P.vy>=0){P.y=fl-P.h;P.vy=0;P.onGround=true}
+ let onPlat=false;for(const pl of platforms){if(P.x+P.w>pl.x&&P.x<pl.x+pl.w&&P.y+P.h>=pl.y-3&&P.y+P.h<=pl.y+8&&P.vy>=0){P.y=pl.y-P.h;P.vy=0;P.onGround=true;onPlat=true;break}}if(!onPlat&&P.y+P.h>=fl-2&&P.vy>=0){P.y=fl-P.h;P.vy=0;P.onGround=true}
  if(!P.onGround){P.vy+=0.4;P.y+=P.vy}
  if(jump&&P.onGround){P.vy=-8;P.y-=2;jump=false;P.onGround=false;touchL=false}
  // Shoot
@@ -241,7 +241,7 @@ function draw(){
   cx.shadowBlur=0;
  }
  // Energy lines
- for(let i=0;i<2;i++){
+ for(let i=0;i<3;i++){
   let x1=px+90+i*170,x2=px+260+i*170;
   cx.strokeStyle=C.cy+'10';cx.lineWidth=1;
   cx.beginPath();cx.moveTo(x1,fl-130);cx.lineTo(x2,fl-145);cx.stroke();
@@ -270,7 +270,7 @@ function draw(){
   cx.beginPath();cx.moveTo(rx,fl);cx.lineTo(rx-15+Math.sin(sr+i)*10,fl-60-Math.cos(sr+i)*30);cx.stroke();
  }
  // Rotating light diamonds
- for(let i=0;i<2;i++){
+ for(let i=0;i<3;i++){
   let dx=px+pw*0.3+i*pw*0.4,dy2=fl-80+Math.sin(sr+i)*20;
   cx.save();cx.translate(dx,dy2);cx.rotate(sr*0.3+i);
   cx.strokeStyle=C.mg+'15';cx.lineWidth=1;
@@ -340,11 +340,21 @@ function draw(){
  cx.fillStyle=C.cy;cx.font='bold 9px monospace';cx.textAlign='center';
  cx.fillText('WARP',dcx2+9,doorY2-10);
 
- // Platforms
+ // PLATFORMS - elevated blocks
  for(const pl of platforms){
-  cx.fillStyle=C.cy+'20';cx.fillRect(pl.x,pl.y,pl.w,pl.h);
-  cx.strokeStyle=C.cy+'50';cx.lineWidth=1.5;cx.strokeRect(pl.x,pl.y,pl.w,pl.h);
-  cx.fillStyle=C.cy+'10';cx.fillRect(pl.x+2,pl.y-2,pl.w-4,2);
+  // Glow under platform
+  let plGlow=cx.createLinearGradient(0,pl.y+pl.h,0,pl.y+pl.h+20);
+  plGlow.addColorStop(0,C.cy+'40');plGlow.addColorStop(1,'transparent');
+  cx.fillStyle=plGlow;cx.fillRect(pl.x-10,pl.y+pl.h,pl.w+20,20);
+  // Platform body
+  cx.fillStyle=C.cy+'25';cx.fillRect(pl.x,pl.y,pl.w,pl.h);
+  // Top glow
+  cx.fillStyle=C.cy+'60';cx.fillRect(pl.x+2,pl.y,pl.w-4,3);
+  // Border
+  cx.strokeStyle=C.cy+'70';cx.lineWidth=2;cx.strokeRect(pl.x,pl.y,pl.w,pl.h);
+  // Side pillars
+  cx.fillStyle=C.cy+'15';cx.fillRect(pl.x+3,pl.y+pl.h,3,fl-pl.y-pl.h);
+  cx.fillRect(pl.x+pl.w-6,pl.y+pl.h,3,fl-pl.y-pl.h);
  }
  // Mines
  for(const m of mines){

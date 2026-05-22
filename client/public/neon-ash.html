@@ -132,7 +132,7 @@ function update(){
   }
  }
  for(let i=eb.length-1;i>=0;i--){const e=eb[i];if(P.inv<=0&&e.x<P.x+P.w&&e.x+e.w>P.x&&Math.abs(e.y-P.y-P.h/2)<16){P.hp--;P.inv=40;eb.splice(i,1);shake=8;sp(P.x+P.w/2,P.y,C.mg,6);sfx('hit');if(P.hp<=0)die()}}
- for(const m of mines){const dx=P.x+P.w/2-m.x,dy=P.y+P.h/2-m.y;if(P.inv<=0&&Math.sqrt(dx*dx+dy*dy)<16){P.hp--;P.inv=35;sp(m.x,m.y,C.mg,12);shake=14;sfx('mine');if(P.hp<=0)die()}}
+ for(const m of mines){const dx=P.x+P.w/2-m.x,dy=P.y+P.h/2-(fl-2);if(P.inv<=0&&Math.sqrt(dx*dx+dy*dy)<20){P.hp--;P.inv=35;sp(m.x,fl-2,C.mg,15);shake=14;sfx('mine');if(P.hp<=0)die()}}
  // Power-ups
  for(let i=powerUps.length-1;i>=0;i--){const pu=powerUps[i];pu.life--;if(pu.life<=0){powerUps.splice(i,1);continue}
   const dx=P.x+P.w/2-pu.x,dy=P.y+P.h/2-pu.y;
@@ -159,15 +159,15 @@ function draw(){
  // Rain
  if(Math.random()<.3){particles.push({x:Math.random()*W,y:-5,vx:-0.5,vy:3+Math.random()*4,life:60+Math.random()*40,c:C.cy,sz:.5})}
  // Room bg with cyberpunk effects
- cx.fillStyle=theme==='alarm'?'#150000':theme==='toxic'?'#001005':'#0a0018';cx.fillRect(px,0,pw,H);
+ cx.fillStyle=theme==='alarm'?'#1a0008':theme==='toxic'?'#001208':'#0d0025';cx.fillRect(px,0,pw,H);
  // Vertical neon strips
  for(let i=0;i<4;i++){
   let nx=px+pw*0.2*i+20;if(i===3)nx=px+pw-30;
-  cx.fillStyle=C.cy+'10';cx.fillRect(nx,0,2,H);
+  cx.fillStyle=C.cy+'15';cx.fillRect(nx,0,2,H);
  }
  // Horizontal accent lines
- cx.fillStyle=C.mg+'10';cx.fillRect(px,fl-50,pw,1);cx.fillRect(px,fl-100,pw,1);
- cx.fillStyle=C.cy+'10';cx.fillRect(px,fl-25,pw,1);cx.fillRect(px,fl-75,pw,1);
+ cx.fillStyle=C.mg+'20';cx.fillRect(px,fl-50,pw,1);cx.fillRect(px,fl-100,pw,1);
+ cx.fillStyle=C.cy+'20';cx.fillRect(px,fl-25,pw,1);cx.fillRect(px,fl-75,pw,1);
  // Sparks occasionally
  if(Math.random()<0.05){let sx=px+20+Math.random()*(pw-40);sp(sx,Math.random()*H,C.cy,1)}
  // Ceiling neon sign
@@ -175,16 +175,18 @@ function draw(){
  cx.strokeStyle=C.cy+'60';cx.lineWidth=1;cx.strokeRect(px+20,8,pw-40,16);
  cx.fillStyle=C.cy;cx.font='bold 9px monospace';cx.textAlign='center';cx.fillText('NEON ASH // CYBER TOWER',px+pw/2,20);
 
- cx.strokeStyle=C.cy+'03';for(let y=0;y<H;y+=36){cx.beginPath();cx.moveTo(px,y);cx.lineTo(px+pw,y);cx.stroke()}
+ cx.strokeStyle=C.cy+'06';for(let y=0;y<H;y+=30){cx.beginPath();cx.moveTo(px,y);cx.lineTo(px+pw,y);cx.stroke()}
  // Walls
  cx.fillStyle=theme==='alarm'?'#1a0008':theme==='toxic'?'#00100a':'#0d0020';cx.fillRect(px,0,lw,H);cx.fillRect(px+pw-lw,0,lw,H);
  // Wall neon lines
- cx.strokeStyle=C.cy+'50';cx.lineWidth=1;cx.beginPath();cx.moveTo(px+lw,0);cx.lineTo(px+lw,H);cx.stroke();
+ cx.strokeStyle=C.cy+'80';cx.lineWidth=2;cx.shadowColor=C.cy;cx.shadowBlur=8;
+ cx.beginPath();cx.moveTo(px+lw,0);cx.lineTo(px+lw,H);cx.stroke();
  cx.beginPath();cx.moveTo(px+pw-lw,0);cx.lineTo(px+pw-lw,H);cx.stroke();
+ cx.shadowBlur=0;
  // Wall lamps
  for(let wy=40;wy<fl-20;wy+=60){
-  cx.fillStyle=C.am+'20';cx.beginPath();cx.arc(px+lw/2,wy,5,0,Math.PI*2);cx.fill();
-  cx.fillStyle=C.am+'20';cx.beginPath();cx.arc(px+pw-lw/2,wy,5,0,Math.PI*2);cx.fill();
+  cx.fillStyle=C.am+'50';cx.beginPath();cx.arc(px+lw/2,wy,6,0,Math.PI*2);cx.fill();
+  cx.fillStyle=C.am+'50';cx.beginPath();cx.arc(px+pw-lw/2,wy,6,0,Math.PI*2);cx.fill();
  }
 
  // Floor glow
@@ -192,8 +194,22 @@ function draw(){
  cx.fillStyle=C.cy+(18+Math.floor(hb*12)).toString(16);cx.fillRect(px,fl-2,pw,8);
  cx.strokeStyle=C.cy+'40';cx.lineWidth=2;cx.beginPath();cx.moveTo(px,fl);cx.lineTo(px+pw,fl);cx.stroke();
  // Door
- cx.fillStyle=C.mg+'30';cx.fillRect(r-18,fl-50,14,50);
- cx.strokeStyle=C.mg;cx.lineWidth=2;cx.strokeRect(r-18,fl-50,14,50);
+ // Tall neon door
+ let doorH=H*.55,doorY=fl-doorH;
+ let dGrd=cx.createLinearGradient(r-22,doorY,r-22,fl);
+ dGrd.addColorStop(0,'transparent');dGrd.addColorStop(0.3,C.mg+'20');dGrd.addColorStop(0.7,C.mg+'50');dGrd.addColorStop(1,C.mg+'80');
+ cx.fillStyle=dGrd;cx.fillRect(r-22,doorY,22,doorH);
+ cx.strokeStyle=C.mg;cx.lineWidth=3;cx.strokeRect(r-22,doorY,22,doorH);
+ // Door glow
+ cx.shadowColor=C.mg;cx.shadowBlur=15;
+ cx.strokeStyle=C.mg;cx.lineWidth=2;cx.strokeRect(r-22,doorY,22,doorH);
+ cx.shadowBlur=0;
+ // Arrow
+ cx.fillStyle=C.wh;cx.font='bold 14px monospace';cx.textAlign='center';
+ cx.fillText('▶',r-11,doorY+doorH/2+5);
+ // Label
+ cx.fillStyle=C.mg;cx.font='bold 7px monospace';cx.fillText('NEXT',r-11,doorY-8);
+
  // Mines
  for(const m of mines){
   const t=Date.now()*.003,hb=(Math.sin(t*3+m.x)+1)/2,hb2=Math.pow(hb,8);
@@ -224,8 +240,8 @@ function draw(){
   const ey=e.y;
   let img=e.type==='shooter'?ES:e.type==='heavy'?EB:EW;if(e.type==='boss')img=EB;
   if(img.complete&&img.naturalWidth>0){
-   if(e.type==='shooter'||e.type==='boss'||e.type==='heavy'){cx.save();cx.translate(e.x+e.w/2,ey+e.h/2);cx.scale(-1,1);cx.drawImage(img,-e.w/2-3,-e.h/2-3,e.w+6,e.h+6);cx.restore()}
-   else{cx.drawImage(img,e.x-3,ey-3,e.w+6,e.h+6)}
+   cx.save();cx.translate(e.x+e.w/2,ey+e.h/2);cx.scale(-1,1);cx.drawImage(img,-e.w/2-3,-e.h/2-3,e.w+6,e.h+6);cx.restore()
+   
   }else{cx.fillStyle=C.pu;cx.fillRect(e.x,ey,e.w,e.h)}
   // HP bar
   if(e.type==='boss'||e.type==='heavy'){

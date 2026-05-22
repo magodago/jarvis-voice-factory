@@ -32,7 +32,7 @@ function spawnEnemies(){
   if(rnd<0.2+room*0.01)tp='shooter';
   else if(rnd<0.35+room*0.01)tp='heavy';
   else if(rnd<0.45&&room>10)tp='suicide';
-  enemies.push({x:0,y:0,w:tp==='heavy'?50:36,h:tp==='heavy'?60:48,hp:tp==='heavy'?4:tp==='suicide'?1:2+Math.floor(room/15),
+  enemies.push({x:0,y:0,w:tp==='heavy'?80:56,h:tp==='heavy'?90:72,hp:tp==='heavy'?4:tp==='suicide'?1:2+Math.floor(room/15),
    type:tp,cd:tp==='shooter'?80:tp==='suicide'?30:99,speed:tp==='suicide'?0.8:tp==='heavy'?0.15:0.3});
  }
 }
@@ -43,10 +43,10 @@ function newRoom(){
  theme=room>0&&room%5===0?(Math.random()<.5?'alarm':'toxic'):'normal';
  if(room>0&&room%10===0){
   bossActive=true;
-  enemies.push({x:r-80,y:fl-66,w:80,h:80,hp:10+Math.floor(room/5),type:'boss',cd:40,speed:0.15});
+  enemies.push({x:r-80,y:fl-66,w:120,h:120,hp:15+Math.floor(room/5),type:'boss',cd:40,speed:0.15});
  }else{spawnEnemies()}
  for(const e of enemies){e.x=r-30-e.w-Math.random()*(r-l-200-e.w);e.y=fl-e.h}
- for(let i=0;i<1+Math.floor(Math.random()*2);i++){mines.push({x:l+60+Math.random()*(r-l-120),y:fl-6})}
+ for(let i=0;i<1+Math.floor(Math.random()*2);i++){mines.push({x:l+60+Math.random()*(r-l-120),y:fl-2})}
 }
 
 // Touch
@@ -83,7 +83,7 @@ function update(){
  if(state!=='play')return;if(trans>0){trans--;return}
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2,fl=H*.82,l=px+lw,r=px+pw-lw;
  // Jump from touch
- if(touchL&&!jump&&P.onGround)jump=true;if(touchR)shoot=true;if(!touchR)shoot=false;
+ if(touchL&&!jump&&P.onGround){jump=true;touchL=false}if(touchR)shoot=true;if(!touchR)shoot=false;
 
  // Dash on double tap
  if(P.dashCd<=0&&doubleTap>0&&Date.now()-doubleTap<500&&P.onGround){
@@ -163,23 +163,23 @@ function draw(){
  // Vertical neon strips
  for(let i=0;i<4;i++){
   let nx=px+pw*0.2*i+20;if(i===3)nx=px+pw-30;
-  cx.fillStyle=C.cy+'04';cx.fillRect(nx,0,2,H);
+  cx.fillStyle=C.cy+'10';cx.fillRect(nx,0,2,H);
  }
  // Horizontal accent lines
- cx.fillStyle=C.mg+'03';cx.fillRect(px,fl-50,pw,1);cx.fillRect(px,fl-100,pw,1);
- cx.fillStyle=C.cy+'03';cx.fillRect(px,fl-25,pw,1);cx.fillRect(px,fl-75,pw,1);
+ cx.fillStyle=C.mg+'10';cx.fillRect(px,fl-50,pw,1);cx.fillRect(px,fl-100,pw,1);
+ cx.fillStyle=C.cy+'10';cx.fillRect(px,fl-25,pw,1);cx.fillRect(px,fl-75,pw,1);
  // Sparks occasionally
  if(Math.random()<0.05){let sx=px+20+Math.random()*(pw-40);sp(sx,Math.random()*H,C.cy,1)}
  // Ceiling neon sign
- cx.fillStyle=C.cy+'10';cx.fillRect(px+20,8,pw-40,16);
- cx.strokeStyle=C.cy+'30';cx.lineWidth=1;cx.strokeRect(px+20,8,pw-40,16);
+ cx.fillStyle=C.cy+'25';cx.fillRect(px+20,8,pw-40,16);
+ cx.strokeStyle=C.cy+'60';cx.lineWidth=1;cx.strokeRect(px+20,8,pw-40,16);
  cx.fillStyle=C.cy;cx.font='bold 9px monospace';cx.textAlign='center';cx.fillText('NEON ASH // CYBER TOWER',px+pw/2,20);
 
  cx.strokeStyle=C.cy+'03';for(let y=0;y<H;y+=36){cx.beginPath();cx.moveTo(px,y);cx.lineTo(px+pw,y);cx.stroke()}
  // Walls
  cx.fillStyle=theme==='alarm'?'#1a0008':theme==='toxic'?'#00100a':'#0d0020';cx.fillRect(px,0,lw,H);cx.fillRect(px+pw-lw,0,lw,H);
  // Wall neon lines
- cx.strokeStyle=C.cy+'20';cx.lineWidth=1;cx.beginPath();cx.moveTo(px+lw,0);cx.lineTo(px+lw,H);cx.stroke();
+ cx.strokeStyle=C.cy+'50';cx.lineWidth=1;cx.beginPath();cx.moveTo(px+lw,0);cx.lineTo(px+lw,H);cx.stroke();
  cx.beginPath();cx.moveTo(px+pw-lw,0);cx.lineTo(px+pw-lw,H);cx.stroke();
  // Wall lamps
  for(let wy=40;wy<fl-20;wy+=60){
@@ -196,11 +196,18 @@ function draw(){
  cx.strokeStyle=C.mg;cx.lineWidth=2;cx.strokeRect(r-18,fl-50,14,50);
  // Mines
  for(const m of mines){
-  const t=Date.now()*.003,hb=(Math.sin(t+m.x)+1)/2;
-  let g=cx.createRadialGradient(m.x,m.y,2,m.x,m.y,12+hb*4);
-  g.addColorStop(0,C.mg);g.addColorStop(0.5,C.mg+'40');g.addColorStop(1,'transparent');
-  cx.fillStyle=g;cx.fillRect(m.x-16,m.y-16,32,32);
-  cx.fillStyle=C.mg;cx.beginPath();cx.arc(m.x,m.y,5+hb*2,0,Math.PI*2);cx.fill();
+  const t=Date.now()*.003,hb=(Math.sin(t*3+m.x)+1)/2,hb2=Math.pow(hb,8);
+  // Flat plate on floor
+  cx.fillStyle=C.mg+'30';cx.fillRect(m.x-10,fl-4,20,4);
+  // Explosive pulse
+  let g=cx.createRadialGradient(m.x,fl-2,1,m.x,fl-2,16+hb2*20);
+  g.addColorStop(0,C.mg);g.addColorStop(0.3,C.mg+'80');g.addColorStop(0.7,C.mg+'20');g.addColorStop(1,'transparent');
+  cx.fillStyle=g;cx.fillRect(m.x-30,fl-30,60,30);
+  // Core
+  cx.fillStyle=C.wh;cx.beginPath();cx.arc(m.x,fl-2,2+hb2*4,0,Math.PI*2);cx.fill();
+  cx.fillStyle=C.mg;cx.beginPath();cx.arc(m.x,fl-2,5+hb2*6,0,Math.PI*2);cx.fill();
+  // Sparks on strong beat
+  if(hb>0.8)sp(m.x,fl-2,C.mg,2);
  }
  // Power-ups
  for(const pu of powerUps){
@@ -226,6 +233,11 @@ function draw(){
    cx.fillStyle=C.re;cx.fillRect(e.x,ey-6,e.w*(e.hp/(e.type==='boss'?8+Math.floor(room/5):4+Math.floor(room/15))),3);
   }
   if(e.type==='suicide'){cx.fillStyle=C.or+'60';cx.beginPath();cx.arc(e.x+e.w/2,ey+e.h/2,e.w/2+4,0,Math.PI*2);cx.stroke()}
+  // Enemy platform
+  cx.fillStyle=e.type==='boss'?C.re+'20':e.type==='heavy'?C.am+'15':e.type==='suicide'?C.or+'15':C.pu+'10';
+  cx.fillRect(e.x-4,fl-2,e.w+8,5);
+  cx.strokeStyle=e.type==='boss'?C.re+'40':e.type==='shooter'?C.mg+'30':C.pu+'20';cx.lineWidth=1;
+  cx.strokeRect(e.x-4,fl-2,e.w+8,5);
  }
  // Player
  if(state==='play'||state==='dead'){
@@ -236,7 +248,11 @@ function draw(){
   cx.save();cx.translate(P.x+P.w/2,P.y+P.h/2);cx.scale(-1,1);
   if(CHAR.complete&&CHAR.naturalWidth>0)cx.drawImage(CHAR,-28,-32,56,64);
   else{cx.fillStyle=C.cy;cx.fillRect(-11,-15,22,30)}
-  cx.restore();cx.globalAlpha=1;
+  cx.restore();
+  // Player platform
+  cx.fillStyle=C.cy+'10';cx.fillRect(P.x-4,fl-2,P.w+8,6);
+  cx.strokeStyle=C.cy+'30';cx.lineWidth=1;cx.strokeRect(P.x-4,fl-2,P.w+8,6);
+  cx.globalAlpha=1;
  }
  for(const b of bullets){cx.fillStyle=b.rail?C.or:C.cy;cx.fillRect(b.x,b.y,b.w,b.h);if(b.rail){cx.fillStyle=C.or+'40';cx.fillRect(b.x-4,b.y-2,b.w+8,b.h+4)}}
  for(const e of eb){cx.fillStyle=C.mg;cx.fillRect(e.x,e.y,e.w,e.h)}

@@ -196,6 +196,15 @@ function draw(){
  for(let wy=20;wy<fl;wy+=40){cx.fillStyle=C.cy+'25';cx.fillRect(px+3,wy,lw-6,3);cx.fillRect(px+pw-lw+3,wy,lw-6,3)}
  cx.strokeStyle=C.cy;cx.lineWidth=2;cx.shadowColor=C.cy;cx.shadowBlur=8;cx.beginPath();cx.moveTo(px+lw,0);cx.lineTo(px+lw,H);cx.stroke();cx.beginPath();cx.moveTo(px+pw-lw,0);cx.lineTo(px+pw-lw,H);cx.stroke();cx.shadowBlur=0;
  for(let wy=40;wy<fl-20;wy+=60){cx.fillStyle=C.am+'60';cx.beginPath();cx.arc(px+lw/2,wy,6,0,Math.PI*2);cx.fill();cx.beginPath();cx.arc(px+pw-lw/2,wy,6,0,Math.PI*2);cx.fill()}
+ // BLACK ZONE below floor
+ cx.fillStyle='#020008';cx.fillRect(0,fl,W,H-fl);
+ cx.strokeStyle=C.cy+'15';cx.lineWidth=1;cx.beginPath();cx.moveTo(0,fl+1);cx.lineTo(W,fl+1);cx.stroke();
+ // Subtle grid in black zone
+ cx.strokeStyle=C.cy+'03';cx.lineWidth=0.5;
+ for(let y=fl+20;y<H;y+=30){cx.beginPath();cx.moveTo(0,y);cx.lineTo(W,y);cx.stroke()}
+ // Side columns extending down
+ cx.fillStyle='#0d0020';cx.fillRect(px,fl,lw,H-fl);cx.fillRect(px+pw-lw,fl,lw,H-fl);
+ // Floor
  // Floor
  let hb=(Math.sin(Date.now()*.002+room)+1)/2;cx.fillStyle=C.cy+(30+Math.floor(hb*20)).toString(16);cx.fillRect(px,fl-2,pw,8);
  cx.strokeStyle=C.cy+'40';cx.lineWidth=2;cx.beginPath();cx.moveTo(px,fl);cx.lineTo(px+pw,fl);cx.stroke();
@@ -253,13 +262,27 @@ function draw(){
  // Room center
  const blink=Math.sin(Date.now()*0.006);cx.globalAlpha=0.6+Math.abs(blink)*0.4;cx.shadowColor=C.cy;cx.shadowBlur=15+Math.abs(blink)*15;cx.fillStyle=C.cy;cx.font='bold 28px monospace';cx.textAlign='center';cx.fillText('ROOM '+room,W/2,H*.15);cx.shadowBlur=5+Math.abs(Math.sin(Date.now()*0.004))*5;cx.fillStyle=C.mg;cx.font='bold 12px monospace';cx.fillText('CYBER TOWER',W/2,H*.15+30);cx.shadowBlur=0;cx.globalAlpha=1;
  // HP
- let h='';for(let i=0;i<P.hp;i++)h+='♥';for(let i=P.hp;i<5;i++)h+='♡';cx.fillStyle=C.re;cx.font='bold 38px monospace';cx.textAlign='center';cx.shadowColor=C.re;cx.shadowBlur=16;cx.fillText(h,W/2,H*.93);cx.shadowBlur=0;
+ // Hearts - center of black zone with background panel
+ cx.fillStyle='#0a0020';cx.fillRect(W/2-80,fl+8,160,36);
+ cx.strokeStyle=C.re+'30';cx.lineWidth=1;cx.strokeRect(W/2-80,fl+8,160,36);
+ let h='';for(let i=0;i<P.hp;i++)h+='♥';for(let i=P.hp;i<5;i++)h+='♡';
+ cx.fillStyle=C.re;cx.font='bold 32px monospace';cx.textAlign='center';
+ cx.shadowColor=C.re;cx.shadowBlur=10;cx.fillText(h,W/2,fl+34);cx.shadowBlur=0;
  if(sniperActive>0){cx.fillStyle=C.cy;cx.font='bold 16px monospace';cx.textAlign='center';cx.fillText('🎯 SNIPER '+Math.ceil(sniperActive/60)+'s',W/2,58)}
  if(trans>0&&trans>5&&bossActive){cx.fillStyle=C.re;cx.font='bold 28px monospace';cx.textAlign='center';cx.shadowColor=C.re;cx.shadowBlur=20;cx.fillText('⚠ BOSS ⚠',W/2,H/2-10);cx.shadowBlur=0}
  if(achPopup>0){achPopup--;const aa=achPopup<30?achPopup/30:1;cx.globalAlpha=aa;cx.fillStyle='#0a0020';cx.fillRect(W/2-120,H*.1,240,36);cx.strokeStyle=C.am;cx.lineWidth=2;cx.strokeRect(W/2-120,H*.1,240,36);cx.fillStyle=C.am;cx.font='bold 14px monospace';cx.textAlign='center';cx.fillText(achMsg,W/2,H*.1+25);cx.globalAlpha=1}
  if(bossActive){cx.fillStyle=C.re;cx.font='bold 11px monospace';cx.textAlign='center';cx.fillText('⚠ BOSS ⚠',W/2,20)}
  if(theme==='alarm'){cx.fillStyle=C.re+'40';cx.fillRect(0,44,W,2)}if(theme==='toxic'){cx.fillStyle=C.gn+'30';cx.fillRect(0,44,W,2)}if(theme==='void'){cx.fillStyle=C.pu+'30';cx.fillRect(0,44,W,2)}if(theme==='neon'){cx.fillStyle=C.cy+'30';cx.fillRect(0,44,W,2)}
- let wname=P.weapon==='shotgun'?'SHOTGUN':P.weapon==='laser'?'LASER':'PISTOL';let pind=wname+' '+P.ammo+' ';if(P.reloading>0)pind='⏳RECARGANDO ';if(P.fireTimer>0)pind+='🔥';if(P.shield>0)pind+='◉';if(P.railAmmo>0)pind+=' ⚡'+P.railAmmo;if(pind){cx.fillStyle=C.wh;cx.font='9px monospace';cx.textAlign='left';cx.fillText(pind,10,40)}
+ // Weapon info - left side of black zone
+ let wname=P.weapon==='shotgun'?'SHOTGUN':P.weapon==='laser'?'LASER':'PISTOL';
+ cx.fillStyle='#0a0020';cx.fillRect(10,fl+8,130,36);
+ cx.strokeStyle=C.cy+'25';cx.lineWidth=1;cx.strokeRect(10,fl+8,130,36);
+ cx.fillStyle=C.cy;cx.font='bold 12px monospace';cx.textAlign='left';
+ cx.fillText(wname,18,fl+22);
+ cx.fillStyle=C.wh;cx.font='bold 14px monospace';
+ cx.fillText(P.ammo,18,fl+38);
+ if(P.reloading>0){cx.fillStyle=C.am;cx.fillText('⏳',110,fl+38)}
+if(P.fireTimer>0)pind+='🔥';if(P.shield>0)pind+='◉';if(P.railAmmo>0)pind+=' ⚡'+P.railAmmo;if(pind){cx.fillStyle=C.wh;cx.font='9px monospace';cx.textAlign='left';cx.fillText(pind,10,40)}
 }
 function drawIntro(){
  cx.fillStyle='#020008';cx.fillRect(0,0,W,H);

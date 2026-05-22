@@ -107,7 +107,7 @@ function update(){
  if(climbing){climbT++;const t=Math.min(climbT/80,1);P.x=climbFX+(climbTX-climbFX)*t;P.y=climbFY+(climbTY-climbFY)*t;P.onGround=false;P.vy=0;if(t>=1){climbT=0;climbing=false;floorNum++;score+=100;for(let i=0;i<30;i++)sp(P.x+P.w/2,P.y+P.h/2,C.cyan,4);sp(P.x+P.w/2,P.y+P.h/2,C.magenta,15);const nf=cf();P.x=climbTX;P.y=nf.y-P.h;P.dir=climbNDir;P.vx=1.2;P.vy=0;P.onGround=true;sp(P.x+P.w/2,P.y,C.cyan,10);
   // Boss every 20 floors
   if(floorNum>0&&floorNum%20===0&&!bossActive){startBoss()}else if(floorNum>0&&floorNum%10===0&&Math.random()<0.4){let evt=Math.random()<0.5?'toxic':'alarm';if(evt==='toxic'){P.hp=Math.max(1,P.hp-1);sp(P.x+P.w/2,P.y+P.h/2,C.green,15)}else{score+=300;sp(P.x+P.w/2,P.y+P.h/2,C.amber,10)}}
- }cameraY+=(P.y-H*0.7-cameraY)*0.2;return}
+ }cameraY=P.y-H*0.7;return}
  P.x+=P.vx*P.dir;// Allow walking into stair zone
 if(f.stairSide==='left'&&P.x<=lW-14){P.dir=1;P.x=lW-14}else if(P.x<=lW-4&&f.stairSide!=='left'){P.dir=1;P.x=lW}
 else if(f.stairSide==='right'&&P.x+P.w>=rW+14){P.dir=-1;P.x=rW+14-P.w}else if(P.x+P.w>=rW+4&&f.stairSide!=='right'){P.dir=-1;P.x=rW-P.w}
@@ -154,7 +154,7 @@ else if(f.stairSide==='right'&&P.x+P.w>=rW+14){P.dir=-1;P.x=rW+14-P.w}else if(P.
    sp(pu.x,pu.y,C.green,8);powerUps.splice(pi,1);
  }}
  for(const p of particles){p.x+=p.vx;p.y+=p.vy;p.life--}particles=particles.filter(p=>p.life>0);
- if(shakeT>0)shakeT--;if(Math.random()<0.1)particles.push({x:Math.random()*W,y:H+10,vx:(Math.random()-.5)*0.5,vy:-1-Math.random()*2,life:100+Math.random()*100,c:C.cyan,size:0.5});cameraY+=(f.y-H*0.85-cameraY)*0.1;
+ if(shakeT>0)shakeT--;if(Math.random()<0.1)particles.push({x:Math.random()*W,y:H+10,vx:(Math.random()-.5)*0.5,vy:-1-Math.random()*2,life:100+Math.random()*100,c:C.cyan,size:0.5});cameraY=f.y-H*0.85;
 }
 
 function startBoss(){bossActive=true;const f=cf();bossHP=15;

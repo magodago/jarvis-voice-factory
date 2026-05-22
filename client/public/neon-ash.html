@@ -90,7 +90,7 @@ function die(){state='dead';if(room>best){best=room;localStorage.setItem('na_bes
 function nextRoom(){if(!bossActive)roomsNoDmg++;if(roomsNoDmg>=10&&!achievements.includes('flawless')){achievements.push('flawless');achPopup=120;achMsg='🏆 10 SALAS SIN DAÑO'}if(room===1&&!achievements.includes('first')){achievements.push('first');achPopup=120;achMsg='⭐ PRIMERA SALA'}trans=20;room++;const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2;P.x=px+lw+10;P.y=H*.82-P.h;newRoom();sp(P.x,P.y,C.cy,15);sfx('door')}
 
 function update(){
- if(state==='intro'||state==='dead'){if(state==='dead'&&deathSlow>0)deathSlow--;return}if(trans>0){trans--;if(trans>5)return}if(qteActive){qteTimer--;if(qtePhase===0&&qteTimer<40){qtePhase=1;qteTimer=300}if(qtePhase===1&&qteTimer<60){qtePhase=2;qteTimer=600}if(qtePhase===2){qteTaps=0;qteProgress-=0.15;if(qteProgress<0)qteProgress=0;if(qteTimer<=0){qteActive=0;bossActive=false;P.hp-=2;P.inv=60;sp(P.x+P.w/2,P.y,C.re,20);shake=20;if(P.hp<=0)die()}}if(qtePhase===2&&qteProgress>=100){qteActive=0;bossActive=false;enemies=[];sp(W/2,H/2,C.cy,50);sp(W/2,H/2,C.mg,30);shake=25;for(let i=0;i<3;i++)powerUps.push({x:W/2-30+i*30,y:H*.82-30,type:['heal','fire','shield'][i],life:300});sfx('boss');if(navigator.vibrate)navigator.vibrate([40,20,40,20,80])}}if(sniperActive>0){sniperActive--;if(sniperActive%3!==0)return}
+ if(state==='intro'||state==='dead'){if(state==='dead'&&deathSlow>0)deathSlow--;return}if(trans>0&&!qteActive){trans--;if(trans>5)return}if(qteActive){qteTimer--;if(qtePhase===0&&qteTimer<40){qtePhase=1;qteTimer=300}if(qtePhase===1&&qteTimer<60){qtePhase=2;qteTimer=600}if(qtePhase===2){qteTaps=0;qteProgress-=0.15;if(qteProgress<0)qteProgress=0;if(qteTimer<=0){qteActive=0;bossActive=false;P.hp-=2;P.inv=60;sp(P.x+P.w/2,P.y,C.re,20);shake=20;if(P.hp<=0)die()}}if(qtePhase===2&&qteProgress>=100){qteActive=0;bossActive=false;enemies=[];sp(W/2,H/2,C.cy,50);sp(W/2,H/2,C.mg,30);shake=25;for(let i=0;i<3;i++)powerUps.push({x:W/2-30+i*30,y:H*.82-30,type:['heal','fire','shield'][i],life:300});sfx('boss');if(navigator.vibrate)navigator.vibrate([40,20,40,20,80])}}if(sniperActive>0){sniperActive--;if(sniperActive%3!==0)return}
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2,fl=H*.82,l=px+lw,r=px+pw-lw;
  if(touchL)jump=true;if(touchR)shoot=true;if(!touchR)shoot=false;
  if(P.dashCd<=0&&doubleTap>0&&Date.now()-doubleTap<500&&P.onGround){P.vx=3.5;P.dashCd=60;doubleTap=0;P.inv=15;sp(P.x,P.y,C.cy,10);sfx('dash')}
@@ -143,7 +143,7 @@ else if(e.type==='suicide'){e.x-=e.speed;if(Math.abs(e.x-P.x)<30){e.hp=0;sp(e.x+
     if(e.type==='boss'){bossActive=false;if(!achievements.includes('bosskill')){achievements.push('bosskill');achPopup=120;achMsg='💀 BOSS DERROTADO'}for(let x=0;x<40;x++)particles.push({x:e.x+e.w/2,y:fl-e.h/2,vx:(Math.random()-.5)*8,vy:-4-Math.random()*8,life:20+Math.random()*30,c:C.re,sz:2+Math.random()*6});sp(e.x+e.w/2,fl-e.h/2,C.cy,30);shake=30;sfx('boss');trans=10;if(navigator.vibrate)navigator.vibrate([50,30,50,30,100]);if(navigator.vibrate)navigator.vibrate(100);for(let i=0;i<3;i++)powerUps.push({x:e.x+20+i*35,y:fl-40,type:i===0?'heal':i===1?'fire':'shield',life:300})}
     else{if(Math.random()<.15)powerUps.push({x:e.x,y:fl-40,type:'heal',life:200});if(Math.random()<.08)powerUps.push({x:e.x+15,y:fl-40,type:'shield',life:200});if(Math.random()<.08)powerUps.push({x:e.x+30,y:fl-40,type:'fire',life:200});if(Math.random()<.05)powerUps.push({x:e.x+45,y:fl-40,type:'rail',life:200});if(Math.random()<.04)powerUps.push({x:e.x+60,y:fl-40,type:'barrier',life:200});if(Math.random()<.06)powerUps.push({x:e.x+75,y:fl-40,type:'shotgun',life:250});if(Math.random()<.04)powerUps.push({x:e.x+90,y:fl-40,type:'laser',life:250});if(Math.random()<.03)powerUps.push({x:e.x+105,y:fl-40,type:'sniper',life:300})}}break}}
   // Hit player
-  if(P.inv<=0&&e.x<P.x+P.w&&e.x+e.w>P.x&&Math.abs(P.y-fl+P.h/2+e.h/2)<e.h/2+P.h/2){
+  if(e.x<P.x+P.w&&e.x+e.w>P.x&&Math.abs(P.y-fl+P.h/2+e.h/2)<e.h/2+P.h/2){
    P.hp-=e.type==='boss'?2:e.type==='suicide'?2:1;
    if(P.barrier){P.barrier=false;sp(P.x,P.y,C.am,20);P.inv=30}else if(P.shield>0){P.hp++;P.shield=0;sp(P.x,P.y,C.cy,15)}else{P.inv=e.type==='boss'?60:40;sp(P.x+P.w/2,P.y,C.re,8);shake=e.type==='boss'?20:10}
    sfx('hit');if(P.hp<=0)die()
@@ -151,7 +151,7 @@ else if(e.type==='suicide'){e.x-=e.speed;if(Math.abs(e.x-P.x)<30){e.hp=0;sp(e.x+
  }
  // Enemy bullets hit player
  for(let i=eb.length-1;i>=0;i--){const e=eb[i];if(P.inv<=0&&((e.vy===0&&e.x<P.x+P.w&&e.x+e.w>P.x&&Math.abs(e.y-P.y-P.h/2)<22)||(e.vy>0&&Math.abs(e.x-P.x-P.w/2)<22&&e.y>P.y&&e.y<P.y+P.h))){
-  P.hp--;P.inv=Math.min(P.inv,15);if(P.barrier){P.barrier=false;P.hp++;sp(P.x,P.y,C.am,15);P.inv=25}else if(P.shield>0){P.hp++;P.shield=0;sp(P.x,P.y,C.cy,10)}else{P.inv=40;sp(P.x+P.w/2,P.y,C.mg,6)}
+  P.hp--;P.inv=15;if(P.barrier){P.barrier=false;P.hp++;sp(P.x,P.y,C.am,15);P.inv=25}else if(P.shield>0){P.hp++;P.shield=0;sp(P.x,P.y,C.cy,10)}else{P.inv=40;sp(P.x+P.w/2,P.y,C.mg,6)}
   eb.splice(i,1);shake=8;sfx('hit');if(P.hp<=0)die()}}
  for(let i=dmgNums.length-1;i>=0;i--){const d=dmgNums[i];d.l--;d.y-=0.8;if(d.l<=0){dmgNums.splice(i,1)}else{cx.globalAlpha=d.l/30;cx.fillStyle=C.or;cx.font='bold 11px monospace';cx.textAlign='center';cx.fillText(d.t,d.x,d.y)}}cx.globalAlpha=1;
  // Mines

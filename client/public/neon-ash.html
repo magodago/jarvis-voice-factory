@@ -65,7 +65,7 @@ function update(){
  P.onGround=false;if(P.y+P.h>=fy-2&&P.y+P.h<=fy+16&&P.vy>=0){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}
  if(P.y+P.h>fy+24){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}if(P.y<fy-FG+PH){P.y=fy-FG+PH;P.vy=0}
  if(!P.onGround){P.vy+=0.4;P.y+=P.vy}if(jumpWanted&&P.onGround&&P.jumpCd<=0){P.vy=-7;P.y-=2;P.vx=3;jumpWanted=false;P.onGround=false;P.jumpCd=20}
- if(shootHeld&&P.shootCd<=0){bullets.push({x:P.x+P.w/2,y:P.y+P.h/2,vx:P.dir*6,vy:0,w:9,h:3});P.shootCd=14;sp(bullets[bullets.length-1].x,bullets[bullets.length-1].y,C.cyan,2)}
+ if(shootHeld&&P.shootCd<=0){bullets.push({x:P.x+P.w/2,y:P.y+P.h/2-8,vx:P.dir*6,vy:0,w:9,h:3});P.shootCd=14;sp(bullets[bullets.length-1].x,bullets[bullets.length-1].y,C.cyan,2)}
  if(P.shootCd>0)P.shootCd--;if(P.jumpCd>0)P.jumpCd--;if(P.inv>0)P.inv--;
  for(const b of bullets)b.x+=b.vx;bullets=bullets.filter(b=>b.x>-30&&b.x<W+30);
  for(const eb of eBullets)eb.x+=eb.vx;eBullets=eBullets.filter(eb=>eb.x>-30&&eb.x<W+30);
@@ -97,7 +97,7 @@ function draw(){
   if(fn.hasFire){const hx=fx+fn.fireX,hy=fn.y-16-cameraY,fl=Math.sin(Date.now()*0.015+fn.n)*4;ctx.globalAlpha=0.6+Math.random()*.4;for(let i=0;i<3;i++){ctx.fillStyle=C.amber;ctx.fillRect(hx+i*5,hy-fl-i*3,5,14+i*3)}ctx.globalAlpha=1}
   for(const e of fn.enemies){const ey=e.y-cameraY;ctx.fillStyle=e.type==='shooter'?C.magenta:C.purple;ctx.fillRect(fx+e.x+2,ey+5,e.w-4,e.h-8);ctx.fillRect(fx+e.x+4,ey,10,8);ctx.fillStyle=e.type==='shooter'?C.red:C.amber;ctx.fillRect(fx+e.x+5,ey+2,3,3);ctx.fillRect(fx+e.x+10,ey+2,3,3);if(e.type==='shooter'){ctx.fillStyle=C.red;ctx.fillRect(fx+e.x+(e.vx>0?e.w:0),ey+11,6,2)}}
  }
- if(gameState==='playing'||gameState==='dead'){const a=P.inv>0?.4+Math.sin(Date.now()*.3)*.3:1;ctx.globalAlpha=a;const py=P.y-cameraY;if(CHAR_SPRITE.complete&&CHAR_SPRITE.naturalWidth>0){ctx.drawImage(CHAR_SPRITE,P.x-8,py-6,40,46)}else{ctx.fillStyle=C.cyan;ctx.fillRect(P.x,py+8,P.w,P.h-10);ctx.fillRect(P.x+6,py,10,10);ctx.fillStyle=C.white;ctx.fillRect(P.x+8,py+2,6,3);}const lo=Math.sin(Date.now()*.015)*3;ctx.fillStyle=C.cyan+'80';ctx.fillRect(P.x+2,py+P.h-5,6,6+lo);ctx.fillRect(P.x+P.w-8,py+P.h-5,6,6-lo);ctx.fillStyle=C.magenta;if(P.dir>0)ctx.fillRect(P.x+P.w,py+12,8,3);else ctx.fillRect(P.x-8,py+12,8,3);ctx.globalAlpha=1}
+ if(gameState==='playing'||gameState==='dead'){const a=P.inv>0?.4+Math.sin(Date.now()*.3)*.3:1;ctx.globalAlpha=a;const py=P.y-cameraY;if(CHAR_SPRITE.complete&&CHAR_SPRITE.naturalWidth>0){ctx.save();const cx=P.x+P.w/2;ctx.translate(cx,py+23);if(P.dir>0)ctx.scale(-1,1);ctx.drawImage(CHAR_SPRITE,-20,-23,40,46);ctx.restore()}else{ctx.fillStyle=C.cyan;ctx.fillRect(P.x,py+8,P.w,P.h-10);ctx.fillRect(P.x+6,py,10,10);ctx.fillStyle=C.white;ctx.fillRect(P.x+8,py+2,6,3);}const lo=Math.sin(Date.now()*.015)*3;ctx.fillStyle=C.cyan+'80';ctx.fillRect(P.x+2,py+P.h-5,6,6+lo);ctx.fillRect(P.x+P.w-8,py+P.h-5,6,6-lo);ctx.fillStyle=C.magenta;if(P.dir>0)ctx.fillRect(P.x+P.w,py+12,8,3);else ctx.fillRect(P.x-8,py+12,8,3);ctx.globalAlpha=1}
  for(const b of bullets){ctx.fillStyle=C.cyan;ctx.fillRect(b.x,b.y-cameraY,b.w,b.h)}for(const eb of eBullets){ctx.fillStyle=C.magenta;ctx.fillRect(eb.x,eb.y-cameraY,eb.w,eb.h)}
  for(const p of particles){ctx.fillStyle=p.c;ctx.globalAlpha=p.life/30;ctx.fillRect(p.x,p.y-cameraY,p.size,p.size)}ctx.globalAlpha=1;ctx.restore();
  ctx.fillStyle='#0a0020ee';ctx.fillRect(0,0,W,40);ctx.strokeStyle=C.cyan+'20';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,40);ctx.lineTo(W,40);ctx.stroke();

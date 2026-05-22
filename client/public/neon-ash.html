@@ -51,13 +51,13 @@ function initFloors(){
   else if(f.theme==='industrial'){for(let d=0;d<2;d++)f.decorations.push({x:smin+40+Math.random()*(smax-smin-80),y:f.y-20,type:'pipe'})}
   else if(f.theme==='hacker'){for(let d=0;d<3;d++)f.decorations.push({x:smin+30+Math.random()*(smax-smin-60),y:f.y-40-Math.random()*30,type:'code'})}
   if(f.hasFire)f.fireX=smin+15+Math.random()*(smax-smin-50);
-  const cnt=3+Math.floor(Math.random()*3)+(f.n>15?1:0);
+  const cnt=1+Math.floor(Math.random()*2);
   for(let j=0;j<cnt;j++){
    const typeRand=Math.random();
    const type=typeRand<0.4?'walker':typeRand<0.75?'shooter':'heavy';
    const hp=type==='heavy'?3:type==='shooter'?1:2;
-   const spd=type==='heavy'?0.3:type==='walker'?0.5:0.35;
-   f.enemies.push({x:smin+Math.random()*(smax-smin-50),y:f.y-26,w:type==='heavy'?24:18,h:type==='heavy'?32:26,vx:0,
+   const spd=type==='heavy'?0.2:type==='walker'?0.3:0.2;
+   f.enemies.push({x:smin+Math.random()*(smax-smin-50),y:f.y-26,w:type==='heavy'?34:28,h:type==='heavy'?44:38,vx:0,
     type,hp,maxHp:hp,sTimer:type==='shooter'?80+Math.random()*100:999,speed:spd,damage:type==='heavy'?2:1});
   }
   if(f.enemies.length>1)for(let i=1;i<f.enemies.length;i++)f.enemies[i].x=Math.max(smin+10,Math.min(smax-f.enemies[i].w-10,f.enemies[i-1].x+40+Math.random()*40));

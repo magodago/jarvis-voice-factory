@@ -147,7 +147,7 @@ else if(e.type==='suicide'){e.x-=e.speed;if(Math.abs(e.x-P.x)<30){e.hp=0;sp(e.x+
  }
  // Enemy bullets hit player
  for(let i=eb.length-1;i>=0;i--){const e=eb[i];if(P.inv<=0&&((e.vy===0&&e.x<P.x+P.w&&e.x+e.w>P.x&&Math.abs(e.y-P.y-P.h/2)<22)||(e.vy>0&&Math.abs(e.x-P.x-P.w/2)<22&&e.y>P.y&&e.y<P.y+P.h))){
-  P.hp--;if(P.barrier){P.barrier=false;P.hp++;sp(P.x,P.y,C.am,15);P.inv=25}else if(P.shield>0){P.hp++;P.shield=0;sp(P.x,P.y,C.cy,10)}else{P.inv=40;sp(P.x+P.w/2,P.y,C.mg,6)}
+  P.hp--;P.inv=Math.min(P.inv,15);if(P.barrier){P.barrier=false;P.hp++;sp(P.x,P.y,C.am,15);P.inv=25}else if(P.shield>0){P.hp++;P.shield=0;sp(P.x,P.y,C.cy,10)}else{P.inv=40;sp(P.x+P.w/2,P.y,C.mg,6)}
   eb.splice(i,1);shake=8;sfx('hit');if(P.hp<=0)die()}}
  for(let i=dmgNums.length-1;i>=0;i--){const d=dmgNums[i];d.l--;d.y-=0.8;if(d.l<=0){dmgNums.splice(i,1)}else{cx.globalAlpha=d.l/30;cx.fillStyle=C.or;cx.font='bold 11px monospace';cx.textAlign='center';cx.fillText(d.t,d.x,d.y)}}cx.globalAlpha=1;
  // Mines
@@ -186,7 +186,7 @@ function draw(){
  // Weather
  if(weather==='rain'){for(let i=0;i<15;i++){let rx=px+Math.random()*pw,ry=Math.random()*H;cx.fillStyle=C.cy+'10';cx.fillRect(rx,ry,1,6+Math.random()*4)}}
  if(weather==='fog'){cx.fillStyle=C.cy+'04';cx.fillRect(px,0,pw,H);cx.fillStyle=C.wh+'03';cx.fillRect(px,0,pw,H)}
- if(weather==='storm'){if(Math.random()<.03){let sx=px+Math.random()*pw;cx.strokeStyle=C.cy+'30';cx.lineWidth=2;cx.beginPath();cx.moveTo(sx,0);cx.lineTo(sx-20+Math.random()*40,H);cx.stroke();shake=15;beep(50,0.15,'sawtooth',0.03)}}
+ if(weather==='storm'){if(Math.random()<.03){let sx=px+Math.random()*pw;cx.strokeStyle=C.cy+'30';cx.lineWidth=2;cx.beginPath();cx.moveTo(sx,0);cx.lineTo(sx-20+Math.random()*40,H);cx.stroke();beep(50,0.15,'sawtooth',0.03)}}
  // Light rays
  for(let i=0;i<3;i++){let lx=px+pw*0.2+i*pw*0.3;let lGrd=cx.createLinearGradient(lx,0,lx,fl);lGrd.addColorStop(0,C.cy+'06');lGrd.addColorStop(1,'transparent');cx.fillStyle=lGrd;cx.fillRect(lx-20,0,40,fl)}
  // Grid
@@ -259,11 +259,11 @@ function draw(){
  const blink=Math.sin(Date.now()*0.006);cx.globalAlpha=0.6+Math.abs(blink)*0.4;cx.shadowColor=C.cy;cx.shadowBlur=15+Math.abs(blink)*15;cx.fillStyle=C.cy;cx.font='bold 28px monospace';cx.textAlign='center';cx.fillText('ROOM '+room,W/2,H*.15);cx.shadowBlur=5+Math.abs(Math.sin(Date.now()*0.004))*5;cx.fillStyle=C.mg;cx.font='bold 12px monospace';cx.fillText('CYBER GAME',W/2,H*.15+30);cx.shadowBlur=0;cx.globalAlpha=1;
  // HP
  // Hearts - center of black zone with background panel
- cx.fillStyle='#0a0020';cx.fillRect(W/2-80,fl+8,160,36);
- cx.strokeStyle=C.re+'30';cx.lineWidth=1;cx.strokeRect(W/2-80,fl+8,160,36);
+ cx.fillStyle='#0a0020';cx.fillRect(W/2-80,fl+8,200,46);
+ cx.strokeStyle=C.re+'30';cx.lineWidth=1;cx.strokeRect(W/2-80,fl+8,200,46);
  let h='';for(let i=0;i<P.hp;i++)h+='♥';for(let i=P.hp;i<5;i++)h+='♡';
- cx.fillStyle=C.re;cx.font='bold 32px monospace';cx.textAlign='center';
- cx.shadowColor=C.re;cx.shadowBlur=10;cx.fillText(h,W/2,fl+34);cx.shadowBlur=0;
+ cx.fillStyle=C.re;cx.font="bold 42px monospace";cx.textAlign="center";
+ cx.shadowColor=C.re;cx.shadowBlur=10;cx.fillText(h,W/2,fl+40);cx.shadowBlur=0;
  if(sniperActive>0){cx.fillStyle=C.cy;cx.font='bold 16px monospace';cx.textAlign='center';cx.fillText('🎯 SNIPER '+Math.ceil(sniperActive/60)+'s',W/2,58)}
  // QTE Display
 if(qteActive){
@@ -296,8 +296,8 @@ if(trans>0&&trans>5&&bossActive&&!qteActive){cx.fillStyle=C.re;cx.font='bold 28p
  if(theme==='alarm'){cx.fillStyle=C.re+'10';cx.fillRect(0,24,W,1)}if(theme==='toxic'){cx.fillStyle=C.gn+'10';cx.fillRect(0,24,W,1)}if(theme==='void'){cx.fillStyle=C.pu+'10';cx.fillRect(0,24,W,1)}if(theme==='neon'){cx.fillStyle=C.cy+'10';cx.fillRect(0,24,W,1)}
  // Weapon info - left side of black zone
  let wname=P.weapon==='shotgun'?'SHOTGUN':P.weapon==='laser'?'LASER':'PISTOL';
- cx.fillStyle='#0a0020';cx.fillRect(10,fl+8,130,36);
- cx.strokeStyle=C.cy+'25';cx.lineWidth=1;cx.strokeRect(10,fl+8,130,36);
+ cx.fillStyle='#0a0020';cx.fillRect(10,fl+8,150,46);
+ cx.strokeStyle=C.cy+'25';cx.lineWidth=1;cx.strokeRect(10,fl+8,150,46);
  cx.fillStyle=C.cy;cx.font='bold 12px monospace';cx.textAlign='left';
  cx.fillText(wname,18,fl+22);
  cx.fillStyle=C.wh;cx.font='bold 14px monospace';
@@ -348,7 +348,7 @@ function drawIntro(){
  for(let i=0;i<25;i++){let rx=Math.random()*W,ry=Math.random()*H;cx.fillStyle=C.gn+(10+Math.random()*25).toString(16);cx.fillRect(rx,ry,1,5+Math.random()*6);cx.fillStyle=C.gn+'08';cx.fillRect(rx-1,ry-1,3,8+Math.random()*8)}
  // Lightning flashes
  if(Math.random()<.02){cx.fillStyle=C.cy+'25';cx.fillRect(0,0,W,H);beep(30,0.15,'sawtooth',0.04)}
- if(Math.random()<.015){let lx=W*.2+Math.random()*W*.6;cx.strokeStyle=C.cy;cx.lineWidth=3+Math.random()*3;cx.shadowColor=C.cy;cx.shadowBlur=20;cx.beginPath();cx.moveTo(lx,0);cx.lineTo(lx-40+Math.random()*80,H*.3);cx.lineTo(lx+20+Math.random()*30,H*.5);cx.lineTo(lx-10,H);cx.stroke();cx.shadowBlur=0;cx.fillStyle=C.cy+'20';cx.fillRect(0,0,W,H);beep(20,0.25,'sawtooth',0.06)}
+ if(Math.random()<.015){let lx=W*.2+Math.random()*W*.6;cx.strokeStyle=C.cy;cx.lineWidth=3+Math.random()*3;cx.shadowColor=C.cy;cx.shadowBlur=20;cx.beginPath();cx.moveTo(lx,0);cx.lineTo(lx-40+Math.random()*80,H*.3);cx.lineTo(lx+20+Math.random()*30,H*.5);cx.lineTo(lx-10,H);cx.stroke();cx.shadowBlur=0;cx.fillStyle=C.cy+.60.;cx.fillRect(0,0,W,H);beep(20,0.25,'sawtooth',0.06)}
  // Floating particles
  for(let i=0;i<8;i++){let px2=W*.1+Math.random()*W*.8,py2=H*.1+Math.random()*H*.6;cx.fillStyle=C.cy+(3+Math.sin(t*3+i)*3).toString(16);cx.beginPath();cx.arc(px2+Math.sin(t+i)*5,py2+Math.cos(t*0.7+i)*5,1+Math.random()*2,0,Math.PI*2);cx.fill()}
  // Title - BIG with depth

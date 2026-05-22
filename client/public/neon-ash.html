@@ -420,5 +420,5 @@ function drawIntro(){
  cx.fillStyle=C.wh+'08';cx.font='8px monospace';cx.fillText('DOBLE TAP IZQ = DASH',W/2,H*.94);
 }
 function drawDead(){cx.fillStyle=C.bg+'EE';cx.fillRect(0,0,W,H);cx.fillStyle=C.re;cx.font='bold 24px monospace';cx.textAlign='center';cx.fillText('MUERTO',W/2,H/2-55);cx.fillStyle=C.cy;cx.font='13px monospace';cx.fillText('ROOM '+room,W/2,H/2-30);cx.fillStyle=C.wh;cx.font='20px monospace';cx.fillText('SALAS: '+room,W/2,H/2-5);cx.fillStyle=C.wh+'50';cx.font='10px monospace';cx.fillText('Enemigos: '+kills,W/2,H/2+18);let tt=Math.floor((Date.now()-startTime)/1000);cx.fillText('Tiempo: '+Math.floor(tt/60)+'m'+(tt%60)+'s',W/2,H/2+32);if(room>=best&&room>0){cx.fillStyle=C.am;cx.font='10px monospace';cx.fillText('🏆 NUEVO RECORD',W/2,H/2+46)}cx.fillStyle=C.wh+'30';cx.font='10px monospace';cx.fillText('toca para reiniciar',W/2,H/2+62)}
-function loop(){if(W===0)resize();update();cx.clearRect(0,0,W,H);if(state==='intro')drawIntro();else if(state==='dead'){draw();drawDead()}else draw();setTimeout(loop,16)}
+function loop(){_fc++;if(W===0)resize();update();cx.clearRect(0,0,W,H);if(state==='intro')drawIntro();else if(state==='dead'){draw();drawDead()}else draw();setTimeout(loop,16)}
 resize();setInterval(loop,16);</script></body></html>

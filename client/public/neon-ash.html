@@ -106,7 +106,7 @@ function update(){
  const f=cf(),fy=f.y,lW=wallW,rW=platformW-wallW;
  if(climbing){climbT++;const t=Math.min(climbT/80,1);P.x=climbFX+(climbTX-climbFX)*t;P.y=climbFY+(climbTY-climbFY)*t;P.onGround=false;P.vy=0;if(t>=1){climbT=0;climbing=false;floorNum++;score+=100;const nf=cf();P.x=climbTX;P.y=nf.y-P.h;P.dir=climbNDir;P.vx=1.2;P.vy=0;P.onGround=true;sp(P.x+P.w/2,P.y,C.cyan,10);
   // Boss every 20 floors
-  if(floorNum>0&&floorNum%20===0&&!bossActive){startBoss()}
+  if(floorNum>0&&floorNum%20===0&&!bossActive){startBoss()}else if(floorNum>0&&floorNum%10===0&&Math.random()<0.4){let evt=Math.random()<0.5?'toxic':'alarm';if(evt==='toxic'){P.hp=Math.max(1,P.hp-1);sp(P.x+P.w/2,P.y+P.h/2,C.green,15)}else{score+=300;sp(P.x+P.w/2,P.y+P.h/2,C.amber,10)}}
  }cameraY+=(P.y-H*0.5-cameraY)*0.2;return}
  P.x+=P.vx*P.dir;if(P.x<=lW){P.dir=1;P.x=lW}if(P.x+P.w>=rW){P.dir=-1;P.x=rW-P.w}
  if(P.onGround&&P.vy>=0&&P.jumpCd<=5&&((f.stairSide==='left'&&P.x<=lW+8)||(f.stairSide==='right'&&P.x+P.w>=rW-8))){
@@ -170,7 +170,19 @@ function draw(){
  ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);const bgl=8,bgw=W-16;
  // Building bg with grid
  ctx.fillStyle='#0a0018';ctx.fillRect(bgl,0,bgw,H);
- ctx.strokeStyle=C.cyan+'03';for(let yy=(-cameraY%36);yy<H+36;yy+=36){ctx.beginPath();ctx.moveTo(bgl,yy);ctx.lineTo(bgl+bgw,yy);ctx.stroke()}
+ // Grid + building structure
+ctx.strokeStyle=C.cyan+'04';
+for(let yy=(-cameraY%48);yy<H+48;yy+=48){
+ ctx.beginPath();ctx.moveTo(bgl,yy);ctx.lineTo(bgl+bgw,yy);ctx.stroke();
+ // Vertical pillars
+ ctx.fillStyle=C.cyan+'03';
+ ctx.fillRect(bgl+bgw*0.2,yy,2,24);ctx.fillRect(bgl+bgw*0.5,yy,2,24);ctx.fillRect(bgl+bgw*0.8,yy,2,24);
+}
+// Side columns
+ctx.fillStyle='#0a0020';ctx.fillRect(0,0,6,H);ctx.fillRect(W-6,0,6,H);
+ctx.strokeStyle=C.cyan+'08';ctx.lineWidth=1;
+ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(6,H);ctx.stroke();
+ctx.beginPath();ctx.moveTo(W-6,0);ctx.lineTo(W-6,H);ctx.stroke();
  const f=cf();
  for(let fn of[floors[floorNum],floors[floorNum+1],floors[floorNum+2]]){
   if(!fn)continue;const fy=fn.y-cameraY,fx=bgl+2;if(fy<-90||fy>H+90)continue;
@@ -180,7 +192,19 @@ function draw(){
   ctx.strokeStyle=C.cyan+'45';ctx.lineWidth=1;ctx.strokeRect(fx,fy,platformW,PH);
   ctx.strokeStyle=C.cyan+'25';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(fx,fy);ctx.lineTo(fx+platformW,fy);ctx.stroke();
   // Walls
-  ctx.fillStyle=C.wall;ctx.fillRect(fx,fy-FG+PH,wallW,FG-PH);ctx.fillRect(fx+platformW-wallW,fy-FG+PH,wallW,FG-PH);
+  // Walls with windows and details
+ctx.fillStyle='#0d0028';ctx.fillRect(fx,fy-FG+PH,wallW,FG-PH);ctx.fillRect(fx+platformW-wallW,fy-FG+PH,wallW,FG-PH);
+// Window rows on walls
+ctx.fillStyle=C.cyan+'06';
+for(let wy=fy-FG+PH+10;wy<fy-10;wy+=22){
+ ctx.fillRect(fx+3,wy,8,8);ctx.fillRect(fx+platformW-wallW+3,wy,8,8);
+ ctx.strokeStyle=C.cyan+'15';ctx.lineWidth=0.5;
+ ctx.strokeRect(fx+3,wy,8,8);ctx.strokeRect(fx+platformW-wallW+3,wy,8,8);
+}
+// Neon accent line on wall edge
+ctx.strokeStyle=C.cyan+'20';ctx.lineWidth=1;
+ctx.beginPath();ctx.moveTo(fx+wallW,fy-FG+PH);ctx.lineTo(fx+wallW,fy);ctx.stroke();
+ctx.beginPath();ctx.moveTo(fx+platformW-wallW,fy-FG+PH);ctx.lineTo(fx+platformW-wallW,fy);ctx.stroke();
   // Decorations
   for(const d of fn.decorations||[]){
    const dy=d.y-cameraY;
@@ -192,8 +216,24 @@ function draw(){
   const stX=fn.stairSide==='left'?fx+wallW:fx+platformW-wallW-24,stY=fy-94;ctx.fillStyle='#0d0028';ctx.fillRect(stX,stY,24,94);ctx.strokeStyle=C.cyan+'35';ctx.strokeRect(stX,stY,24,94);
   for(let i=0;i<12;i++){ctx.fillStyle=C.cyan+'08';ctx.fillRect(stX+2,stY+94-(i+1)*7,20,3.5)}ctx.fillStyle=C.cyan+'40';ctx.font='8px monospace';ctx.textAlign='center';ctx.fillText('▲',stX+12,stY-4);
   // Fire - animated with particles
-  if(fn.hasFire){const hx=fx+fn.fireX,hy=fn.y-10-cameraY,fl=Math.sin(Date.now()*0.018+fn.n)*5;ctx.globalAlpha=0.7+Math.random()*.3;
-   for(let i=0;i<4;i++){ctx.fillStyle=i<2?C.amber:C.orange;ctx.fillRect(hx+i*4+Math.sin(Date.now()*0.03+i)*2,hy-fl-i*4,4,14+i*3)}ctx.globalAlpha=1}
+  if(fn.hasFire){
+ const hx=fx+fn.fireX,hy=fn.y-10-cameraY,t=Date.now()*0.005;
+ ctx.globalAlpha=0.8+Math.random()*.2;
+ // Multiple flame layers
+ for(let f=0;f<3;f++){
+  let fy2=hy-Math.sin(t+fn.n+f)*8-f*6;
+  let fh=12+f*5;
+  ctx.fillStyle=f===0?C.amber+'EE':f===1?C.orange+'CC':C.red+'88';
+  ctx.fillRect(hx+2+f*2,fy2-fh,10-f*2,fh+Math.sin(t*2+f)*4);
+  // Flame tips
+  ctx.fillStyle=C.amber;
+  ctx.fillRect(hx+4+f,fy2-fh-4-Math.sin(t*3)*3,4,6);
+ }
+ // Base glow
+ ctx.fillStyle=C.amber+'30';
+ ctx.fillRect(hx-4,hy-2,24,6);
+ ctx.globalAlpha=1
+}
   // Enemies
   for(const e of fn.enemies){const ey=e.y-cameraY;
    if(e.type==='boss'){

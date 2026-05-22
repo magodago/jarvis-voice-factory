@@ -27,7 +27,7 @@ function newRoom(n){
  const pw=W-60,px=(W-pw)/2,ww=14;
  const left=px+ww,right=px+pw-ww;
  // Enemies come from RIGHT, move LEFT (player starts left)
- for(let i=0;i<2+Math.floor(Math.random()*2);i++){
+ for(let i=0;i<1+Math.floor(Math.random()*2);i++){
   let ex=right-50-i*40;
   enemies.push({x:ex,y:0,w:32,h:42,patrolDir:-1,hp:2,type:i===0&&Math.random()<.3?'shooter':'walker',sTimer:99});
  }
@@ -99,8 +99,8 @@ function update(){
 
  // Enemies - move LEFT toward player
  for(const e of enemies){
-  e.x-=0.5; // move left
-  if(e.x<room.left+30)e.x=room.right-30; // wrap around
+  e.x-=0.25; // move left
+  if(e.x<room.left+30){e.x=room.left+30;e.patrolDir*=-1} // wrap around
   e.sTimer--;if(e.sTimer<=0&&e.type==='shooter'){eBullets.push({x:e.x,y:floorY-20,vx:-3,vy:0,w:7,h:3});e.sTimer=80+Math.random()*80}
   // Hit by bullet
   for(let bi=bullets.length-1;bi>=0;bi--){const b=bullets[bi];if(b.x>e.x&&b.x<e.x+e.w&&Math.abs(b.y-(floorY-20))<20){e.hp--;bullets.splice(bi,1);sp(e.x+e.w/2,floorY-20,C.magenta,5);shakeT=4;shakeI=2;if(e.hp<=0){enemies=enemies.filter(x=>x!==e);score+=250;sp(e.x+e.w/2,floorY-20,C.red,10)}break}}
@@ -147,13 +147,13 @@ function draw(){
  for(const e of enemies){
   const ey=floorY-e.h;
   const eImg=e.type==='shooter'?ENEMY_SHOOTER:ENEMY_WALKER;
-  if(eImg.complete&&eImg.naturalWidth>0){ctx.drawImage(eImg,e.x,ey,e.w,e.h)}
+  if(eImg.complete&&eImg.naturalWidth>0){ctx.drawImage(eImg,e.x-4,ey-4,e.w+8,e.h+8)}
   else{ctx.fillStyle=e.type==='shooter'?C.magenta:C.purple;ctx.fillRect(e.x,ey,e.w,e.h)}
  }
  // Player with sprite
  if(gameState==='playing'||gameState==='dead'){
   const a=P.inv>0?.4+Math.sin(Date.now()*.3)*.3:1;ctx.globalAlpha=a;
-  if(CHAR_SPRITE.complete&&CHAR_SPRITE.naturalWidth>0){ctx.save();const cx=P.x+P.w/2;ctx.translate(cx,P.y+P.h/2);if(P.dir<0)ctx.scale(-1,1);ctx.drawImage(CHAR_SPRITE,-18,-22,36,44);ctx.restore()}
+  if(CHAR_SPRITE.complete&&CHAR_SPRITE.naturalWidth>0){ctx.save();const cx=P.x+P.w/2;ctx.translate(cx,P.y+P.h/2);ctx.drawImage(CHAR_SPRITE,-18,-22,36,44);ctx.restore()}
   else{ctx.fillStyle=C.cyan;ctx.fillRect(P.x,P.y+8,P.w,P.h-10);ctx.fillRect(P.x+6,P.y,10,10);ctx.fillStyle=C.white;ctx.fillRect(P.x+8,P.y+2,6,3)}
   ctx.globalAlpha=1
  }

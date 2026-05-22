@@ -107,11 +107,11 @@ function update(){
  if(climbing){climbT++;const t=Math.min(climbT/80,1);P.x=climbFX+(climbTX-climbFX)*t;P.y=climbFY+(climbTY-climbFY)*t;P.onGround=false;P.vy=0;if(t>=1){climbT=0;climbing=false;floorNum++;score+=100;for(let i=0;i<30;i++)sp(P.x+P.w/2,P.y+P.h/2,C.cyan,4);sp(P.x+P.w/2,P.y+P.h/2,C.magenta,15);const nf=cf();P.x=climbTX;P.y=nf.y-P.h;P.dir=climbNDir;P.vx=1.2;P.vy=0;P.onGround=true;sp(P.x+P.w/2,P.y,C.cyan,10);
   // Boss every 20 floors
   if(floorNum>0&&floorNum%20===0&&!bossActive){startBoss()}else if(floorNum>0&&floorNum%10===0&&Math.random()<0.4){let evt=Math.random()<0.5?'toxic':'alarm';if(evt==='toxic'){P.hp=Math.max(1,P.hp-1);sp(P.x+P.w/2,P.y+P.h/2,C.green,15)}else{score+=300;sp(P.x+P.w/2,P.y+P.h/2,C.amber,10)}}
- }cameraY=P.y-H*0.7;return}
+ }cameraY=climbTY-H*0.85;return}
  P.x+=P.vx*P.dir;// Allow walking into stair zone
 if(f.stairSide==='left'&&P.x<=lW-14){P.dir=1;P.x=lW-14}else if(P.x<=lW-4&&f.stairSide!=='left'){P.dir=1;P.x=lW}
 else if(f.stairSide==='right'&&P.x+P.w>=rW+14){P.dir=-1;P.x=rW+14-P.w}else if(P.x+P.w>=rW+4&&f.stairSide!=='right'){P.dir=-1;P.x=rW-P.w}
- P.stairContact=(P.stairContact||0);if((f.stairSide==='left'&&P.x<=lW&&P.x+P.w>lW+4)||(f.stairSide==='right'&&P.x+P.w>=rW&&P.x<rW-4)){P.stairContact++;if(P.stairContact<8)return;P.stairContact=0;
+ P.stairContact=(P.stairContact||0);if((f.stairSide==='left'&&P.x<=lW&&P.x+P.w>lW+4)||(f.stairSide==='right'&&P.x+P.w>=rW&&P.x<rW-4)){P.stairContact++;if(P.stairContact<2)return;P.stairContact=0;
   const nf=floors[floorNum+1];if(!nf)return;climbing=true;climbT=0;climbFX=P.x;climbFY=P.y;climbTX=nf.stairSide==='left'?platformW-wallW-P.w-8:wallW+8;climbTY=nf.y-P.h;climbNDir=nf.stairSide==='left'?-1:1;P.vx=0;return}
  P.onGround=false;if(P.y+P.h>=fy-2&&P.y+P.h<=fy+16&&P.vy>=0){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}
  if(P.y+P.h>fy+24){P.y=fy-P.h;P.vy=0;P.onGround=true;P.vx=1.2}

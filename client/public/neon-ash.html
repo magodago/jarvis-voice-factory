@@ -40,7 +40,7 @@ function spawnEnemies(){
 function newRoom(){
  enemies=[];eb=[];mines=[];powerUps=[];bossActive=false;
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2,l=px+lw,r=px+pw-lw,fl=H*.82;
- theme=room>0&&room%5===0?(Math.random()<.5?'alarm':'toxic'):'normal';
+ const themes=['normal','alarm','toxic','void','neon'];theme=room%5===0?themes[Math.floor(Math.random()*5)]:'normal';
  if(room>0&&room%10===0){
   bossActive=true;
   enemies.push({x:r-80,y:fl-66,w:120,h:120,hp:15+Math.floor(room/5),type:'boss',cd:40,speed:0.15});
@@ -72,7 +72,7 @@ function sp(x,y,c,n){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.
 function start(){
  state='play';room=0;kills=0;startTime=Date.now();
  P.hp=5;P.inv=0;P.shield=0;P.fireTimer=0;P.railAmmo=0;P.dashCd=0;
- P.cd=0;P.vx=1.1;P.vy=0;P.onGround=true;bullets=[];particles=[];
+ P.cd=0;P.vx=1.25;P.vy=0;P.onGround=true;bullets=[];particles=[];
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2;P.x=px+lw+10;newRoom();P.y=H*.82-P.h;
 }
 function restart(){state='intro';room=0;bullets=[];eb=[];particles=[];enemies=[];stopMusic()}
@@ -89,7 +89,7 @@ function update(){
  if(P.dashCd<=0&&doubleTap>0&&Date.now()-doubleTap<500&&P.onGround){
   P.vx=3.5;P.dashCd=60;doubleTap=0;P.inv=15;sp(P.x,P.y,C.cy,10);sfx('dash');
  }
- if(P.dashCd>0){P.dashCd--;if(P.dashCd<40)P.vx=1.1}
+ if(P.dashCd>0){P.dashCd--;if(P.dashCd<40)P.vx=1.25}
 
  P.x+=P.vx;
  if(P.x<l)P.x=l;if(P.x+P.w>r){nextRoom();return}
@@ -108,9 +108,9 @@ function update(){
 
  // Enemies
  for(const e of enemies){
-  if(e.type==='boss'){e.x-=e.speed;e.cd--;if(e.cd<=0){eb.push({x:e.x,y:fl-e.h+24,vx:-3.5,w:8,h:4});e.cd=50-diff()*2}}
+  if(e.type==='boss'){e.x-=e.speed;e.cd--;if(e.cd<=0){eb.push({x:e.x,y:fl-e.h+28,vx:-3.5,w:8,h:4});e.cd=50-diff()*2}}
   else if(e.type==='suicide'){e.x-=e.speed;if(Math.abs(e.x-P.x)<30){e.hp=0;sp(e.x+e.w/2,fl-10,C.or,20);shake=18;sfx('mine');P.hp-=2;P.inv=50;if(P.hp<=0)die()}}
-  else{e.x-=e.speed;if(e.x<l+10){e.x=r-10;e.patrolDir=1}e.cd--;if(e.cd<=0&&e.type==='shooter'){eb.push({x:e.x,y:fl-e.h+18,vx:-3,w:6,h:3});e.cd=90-diff()*3+Math.random()*40}}
+  else{e.x-=e.speed;if(e.x<l+10){e.x=r-10;e.patrolDir=1}e.cd--;if(e.cd<=0&&e.type==='shooter'){eb.push({x:e.x,y:fl-e.h+22,vx:-3,w:6,h:3});e.cd=90-diff()*3+Math.random()*40}}
   for(let i=bullets.length-1;i>=0;i--){const b=bullets[i];
    if(b.x>e.x&&b.x<e.x+e.w&&Math.abs(b.y-(fl-e.h/2))<25){
     e.hp-=(b.dmg||1);if(!b.rail)bullets.splice(i,1);sp(e.x+e.w/2,fl-e.h/2,C.mg,4);shake=4;sfx('hit');
@@ -159,7 +159,7 @@ function draw(){
  // Rain
  if(Math.random()<.3){particles.push({x:Math.random()*W,y:-5,vx:-0.5,vy:3+Math.random()*4,life:60+Math.random()*40,c:C.cy,sz:.5})}
  // Room bg with cyberpunk effects
- cx.fillStyle=theme==='alarm'?'#1a0008':theme==='toxic'?'#001208':'#0d0025';cx.fillRect(px,0,pw,H);
+ cx.fillStyle=theme==='alarm'?'#1a0008':theme==='toxic'?'#001208':theme==='void'?'#08001a':theme==='neon'?'#0a0020':'#0d0025';cx.fillRect(px,0,pw,H);
  // Vertical neon strips
  for(let i=0;i<4;i++){
   let nx=px+pw*0.2*i+20;if(i===3)nx=px+pw-30;
@@ -212,15 +212,46 @@ function draw(){
   cx.fillStyle=C.cy+(15+Math.floor(pulse*30)).toString(16);cx.beginPath();cx.arc(nx,ny,4+pulse*2,0,Math.PI*2);cx.fill();
   cx.shadowBlur=0;
  }
- // Energy lines between nodes
+ // Energy lines
  for(let i=0;i<2;i++){
   let x1=px+90+i*170,x2=px+260+i*170;
-  cx.strokeStyle=C.cy+'06';cx.lineWidth=0.5;
+  cx.strokeStyle=C.cy+'10';cx.lineWidth=1;
   cx.beginPath();cx.moveTo(x1,fl-130);cx.lineTo(x2,fl-145);cx.stroke();
+ }
+ // Sparkle rain
+ const sr=Date.now()*0.001;
+ for(let i=0;i<8;i++){
+  let sx=px+30+Math.sin(sr+i*2)*pw*0.4+Math.cos(sr*1.3+i)*pw*0.3,
+      sy=20+(sr*50+i*60)%(fl-40);
+  cx.fillStyle=C.cy+(5+Math.sin(sr*3+i)*5).toString(16);
+  cx.fillRect(sx,sy,1+Math.sin(sr+i)*2,1+Math.cos(sr+i)*2);
+ }
+ // Vertical light columns
+ for(let i=0;i<3;i++){
+  let cx2=px+120+i*140,ca=Math.sin(sr*0.5+i)*0.3+0.4;
+  cx.globalAlpha=ca;
+  let colGrd=cx.createLinearGradient(0,0,0,fl);
+  colGrd.addColorStop(0,'transparent');colGrd.addColorStop(0.5,C.cy+'08');colGrd.addColorStop(1,'transparent');
+  cx.fillStyle=colGrd;cx.fillRect(cx2-3,0,6,fl);
+  cx.globalAlpha=1;
+ }
+ // Floor light rays shooting up
+ for(let i=0;i<4;i++){
+  let rx=px+40+Math.sin(sr+i)*pw*0.2+Math.cos(sr*0.7+i)*pw*0.3;
+  cx.strokeStyle=C.cy+'08';cx.lineWidth=0.5;
+  cx.beginPath();cx.moveTo(rx,fl);cx.lineTo(rx-15+Math.sin(sr+i)*10,fl-60-Math.cos(sr+i)*30);cx.stroke();
+ }
+ // Rotating light diamonds
+ for(let i=0;i<2;i++){
+  let dx=px+pw*0.3+i*pw*0.4,dy2=fl-80+Math.sin(sr+i)*20;
+  cx.save();cx.translate(dx,dy2);cx.rotate(sr*0.3+i);
+  cx.strokeStyle=C.mg+'15';cx.lineWidth=1;
+  cx.beginPath();cx.moveTo(0,-8);cx.lineTo(6,0);cx.lineTo(0,8);cx.lineTo(-6,0);cx.closePath();cx.stroke();
+  cx.restore();
  }
  // Walls
  // Walls with glow strips
- cx.fillStyle=theme==='alarm'?'#2a0010':theme==='toxic'?'#002015':'#120030';cx.fillRect(px,0,lw,H);cx.fillRect(px+pw-lw,0,lw,H);
+ cx.fillStyle=theme==='alarm'?'#2a0010':theme==='toxic'?'#002015':theme==='void'?'#0a0030':theme==='neon'?'#150030':'#120030';cx.fillRect(px,0,lw,H);cx.fillRect(px+pw-lw,0,lw,H);
  // Wall glow strips every 40px
  for(let wy=20;wy<fl;wy+=40){
   cx.fillStyle=C.cy+'25';cx.fillRect(px+3,wy,lw-6,3);cx.fillRect(px+pw-lw+3,wy,lw-6,3);
@@ -325,11 +356,12 @@ function draw(){
    cx.fillStyle=C.re;cx.fillRect(e.x,ey-6,e.w*(e.hp/(e.type==='boss'?8+Math.floor(room/5):4+Math.floor(room/15))),3);
   }
   if(e.type==='suicide'){cx.fillStyle=C.or+'60';cx.beginPath();cx.arc(e.x+e.w/2,ey+e.h/2,e.w/2+4,0,Math.PI*2);cx.stroke()}
-  // Enemy platform
-  cx.fillStyle=e.type==='boss'?C.re+'20':e.type==='heavy'?C.am+'15':e.type==='suicide'?C.or+'15':C.pu+'10';
-  cx.fillRect(e.x-4,fl-2,e.w+8,5);
-  cx.strokeStyle=e.type==='boss'?C.re+'40':e.type==='shooter'?C.mg+'30':C.pu+'20';cx.lineWidth=1;
-  cx.strokeRect(e.x-4,fl-2,e.w+8,5);
+  // Enemy platform - orange glow
+  let eGrd=cx.createLinearGradient(0,fl-6,0,fl+6);
+  eGrd.addColorStop(0,'transparent');eGrd.addColorStop(0.3,C.or+'50');eGrd.addColorStop(0.6,C.or+'20');eGrd.addColorStop(1,'transparent');
+  cx.fillStyle=eGrd;cx.fillRect(e.x-8,fl-6,e.w+16,12);
+  cx.fillStyle=C.or+'30';cx.fillRect(e.x-4,fl-2,e.w+8,4);
+  cx.strokeStyle=C.or+'60';cx.lineWidth=1.5;cx.strokeRect(e.x-4,fl-2,e.w+8,4);
  }
  // Player
  if(state==='play'||state==='dead'){
@@ -375,6 +407,8 @@ function draw(){
  // Theme line
  if(theme==='alarm'){cx.fillStyle=C.re+'40';cx.fillRect(0,44,W,2)}
  if(theme==='toxic'){cx.fillStyle=C.gn+'30';cx.fillRect(0,44,W,2)}
+ if(theme==='void'){cx.fillStyle=C.pu+'30';cx.fillRect(0,44,W,2)}
+ if(theme==='neon'){cx.fillStyle=C.cy+'30';cx.fillRect(0,44,W,2)}
  // Power indicators
  let pind='';if(P.fireTimer>0)pind+='🔥';if(P.shield>0)pind+='◉';if(P.railAmmo>0)pind+=' ⚡'+P.railAmmo;
  if(pind){cx.fillStyle=C.wh;cx.font='9px monospace';cx.textAlign='left';cx.fillText(pind,10,40)}

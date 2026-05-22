@@ -233,12 +233,6 @@ for(let wy=fy-FG+35;wy<fy-20;wy+=50){
 // Cable on left wall
 ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx+3,fy-10);ctx.lineTo(fx+6,fy-FG+30);ctx.lineTo(fx+3,fy-FG+10);ctx.stroke();
   // Decorations
-  for(const d of fn.decorations||[]){
-   const dy=d.y-cameraY;
-   if(d.type==='neon_sign'){ctx.fillStyle=C.cyan+'15';ctx.fillRect(fx+d.x,dy,20,6);ctx.fillStyle=C.magenta+'10';ctx.fillRect(fx+d.x+3,dy+8,14,4)}
-   else if(d.type==='pipe'){ctx.fillStyle='#3a3a5e';ctx.fillRect(fx+d.x,dy,8,fn.y-d.y);ctx.strokeStyle='#2a2a4e';ctx.strokeRect(fx+d.x,dy,8,fn.y-d.y)}
-   else if(d.type==='code'){ctx.fillStyle=C.green+'08';const t=Date.now()*0.001;for(let c=0;c<6;c++)ctx.fillRect(fx+d.x+c*4,dy+Math.sin(t+c)*2,3,1)}
-  }
   // Stair
   const stX=fn.stairSide==='left'?fx+wallW:fx+platformW-wallW-24,stY=fy-94;ctx.fillStyle='#0d0028';ctx.fillRect(stX,stY,24,94);ctx.strokeStyle=C.cyan+'35';ctx.strokeRect(stX,stY,24,94);
   for(let i=0;i<12;i++){ctx.fillStyle=C.cyan+'50';ctx.fillRect(stX+2,stY+94-(i+1)*7,20,3.5)}ctx.fillStyle=C.cyan+'40';ctx.font='8px monospace';ctx.textAlign='center';ctx.fillText('▲',stX+12,stY-4);

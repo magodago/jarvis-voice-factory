@@ -113,7 +113,10 @@ function draw(){
  // Enemies
  for(const e of enemies){
   const ey=e.y,img=e.type==='shooter'?ES:EW;
-  if(img.complete&&img.naturalWidth>0){cx.drawImage(img,e.x-2,ey-2,e.w+4,e.h+4)}
+  if(img.complete&&img.naturalWidth>0){
+ if(e.type==='shooter'){cx.save();cx.translate(e.x+e.w/2,ey+e.h/2);cx.scale(-1,1);cx.drawImage(img,-e.w/2-2,-e.h/2-2,e.w+4,e.h+4);cx.restore()}
+ else{cx.drawImage(img,e.x-2,ey-2,e.w+4,e.h+4)}
+}
   else{cx.fillStyle=e.type==='shooter'?C.mg:C.pu;cx.fillRect(e.x,ey,e.w,e.h)}
  }
  // Player

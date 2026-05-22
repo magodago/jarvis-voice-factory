@@ -10,7 +10,7 @@ const EB=new Image();EB.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAA
 let W,H,state='intro',room=0,best=parseInt(localStorage.getItem('na_best')||0);
 let jump=false,shoot=false,trans=0,shake=0,theme='normal';
 let kills=0,startTime=0,doubleTap=0;
-const P={x:0,y:0,w:22,h:30,vx:0,vy:0,onGround:false,hp:5,cd:0,inv:0,shield:0,fireTimer:0,railAmmo:0,dashCd:0};
+const P={x:0,y:0,w:44,h:56,vx:0,vy:0,onGround:false,hp:5,cd:0,inv:0,shield:0,fireTimer:0,railAmmo:0,dashCd:0};
 let bullets=[],eb=[],enemies=[],mines=[],particles=[],powerUps=[],bossActive=false;
 const C={bg:'#060010',cy:'#00d4ff',mg:'#ff15d0',wh:'#eee',am:'#ffb347',re:'#ff4466',pu:'#7b00ff',gn:'#00ff88',or:'#ff8800'};
 
@@ -32,7 +32,7 @@ function spawnEnemies(){
   if(rnd<0.2+room*0.01)tp='shooter';
   else if(rnd<0.35+room*0.01)tp='heavy';
   else if(rnd<0.45&&room>10)tp='suicide';
-  enemies.push({x:0,y:0,w:tp==='heavy'?40:28,h:tp==='heavy'?52:38,hp:tp==='heavy'?4:tp==='suicide'?1:2+Math.floor(room/15),
+  enemies.push({x:0,y:0,w:tp==='heavy'?50:36,h:tp==='heavy'?60:48,hp:tp==='heavy'?4:tp==='suicide'?1:2+Math.floor(room/15),
    type:tp,cd:tp==='shooter'?80:tp==='suicide'?30:99,speed:tp==='suicide'?0.8:tp==='heavy'?0.15:0.3});
  }
 }
@@ -43,7 +43,7 @@ function newRoom(){
  theme=room>0&&room%5===0?(Math.random()<.5?'alarm':'toxic'):'normal';
  if(room>0&&room%10===0){
   bossActive=true;
-  enemies.push({x:r-80,y:fl-66,w:64,h:66,hp:8+Math.floor(room/5),type:'boss',cd:40,speed:0.15});
+  enemies.push({x:r-80,y:fl-66,w:80,h:80,hp:10+Math.floor(room/5),type:'boss',cd:40,speed:0.15});
  }else{spawnEnemies()}
  for(const e of enemies){e.x=r-30-e.w-Math.random()*(r-l-200-e.w);e.y=fl-e.h}
  for(let i=0;i<1+Math.floor(Math.random()*2);i++){mines.push({x:l+60+Math.random()*(r-l-120),y:fl-6})}
@@ -83,7 +83,7 @@ function update(){
  if(state!=='play')return;if(trans>0){trans--;return}
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2,fl=H*.82,l=px+lw,r=px+pw-lw;
  // Jump from touch
- if(touchL)jump=true;if(touchR)shoot=true;if(!touchR)shoot=false;
+ if(touchL&&!jump&&P.onGround)jump=true;if(touchR)shoot=true;if(!touchR)shoot=false;
 
  // Dash on double tap
  if(P.dashCd<=0&&doubleTap>0&&Date.now()-doubleTap<500&&P.onGround){
@@ -96,7 +96,7 @@ function update(){
  P.onGround=false;
  if(P.y+P.h>=fl-2&&P.vy>=0){P.y=fl-P.h;P.vy=0;P.onGround=true}
  if(!P.onGround){P.vy+=0.4;P.y+=P.vy}
- if(jump&&P.onGround){P.vy=-8;P.y-=2;jump=false;P.onGround=false}
+ if(jump&&P.onGround){P.vy=-8;P.y-=2;jump=false;P.onGround=false;touchL=false}
  // Shoot
  if(shoot&&P.cd<=0){
   if(P.railAmmo>0){bullets.push({x:P.x+P.w,y:P.y+P.h/2-2,vx:12,w:16,h:4,rail:true});P.railAmmo--;P.cd=20;sfx('rail');sp(P.x+P.w,P.y+P.h/2,C.or,5)}
@@ -158,11 +158,35 @@ function draw(){
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2,fl=H*.82,l=px,r=px+pw;
  // Rain
  if(Math.random()<.3){particles.push({x:Math.random()*W,y:-5,vx:-0.5,vy:3+Math.random()*4,life:60+Math.random()*40,c:C.cy,sz:.5})}
- // Room bg
+ // Room bg with cyberpunk effects
  cx.fillStyle=theme==='alarm'?'#150000':theme==='toxic'?'#001005':'#0a0018';cx.fillRect(px,0,pw,H);
+ // Vertical neon strips
+ for(let i=0;i<4;i++){
+  let nx=px+pw*0.2*i+20;if(i===3)nx=px+pw-30;
+  cx.fillStyle=C.cy+'04';cx.fillRect(nx,0,2,H);
+ }
+ // Horizontal accent lines
+ cx.fillStyle=C.mg+'03';cx.fillRect(px,fl-50,pw,1);cx.fillRect(px,fl-100,pw,1);
+ cx.fillStyle=C.cy+'03';cx.fillRect(px,fl-25,pw,1);cx.fillRect(px,fl-75,pw,1);
+ // Sparks occasionally
+ if(Math.random()<0.05){let sx=px+20+Math.random()*(pw-40);sp(sx,Math.random()*H,C.cy,1)}
+ // Ceiling neon sign
+ cx.fillStyle=C.cy+'10';cx.fillRect(px+20,8,pw-40,16);
+ cx.strokeStyle=C.cy+'30';cx.lineWidth=1;cx.strokeRect(px+20,8,pw-40,16);
+ cx.fillStyle=C.cy;cx.font='bold 9px monospace';cx.textAlign='center';cx.fillText('NEON ASH // CYBER TOWER',px+pw/2,20);
+
  cx.strokeStyle=C.cy+'03';for(let y=0;y<H;y+=36){cx.beginPath();cx.moveTo(px,y);cx.lineTo(px+pw,y);cx.stroke()}
  // Walls
  cx.fillStyle=theme==='alarm'?'#1a0008':theme==='toxic'?'#00100a':'#0d0020';cx.fillRect(px,0,lw,H);cx.fillRect(px+pw-lw,0,lw,H);
+ // Wall neon lines
+ cx.strokeStyle=C.cy+'20';cx.lineWidth=1;cx.beginPath();cx.moveTo(px+lw,0);cx.lineTo(px+lw,H);cx.stroke();
+ cx.beginPath();cx.moveTo(px+pw-lw,0);cx.lineTo(px+pw-lw,H);cx.stroke();
+ // Wall lamps
+ for(let wy=40;wy<fl-20;wy+=60){
+  cx.fillStyle=C.am+'20';cx.beginPath();cx.arc(px+lw/2,wy,5,0,Math.PI*2);cx.fill();
+  cx.fillStyle=C.am+'20';cx.beginPath();cx.arc(px+pw-lw/2,wy,5,0,Math.PI*2);cx.fill();
+ }
+
  // Floor glow
  let hb=(Math.sin(Date.now()*.002+room)+1)/2;
  cx.fillStyle=C.cy+(18+Math.floor(hb*12)).toString(16);cx.fillRect(px,fl-2,pw,8);
@@ -193,8 +217,8 @@ function draw(){
   const ey=e.y;
   let img=e.type==='shooter'?ES:e.type==='heavy'?EB:EW;if(e.type==='boss')img=EB;
   if(img.complete&&img.naturalWidth>0){
-   if(e.type==='shooter'||e.type==='boss'||e.type==='heavy'){cx.save();cx.translate(e.x+e.w/2,ey+e.h/2);cx.scale(-1,1);cx.drawImage(img,-e.w/2-2,-e.h/2-2,e.w+4,e.h+4);cx.restore()}
-   else{cx.drawImage(img,e.x-2,ey-2,e.w+4,e.h+4)}
+   if(e.type==='shooter'||e.type==='boss'||e.type==='heavy'){cx.save();cx.translate(e.x+e.w/2,ey+e.h/2);cx.scale(-1,1);cx.drawImage(img,-e.w/2-3,-e.h/2-3,e.w+6,e.h+6);cx.restore()}
+   else{cx.drawImage(img,e.x-3,ey-3,e.w+6,e.h+6)}
   }else{cx.fillStyle=C.pu;cx.fillRect(e.x,ey,e.w,e.h)}
   // HP bar
   if(e.type==='boss'||e.type==='heavy'){
@@ -210,7 +234,7 @@ function draw(){
   if(P.fireTimer>0){cx.fillStyle=C.or+'15';cx.fillRect(P.x-4,P.y-4,P.w+8,P.h+8)}
   if(P.dashCd>40){cx.globalAlpha=0.4}
   cx.save();cx.translate(P.x+P.w/2,P.y+P.h/2);cx.scale(-1,1);
-  if(CHAR.complete&&CHAR.naturalWidth>0)cx.drawImage(CHAR,-18,-22,36,44);
+  if(CHAR.complete&&CHAR.naturalWidth>0)cx.drawImage(CHAR,-28,-32,56,64);
   else{cx.fillStyle=C.cy;cx.fillRect(-11,-15,22,30)}
   cx.restore();cx.globalAlpha=1;
  }

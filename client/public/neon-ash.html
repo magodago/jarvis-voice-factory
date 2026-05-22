@@ -77,7 +77,7 @@ function resize(){W=window.innerWidth;H=window.innerHeight;cv.width=W;cv.height=
 function sp(x,y,c,n){for(let i=0;i<n;i++)particles.push({x,y,vx:(Math.random()-.5)*4,vy:-1-Math.random()*4,life:10+Math.random()*12,c,sz:1+Math.random()*3})}
 function start(){initAudio();
  state='play';room=0;kills=0;startTime=Date.now();playerLvl=1;playerXP=0;
- P.hp=5;P.inv=0;P.shield=0;P.barrier=false;P.fireTimer=0;P.railAmmo=0;P.dashCd=0;
+ P.hp=5;P.inv=0;P.shield=0;P.barrier=false;P.fireTimer=0;P.railAmmo=0;P.dashCd=0;P.weapon='pistol';P.ammo=30;P.reloading=0;
  P.cd=0;P.vx=1.55+Math.min(room*0.02,0.8);P.vy=0;P.onGround=true;bullets=[];particles=[];
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2;P.x=px+lw+10;newRoom();P.y=H*.82-P.h;
 }

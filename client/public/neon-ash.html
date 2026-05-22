@@ -234,8 +234,8 @@ for(let wy=fy-FG+35;wy<fy-20;wy+=50){
 ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx+3,fy-10);ctx.lineTo(fx+6,fy-FG+30);ctx.lineTo(fx+3,fy-FG+10);ctx.stroke();
   // Decorations
   // Stair
-  const stX=fn.stairSide==='left'?fx+wallW:fx+platformW-wallW-24,stY=fy-94;ctx.fillStyle='#0d0028';ctx.fillRect(stX,stY,24,94);ctx.strokeStyle=C.cyan+'35';ctx.strokeRect(stX,stY,24,94);
-  for(let i=0;i<12;i++){ctx.fillStyle=C.cyan+'50';ctx.fillRect(stX+2,stY+94-(i+1)*7,20,3.5)}ctx.fillStyle=C.cyan+'40';ctx.font='8px monospace';ctx.textAlign='center';ctx.fillText('▲',stX+12,stY-4);
+  const stX=fn.stairSide==='left'?fx+wallW:fx+platformW-wallW-24,stY=fy-100;ctx.fillStyle='#0d0028';ctx.fillRect(stX,stY,24,100);ctx.strokeStyle=C.cyan+'35';ctx.strokeRect(stX,stY,24,100);
+  for(let i=0;i<14;i++){ctx.fillStyle=C.cyan+'50';ctx.fillRect(stX+2,stY+100-(i+1)*7,20,3.5)}ctx.fillStyle=C.cyan+'40';ctx.font='8px monospace';ctx.textAlign='center';ctx.fillText('▲',stX+12,stY-4);
   // Fire - animated with particles
   if(fn.hasFire){
  const hx=fx+fn.fireX,hy=fn.y-4-cameraY,cx=hx+12,cy=hy+6;
@@ -269,7 +269,10 @@ ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx+3,fy-10);ct
    }else{
     const ec=e.type==='shooter'?C.magenta:e.type==='heavy'?C.orange:C.purple;
     const eImg=e.type==='shooter'?ENEMY_SHOOTER:ENEMY_WALKER;
-if(eImg&&eImg.complete&&eImg.naturalWidth>0){ctx.drawImage(eImg,fx+e.x,ey,e.w,e.h)}
+if(eImg&&eImg.complete&&eImg.naturalWidth>0){ctx.save();
+if(e.vx<0){ctx.translate(fx+e.x+e.w,ey);ctx.scale(-1,1);ctx.drawImage(eImg,0,0,e.w,e.h)}
+else{ctx.drawImage(eImg,fx+e.x,ey,e.w,e.h)}
+ctx.restore()}
     ctx.fillStyle=e.type==='shooter'?C.red:C.amber;ctx.fillRect(fx+e.x+8,ey+3,4,4);ctx.fillRect(fx+e.x+16,ey+3,4,4);
     if(e.type==='heavy'){ctx.fillStyle=C.orange+'80';ctx.fillRect(fx+e.x,ey+e.h-2,e.w,4)}
     if(e.type==='shooter'){ctx.fillStyle=C.red;ctx.fillRect(fx+e.x+(e.vx>0?e.w:0),ey+18,8,3)}

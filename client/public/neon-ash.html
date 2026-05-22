@@ -27,7 +27,7 @@ const C={bg:'#060010',cy:'#00d4ff',mg:'#ff15d0',wh:'#eee',am:'#ffb347',re:'#ff44
 const AC=window.AudioContext||window.webkitAudioContext;let actx,musicGain,musicOsc=[];
 function beep(f,d,t,v){v=v||0.08;if(!actx)try{actx=new AC()}catch(e){return}const o=actx.createOscillator(),g=actx.createGain();o.type=t||'square';o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(0.001,actx.currentTime+d);o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+d)}
 function sfx(t){if(t==='shoot')beep(800,0.06,'square',0.04);if(t==='rail')beep(200,0.15,'sawtooth',0.06);if(t==='hit')beep(120,0.1,'sawtooth',0.05);if(t==='kill')beep(300,0.08,'square',0.04);if(t==='mine')beep(60,0.2,'sawtooth',0.07);if(t==='boss')beep(200,0.3,'triangle',0.1);if(t==='door')beep(600,0.1,'triangle',0.05);if(t==='dash')beep(1000,0.05,'square',0.03);if(t==='power')beep(500,0.1,'sine',0.05)}
-function startMusic(){if(!actx)try{actx=new AC()}catch(e){return}if(musicOsc.length)return;musicGain=actx.createGain();musicGain.gain.value=0.02;musicGain.connect(actx.destination);let notes=[130.81,164.81,196,261.63];for(let i=0;i<4;i++){let o=actx.createOscillator();o.type='triangle';o.frequency.value=notes[i];o.connect(musicGain);o.start();musicOsc.push(o)}}
+function startMusic(){if(!actx)try{actx=new AC()}catch(e){return}if(musicOsc.length)return;musicGain=actx.createGain();musicGain.gain.value=0.015;musicGain.connect(actx.destination);let notes=[130.81,164.81,196,261.63];for(let i=0;i<4;i++){let o=actx.createOscillator();o.type='triangle';o.frequency.value=notes[i];o.connect(musicGain);o.start();musicOsc.push(o)}}
 function stopMusic(){musicOsc.forEach(o=>{try{o.stop()}catch(e){}});musicOsc=[]}
 
 function spawnEnemies(){
@@ -63,10 +63,10 @@ function newRoom(){
 
 // Touch
 let touchL=false,touchR=false,lastTap=0;
-cv.addEventListener('touchstart',e=>{e.preventDefault();if(state==='intro'){start();startMusic();return}if(state==='dead'){restart();return}for(const t of e.changedTouches){if(t.clientX<W/2){touchL=true;let n=Date.now();if(n-lastTap<300){P.dashCd=0;doubleTap=n}lastTap=n}else touchR=true}});
+cv.addEventListener('touchstart',e=>{e.preventDefault();if(state==='intro'){if(!actx)try{actx=new AC()}catch(e){}if(actx&&actx.state==='suspended')actx.resume();start();startMusic();return}if(state==='dead'){restart();return}for(const t of e.changedTouches){if(t.clientX<W/2){touchL=true;let n=Date.now();if(n-lastTap<300){P.dashCd=0;doubleTap=n}lastTap=n}else touchR=true}});
 cv.addEventListener('touchend',e=>{e.preventDefault();touchL=false;touchR=false;for(const t of e.touches){if(t.clientX>=W/2)touchR=true}});
 cv.addEventListener('touchcancel',e=>{touchL=false;touchR=false});
-cv.addEventListener('mousedown',e=>{if(state==='intro'){start();startMusic();return}if(state==='dead'){restart();return}if(e.clientX<W/2){touchL=true;let n=Date.now();if(n-lastTap<300){P.dashCd=0;doubleTap=n}lastTap=n}else touchR=true});
+cv.addEventListener('mousedown',e=>{if(state==='intro'){if(!actx)try{actx=new AC()}catch(e){}if(actx&&actx.state==='suspended')actx.resume();start();startMusic();return}if(state==='dead'){restart();return}if(e.clientX<W/2){touchL=true;let n=Date.now();if(n-lastTap<300){P.dashCd=0;doubleTap=n}lastTap=n}else touchR=true});
 cv.addEventListener('mouseup',e=>{touchL=false;touchR=false});
 window.addEventListener('keydown',e=>{if(e.key==='a'||e.key==='ArrowLeft')jump=true;if(e.key==='d'||e.key===' '||e.key==='ArrowRight')shoot=true;if(e.key==='Enter'){if(state==='intro'){start();startMusic()}if(state==='dead')restart()}});
 window.addEventListener('keyup',e=>{if(e.key==='d'||e.key===' '||e.key==='ArrowRight')shoot=false});
@@ -84,7 +84,7 @@ function die(){state='dead';if(room>best){best=room;localStorage.setItem('na_bes
 function nextRoom(){if(!bossActive)roomsNoDmg++;if(roomsNoDmg>=10&&!achievements.includes('flawless')){achievements.push('flawless');achPopup=120;achMsg='🏆 10 SALAS SIN DAÑO'}if(room===1&&!achievements.includes('first')){achievements.push('first');achPopup=120;achMsg='⭐ PRIMERA SALA'}trans=20;room++;const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2;P.x=px+lw+10;P.y=H*.82-P.h;newRoom();sp(P.x,P.y,C.cy,15);sfx('door')}
 
 function update(){
- if(state!=='play')return;if(trans>0){trans--;return}if(sniperActive>0){sniperActive--;if(sniperActive%3!==0)return}
+ if(state!=='play')return;if(trans>0){trans--;if(trans>5)return}if(sniperActive>0){sniperActive--;if(sniperActive%3!==0)return}
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2,fl=H*.82,l=px+lw,r=px+pw-lw;
  if(touchL)jump=true;if(touchR)shoot=true;if(!touchR)shoot=false;
  if(P.dashCd<=0&&doubleTap>0&&Date.now()-doubleTap<500&&P.onGround){P.vx=3.5;P.dashCd=60;doubleTap=0;P.inv=15;sp(P.x,P.y,C.cy,10);sfx('dash')}
@@ -132,7 +132,7 @@ else if(e.type==='suicide'){e.x-=e.speed;if(Math.abs(e.x-P.x)<30){e.hp=0;sp(e.x+
 }else if(e.type==='heavy'&&Math.abs(e.x-P.x)<100){e.x-=e.speed*2}else{e.y=fl-e.h}if(e.x<l+10){e.x=r-10}e.cd--;if(e.cd<=0&&e.type==='shooter'){for(const pl of platforms){if(Math.abs(e.x-pl.x-pl.w/2)<50){e.x=pl.x+pl.w;break}}eb.push({x:e.x,y:fl-e.h+30,vx:-3,w:6,h:3});e.cd=90+Math.random()*40}}
   // Hit by bullet
   for(let i=bullets.length-1;i>=0;i--){const b=bullets[i];if(b.x>e.x&&b.x<e.x+e.w&&Math.abs(b.y-(fl-e.h/2))<40){e.hp-=(b.dmg||1);if(!b.rail)bullets.splice(i,1);sp(e.x+e.w/2,fl-e.h/2,C.mg,4);shake=4;sfx('hit');if(e.hp<=0){enemies=enemies.filter(x=>x!==e);kills++;comboCount++;comboTimer=90;sp(e.x+e.w/2,fl-e.h/2,C.re,8);for(let x=0;x<5;x++)particles.push({x:e.x+e.w/2,y:fl-e.h/2,vx:(Math.random()-.5)*3,vy:-1-Math.random()*2,life:15+Math.random()*10,c:e.type==='boss'?C.re:C.gn,sz:1+Math.random()*2});sfx('kill');if(comboCount>=3){for(const e2 of enemies){e2.hp-=2;sp(e2.x+e2.w/2,fl-e2.h/2,C.or,10)}comboCount=0;shake=20;sfx('boss')}
-    if(e.type==='boss'){bossActive=false;if(!achievements.includes('bosskill')){achievements.push('bosskill');achPopup=120;achMsg='💀 BOSS DERROTADO'}for(let x=0;x<40;x++)particles.push({x:e.x+e.w/2,y:fl-e.h/2,vx:(Math.random()-.5)*8,vy:-4-Math.random()*8,life:20+Math.random()*30,c:C.re,sz:2+Math.random()*6});sp(e.x+e.w/2,fl-e.h/2,C.cy,30);shake=30;sfx('boss');for(let i=0;i<3;i++)powerUps.push({x:e.x+20+i*35,y:fl-40,type:i===0?'heal':i===1?'fire':'shield',life:300})}
+    if(e.type==='boss'){bossActive=false;if(!achievements.includes('bosskill')){achievements.push('bosskill');achPopup=120;achMsg='💀 BOSS DERROTADO'}for(let x=0;x<40;x++)particles.push({x:e.x+e.w/2,y:fl-e.h/2,vx:(Math.random()-.5)*8,vy:-4-Math.random()*8,life:20+Math.random()*30,c:C.re,sz:2+Math.random()*6});sp(e.x+e.w/2,fl-e.h/2,C.cy,30);shake=30;sfx('boss');trans=10;if(navigator.vibrate)navigator.vibrate([50,30,50,30,100]);if(navigator.vibrate)navigator.vibrate(100);for(let i=0;i<3;i++)powerUps.push({x:e.x+20+i*35,y:fl-40,type:i===0?'heal':i===1?'fire':'shield',life:300})}
     else{if(Math.random()<.15)powerUps.push({x:e.x,y:fl-40,type:'heal',life:200});if(Math.random()<.08)powerUps.push({x:e.x+15,y:fl-40,type:'shield',life:200});if(Math.random()<.08)powerUps.push({x:e.x+30,y:fl-40,type:'fire',life:200});if(Math.random()<.05)powerUps.push({x:e.x+45,y:fl-40,type:'rail',life:200});if(Math.random()<.04)powerUps.push({x:e.x+60,y:fl-40,type:'barrier',life:200});if(Math.random()<.06)powerUps.push({x:e.x+75,y:fl-40,type:'shotgun',life:250});if(Math.random()<.04)powerUps.push({x:e.x+90,y:fl-40,type:'laser',life:250});if(Math.random()<.03)powerUps.push({x:e.x+105,y:fl-40,type:'sniper',life:300})}}break}}
   // Hit player
   if(P.inv<=0&&e.x<P.x+P.w&&e.x+e.w>P.x&&Math.abs(P.y-fl+P.h/2+e.h/2)<e.h/2+P.h/2){
@@ -146,7 +146,7 @@ else if(e.type==='suicide'){e.x-=e.speed;if(Math.abs(e.x-P.x)<30){e.hp=0;sp(e.x+
   P.hp--;if(P.barrier){P.barrier=false;P.hp++;sp(P.x,P.y,C.am,15);P.inv=25}else if(P.shield>0){P.hp++;P.shield=0;sp(P.x,P.y,C.cy,10)}else{P.inv=40;sp(P.x+P.w/2,P.y,C.mg,6)}
   eb.splice(i,1);shake=8;sfx('hit');if(P.hp<=0)die()}}
  // Mines
- for(const m of mines){const dx=P.x+P.w/2-m.x,dy=P.y+P.h-m.y;if(P.inv<=0&&Math.sqrt(dx*dx+dy*dy)<16){P.hp--;P.inv=35;sp(m.x,m.y,C.mg,15);shake=14;sfx('mine');if(P.hp<=0)die()}}
+ for(const m of mines){const dx=P.x+P.w/2-m.x,dy=P.y+P.h-m.y;if(P.inv<=0&&Math.sqrt(dx*dx+dy*dy)<16){P.hp--;P.inv=35;sp(m.x,m.y,C.mg,15);shake=14;sfx('mine');if(navigator.vibrate)navigator.vibrate(50);if(P.hp<=0)die()}}
  // Power-ups
  for(let i=powerUps.length-1;i>=0;i--){const pu=powerUps[i];pu.life--;if(pu.life<=0){powerUps.splice(i,1);continue}
   if(Math.abs(P.x+P.w/2-pu.x)<22&&Math.abs(P.y+P.h/2-pu.y)<22){
@@ -230,6 +230,8 @@ function draw(){
  for(const b of bullets){cx.fillStyle=b.rail?C.or:C.cy;cx.fillRect(b.x,b.y,b.w,b.h);if(b.rail){cx.fillStyle=C.or+'40';cx.fillRect(b.x-4,b.y-2,b.w+8,b.h+4)}}
  for(const e of eb){cx.fillStyle=C.mg;cx.fillRect(e.x,e.y,e.w,e.h)}
  for(const p of particles){cx.fillStyle=p.c;cx.globalAlpha=p.life/40;cx.fillRect(p.x,p.y,p.sz,p.sz)}cx.globalAlpha=1;cx.restore();
+ // Dynamic music
+ if(musicGain){let mv=0.015;if(bossActive)mv=0.04;if(comboCount>=2)mv+=comboCount*0.01;if(sniperActive>0)mv=0.005;musicGain.gain.linearRampToValueAtTime(mv,actx.currentTime+0.1)}
  // HUD
  cx.fillStyle='#0a0020cc';cx.fillRect(0,0,W,44);
  cx.fillStyle=C.cy;cx.font='bold 13px monospace';cx.textAlign='left';cx.fillText('LVL '+playerLvl,10,20);
@@ -239,6 +241,7 @@ function draw(){
  // HP
  let h='';for(let i=0;i<P.hp;i++)h+='♥';for(let i=P.hp;i<5;i++)h+='♡';cx.fillStyle=C.re;cx.font='bold 22px monospace';cx.textAlign='center';cx.shadowColor=C.re;cx.shadowBlur=8;cx.fillText(h,W/2,H*.92);cx.shadowBlur=0;
  if(sniperActive>0){cx.fillStyle=C.cy;cx.font='bold 16px monospace';cx.textAlign='center';cx.fillText('🎯 SNIPER '+Math.ceil(sniperActive/60)+'s',W/2,58)}
+ if(trans>0&&trans>5&&bossActive){cx.fillStyle=C.re;cx.font='bold 28px monospace';cx.textAlign='center';cx.shadowColor=C.re;cx.shadowBlur=20;cx.fillText('⚠ BOSS ⚠',W/2,H/2-10);cx.shadowBlur=0}
  if(achPopup>0){achPopup--;const aa=achPopup<30?achPopup/30:1;cx.globalAlpha=aa;cx.fillStyle='#0a0020';cx.fillRect(W/2-120,H*.1,240,36);cx.strokeStyle=C.am;cx.lineWidth=2;cx.strokeRect(W/2-120,H*.1,240,36);cx.fillStyle=C.am;cx.font='bold 14px monospace';cx.textAlign='center';cx.fillText(achMsg,W/2,H*.1+25);cx.globalAlpha=1}
  if(bossActive){cx.fillStyle=C.re;cx.font='bold 11px monospace';cx.textAlign='center';cx.fillText('⚠ BOSS ⚠',W/2,20)}
  if(theme==='alarm'){cx.fillStyle=C.re+'40';cx.fillRect(0,44,W,2)}if(theme==='toxic'){cx.fillStyle=C.gn+'30';cx.fillRect(0,44,W,2)}if(theme==='void'){cx.fillStyle=C.pu+'30';cx.fillRect(0,44,W,2)}if(theme==='neon'){cx.fillStyle=C.cy+'30';cx.fillRect(0,44,W,2)}

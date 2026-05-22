@@ -27,12 +27,12 @@ function newRoom(n){
  const pw=W-60,px=(W-pw)/2,ww=14;
  const left=px+ww,right=px+pw-ww;
  // Enemies come from RIGHT, move LEFT (player starts left)
- for(let i=0;i<1+Math.floor(Math.random()*2);i++){
+ for(let i=0;i<1;i++){
   let ex=right-50-i*40;
   enemies.push({x:ex,y:0,w:32,h:42,patrolDir:-1,hp:2,type:i===0&&Math.random()<.3?'shooter':'walker',sTimer:99});
  }
  // Plates
- for(let i=0;i<1+Math.floor(Math.random()*2);i++){
+ for(let i=0;i<1;i++){
   plates.push({x:left+30+Math.random()*(right-left-60)});
  }
  return {n,left,right};
@@ -128,8 +128,8 @@ function draw(){
  ctx.fillStyle=C.wall;ctx.fillRect(px,0,14,H);ctx.fillRect(px+pw-14,0,14,H);
  // Floor - cyan heartbeat
  const hb=(Math.sin(Date.now()*0.004+roomNum)+1)/2;
- ctx.fillStyle=C.cyan+(30+Math.floor(hb*30)).toString(16);ctx.fillRect(px,floorY-4,pw,12);
- ctx.fillStyle=C.cyan+(15+Math.floor(hb*20)).toString(16);ctx.fillRect(px,floorY-2,pw,8);
+ ctx.fillStyle=C.cyan+(20+Math.floor(hb*15)).toString(16);ctx.fillRect(px,floorY-4,pw,12);
+ ctx.fillStyle=C.cyan+(10+Math.floor(hb*10)).toString(16);ctx.fillRect(px,floorY-2,pw,8);
  ctx.strokeStyle=C.cyan+'60';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px,floorY);ctx.lineTo(px+pw,floorY);ctx.stroke();
  // Door (on right)
  ctx.fillStyle=C.magenta+'40';ctx.fillRect(px+pw-18,floorY-60,14,60);
@@ -153,7 +153,7 @@ function draw(){
  // Player with sprite
  if(gameState==='playing'||gameState==='dead'){
   const a=P.inv>0?.4+Math.sin(Date.now()*.3)*.3:1;ctx.globalAlpha=a;
-  if(CHAR_SPRITE.complete&&CHAR_SPRITE.naturalWidth>0){ctx.save();const cx=P.x+P.w/2;ctx.translate(cx,P.y+P.h/2);ctx.drawImage(CHAR_SPRITE,-18,-22,36,44);ctx.restore()}
+  if(CHAR_SPRITE.complete&&CHAR_SPRITE.naturalWidth>0){ctx.save();const cx=P.x+P.w/2;ctx.translate(cx,P.y+P.h/2);ctx.save();ctx.scale(-1,1);ctx.drawImage(CHAR_SPRITE,-P.x*2-36,-22,36,44);ctx.restore();ctx.restore()}
   else{ctx.fillStyle=C.cyan;ctx.fillRect(P.x,P.y+8,P.w,P.h-10);ctx.fillRect(P.x+6,P.y,10,10);ctx.fillStyle=C.white;ctx.fillRect(P.x+8,P.y+2,6,3)}
   ctx.globalAlpha=1
  }

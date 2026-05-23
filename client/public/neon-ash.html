@@ -22,7 +22,7 @@ BGS[5].src='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSE
 
 let W,H,state='intro',room=0,best=(()=>{try{return parseInt(localStorage.getItem('na_best'))||0}catch(e){return 0}})(),_fc=0,_dc=0;
 let jump=false,shoot=false,trans=0,shake=0,theme='normal',weather='clear',weatherTimer=0;
-let kills=0,startTime=0,doubleTap=0,playerLvl=1,playerXP=0,comboCount=0,comboTimer=0,sniperActive=0,roomsNoDmg=0,godKills=0,godActive=0,achievements=[],achPopup=0,achMsg='',qteActive=0,qtePhase=0,qteTimer=0,qteProgress=0,qteTaps=0,deathSlow=0,footprints=[];
+let kills=0,startTime=0,doubleTap=0,playerLvl=1,playerXP=0,comboCount=0,comboTimer=0,sniperActive=0,roomsNoDmg=0,godKills=0,godActive=0,achievements=[],achPopup=0,achMsg='',qteActive=0,qtePhase=0,qteTimer=0,qteProgress=0,qteTaps=0,qteFlash=0,deathSlow=0,footprints=[];
 const P={x:0,y:0,w:44,h:56,vx:0,vy:0,onGround:false,hp:5,cd:0,inv:0,shield:0,barrier:false,fireTimer:0,railAmmo:0,dashCd:0,weapon:'pistol',ammo:30,reloading:0};
 let bullets=[],eb=[],enemies=[],mines=[],particles=[],powerUps=[],platforms=[],xpOrbs=[],dmgNums=[],bossActive=false,currentSkin=0;const SKINS=['default','neon','void'];let skinUnlocked=[true,false,false];
 const C={bg:'#060010',cy:'#00d4ff',mg:'#ff15d0',wh:'#eee',am:'#ffb347',re:'#ff4466',pu:'#7b00ff',gn:'#00ff88',or:'#ff8800'};
@@ -69,10 +69,10 @@ function newRoom(){if(room===0)return;
 
 // Touch
 let touchL=false,touchR=false,lastTap=0;
-document.body.addEventListener('touchmove',e=>{e.preventDefault()},{passive:false});cv.addEventListener('touchstart',e=>{e.preventDefault();if(state==='intro'){const lastT=e.changedTouches[0];const bx2=W/2-90,by2=H*.62;if(lastT.clientX>bx2&&lastT.clientX<bx2+180&&lastT.clientY>by2&&lastT.clientY<by2+52){initAudio();start();startMusic()}return}if(state==='dead'){restart();return}for(const t of e.changedTouches){if(t.clientX<W/2){touchL=true;let n=Date.now();if(n-lastTap<300){P.dashCd=0;doubleTap=n}lastTap=n}else touchR=true}});
+document.body.addEventListener('touchmove',e=>{e.preventDefault()},{passive:false});cv.addEventListener('touchstart',e=>{e.preventDefault();if(state==='intro'){const lastT=e.changedTouches[0];const bx2=W/2-90,by2=H*.62;if(lastT.clientX>bx2&&lastT.clientX<bx2+180&&lastT.clientY>by2&&lastT.clientY<by2+52){initAudio();start();startMusic()}return}if(state==='dead'){restart();return}if(qteActive&&qtePhase===2){qteTaps++;qteProgress=Math.min(100,qteProgress+4);qteFlash=6;if(qteTaps%5===0)sfx('hit');return}for(const t of e.changedTouches){if(t.clientX<W/2){touchL=true;let n=Date.now();if(n-lastTap<300){P.dashCd=0;doubleTap=n}lastTap=n}else touchR=true}});
 cv.addEventListener('touchend',e=>{e.preventDefault();touchL=false;touchR=false;for(const t of e.touches){if(t.clientX>=W/2)touchR=true}});
 cv.addEventListener('touchcancel',e=>{touchL=false;touchR=false});
-cv.addEventListener('mousedown',e=>{if(state==='intro'){const lastT=e.changedTouches[0];const bx2=W/2-90,by2=H*.62;if(lastT.clientX>bx2&&lastT.clientX<bx2+180&&lastT.clientY>by2&&lastT.clientY<by2+52){initAudio();start();startMusic()}return}if(state==='dead'){restart();return}if(e.clientX<W/2){touchL=true;let n=Date.now();if(n-lastTap<300){P.dashCd=0;doubleTap=n}lastTap=n}else touchR=true});
+cv.addEventListener('mousedown',e=>{if(state==='intro'){const lastT=e.changedTouches[0];const bx2=W/2-90,by2=H*.62;if(lastT.clientX>bx2&&lastT.clientX<bx2+180&&lastT.clientY>by2&&lastT.clientY<by2+52){initAudio();start();startMusic()}return}if(state==='dead'){restart();return}if(qteActive&&qtePhase===2){qteTaps++;qteProgress=Math.min(100,qteProgress+4);qteFlash=6;if(qteTaps%5===0)sfx('hit');return}if(e.clientX<W/2){touchL=true;let n=Date.now();if(n-lastTap<300){P.dashCd=0;doubleTap=n}lastTap=n}else touchR=true});
 cv.addEventListener('mouseup',e=>{touchL=false;touchR=false});
 window.addEventListener('keydown',e=>{if(e.key==='a'||e.key==='ArrowLeft')jump=true;if(e.key==='d'||e.key===' '||e.key==='ArrowRight')shoot=true;if(e.key==='Enter'){if(state==='intro'){start();startMusic()}if(state==='dead')restart()}});
 window.addEventListener('keyup',e=>{if(e.key==='d'||e.key===' '||e.key==='ArrowRight')shoot=false});
@@ -90,7 +90,7 @@ function die(){state='dead';if(room>best){best=room;localStorage.setItem('na_bes
 function nextRoom(){if(!bossActive)roomsNoDmg++;if(roomsNoDmg>=10&&!achievements.includes('flawless')){achievements.push('flawless');achPopup=120;achMsg='🏆 10 SALAS SIN DAÑO'}if(room===1&&!achievements.includes('first')){achievements.push('first');achPopup=120;achMsg='⭐ PRIMERA SALA'}trans=20;room++;const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2;P.x=px+lw+10;P.y=H*.82-P.h;newRoom();sp(P.x,P.y,C.cy,15);sfx('door')}
 
 function update(){
- if(state==='intro'||state==='dead'){if(state==='dead'&&deathSlow>0)deathSlow--;return}if(trans>0&&!qteActive){trans--;if(trans>5)return}if(qteActive){qteTimer--;if(qtePhase===0&&qteTimer<40){qtePhase=1;qteTimer=300}if(qtePhase===1&&qteTimer<60){qtePhase=2;qteTimer=900}if(qtePhase===2){qteProgress-=0.1;if(qteProgress<0)qteProgress=0;if(qteTimer<=0){qteActive=0;bossActive=false;P.hp-=1;P.inv=60;sp(P.x+P.w/2,P.y,C.re,20);shake=20;if(P.hp<=0)die()}}if(qtePhase===2&&qteProgress>=100){qteActive=0;bossActive=false;enemies=[];sp(W/2,H/2,C.cy,50);sp(W/2,H/2,C.mg,30);shake=25;for(let i=0;i<3;i++)powerUps.push({x:W/2-30+i*30,y:H*.82-30,type:['heal','fire','shield'][i],life:300});sfx('boss');if(navigator.vibrate)navigator.vibrate([40,20,40,20,80])}}if(sniperActive>0){sniperActive--;if(sniperActive%3!==0)return}
+ if(state==='intro'||state==='dead'){if(state==='dead'&&deathSlow>0)deathSlow--;return}if(trans>0&&!qteActive){trans--;if(trans>5)return}if(qteActive){qteTimer--;if(qtePhase===0&&qteTimer<40){qtePhase=1;qteTimer=300}if(qtePhase===1&&qteTimer<60){qtePhase=2;qteTimer=600}if(qtePhase===2){qteProgress-=0.1;if(qteProgress<0)qteProgress=0;if(qteTimer<=0){qteActive=0;bossActive=false;sp(W/2,H/2,C.re,30);shake=30;die()}}if(qtePhase===2&&qteProgress>=100){qtePhase=3;qteTimer=300;bossActive=false;enemies=[];sp(W/2,H/2,C.cy,50);sp(W/2,H/2,C.mg,30);shake=25;for(let i=0;i<3;i++)powerUps.push({x:W/2-30+i*30,y:H*.82-30,type:['heal','fire','shield'][i],life:300});sfx('boss');if(navigator.vibrate)navigator.vibrate([40,20,40,20,80])}if(qtePhase===3){qteTimer--;if(qteTimer<=0){qteActive=0;qtePhase=0;room++;newRoom();P.x=l+20;trans=10}}}if(sniperActive>0){sniperActive--;if(sniperActive%3!==0)return}
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2,fl=H*.82,l=px+lw,r=px+pw-lw;
  if(touchL)jump=true;if(touchR)shoot=true;if(!touchR)shoot=false;
  if(P.dashCd<=0&&doubleTap>0&&Date.now()-doubleTap<500&&P.onGround){P.vx=3.5;P.dashCd=60;doubleTap=0;P.inv=15;sp(P.x,P.y,C.cy,10);sfx('dash')}
@@ -281,17 +281,21 @@ if(qteActive){
   cx.fillStyle=C.re;cx.font='bold 60px monospace';cx.textAlign='center';cx.shadowColor=C.re;cx.shadowBlur=20;
   cx.fillText(cd,W/2,H/2+10);cx.shadowBlur=0;
   cx.fillStyle=C.wh;cx.font='16px monospace';cx.fillText('¡GOLPEA LA PANTALLA!',W/2,H/2-30);
- }else{
+ }else if(qtePhase===2){
   // Tapping phase
   let barX=W/2-150,barY=H/2+30,barW=300,barH=40;
   cx.fillStyle=C.wh;cx.font='18px monospace';cx.textAlign='center';cx.fillText('¡GOLPEA!',W/2,barY-15);
   cx.fillStyle='#200';cx.fillRect(barX,barY,barW,barH);
-  cx.fillStyle=C.re;cx.fillRect(barX,barY,barW*qteProgress/100,barH);
+  cx.fillStyle=qteFlash>0?C.cy:C.re;cx.fillRect(barX,barY,barW*qteProgress/100,barH);if(qteFlash>0)qteFlash--;
   cx.strokeStyle=C.wh;cx.lineWidth=2;cx.strokeRect(barX,barY,barW,barH);
   let sec=Math.ceil(qteTimer/60);
   cx.fillStyle=C.am;cx.font='bold 14px monospace';cx.fillText(sec+'s',W/2,barY+50);
   // Tap indicator
-  if(qteTaps>0){cx.fillStyle=C.cy;cx.font='bold 16px monospace';cx.fillText('+'+qteTaps,W/2,barY-40)}
+  cx.fillStyle=C.wh;cx.font='bold 14px monospace';cx.fillText(Math.floor(qteProgress)+'%',W/2,barY-12)
+ }else if(qtePhase===3){
+  cx.fillStyle=C.cy;cx.font='bold 36px monospace';cx.shadowColor=C.cy;cx.shadowBlur=30;
+  cx.fillText('¡BOSS DERROTADO!',W/2,H/2-20);cx.shadowBlur=0;
+  cx.fillStyle=C.wh;cx.font='14px monospace';cx.fillText('Siguiente sala en '+Math.ceil(qteTimer/60)+'s...',W/2,H/2+20);
  }
 }
 if(trans>0&&trans>5&&bossActive&&!qteActive){cx.fillStyle=C.re;cx.font='bold 28px monospace';cx.textAlign='center';cx.shadowColor=C.re;cx.shadowBlur=20;cx.fillText('⚠ BOSS ⚠',W/2,H/2-10);cx.shadowBlur=0}

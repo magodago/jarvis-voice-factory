@@ -90,7 +90,7 @@ function die(){state='dead';if(room>best){best=room;localStorage.setItem('na_bes
 function nextRoom(){if(!bossActive)roomsNoDmg++;if(roomsNoDmg>=10&&!achievements.includes('flawless')){achievements.push('flawless');achPopup=120;achMsg='🏆 10 SALAS SIN DAÑO'}if(room===1&&!achievements.includes('first')){achievements.push('first');achPopup=120;achMsg='⭐ PRIMERA SALA'}trans=20;room++;const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2;P.x=px+lw+10;P.y=H*.82-P.h;newRoom();sp(P.x,P.y,C.cy,15);sfx('door')}
 
 function update(){
- if(state==='intro'||state==='dead'){if(state==='dead'&&deathSlow>0)deathSlow--;return}if(trans>0&&!qteActive){trans--;if(trans>5)return}if(qteActive){qteTimer--;if(qtePhase===0&&qteTimer<40){qtePhase=1;qteTimer=300}if(qtePhase===1&&qteTimer<60){qtePhase=2;qteTimer=600}if(qtePhase===2){qteProgress-=0.1;if(qteProgress<0)qteProgress=0;if(qteTimer<=0){qteActive=0;bossActive=false;sp(W/2,H/2,C.re,30);shake=30;die()}}if(qtePhase===2&&qteProgress>=100){qtePhase=3;qteTimer=300;bossActive=false;enemies=[];sp(W/2,H/2,C.cy,50);sp(W/2,H/2,C.mg,30);shake=25;for(let i=0;i<3;i++)powerUps.push({x:W/2-30+i*30,y:H*.82-30,type:['heal','fire','shield'][i],life:300});sfx('boss');if(navigator.vibrate)navigator.vibrate([40,20,40,20,80])}if(qtePhase===3){qteTimer--;if(qteTimer<=0){qteActive=0;qtePhase=0;room++;newRoom();P.x=l+20;trans=10}}}if(sniperActive>0){sniperActive--;if(sniperActive%3!==0)return}
+ if(state==='intro'||state==='dead'){if(state==='dead'&&deathSlow>0)deathSlow--;return}if(trans>0&&!qteActive){trans--;if(trans>5)return}if(qteActive){qteTimer--;if(qtePhase===0&&qteTimer<40){qtePhase=1;qteTimer=300}if(qtePhase===1&&qteTimer<60){qtePhase=2;qteTimer=600}if(qtePhase===2){qteProgress-=0.1;if(qteProgress<0)qteProgress=0;if(qteTimer<=0){qteActive=0;bossActive=false;sp(W/2,H/2,C.re,30);shake=30;die()}}if(qtePhase===2&&qteProgress>=100){qtePhase=3;qteTimer=300;bossActive=false;enemies=[];sp(W/2,H/2,C.cy,50);sp(W/2,H/2,C.mg,30);shake=25;for(let i=0;i<3;i++)powerUps.push({x:W/2-30+i*30,y:H*.82-30,type:['heal','fire','shield'][i],life:300});sfx('boss');if(navigator.vibrate)navigator.vibrate([40,20,40,20,80])}if(qtePhase===3){if(qteTimer<=0){qteActive=0;qtePhase=0;room++;newRoom();P.x=l+20;trans=10}}}if(sniperActive>0){sniperActive--;if(sniperActive%3!==0)return}
  const pw=Math.min(W-40,700),lw=14,px=(W-pw)/2,fl=H*.82,l=px+lw,r=px+pw-lw;
  if(touchL)jump=true;if(touchR)shoot=true;if(!touchR)shoot=false;
  if(P.dashCd<=0&&doubleTap>0&&Date.now()-doubleTap<500&&P.onGround){P.vx=3.5;P.dashCd=60;doubleTap=0;P.inv=15;sp(P.x,P.y,C.cy,10);sfx('dash')}
@@ -286,12 +286,12 @@ if(qteActive){
   let barX=W/2-150,barY=H/2+30,barW=300,barH=40;
   cx.fillStyle=C.wh;cx.font='18px monospace';cx.textAlign='center';cx.fillText('¡GOLPEA!',W/2,barY-15);
   cx.fillStyle='#200';cx.fillRect(barX,barY,barW,barH);
-  cx.fillStyle=qteFlash>0?C.cy:C.re;cx.fillRect(barX,barY,barW*qteProgress/100,barH);if(qteFlash>0)qteFlash--;
+  cx.fillStyle=qteFlash>0?C.cy:C.gn;cx.fillRect(barX,barY,barW*qteProgress/100,barH);if(qteFlash>0)qteFlash--;
   cx.strokeStyle=C.wh;cx.lineWidth=2;cx.strokeRect(barX,barY,barW,barH);
   let sec=Math.ceil(qteTimer/60);
-  cx.fillStyle=C.am;cx.font='bold 14px monospace';cx.fillText(sec+'s',W/2,barY+50);
-  // Tap indicator
-  cx.fillStyle=C.wh;cx.font='bold 14px monospace';cx.fillText(Math.floor(qteProgress)+'%',W/2,barY-12)
+  cx.fillStyle=C.am;cx.font='bold 16px monospace';cx.fillText(sec+'s',W/2,barY+60);
+  cx.fillStyle=C.wh;cx.font='bold 28px monospace';cx.fillText(Math.floor(qteProgress)+'%',W/2,barY+15);
+  cx.fillStyle=C.cy;cx.font='13px monospace';cx.fillText('Golpes: '+qteTaps,W/2,barY-10)
  }else if(qtePhase===3){
   cx.fillStyle=C.cy;cx.font='bold 36px monospace';cx.shadowColor=C.cy;cx.shadowBlur=30;
   cx.fillText('¡BOSS DERROTADO!',W/2,H/2-20);cx.shadowBlur=0;

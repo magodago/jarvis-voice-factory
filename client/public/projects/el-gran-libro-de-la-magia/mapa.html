@@ -7,7 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="assets/css/magic-particles.css">
 <style>
+#magic-canvas{z-index:0!important}
 :root{--bg:#0a0a0f;--bg2:#0f0f1a;--card:#14141f;--gold:#c9a84c;--gold-light:#e8d48b;--gold-dark:#8a7030;--text:#f0ece4;--text2:#a09888;--text3:#6b6358;--border:rgba(201,168,76,0.08);--font-display:'Cormorant Garamond',serif;--font-body:'Inter',sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -93,25 +95,49 @@ nav .back{color:var(--text2);text-decoration:none;font-size:11px;transition:colo
 <script>
 const MAGICIANS = [
   {name:"Jean-Eugène Robert-Houdin",real:"Robert-Houdin",born:1805,died:1871,lat:48.8566,lng:2.3522,country:"Francia",specialty:"Ilusionismo",type:"historic",era:"Clásico"},
-  {name:"Harry Houdini",real:"Erik Weisz",born:1874,died:1926,lat:40.7128,lng:-74.006,country:"EE.UU.",specialty:"Escapismo",type:"escapism",era:"Houdini"},
+  {name:"Harry Houdini",real:"Erik Weisz",born:1874,died:1926,lat:47.4979,lng:19.0402,country:"Hungría",specialty:"Escapismo",type:"escapism",era:"Houdini"},
   {name:"Dai Vernon",real:"David F.W. Verner",born:1894,died:1992,lat:45.4215,lng:-75.6972,country:"Canadá",specialty:"Cartomagia",type:"closeup",era:"Edad de Oro"},
   {name:"Juan Tamariz",real:"Juan Tamariz Martel",born:1942,lat:40.4168,lng:-3.7038,country:"España",specialty:"Cartomagia",type:"closeup",era:"Contemporánea"},
   {name:"David Copperfield",real:"David Seth Kotkin",born:1956,lat:36.1146,lng:-115.1728,country:"EE.UU.",specialty:"Grandes Ilusiones",type:"historic",era:"TV"},
   {name:"Penn & Teller",real:"Penn Jillette & Teller",born:1955,lat:36.1146,lng:-115.1728,country:"EE.UU.",specialty:"Magia Cómica",type:"modern",era:"TV"},
   {name:"David Blaine",real:"David Blaine White",born:1973,lat:40.7128,lng:-74.006,country:"EE.UU.",specialty:"Magia Callejera",type:"modern",era:"Digital"},
   {name:"Derren Brown",real:"Derren Brown",born:1971,lat:51.5074,lng:-0.1278,country:"Reino Unido",specialty:"Mentalismo",type:"mentalism",era:"Digital"},
-  {name:"Criss Angel",real:"Christopher Sarantakos",born:1967,lat:40.7128,lng:-73.5,country:"EE.UU.",specialty:"Ilusionismo Extremo",type:"modern",era:"Digital"},
+  {name:"Criss Angel",real:"Christopher Sarantakos",born:1967,lat:36.1146,lng:-115.1728,country:"EE.UU.",specialty:"Ilusionismo Extremo",type:"modern",era:"Digital"},
   {name:"Dynamo",real:"Steven Frayne",born:1982,lat:53.7959,lng:-1.7594,country:"Reino Unido",specialty:"Magia Urbana",type:"modern",era:"Digital"},
   {name:"Arturo de Ascanio",real:"Arturo de Ascanio",born:1929,died:1997,lat:41.3874,lng:2.1686,country:"España",specialty:"Cartomagia",type:"closeup",era:"Edad de Oro"},
   {name:"René Lavand",real:"José René Lavandera",born:1928,died:2015,lat:-34.6037,lng:-58.3816,country:"Argentina",specialty:"Cartomagia",type:"closeup",era:"Contemporánea"},
-  {name:"Slydini",real:"Quintino Marucci",born:1900,died:1991,lat:40.7282,lng:-73.7949,country:"Italia",specialty:"Close-up",type:"closeup",era:"Edad de Oro"},
+  {name:"Slydini",real:"Quintino Marucci",born:1900,died:1991,lat:41.9028,lng:12.4964,country:"Italia",specialty:"Close-up",type:"closeup",era:"Edad de Oro"},
   {name:"Maskelyne",real:"John Nevil Maskelyne",born:1839,died:1917,lat:51.5074,lng:-0.1278,country:"Reino Unido",specialty:"Ilusionismo",type:"historic",era:"Clásico"},
-  {name:"Chung Ling Soo",real:"William E. Robinson",born:1861,died:1918,lat:51.5562,lng:-0.1071,country:"EE.UU.",specialty:"Magia Oriental",type:"historic",era:"Houdini"},
+  {name:"Chung Ling Soo",real:"William E. Robinson",born:1861,died:1918,lat:40.7128,lng:-74.006,country:"EE.UU.",specialty:"Magia Oriental",type:"historic",era:"Houdini"},
   {name:"Howard Thurston",real:"Howard Thurston",born:1869,died:1936,lat:39.9612,lng:-82.9988,country:"EE.UU.",specialty:"Ilusionismo",type:"historic",era:"Houdini"},
   {name:"Richiardi Jr.",real:"Aldo Izquierdo Colosi",born:1923,died:1985,lat:-12.0464,lng:-77.0428,country:"Perú",specialty:"Grandes Ilusiones",type:"historic",era:"Edad de Oro"},
   {name:"Hofzinser",real:"Johann N. Hofzinser",born:1806,died:1875,lat:48.2082,lng:16.3738,country:"Austria",specialty:"Cartomagia",type:"closeup",era:"Clásico"},
   {name:"Tommy Wonder",real:"Jacobus M. Bemelman",born:1953,died:2006,lat:52.1326,lng:5.2913,country:"Países Bajos",specialty:"Close-up",type:"closeup",era:"Contemporánea"},
-  // Additional from firmas
+  {name:"Fred Kaps",real:"Abraham P. van Bemboom",born:1926,died:1980,lat:52.0907,lng:4.7104,country:"Países Bajos",specialty:"Cartomagia General",type:"closeup",era:"Edad de Oro"},
+  {name:"Lance Burton",real:"Lance Burton",born:1960,lat:36.1146,lng:-115.1728,country:"EE.UU.",specialty:"Ilusionismo Clásico",type:"historic",era:"TV"},
+  {name:"Ricky Jay",real:"Richard Jay Potash",born:1946,died:2018,lat:40.7128,lng:-74.006,country:"EE.UU.",specialty:"Cartomagia",type:"closeup",era:"Contemporánea"},
+  {name:"Shin Lim",real:"Shin Lim",born:1991,lat:42.3601,lng:-71.0589,country:"Singapur",specialty:"Cartomagia",type:"closeup",era:"Digital"},
+  {name:"Siegfried & Roy",real:"S. Fischbacher & R. Horn",born:1939,died:2020,lat:48.1351,lng:11.5820,country:"Alemania",specialty:"Ilusionismo con Animales",type:"historic",era:"TV"},
+  {name:"Mac King",real:"Mac King",born:1964,lat:36.1146,lng:-115.1728,country:"EE.UU.",specialty:"Magia Cómica",type:"modern",era:"TV"},
+  {name:"James Randi",real:"Randall J. Zwinge",born:1928,died:2020,lat:43.6532,lng:-79.3832,country:"Canadá",specialty:"Escapismo",type:"escapism",era:"Contemporánea"},
+  {name:"Cardini",real:"Richard V. Pitchford",born:1895,died:1973,lat:51.5074,lng:-0.1278,country:"Reino Unido",specialty:"Cartomagia Silenciosa",type:"closeup",era:"Edad de Oro"},
+  {name:"Mat Franco",real:"Mat Franco",born:1988,lat:36.1146,lng:-115.1728,country:"EE.UU.",specialty:"Cartomagia",type:"closeup",era:"Digital"},
+  {name:"Cyril Takayama",real:"Cyril Takayama",born:1973,lat:35.6762,lng:139.6503,country:"Japón",specialty:"Magia Visual",type:"modern",era:"Digital"},
+  {name:"Jeff McBride",real:"Jeffrey L. McBride",born:1959,lat:36.1146,lng:-115.1728,country:"EE.UU.",specialty:"Cartomagia·Manipulación",type:"closeup",era:"TV"},
+  {name:"Kreskin",real:"George J. Kresge Jr.",born:1935,died:2024,lat:40.7128,lng:-74.006,country:"EE.UU.",specialty:"Mentalismo",type:"mentalism",era:"TV"},
+  {name:"David Devant",real:"David Wighton",born:1868,died:1941,lat:51.5074,lng:-0.1278,country:"Reino Unido",specialty:"Ilusionismo",type:"historic",era:"Clásico"},
+  {name:"DMC (De'vo)",real:"De'von O. Dixon",born:1973,lat:38.9072,lng:-77.0369,country:"EE.UU.",specialty:"XCM·Cartomagia Extrema",type:"closeup",era:"Digital"},
+  // España — Múltiples ciudades
+  {name:"Jorge Blass",real:"Jorge Blass",born:1979,lat:40.4168,lng:-3.7038,country:"España",specialty:"Ilusionismo·TV",type:"modern",era:"Contemporánea"},
+  {name:"Jandro",real:"Alejandro López",born:1978,lat:41.3874,lng:2.1686,country:"España",specialty:"Magia Cómica·TV",type:"modern",era:"Contemporánea"},
+  {name:"Pepe Carroll",real:"José Luis González",born:1957,died:2015,lat:41.6488,lng:-0.8891,country:"España",specialty:"Magia de Escena",type:"modern",era:"Oro"},
+  {name:"Dani DaOrtiz",real:"Daniel Ortiz",born:1973,lat:40.4168,lng:-3.7038,country:"España",specialty:"Cartomagia",type:"closeup",era:"Contemporánea"},
+  {name:"Gabi Pareras",real:"Gabriel Pareras",born:1970,died:2018,lat:41.3874,lng:2.1686,country:"España",specialty:"Mentalismo",type:"mentalism",era:"Contemporánea"},
+  {name:"Luis Piedrahita",real:"Luis Piedrahita",born:1977,lat:43.3623,lng:-8.4115,country:"España",specialty:"Magia Cómica",type:"modern",era:"Contemporánea"},
+  {name:"Jorge Luengo",real:"Jorge Luengo",born:1979,lat:40.4168,lng:-3.7038,country:"España",specialty:"Mentalismo·TV",type:"mentalism",era:"Contemporánea"},
+  {name:"Frakson",real:"Francisco González",born:1932,died:2017,lat:40.4168,lng:-3.7038,country:"España",specialty:"Magia General",type:"historic",era:"Maestros"},
+  {name:"Mag Lari",real:"Josep Lari",born:1966,lat:41.3874,lng:2.1686,country:"España",specialty:"Ilusionismo·Teatro",type:"modern",era:"Contemporánea"},
+  // Usuarios registrados
   {name:"El Misterioso",real:"Carlos Martínez",born:"?",lat:40.4168,lng:-3.7038,country:"España",specialty:"Cartomagia",type:"closeup",era:"Contemporánea",isUser:true},
   {name:"Dani Mental",real:"Daniel Pérez",born:"?",lat:-34.6037,lng:-58.3816,country:"Argentina",specialty:"Mentalismo",type:"mentalism",era:"Digital",isUser:true},
   {name:"Mago Rafa",real:"Rafael Gómez",born:"?",lat:19.4326,lng:-99.1332,country:"México",specialty:"Close-up",type:"closeup",era:"Contemporánea",isUser:true}
@@ -224,5 +250,6 @@ renderMarkers('all');
 // Close sidebar when clicking map
 map.on('click', () => document.getElementById('sidebar').classList.remove('open'));
 </script>
+<script src="assets/js/magic-particles.js"></script>
 </body>
 </html>

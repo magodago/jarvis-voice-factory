@@ -18,25 +18,46 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;ali
 nav .logo{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gold);text-decoration:none}
 nav .logo span{color:var(--text3)}
 nav .back{color:var(--text2);text-decoration:none;font-size:12px;transition:color .3s}
-.hero{position:relative;padding:120px 40px 60px;text-align:center;background:linear-gradient(135deg,#0a0a0f,#1a1a0f);overflow:hidden}
-.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,76,.06),transparent 70%)}
+.hero{position:relative;padding:100px 40px 40px;text-align:center;background:linear-gradient(180deg,var(--bg),var(--bg2))}
 .hero h1{font-family:var(--font-display);font-size:clamp(36px,5vw,56px);font-weight:300;margin-bottom:8px}
 .hero h1 em{font-style:italic;color:var(--gold)}
-.hero .subtitle{font-family:var(--font-display);font-size:16px;color:var(--gold-dark);margin-top:8px;letter-spacing:1px}
-.hero p{color:var(--text2);font-size:15px;font-weight:300;max-width:600px;margin:8px auto 0;line-height:1.6}
-.content{max-width:800px;margin:0 auto;padding:40px 24px 80px}
-.intro-text{font-size:14px;color:var(--text2);line-height:1.7;font-weight:300;margin-bottom:32px;padding:16px;background:var(--card);border-radius:8px;border:1px solid var(--border)}
-.year-group{margin-bottom:6px}
-.year-label{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--gold);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
-.year-label .yr-city{font-size:12px;color:var(--text3);font-weight:400}
-.winner-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:10px;display:flex;gap:16px;align-items:center;transition:all .3s}
-.winner-card:hover{border-color:var(--border-gold)}
-.winner-card .wc-place{font-size:18px;min-width:32px}
-.winner-card .wc-info{flex:1}
-.winner-card .wc-name{font-size:15px;font-weight:600;color:var(--text)}
-.winner-card .wc-country{font-size:11px;color:var(--text3)}
-.winner-card .wc-specialty{font-size:11px;color:var(--text2);margin-top:2px}
-.winner-card .wc-medal{font-size:24px;min-width:40px;text-align:center}
+.hero p{color:var(--text2);font-size:15px;max-width:600px;margin:0 auto;font-weight:300}
+.hero .stats{margin-top:16px;display:flex;gap:24px;justify-content:center}
+.hero .stat-num{font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--gold)}
+.hero .stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+#filters{padding:0 40px 16px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+#filters button{padding:5px 14px;border-radius:16px;font-size:11px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .3s;white-space:nowrap}
+#filters button:hover{border-color:var(--border-gold);color:var(--gold)}
+#filters button.active{background:var(--gold);color:var(--bg);border-color:var(--gold);font-weight:600}
+.content{max-width:960px;margin:0 auto;padding:20px 20px 80px}
+
+.year-section{margin-bottom:24px;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:all .3s}
+.year-section:hover{border-color:var(--border-gold)}
+.year-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none}
+.year-header:hover{background:rgba(201,168,76,.03)}
+.year-header .yh-year{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--gold);min-width:60px}
+.year-header .yh-info{flex:1;margin-left:16px}
+.year-header .yh-edition{font-size:11px;color:var(--text3)}
+.year-header .yh-place{font-size:12px;color:var(--text2)}
+.year-header .yh-toggle{font-size:18px;color:var(--text3);transition:transform .3s}
+.year-header .yh-toggle.open{transform:rotate(180deg)}
+
+.year-body{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.year-body.open{max-height:5000px}
+
+.gp-row{padding:12px 20px;background:rgba(201,168,76,.04);border-bottom:1px solid var(--border);display:flex;gap:20px;flex-wrap:wrap}
+.gp-item{font-size:12px}
+.gp-item .gp-label{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--text3)}
+.gp-item .gp-name{color:var(--gold);font-weight:600}
+
+.cats-table{padding:8px 20px 16px}
+.cat-row{display:flex;gap:12px;padding:6px 0;border-bottom:1px solid rgba(201,168,76,.03);font-size:12px;align-items:baseline}
+.cat-row:last-child{border:none}
+.cat-row .cat-name{min-width:160px;font-weight:500;color:var(--text2);font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+.cat-row .cat-winner{color:var(--text);font-weight:400}
+.cat-row .cat-country{color:var(--text3);font-size:10px;margin-left:auto}
+
+.flag{font-size:14px;margin-right:4px}
 footer{text-align:center;padding:32px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
 footer a{color:var(--gold);text-decoration:none}
 </style>
@@ -48,238 +69,119 @@ footer a{color:var(--gold);text-decoration:none}
 </nav>
 <section class="hero">
   <h1>🏆 Ranking <em>FISM</em></h1>
-  <div class="subtitle">— El campeonato mundial de magia —</div>
-  <p>La Fédération Internationale des Sociétés Magiques (FISM) es el máximo organismo mundial de la magia. Cada tres años, los mejores magos del mundo compiten por el Grand Prix, el galardón más prestigioso del ilusionismo.</p>
+  <p>Todos los campeones del mundo de magia, año por año, categoría por categoría. Desde 1948 hasta la actualidad.</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-num">29</div><div class="stat-label">Ediciones</div></div>
+    <div class="stat"><div class="stat-num" id="totalWinners">0</div><div class="stat-label">Campeones</div></div>
+  </div>
 </section>
-<div class="content">
 
-<div class="intro-text">
-  🏅 El Grand Prix de la FISM es el equivalente a los Oscar de la magia. Solo un puñado de magos en cada generación logra alzarse con él. Fred Kaps (Países Bajos) es el único mago que lo ha ganado <strong>tres veces</strong> (1950, 1955, 1961).
+<div id="filters">
+  <button class="active" data-f="all">Todas</button>
+  <button data-f="2020">2020s</button>
+  <button data-f="2010">2010s</button>
+  <button data-f="2000">2000s</button>
+  <button data-f="1990">1990s</button>
+  <button data-f="1980">1980s</button>
+  <button data-f="1950">1950-70s</button>
+  <button data-f="gp">🏆 Grand Prix</button>
+  <button data-f="micro">🤏 Micro/Cartas</button>
+  <button data-f="mental">🧠 Mentalismo</button>
+  <button data-f="stage">🎪 Escena/Ilusiones</button>
 </div>
 
-<div class="year-group">
-  <div class="year-label">2025 <span class="yr-city">· Quebec, Canadá</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Por determinar</div><div class="wc-country">Edición 2025</div><div class="wc-specialty">—</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
+<div class="content" id="content"></div>
 
-<div class="year-group">
-  <div class="year-label">2022 <span class="yr-city">· Quebec, Canadá</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Hector Mancha</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia / Close-up</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-  <div class="winner-card">
-    <div class="wc-place">🥈</div>
-    <div class="wc-info"><div class="wc-name">Dani DaOrtiz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🥈</div>
-  </div>
-</div>
+<footer>© 2026 <a href=".">El Gran Libro de la Magia</a></footer>
 
-<div class="year-group">
-  <div class="year-label">2018 <span class="yr-city">· Rimini, Italia</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Yu Ho-Jin</div><div class="wc-country">🇰🇷 Corea del Sur</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
+<script>
+const CHAMPS = [{"y": 2025, "e": "XXIX", "h": "Turin, Italy", "gs": "Francesco Della Bona", "gc": "Ibuki", "ct": [{"c": "General Magic", "w": "L\u00e9a Kyle", "n": "France"}, {"c": "Invention Award", "w": "Alain Guerant & Lucas Kaminski & Alberto Giorgi & Laura & Sergi Dolidze & Tsiao Yang & Nojima & Billy Hsueh", "n": "Belgium & Germany & Italy & Georgia & Hong Kong, China & Japan & Canada"}, {"c": "Manipulation", "w": "Francesco Della Bona", "n": "Italy"}, {"c": "Mentalism", "w": "MIND2MIND", "n": "United Kingdom"}, {"c": "Micro Magic", "w": "Ibuki", "n": "Japan"}, {"c": "Most Original Act (Close-up)", "w": "Michael Bloemeke", "n": "United States"}, {"c": "Most Original Act (Stage)", "w": "Lucas Kaminski", "n": "Germany"}, {"c": "Online Magic", "w": "Simon Pierro", "n": "Germany"}, {"c": "Parlour Magic", "w": "Mortenn Christiansen", "n": "Denmark"}, {"c": "Street Magic", "w": "Eric Evans", "n": "United States"}]}, {"y": 2022, "e": "XXVIII", "h": "Quebec City, Canada", "gs": "Laurent Piron", "gc": "Simon Coronel", "ct": [{"c": "Card Magic", "w": "Markobi", "n": "France"}, {"c": "Comedy Magic", "w": "Mortenn Christiansen", "n": "Denmark"}, {"c": "General Magic", "w": "Laurent Piron", "n": "Belgium"}, {"c": "Manipulation", "w": "Artem Shchukin & Junwoo Park (tie)", "n": ""}, {"c": "Mentalism", "w": "Anca & Lucca", "n": "Austria"}, {"c": "Micro Magic", "w": "Simon Coronel & Luis Olmedo (tie)", "n": ""}, {"c": "Most Original Close-up Act", "w": "Gleb", "n": "Lithuania"}, {"c": "Most Original Stage Act", "w": "Ding Yang", "n": "China"}, {"c": "Parlour Magic", "w": "Shoot Ogawa", "n": "USA"}, {"c": "Special Award - Creativity & Artistic Vision", "w": "Topas", "n": "Germany"}, {"c": "Special Award - History & Research", "w": "Richard Kaufman", "n": "USA"}, {"c": "Special Award - Theory & Philosophy", "w": "Dani DaOrtiz", "n": "Spain"}, {"c": "Stage Illusions", "w": "Yunke", "n": "Spain"}]}, {"y": 2018, "e": "XXVII", "h": "Busan, South Korea", "gs": "Miguel Mu\u00f1oz", "gc": "Eric Chien", "ct": [{"c": "Card Magic", "w": "Bill Cheung", "n": "China"}, {"c": "General Magic", "w": "Miguel Mu\u00f1oz", "n": "Spain"}, {"c": "Invention", "w": "Javier Botia & Han Manho (tie)", "n": ""}, {"c": "Manipulation", "w": "Ha Lim An & Florian Sainvet (tie)", "n": ""}, {"c": "Mentalism", "w": "Javier Botia", "n": "Spain"}, {"c": "Micro Magic", "w": "Eric Chien", "n": "Taiwan"}, {"c": "Most Original Close-up Act", "w": "DK", "n": "South Korea"}, {"c": "Most Original Stage Act", "w": "Sangsoon Kim", "n": "South Korea"}, {"c": "Parlour Magic", "w": "Marc Weide", "n": "Germany"}, {"c": "Special Award - Creativity & Artistic Vision", "w": "Derek DelGaudio", "n": "USA"}, {"c": "Special Award - History & Research", "w": "Stephen Minch", "n": "USA"}, {"c": "Special Award - Theory & Philosophy", "w": "Jeff McBride", "n": "USA"}]}, {"y": 2015, "e": "XXVI", "h": "Rimini, Italy", "gs": "H\u00e9ctor Mancha", "gc": "Pierric", "ct": [{"c": "Card Magic", "w": "Horret Wu & Shin Lim (tie)", "n": ""}, {"c": "General Magic", "w": "Young-Min Kim", "n": "South Korea"}, {"c": "Invention", "w": "Daniel Collado, Antonio Romero & Semba (tie)", "n": ""}, {"c": "Manipulation", "w": "H\u00e9ctor Mancha", "n": "Spain"}, {"c": "Mentalism", "w": "Thommy Ten & Amelie", "n": "Austria"}, {"c": "Most Original Close-up Act", "w": "DK", "n": "South Korea"}, {"c": "Most Original Stage Act", "w": "Yann Frisch", "n": "France"}, {"c": "Parlour Magic", "w": "Pierric", "n": "Switzerland"}, {"c": "Special Award - History & Research & Scholarship", "w": "Magic Christian", "n": "Austria"}]}, {"y": 2012, "e": "XXV", "h": "Blackpool, England", "gs": "Yu Ho Jin", "gc": "Yann Frisch", "ct": [{"c": "Card Magic", "w": "Jan Logemann", "n": "Germany"}, {"c": "Comedy Magic", "w": "Doble Mandoble", "n": "Belgium"}, {"c": "General Magic", "w": "Marko Karvo", "n": "Finland"}, {"c": "Invention Award (Close-up)", "w": "Tango", "n": "Argentina"}, {"c": "Invention Award (Stage)", "w": "Haon Gun", "n": "South Korea"}, {"c": "Manipulation", "w": "Yu Ho Jin", "n": "South Korea"}, {"c": "Micro Magic", "w": "Andost", "n": "USA"}, {"c": "Most Original Close-up Act", "w": "Simon Coronel", "n": "Australia"}, {"c": "Most Original Stage Act", "w": "Ted Kim", "n": "South Korea"}, {"c": "Parlour Magic", "w": "Yann Frisch", "n": "France"}, {"c": "Special Award - Creativity & Artistic Vision", "w": "Teller", "n": "USA"}, {"c": "Special Award - History & Research", "w": "Mike Caveney", "n": "USA"}, {"c": "Special Award - Theory & Philosophy", "w": "Eugene Burger", "n": "USA"}, {"c": "Stage Illusions", "w": "Marcel Prince of Illusions", "n": "Netherlands"}]}, {"y": 2009, "e": "XXIV", "h": "Beijing, China", "gs": "Soma", "gc": "Shawn Farquhar", "ct": [{"c": "Card Magic", "w": "Shawn Farquhar", "n": "Canada"}, {"c": "General Magic", "w": "Soma", "n": "Hungary"}, {"c": "Invention", "w": "Jorge Luengo", "n": "Spain"}, {"c": "Manipulation", "w": "Yo Kato & Han Seoi-Hui (tie)", "n": ""}, {"c": "Most Original Act", "w": "Charming Choi", "n": "South Korea"}, {"c": "Parlour Magic", "w": "Marc Oberon", "n": "England"}, {"c": "Special Award - Creativity & Artistic Vision", "w": "Jim Steinmeyer", "n": "USA"}, {"c": "Special Award - History & Research", "w": "Bill Kalush", "n": "USA"}, {"c": "Special Award - Theory & Philosophy", "w": "Juan Tamariz", "n": "Spain"}, {"c": "Stage Illusions", "w": "Julius Frack", "n": "Germany"}]}, {"y": 2006, "e": "XXIII", "h": "Stockholm, Sweden", "gs": "Pilou", "gc": "Rick Merrill", "ct": [{"c": "Card Magic", "w": "Helder Guimaraes", "n": "Portugal"}, {"c": "Comedy Magic", "w": "Die Zauderer & Mikael Szanyiel & Rick Merrill & Stonkel", "n": "Germany & France & USA & Germany"}, {"c": "General Magic", "w": "Lee Eun-gyeol", "n": "South Korea"}, {"c": "Invention", "w": "Mathieu Bich & Pierric & Mickael & Bethy Ross & Cesaral Magic", "n": "France & Switzerland & France & Spain"}, {"c": "Manipulation", "w": "Dai Bin Chun", "n": "China"}, {"c": "Micro Magic", "w": "Martin Eisele", "n": "Germany"}, {"c": "Most Original Act (Close-up)", "w": "Rocco", "n": "USA"}, {"c": "Most Original Act (Stage)", "w": "Hugo Valenzuela", "n": "Argentina"}, {"c": "Parlour Magic", "w": "Gaston", "n": "Germany"}, {"c": "Special Award - Creativity & Artistic Vision", "w": "Gaetan Bloom", "n": "France"}, {"c": "Special Award - History & Research", "w": "Eddie Dawes", "n": "UK"}, {"c": "Special Award - Theory & Philosophy", "w": "Tommy Wonder", "n": "Netherlands"}, {"c": "Stage Illusions", "w": "Sittah", "n": "Netherlands"}]}, {"y": 2003, "e": "XXII", "h": "The Hague (Den Haag), Netherlands", "gs": "Norbert Ferr\u00e9", "gc": "Jason Latimer", "ct": [{"c": "Card Magic", "w": "Mago Migue", "n": "Spain"}, {"c": "Comedy Presentation", "w": "The Great Nardini", "n": "Scotland"}, {"c": "General Magic", "w": "Pat Perry & Archibald", "n": "Switzerland"}, {"c": "Invention", "w": "Jason Latimer", "n": "USA"}, {"c": "Manipulation", "w": "Norbert Ferr\u00e9", "n": "France"}, {"c": "Micro Magic", "w": "Jason Latimer", "n": "USA"}, {"c": "Most Original Act", "w": "Pat Perry & Archibald", "n": "Switzerland"}]}, {"y": 2000, "e": "XXI", "h": "Lisbon, Portugal", "gs": "Scott & Muriel", "gc": "", "ct": [{"c": "Card Magic", "w": "Henry Evans", "n": "Argentina"}, {"c": "General Magic", "w": "Mask", "n": "France"}, {"c": "Invention", "w": "Michael Ross", "n": "France"}, {"c": "Manipulation", "w": "Kenji Minemura", "n": "Japan"}, {"c": "Micro Magic", "w": "Simo Aalto", "n": "Finland"}, {"c": "Stage Illusions", "w": "Der 'Hexer'", "n": "Germany"}]}, {"y": 1997, "e": "XX", "h": "Dresden, Germany", "gs": "Ivan Necheporenko", "gc": "", "ct": [{"c": "Comedy Magic", "w": "Tomoyuki Osaka", "n": "Germany"}, {"c": "General Magic", "w": "Junge-Junge", "n": "Germany"}, {"c": "Manipulation", "w": "Juliana Chen", "n": "Canada"}, {"c": "Micro Magic", "w": "Thomas Meier", "n": "USA"}, {"c": "Stage Illusions", "w": "Carlos Barrag\u00e1n", "n": "Argentina"}]}, {"y": 1994, "e": "XIX", "h": "Yokohama, Japan", "gs": "Franklin", "gc": "", "ct": [{"c": "Card Magic", "w": "Ramblar", "n": "Argentina"}, {"c": "Comedy Magic", "w": "Die Plebsbuttel", "n": "Germany"}, {"c": "General Magic", "w": "Greg Frewin", "n": "Canada"}, {"c": "Micro Magic", "w": "Carl Cloutier", "n": "Canada"}]}, {"y": 1991, "e": "XVIII", "h": "Lausanne, Switzerland", "gs": "Vladimir Danilin", "gc": "", "ct": [{"c": "Card Magic", "w": "Lennart Green", "n": "Sweden"}, {"c": "Comedy Magic", "w": "Gill & Dany & Mimosa & Enric Magoo", "n": "France & France & Spain"}, {"c": "General Magic", "w": "Juan Mayoral", "n": "Spain"}, {"c": "Manipulation", "w": "Topas", "n": "Germany"}, {"c": "Micro Magic", "w": "Francis Tabary", "n": "France"}, {"c": "Special Awards", "w": "Shankar Junior", "n": "India"}, {"c": "Special Awards", "w": "Tim Ellis", "n": "Australia"}]}, {"y": 1988, "e": "XVII", "h": "The Hague (Den Haag), Netherlands", "gs": "Johnny Ace Palmer", "gc": "", "ct": [{"c": "Card Magic", "w": "Jose Carroll", "n": "Spain"}, {"c": "Comedy Magic", "w": "Yann Brieuc", "n": "France"}, {"c": "General Magic", "w": "Vic & Fabrini", "n": "Brazil"}, {"c": "Micro Magic", "w": "Joe Given & John Carney", "n": "USA & USA"}]}, {"y": 1985, "e": "XVI", "h": "Madrid, Spain", "gs": "Javier y Ana", "gc": "", "ct": [{"c": "Card Magic", "w": "John Cornelius", "n": "USA"}, {"c": "Comedy Magic", "w": "Sam Angelico", "n": "Australia"}, {"c": "General Magic", "w": "Davido", "n": "Norway"}, {"c": "Mental Magic", "w": "Santo & Monique", "n": "Germany"}, {"c": "Micro Magic", "w": "Paul Gertner", "n": "USA"}]}, {"y": 1982, "e": "XV", "h": "Lausanne, Switzerland", "gs": "Lance Burton", "gc": "", "ct": [{"c": "Card Magic", "w": "Daryl", "n": "USA"}, {"c": "Comedy Magic", "w": "Otto Wessely", "n": "France"}, {"c": "General Magic", "w": "Philippe Socrate", "n": "France"}, {"c": "Invention", "w": "Pavel", "n": "Switzerland"}, {"c": "Junior", "w": "Sylvia Diana", "n": "Netherlands"}, {"c": "Lady Magician", "w": "Brigitte Varga", "n": "Austria"}, {"c": "Manipulation", "w": "Davido", "n": "Norway"}, {"c": "Micro Magic", "w": "Michael Ammar & Aurelio Paviato", "n": "USA & Italy"}, {"c": "Stage Illusions", "w": "Wayne Alan & Sandy", "n": "USA"}]}, {"y": 1979, "e": "XIV", "h": "Brussels, Belgium", "gs": "", "gc": "", "ct": [{"c": "Card Magic", "w": "Jean-Jacques Sanvert", "n": "France"}, {"c": "Comedy Magic", "w": "Gili Frantzi", "n": "France"}, {"c": "General Magic", "w": "Vito Lupo", "n": "USA"}, {"c": "Invention (Close-up)", "w": "Magic Christian", "n": "Austria"}, {"c": "Invention (Stage)", "w": "Christian Fechner", "n": "France"}, {"c": "Junior", "w": "John Richard Hirokawa", "n": "USA"}, {"c": "Ladies", "w": "Fee Eleisa", "n": "Germany"}, {"c": "Manipulation", "w": "Magic Christian", "n": "Austria"}, {"c": "Mental Magic", "w": "Hans Moretti", "n": "Germany"}, {"c": "Micro Magic", "w": "John Cornelius & Tommy Wonder", "n": "USA & Netherlands"}, {"c": "Stage Illusions", "w": "Christian Fechner", "n": "France"}]}, {"y": 1976, "e": "XIII", "h": "Vienna, Austria", "gs": "Pierre Brahma", "gc": "", "ct": [{"c": "Card Magic", "w": "Trevor Lewis", "n": "Wales"}, {"c": "Comedy Magic", "w": "Roy Gardner & Wittus Witt", "n": "Germany"}, {"c": "General Magic", "w": "Domi Nho", "n": "France"}, {"c": "Invention", "w": "Juliani", "n": "Switzerland"}, {"c": "Ladies", "w": "Aniko", "n": "Hungary"}, {"c": "Manipulation", "w": "Magic Christian", "n": "Austria"}, {"c": "Micro Magic", "w": "Heinz Freund", "n": "Austria"}, {"c": "Special Award", "w": "Kim Tag Song", "n": "North Korea"}, {"c": "Stage Illusions", "w": "The Morettis", "n": "Germany"}]}, {"y": 1973, "e": "XII", "h": "Paris, France", "gs": "Richard Ross", "gc": "", "ct": [{"c": "Card Magic", "w": "Juan Tamariz", "n": "Spain"}, {"c": "Comedy Magic", "w": "Haraldini", "n": "Germany"}, {"c": "General Magic", "w": "Toreno", "n": "Norway"}, {"c": "Invention (Close-up)", "w": "Lipp", "n": "Germany"}, {"c": "Invention (Stage)", "w": "Mr Cox", "n": "Germany"}, {"c": "Manipulation", "w": "Christian", "n": "Austria"}, {"c": "Micro Magic", "w": "Camilo", "n": "Spain"}, {"c": "Special Awards", "w": "Petr Krejcik (Petrick)", "n": "Czech Republic"}, {"c": "Special Awards", "w": "Aniko", "n": "Hungary"}, {"c": "Stage Illusions", "w": "Katawu", "n": "Italy"}]}, {"y": 1970, "e": "XI", "h": "Amsterdam, Netherlands", "gs": "Richard Ross", "gc": "", "ct": [{"c": "Card Magic", "w": "Arturo de Ascanio", "n": "Spain"}, {"c": "Comedy Magic", "w": "Armandi & Topper Martyn", "n": "Netherlands & Sweden"}, {"c": "Invention", "w": "Domi Nho", "n": "France"}, {"c": "Manipulation", "w": "Tel Smit", "n": "Netherlands"}, {"c": "Micro Magic", "w": "Rene Petrie", "n": "Belgium"}]}, {"y": 1967, "e": "X", "h": "Baden-Baden, West Germany", "gs": "Di Sato (Harry Thiery)", "gc": "", "ct": [{"c": "Card Magic", "w": "Piet Forton", "n": "Switzerland"}, {"c": "Comedy Magic", "w": "Jerry Bergman", "n": "USA"}, {"c": "General Magic", "w": "Joe Nex", "n": "Germany"}, {"c": "Invention", "w": "Rigal", "n": "France"}, {"c": "Manipulation", "w": "Tel Smit", "n": "Austria"}, {"c": "Micro Magic", "w": "Horace", "n": "France"}, {"c": "Stage Illusions", "w": "Manfred Thumm", "n": "Germany"}]}, {"y": 1964, "e": "IX", "h": "Barcelona, Spain", "gs": "", "gc": "", "ct": [{"c": "Card Magic", "w": "Piet Forton", "n": "Switzerland"}, {"c": "Comedy Magic", "w": "The Maym\u00f3 Brothers", "n": "Spain"}, {"c": "General Magic", "w": "Cornel & Monique & Al Preston & Valerie", "n": "Netherlands & Netherlands"}, {"c": "Invention", "w": "Rama", "n": "Netherlands"}, {"c": "Micro Magic", "w": "Guy Lammertyn", "n": "Belgium"}, {"c": "Stage Illusions", "w": "Les Andreals", "n": "Switzerland"}]}, {"y": 1961, "e": "VIII", "h": "Li\u00e8ge, Belgium", "gs": "Fred Kaps", "gc": "", "ct": [{"c": "Allied Arts (Pickpocketing)", "w": "Dody Willtohn", "n": "France"}, {"c": "Card Magic", "w": "Piet Forton", "n": "Switzerland"}, {"c": "Comedy Magic", "w": "The Maymo Brothers", "n": "Spain"}, {"c": "General Magic", "w": "Marconick", "n": "Netherlands"}, {"c": "Invention", "w": "The Maymo Brothers", "n": "Spain"}, {"c": "Manipulation", "w": "Pierre Brahma", "n": "France"}, {"c": "Mental Magic", "w": "John Todd & Jil", "n": "United Kingdom"}, {"c": "Micro Magic", "w": "Gus Southall", "n": "United Kingdom"}, {"c": "Parlour Magic", "w": "Rama", "n": "Netherlands"}, {"c": "Stage Illusions", "w": "Les Andreals", "n": "Switzerland"}]}, {"y": 1958, "e": "VII", "h": "Vienna, Austria", "gs": "Tonny Van Dommelen", "gc": "", "ct": [{"c": "Card Magic", "w": "Eddy Taytelbaum", "n": "Netherlands"}, {"c": "Comedy Magic", "w": "P. Lodynski", "n": "Austria"}, {"c": "General Magic", "w": "Peter Pit", "n": "Netherlands"}, {"c": "Invention", "w": "Rama", "n": "Netherlands"}, {"c": "Manipulation", "w": "Maurice Rooklyn", "n": "Australia"}, {"c": "Micro Magic", "w": "Phoa Yan Tiong", "n": "Netherlands"}, {"c": "Stage Illusions", "w": "John Dee", "n": "Switzerland"}]}, {"y": 1955, "e": "VI", "h": "Amsterdam, Netherlands", "gs": "Fred Kaps", "gc": "", "ct": [{"c": "Card Magic", "w": "Fred Kaps", "n": "Netherlands"}, {"c": "Comedy Magic", "w": "El Wido", "n": "Sweden"}, {"c": "General Magic", "w": "Ad de Lun\u00e8s", "n": "Netherlands"}, {"c": "Manipulation", "w": "Marconick", "n": "Netherlands"}, {"c": "Micro Magic", "w": "Eddy Taytelbaum", "n": "Netherlands"}, {"c": "Originality", "w": "Mr. Jack", "n": "Netherlands"}]}, {"y": 1952, "e": "V", "h": "Geneva, Switzerland", "gs": "Denis Moroso", "gc": "", "ct": [{"c": "Female", "w": "Ann Hardy", "n": "Belgium"}, {"c": "Invention", "w": "Frank Cleaver", "n": "England"}, {"c": "Manipulation", "w": "Juan B. Bernat", "n": "Spain"}, {"c": "Mentalism", "w": "Magdola & Carolus", "n": "France"}, {"c": "Micro Magic", "w": "Juan B. Bernat", "n": "Spain"}, {"c": "Originality", "w": "Peterson", "n": "Switzerland"}, {"c": "Presentation", "w": "Laquier", "n": "France"}, {"c": "Stage", "w": "Edeling", "n": "Denmark"}, {"c": "Stage Illusion", "w": "Mireldo", "n": "France"}, {"c": "Ventriloquism", "w": "Jean de Merry", "n": "Switzerland"}]}, {"y": 1951, "e": "IV", "h": "Paris, France", "gs": "Geoffrey Buckingham", "gc": "", "ct": [{"c": "Comedy", "w": "Jay Palmer & Doreen", "n": "USA"}, {"c": "Female", "w": "Hugette De Lysiolle", "n": "France"}, {"c": "Manipulation", "w": "Carlo Tornedo", "n": "Sweden"}, {"c": "Mentalism", "w": "The Salvins", "n": "United Kingdom"}, {"c": "Micro Magic", "w": "Sala", "n": "Switzerland"}, {"c": "Originality", "w": "Monarque", "n": "Belgium"}, {"c": "Presentation", "w": "Albino & Tiny", "n": "Netherlands"}]}, {"y": 1950, "e": "III", "h": "Barcelona, Spain", "gs": "Mystica (Fred Kaps)", "gc": "", "ct": [{"c": "Invention", "w": "Jack Miltour", "n": "Switzerland"}, {"c": "Manipulation", "w": "Tomedo", "n": "Sweden"}, {"c": "Micro Magic", "w": "John Ramsey", "n": "Scotland"}, {"c": "Presentation", "w": "Edeling", "n": "Denmark"}]}, {"y": 1949, "e": "II", "h": "Amsterdam, Netherlands", "gs": "Viggo Jahn", "gc": "", "ct": [{"c": "Comedy", "w": "Jerry Bergman", "n": "USA"}, {"c": "Invention", "w": "Maub van Embden", "n": "Netherlands"}, {"c": "Manipulation", "w": "Geoffrey Buckingham", "n": "England"}, {"c": "Micro Magic", "w": "Geoffrey Buckingham", "n": "England"}, {"c": "Presentation", "w": "Francisco & Moto", "n": "Netherlands"}]}, {"y": 1948, "e": "I", "h": "Lausanne, Switzerland", "gs": "Willane", "gc": "", "ct": [{"c": "Allied Arts (Memory)", "w": "Rogello", "n": "France"}, {"c": "Invention", "w": "Burtini", "n": "United Kingdom"}, {"c": "Manipulation", "w": "Jean Valton", "n": "France"}, {"c": "Presentation", "w": "Haakon Edeling", "n": "Denmark"}]}];
 
-<div class="year-group">
-  <div class="year-label">2015 <span class="yr-city">· Rímini, Italia</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Dani DaOrtiz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
+function getFlag(country) {
+  const flags = {
+    "Spain": "🇪🇸", "France": "🇫🇷", "USA": "🇺🇸", "Japan": "🇯🇵", "Italy": "🇮🇹",
+    "Germany": "🇩🇪", "United Kingdom": "🇬🇧", "Denmark": "🇩🇰", "Belgium": "🇧🇪",
+    "Netherlands": "🇳🇱", "Austria": "🇦🇹", "China": "🇨🇳", "Taiwan": "🇹🇼",
+    "South Korea": "🇰🇷", "Russia": "🇷🇺", "Canada": "🇨🇦", "Sweden": "🇸🇪",
+    "Switzerland": "🇨🇭", "Portugal": "🇵🇹", "Argentina": "🇦🇷", "Peru": "🇵🇪",
+    "Hungary": "🇭🇺", "Poland": "🇵🇱", "Australia": "🇦🇺", "Finland": "🇫🇮",
+    "Norway": "🇳🇴", "Czech Republic": "🇨🇿", "Slovakia": "🇸🇰"
+  };
+  return flags[country] || '';
+}
 
-<div class="year-group">
-  <div class="year-label">2012 <span class="yr-city">· Blackpool, Reino Unido</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Pablo Amengual</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
+let currentFilter = 'all';
 
-<div class="year-group">
-  <div class="year-label">2009 <span class="yr-city">· Beijing, China</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Miguel Puga</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Mentalismo</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
+function getDecade(year) {
+  if (year >= 2020) return '2020';
+  if (year >= 2010) return '2010';
+  if (year >= 2000) return '2000';
+  if (year >= 1990) return '1990';
+  if (year >= 1980) return '1980';
+  return '1950';
+}
 
-<div class="year-group">
-  <div class="year-label">2006 <span class="yr-city">· Estocolmo, Suecia</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Dani DaOrtiz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
+function render() {
+  const container = document.getElementById('content');
+  let filtered = currentFilter === 'all' ? CHAMPS : CHAMPS.filter(c => {
+    if (currentFilter === 'gp') return c.gs || c.gc;
+    if (currentFilter === 'micro') return c.ct.some(x => x.c.toLowerCase().includes('micro') || x.c.toLowerCase().includes('card'));
+    if (currentFilter === 'mental') return c.ct.some(x => x.c.toLowerCase().includes('mental'));
+    if (currentFilter === 'stage') return c.ct.some(x => x.c.toLowerCase().includes('stage') || x.c.toLowerCase().includes('illusion') || x.c.toLowerCase().includes('manipulation') || x.c.toLowerCase().includes('general'));
+    return getDecade(c.y) === currentFilter;
+  });
 
-<div class="year-group">
-  <div class="year-label">2003 <span class="yr-city">· La Haya, Países Bajos</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Boris Wild</div><div class="wc-country">🇫🇷 Francia</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
+  let totalWinners = 0;
+  container.innerHTML = filtered.map(c => {
+    totalWinners += c.ct.length + (c.gs ? 1 : 0) + (c.gc ? 1 : 0);
+    return `
+    <div class="year-section">
+      <div class="year-header" onclick="toggleYear(this)">
+        <div class="yh-year">${c.y}</div>
+        <div class="yh-info">
+          <div class="yh-edition">${c.e}</div>
+          <div class="yh-place">${c.h}</div>
+        </div>
+        <div class="yh-toggle">▼</div>
+      </div>
+      <div class="year-body">
+        ${(c.gs || c.gc) ? `
+        <div class="gp-row">
+          ${c.gs ? `<div class="gp-item"><div class="gp-label">🏆 Grand Prix Escena</div><div class="gp-name">${c.gs}</div></div>` : ''}
+          ${c.gc ? `<div class="gp-item"><div class="gp-label">🏆 Grand Prix Close-up</div><div class="gp-name">${c.gc}</div></div>` : ''}
+        </div>` : ''}
+        <div class="cats-table">
+          ${c.ct.map(x => `
+          <div class="cat-row">
+            <div class="cat-name">${x.c}</div>
+            <div class="cat-winner">${x.w}</div>
+            <div class="cat-country">${getFlag(x.n)} ${x.n}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;}).join('');
 
-<div class="year-group">
-  <div class="year-label">2000 <span class="yr-city">· Lisboa, Portugal</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Dani DaOrtiz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
+  document.getElementById('totalWinners').textContent = totalWinners;
+}
 
-<div class="year-group">
-  <div class="year-label">1997 <span class="yr-city">· Dresde, Alemania</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Luis de Matos</div><div class="wc-country">🇵🇹 Portugal</div><div class="wc-specialty">Ilusionismo General</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
+function toggleYear(el) {
+  const body = el.nextElementSibling;
+  const toggle = el.querySelector('.yh-toggle');
+  body.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
 
-<div class="year-group">
-  <div class="year-label">1994 <span class="yr-city">· Yokohama, Japón</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Lance Burton</div><div class="wc-country">🇺🇸 EE.UU.</div><div class="wc-specialty">Ilusionismo Clásico</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
+document.querySelectorAll('#filters button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#filters button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentFilter = b.dataset.f;
+    render();
+  });
+});
 
-<div class="year-group">
-  <div class="year-label">1991 <span class="yr-city">· Lausana, Suiza</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">John McGill</div><div class="wc-country">🇺🇸 EE.UU.</div><div class="wc-specialty">Close-up</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1988 <span class="yr-city">· La Haya, Países Bajos</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Juan Tamariz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1985 <span class="yr-city">· Madrid, España</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Dai Vernon (homenaje)</div><div class="wc-country">🇨🇦 Canadá</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1982 <span class="yr-city">· Lausana, Suiza</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Ken Brooke</div><div class="wc-country">🇬🇧 Reino Unido</div><div class="wc-specialty">Close-up</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1979 <span class="yr-city">· Bruselas, Bélgica</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Tony Holliday</div><div class="wc-country">🇬🇧 Reino Unido</div><div class="wc-specialty">Cartomagia General</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1973 <span class="yr-city">· París, Francia</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Juan Tamariz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1970 <span class="yr-city">· Ámsterdam, Países Bajos</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Arturo de Ascanio</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1967 <span class="yr-city">· París, Francia</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Dai Vernon</div><div class="wc-country">🇨🇦 Canadá</div><div class="wc-specialty">Cartomagia</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1964 <span class="yr-city">· Ámsterdam, Países Bajos</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Fred Kaps</div><div class="wc-country">🇳🇱 Países Bajos</div><div class="wc-specialty">Cartomagia General</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1961 <span class="yr-city">· Bruselas, Bélgica</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Fred Kaps</div><div class="wc-country">🇳🇱 Países Bajos</div><div class="wc-specialty">Cartomagia General</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1958 <span class="yr-city">· Viena, Austria</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Fred Kaps</div><div class="wc-country">🇳🇱 Países Bajos</div><div class="wc-specialty">Cartomagia General</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1955 <span class="yr-city">· Ámsterdam, Países Bajos</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Fred Kaps</div><div class="wc-country">🇳🇱 Países Bajos</div><div class="wc-specialty">Cartomagia General</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-<div class="year-group">
-  <div class="year-label">1952 <span class="yr-city">· Ámsterdam, Países Bajos</span></div>
-  <div class="winner-card">
-    <div class="wc-place">🥇</div>
-    <div class="wc-info"><div class="wc-name">Tommy Wonder</div><div class="wc-country">🇳🇱 Países Bajos</div><div class="wc-specialty">Close-up</div></div>
-    <div class="wc-medal">🏆</div>
-  </div>
-</div>
-
-</div>
-<footer>© 2026 <a href=".">El Gran Libro de la Magia</a> · <a href="magos.html">Magos</a> · <a href="historia.html">Historia</a></footer>
+render();
+</script>
 <script src="assets/js/magic-particles.js"></script>
 </body>
 </html>

@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESTILO | Barbería & Peluquería en Illescas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Rajdhani',sans-serif;background:#1a1510;color:#d4c8b8;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:#c9a96e;text-decoration:none;transition:color .3s}
+a:hover{color:#e8d5a3}
+::selection{background:#c9a96e;color:#1a1510}
+
+h1,h2,h3,h4,h5,h6{font-family:'Playfair Display',serif;font-weight:600;color:#f0e6d0;letter-spacing:.02em}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+.section{padding:80px 0}
+.section-title{text-align:center;margin-bottom:50px}
+.section-title h2{font-size:2.5rem;margin-bottom:8px;position:relative;display:inline-block}
+.section-title h2::after{content:'';display:block;width:60px;height:2px;background:linear-gradient(90deg,#c9a96e,#8b6914);margin:12px auto 0}
+.section-title p{color:#8b6914;font-size:1rem;letter-spacing:4px;text-transform:uppercase;font-weight:500;margin-top:4px}
+.btn{display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#c9a96e,#8b6914);color:#1a1510;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:1rem;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:4px;cursor:pointer;transition:all .3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(201,169,110,.3);color:#1a1510}
+.btn-outline{background:transparent;border:1px solid #c9a96e;color:#c9a96e}
+.btn-outline:hover{background:linear-gradient(135deg,#c9a96e,#8b6914);color:#1a1510;border-color:transparent}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:15px 0;transition:all .4s;background:transparent}
+nav.scrolled{background:rgba(26,21,16,.95);backdrop-filter:blur(12px);padding:10px 0;border-bottom:1px solid rgba(201,169,110,.1)}
+.nav-inner{display:flex;justify-content:space-between;align-items:center}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.6rem;color:#c9a96e;font-weight:700;letter-spacing:4px}
+.nav-logo span{color:#8b6914}
+.nav-links{display:flex;gap:30px;list-style:none}
+.nav-links a{color:#b8a88e;font-size:.9rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;position:relative;padding:4px 0}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:#c9a96e;transition:width .3s}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-links a:hover,.nav-links a.active{color:#c9a96e}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:5px}
+.nav-toggle span{width:28px;height:2px;background:#c9a96e;transition:all .3s}
+.nav-toggle.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.nav-toggle.active span:nth-child(2){opacity:0}
+.nav-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(135deg,#1a1510 0%,#241e15 30%,#2a2018 60%,#1a1510 100%);overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% 40%,rgba(201,169,110,.06) 0%,transparent 70%)}
+.hero-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a96e' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");opacity:.5}
+.hero-content{text-align:center;position:relative;z-index:2;padding:0 20px;max-width:800px}
+.hero-badge{display:inline-block;border:1px solid rgba(201,169,110,.3);padding:6px 20px;border-radius:30px;font-size:.8rem;color:#8b6914;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;font-weight:500}
+.hero-title{font-size:4.5rem;font-weight:700;line-height:1.1;margin-bottom:16px;background:linear-gradient(135deg,#f0e6d0 0%,#c9a96e 50%,#8b6914 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:1.2rem;color:#b8a88e;margin-bottom:32px;font-weight:300;letter-spacing:6px;text-transform:uppercase}
+.hero-divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,#c9a96e,transparent);margin:0 auto 32px}
+.hero-desc{font-size:1.05rem;color:#8b7a62;max-width:600px;margin:0 auto 36px;line-height:1.8}
+.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.scroll-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);animation:bounce 2s infinite;cursor:pointer;z-index:2}
+.scroll-indicator svg{width:24px;height:24px;fill:none;stroke:#c9a96e;stroke-width:2;opacity:.6}
+@keyframes bounce{0%,20%,50%,80%,100%{transform:translateX(-50%) translateY(0)}40%{transform:translateX(-50%) translateY(-10px)}60%{transform:translateX(-50%) translateY(-5px)}}
+
+/* ===== ABOUT ===== */
+.about{background:#1f1913;position:relative}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.about-image{position:relative;height:400px;background:linear-gradient(135deg,rgba(201,169,110,.08),rgba(139,105,20,.05));border:1px solid rgba(201,169,110,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.about-image svg{width:160px;height:160px}
+.about-text h3{font-size:2rem;margin-bottom:16px}
+.about-text p{color:#b8a88e;margin-bottom:16px;line-height:1.8;font-size:1.05rem}
+.about-features{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+.about-feature{display:flex;align-items:center;gap:10px;color:#c9a96e;font-weight:500}
+.about-feature svg{width:18px;height:18px;flex-shrink:0}
+
+/* ===== SERVICES ===== */
+.services{background:#1a1510}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.service-card{background:#1f1913;border:1px solid rgba(201,169,110,.08);border-radius:8px;padding:30px;text-align:center;transition:all .4s;position:relative;overflow:hidden}
+.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c9a96e,transparent);opacity:0;transition:opacity .4s}
+.service-card:hover::before{opacity:1}
+.service-card:hover{transform:translateY(-4px);border-color:rgba(201,169,110,.2);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.service-icon{margin-bottom:16px;color:#c9a96e}
+.service-icon svg{width:36px;height:36px}
+.service-card h4{font-size:1.2rem;margin-bottom:8px;color:#f0e6d0}
+.service-card p{color:#b8a88e;font-size:.95rem;margin-bottom:8px}
+.service-card .price{font-size:1.8rem;font-weight:700;color:#c9a96e;display:block;margin-top:12px}
+.service-card .duration{display:inline-block;background:rgba(201,169,110,.1);color:#8b6914;padding:2px 12px;border-radius:12px;font-size:.8rem;letter-spacing:1px;font-weight:500}
+
+/* ===== STYLISTS ===== */
+.stylists{background:#1f1913}
+.stylists-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.stylist-card{text-align:center;padding:24px;background:#1a1510;border:1px solid rgba(201,169,110,.08);border-radius:8px;transition:all .4s;cursor:pointer}
+.stylist-card:hover{transform:translateY(-4px);border-color:rgba(201,169,110,.25);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.stylist-card.selected{border-color:#c9a96e;box-shadow:0 0 0 1px #c9a96e,0 12px 40px rgba(0,0,0,.3)}
+.stylist-avatar{width:120px;height:120px;border-radius:50%;margin:0 auto 16px;border:2px solid rgba(201,169,110,.2);background:linear-gradient(135deg,rgba(201,169,110,.1),rgba(139,105,20,.05));display:flex;align-items:center;justify-content:center;overflow:hidden}
+.stylist-avatar svg{width:50px;height:50px;fill:none;stroke:#c9a96e;stroke-width:1.5}
+.stylist-card h4{font-size:1.3rem;margin-bottom:4px}
+.stylist-card .role{color:#c9a96e;font-size:.9rem;font-weight:500;letter-spacing:1px;margin-bottom:12px}
+.stylist-card .bio{color:#8b7a62;font-size:.9rem;line-height:1.6}
+
+/* ===== GALLERY ===== */
+.gallery{background:#1a1510}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.gallery-item{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:4/3;cursor:pointer;border:1px solid rgba(201,169,110,.08);transition:all .4s}
+.gallery-item:hover{transform:scale(1.02);border-color:rgba(201,169,110,.25);z-index:2}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.gallery-item:hover img{transform:scale(1.08)}
+.gallery-overlay{position:absolute;bottom:0;left:0;right:0;padding:20px;background:linear-gradient(transparent,rgba(26,21,16,.9));opacity:0;transition:opacity .4s;}
+.gallery-item:hover .gallery-overlay{opacity:1}
+.gallery-overlay span{color:#c9a96e;font-weight:500;letter-spacing:2px;font-size:.9rem}
+
+/* ===== REVIEWS ===== */
+.reviews{background:#1f1913}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.review-card{background:#1a1510;border:1px solid rgba(201,169,110,.08);border-radius:8px;padding:28px;transition:all .4s}
+.review-card:hover{border-color:rgba(201,169,110,.2);transform:translateY(-3px)}
+.review-stars{color:#c9a96e;font-size:1rem;margin-bottom:12px;letter-spacing:2px}
+.review-text{color:#b8a88e;font-size:.95rem;line-height:1.7;margin-bottom:16px;font-style:italic}
+.review-author{color:#c9a96e;font-weight:600;font-size:.95rem}
+.review-author span{color:#8b7a62;font-weight:400;font-size:.85rem}
+
+/* ===== LOCATION ===== */
+.location{background:#1a1510}
+.location-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.location-info h3{font-size:1.8rem;margin-bottom:24px}
+.location-detail{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px}
+.location-detail svg{width:22px;height:22px;flex-shrink:0;margin-top:3px;color:#c9a96e}
+.location-detail strong{display:block;color:#f0e6d0;font-family:'Playfair Display',serif;margin-bottom:2px}
+.location-detail span{color:#b8a88e;font-size:.95rem}
+.hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.hours-grid .day{color:#b8a88e}
+.hours-grid .time{color:#c9a96e;text-align:right;font-weight:500}
+.hours-highlight{color:#c9a96e;text-align:right;font-weight:500}
+.location-map{height:400px;background:#1f1913;border:1px solid rgba(201,169,110,.08);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#8b7a62;font-size:.95rem}
+.location-map svg{width:48px;height:48px;opacity:.4}
+
+/* ===== BOOKING ===== */
+.booking{background:#1f1913}
+.booking-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.booking-form-wrap{background:#1a1510;border:1px solid rgba(201,169,110,.08);border-radius:12px;padding:36px}
+.booking-form-wrap h3{font-size:1.5rem;margin-bottom:24px;text-align:center}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;color:#c9a96e;font-weight:500;font-size:.9rem;letter-spacing:1px;margin-bottom:6px;text-transform:uppercase}
+.form-group input,.form-group select{width:100%;padding:12px 16px;background:#1f1913;border:1px solid rgba(201,169,110,.15);border-radius:6px;color:#f0e6d0;font-family:'Rajdhani',sans-serif;font-size:1rem;transition:border .3s;outline:none}
+.form-group input:focus,.form-group select:focus{border-color:#c9a96e}
+.form-group input::placeholder{color:#5a4d3a}
+.form-group select option{background:#1a1510;color:#f0e6d0}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.service-checkboxes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.service-checkbox{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#1f1913;border:1px solid rgba(201,169,110,.1);border-radius:6px;cursor:pointer;transition:all .3s}
+.service-checkbox:hover{border-color:rgba(201,169,110,.25)}
+.service-checkbox.selected{background:rgba(201,169,110,.08);border-color:#c9a96e}
+.service-checkbox input{display:none}
+.service-checkbox .s-name{flex:1;color:#f0e6d0;font-size:.9rem}
+.service-checkbox .s-price{color:#c9a96e;font-weight:600;font-size:.85rem}
+.service-checkbox .s-duration{color:#8b6914;font-size:.75rem;margin-left:6px}
+.booking-summary{background:#1f1913;border:1px solid rgba(201,169,110,.08);border-radius:12px;padding:36px;display:flex;flex-direction:column;justify-content:center}
+.booking-summary h3{font-size:1.5rem;margin-bottom:24px;text-align:center}
+.summary-details{margin-bottom:24px}
+.summary-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(201,169,110,.06)}
+.summary-row:last-child{border-bottom:none}
+.summary-row .label{color:#8b7a62}
+.summary-row .value{color:#f0e6d0;font-weight:500}
+.summary-total{display:flex;justify-content:space-between;padding:16px 0 0;margin-top:8px;border-top:1px solid rgba(201,169,110,.15);font-size:1.1rem}
+.summary-total .label{color:#c9a96e;font-weight:600}
+.summary-total .value{color:#c9a96e;font-weight:700;font-size:1.3rem}
+.summary-stylist{display:flex;align-items:center;gap:10px;background:rgba(201,169,110,.05);padding:10px 14px;border-radius:6px;margin-bottom:16px}
+.summary-stylist svg{width:20px;height:20px;flex-shrink:0;color:#c9a96e}
+.summary-stylist span{color:#b8a88e;font-size:.9rem}
+.summary-stylist strong{color:#c9a96e}
+#submitBooking{width:100%;padding:14px;font-size:1.05rem;display:flex;align-items:center;justify-content:center;gap:10px}
+#submitBooking svg{width:18px;height:18px}
+
+/* ===== CHATBOT ===== */
+.chatbot-btn{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#c9a96e,#8b6914);color:#1a1510;border:none;cursor:pointer;z-index:999;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(201,169,110,.3);transition:all .3s}
+.chatbot-btn:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(201,169,110,.4)}
+.chatbot-btn svg{width:24px;height:24px}
+.chatbot-widget{position:fixed;bottom:92px;right:24px;width:360px;max-height:520px;background:#1f1913;border:1px solid rgba(201,169,110,.15);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.5);z-index:999;display:none;flex-direction:column;overflow:hidden;border:1px solid rgba(201,169,110,.15)}
+.chatbot-widget.open{display:flex}
+.chatbot-header{padding:18px 20px;background:linear-gradient(135deg,#1a1510,#2a2018);border-bottom:1px solid rgba(201,169,110,.1);display:flex;justify-content:space-between;align-items:center}
+.chatbot-header h4{font-size:1rem;color:#c9a96e}
+.chatbot-header h4 span{display:block;font-size:.75rem;color:#8b7a62;font-family:'Rajdhani',sans-serif;font-weight:400;letter-spacing:1px;text-transform:uppercase}
+.chatbot-close{background:none;border:none;color:#8b7a62;cursor:pointer;font-size:1.4rem;line-height:1;padding:0 4px;transition:color .3s}
+.chatbot-close:hover{color:#c9a96e}
+.chatbot-messages{flex:1;padding:16px;overflow-y:auto;max-height:340px;display:flex;flex-direction:column;gap:8px}
+.chatbot-messages::-webkit-scrollbar{width:4px}
+.chatbot-messages::-webkit-scrollbar-track{background:transparent}
+.chatbot-messages::-webkit-scrollbar-thumb{background:rgba(201,169,110,.2);border-radius:4px}
+.msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:.9rem;line-height:1.5;animation:fadeIn .3s ease}
+.msg.bot{background:rgba(201,169,110,.08);color:#d4c8b8;align-self:flex-start;border-bottom-left-radius:4px}
+.msg.user{background:linear-gradient(135deg,#c9a96e,#8b6914);color:#1a1510;align-self:flex-end;border-bottom-right-radius:4px}
+.msg.faq{background:transparent;color:#c9a96e;align-self:flex-start;cursor:pointer;padding:8px 0;font-size:.85rem;border-bottom:1px dashed rgba(201,169,110,.15);transition:color .3s;display:flex;align-items:center;gap:6px}
+.msg.faq:hover{color:#e8d5a3}
+.msg.faq svg{width:14px;height:14px;flex-shrink:0}
+.chatbot-input{display:flex;padding:12px;border-top:1px solid rgba(201,169,110,.08);gap:8px;background:#1a1510}
+.chatbot-input input{flex:1;padding:10px 14px;background:#1f1913;border:1px solid rgba(201,169,110,.15);border-radius:24px;color:#f0e6d0;font-family:'Rajdhani',sans-serif;font-size:.9rem;outline:none;transition:border .3s}
+.chatbot-input input:focus{border-color:#c9a96e}
+.chatbot-input input::placeholder{color:#5a4d3a}
+.chatbot-input button{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#c9a96e,#8b6914);color:#1a1510;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s}
+.chatbot-input button:hover{transform:scale(1.05)}
+.chatbot-input button svg{width:16px;height:16px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== FOOTER ===== */
+.footer{background:#12100c;border-top:1px solid rgba(201,169,110,.06);padding:40px 0 24px}
+.footer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-bottom:32px}
+.footer h4{font-size:1.1rem;color:#c9a96e;margin-bottom:16px}
+.footer p,.footer a{color:#8b7a62;font-size:.9rem;line-height:1.8}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:4px}
+.footer-links a{color:#8b7a62;transition:color .3s}
+.footer-links a:hover{color:#c9a96e}
+.footer-bottom{text-align:center;padding-top:24px;border-top:1px solid rgba(201,169,110,.06);color:#5a4d3a;font-size:.85rem}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;top:80px;right:24px;padding:14px 24px;background:#1f1913;border:1px solid rgba(201,169,110,.2);border-radius:8px;color:#f0e6d0;font-size:.9rem;z-index:9999;transform:translateX(120%);transition:transform .4s;box-shadow:0 8px 30px rgba(0,0,0,.4);max-width:360px}
+.toast.show{transform:translateX(0)}
+.toast.error{border-color:rgba(255,80,80,.3)}
+.toast.error .toast-title{color:#ff5050}
+.toast.success{border-color:rgba(201,169,110,.3)}
+.toast.success .toast-title{color:#c9a96e}
+.toast-title{font-weight:600;margin-bottom:4px;font-family:'Playfair Display',serif}
+.toast-msg{color:#8b7a62;font-size:.85rem}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:968px){
+  .about-grid,.booking-wrapper,.location-grid{grid-template-columns:1fr}
+  .services-grid,.stylists-grid{grid-template-columns:repeat(2,1fr)}
+  .reviews-grid{grid-template-columns:repeat(2,1fr)}
+  .gallery-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-title{font-size:3.2rem}
+  .about-image{height:280px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .nav-links{display:none;position:fixed;top:60px;left:0;right:0;background:rgba(26,21,16,.98);backdrop-filter:blur(12px);flex-direction:column;padding:20px 30px;gap:16px;border-bottom:1px solid rgba(201,169,110,.1)}
+  .nav-links.open{display:flex}
+  .nav-toggle{display:flex}
+  .hero-title{font-size:2.5rem}
+  .hero-sub{font-size:.9rem;letter-spacing:4px}
+  .section{padding:60px 0}
+  .section-title h2{font-size:1.8rem}
+  .services-grid,.stylists-grid,.reviews-grid,.gallery-grid{grid-template-columns:1fr}
+  .booking-form-wrap,.booking-summary{padding:24px}
+  .form-row{grid-template-columns:1fr}
+  .service-checkboxes{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .chatbot-widget{width:calc(100vw - 32px);right:16px;bottom:88px;max-height:460px}
+  .location-map{height:280px}
+  .hours-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast">
+  <div class="toast-title" id="toastTitle">Aviso</div>
+  <div class="toast-msg" id="toastMsg">Mensaje</div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav id="navbar">
+  <div class="container nav-inner">
+    <a href="#hero" class="nav-logo">ESTILO<span>.</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#services" class="active">Servicios</a></li>
+      <li><a href="#stylists">Estilistas</a></li>
+      <li><a href="#gallery">Galería</a></li>
+      <li><a href="#reviews">Opiniones</a></li>
+      <li><a href="#booking">Reservar</a></li>
+      <li><a href="#location">Contacto</a></li>
+    </ul>
+    <div class="nav-toggle" id="navToggle" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Barbería & Peluquería en Illescas</div>
+    <h1 class="hero-title">ESTILO</h1>
+    <p class="hero-sub">Tu look, nuestra pasión</p>
+    <div class="hero-divider"></div>
+    <p class="hero-desc">En el corazón de Illescas, transformamos tu estilo con cortes modernos, coloración profesional y barbería clásica. Tu imagen es nuestra obra de arte.</p>
+    <div class="hero-buttons">
+      <a href="#booking" class="btn">Reserva tu cita</a>
+      <a href="#services" class="btn btn-outline">Ver servicios</a>
+    </div>
+  </div>
+  <div class="scroll-indicator" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
+    <svg viewBox="0 0 24 24"><path d="M7 13l5 5 5-5M7 6l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="about section" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-image">
+        <svg viewBox="0 0 160 160" fill="none">
+          <circle cx="80" cy="80" r="75" stroke="#c9a96e" stroke-width="1" opacity=".3"/>
+          <circle cx="80" cy="80" r="60" stroke="#c9a96e" stroke-width=".5" opacity=".15"/>
+          <path d="M50,90 Q65,50 80,45 Q95,50 110,90" stroke="#c9a96e" stroke-width="1.5" fill="none" opacity=".6"/>
+          <path d="M55,88 Q68,58 80,54 Q92,58 105,88" stroke="#c9a96e" stroke-width=".8" fill="none" opacity=".3"/>
+          <path d="M60,60 L80,80 M80,80 L100,60 M80,80 L80,105" stroke="#c9a96e" stroke-width="1.2" fill="none" opacity=".4" stroke-linecap="round"/>
+          <circle cx="80" cy="80" r="4" fill="#c9a96e" opacity=".6"/>
+          <text x="80" y="132" font-family="Playfair Display" font-size="11" fill="#c9a96e" text-anchor="middle" opacity=".5">ESTILO</text>
+        </svg>
+      </div>
+      <div class="about-text">
+        <h3>Más que una barbería,<br>una experiencia de estilo</h3>
+        <p>En ESTILO combinamos la tradición de la barbería clásica con las últimas tendencias en peluquería. Nuestro equipo de profesionales apasionados trabaja para realzar tu imagen y hacerte sentir único.</p>
+        <p>Ubicados en Calle Real, 12, Illescas, somos tu destino de confianza para cortes de hombre y mujer, coloración, mechas, peinados y tratamientos capilares.</p>
+        <div class="about-features">
+          <div class="about-feature">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 1v16M1 9h16"/><circle cx="9" cy="9" r="8"/></svg>
+            Profesionales cualificados
+          </div>
+          <div class="about-feature">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 1v16M1 9h16"/><circle cx="9" cy="9" r="8"/></svg>
+            Productos premium
+          </div>
+          <div class="about-feature">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 1v16M1 9h16"/><circle cx="9" cy="9" r="8"/></svg>
+            Ambiente exclusivo
+          </div>
+          <div class="about-feature">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 1v16M1 9h16"/><circle cx="9" cy="9" r="8"/></svg>
+            Atención personalizada
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="services section" id="services">
+  <div class="container">
+    <div class="section-title">
+      <p>Nuestros Servicios</p>
+      <h2>Tu estilo empieza aquí</h2>
+    </div>
+    <div class="services-grid" id="servicesGrid"></div>
+  </div>
+</section>
+
+<!-- ===== STYLISTS ===== -->
+<section class="stylists section" id="stylists">
+  <div class="container">
+    <div class="section-title">
+      <p>Conoce a tu estilista</p>
+      <h2>Nuestro equipo</h2>
+    </div>
+    <div class="stylists-grid" id="stylistsGrid"></div>
+  </div>
+</section>
+
+<!-- ===== GALLERY ===== -->
+<section class="gallery section" id="gallery">
+  <div class="container">
+    <div class="section-title">
+      <p>Nuestro trabajo</p>
+      <h2>Galería</h2>
+    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
+</section>
+
+<!-- ===== REVIEWS ===== -->
+<section class="reviews section" id="reviews">
+  <div class="container">
+    <div class="section-title">
+      <p>Clientes que nos recomiendan</p>
+      <h2>Opiniones</h2>
+    </div>
+    <div class="reviews-grid" id="reviewsGrid"></div>
+  </div>
+</section>
+
+<!-- ===== BOOKING ===== -->
+<section class="booking section" id="booking">
+  <div class="container">
+    <div class="section-title">
+      <p>Reserva tu cita</p>
+      <h2>Pide cita online</h2>
+    </div>
+    <div class="booking-wrapper">
+      <div class="booking-form-wrap">
+        <h3>Datos de la reserva</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bookingName">Nombre</label>
+            <input type="text" id="bookingName" placeholder="Tu nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="bookingPhone">Teléfono</label>
+            <input type="tel" id="bookingPhone" placeholder="Tu teléfono" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="bookingDate">Fecha</label>
+            <input type="date" id="bookingDate" required>
+          </div>
+          <div class="form-group">
+            <label for="bookingTime">Hora</label>
+            <select id="bookingTime" required><option value="">Seleccionar hora</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Servicios (selecciona uno o más)</label>
+          <div id="serviceCheckboxes" class="service-checkboxes"></div>
+        </div>
+        <div class="form-group">
+          <label for="bookingStylist">Estilista preferido</label>
+          <select id="bookingStylist" required>
+            <option value="">Cualquier estilista</option>
+          </select>
+        </div>
+      </div>
+      <div class="booking-summary">
+        <h3>Resumen de tu cita</h3>
+        <div id="summaryDetails" class="summary-details">
+          <div class="summary-row"><span class="label">Fecha</span><span class="value" id="summaryDate">—</span></div>
+          <div class="summary-row"><span class="label">Hora</span><span class="value" id="summaryTime">—</span></div>
+          <div class="summary-row"><span class="label">Servicios</span><span class="value" id="summaryServices">—</span></div>
+          <div class="summary-row"><span class="label">Duración total</span><span class="value" id="summaryDuration">—</span></div>
+          <div class="summary-stylist" id="summaryStylistRow" style="display:none;">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="7" r="3"/><path d="M3 18c0-4 3-7 7-7s7 3 7 7"/></svg>
+            <span>Tu estilista: <strong id="summaryStylist">—</strong></span>
+          </div>
+        </div>
+        <div class="summary-total"><span class="label">Total</span><span class="value" id="summaryTotal">0 €</span></div>
+        <button id="submitBooking" class="btn" onclick="submitBooking()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+          Reservar por WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LOCATION ===== -->
+<section class="location section" id="location">
+  <div class="container">
+    <div class="section-title">
+      <p>Visítanos</p>
+      <h2>Encuéntranos</h2>
+    </div>
+    <div class="location-grid">
+      <div class="location-info">
+        <h3>ESTILO Barbería & Peluquería</h3>
+        <div class="location-detail">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M19 10c0 6-8 12-8 12S3 16 3 10a8 8 0 1116 0z"/><circle cx="11" cy="10" r="3"/></svg>
+          <div><strong>Dirección</strong><span>Calle Real, 12, 45200 Illescas, Toledo</span></div>
+        </div>
+        <div class="location-detail">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <div><strong>Teléfono</strong><span><a href="tel:+34658237988">658 23 79 88</a></span></div>
+        </div>
+        <div class="location-detail">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2v2M12 18v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M18 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="5"/></svg>
+          <div><strong>Horario</strong>
+            <div class="hours-grid">
+              <span class="day">Lunes</span><span class="time" style="color:#5a4d3a">Cerrado</span>
+              <span class="day">Martes - Viernes</span><span class="time">9:00 - 14:00 · 16:00 - 20:00</span>
+              <span class="day">Sábado</span><span class="time">9:00 - 14:00 · 16:00 - 20:00</span>
+              <span class="day">Domingo</span><span class="time" style="color:#5a4d3a">Cerrado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="location-map">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M41 20c0 13-17 26-17 26S7 33 7 20a17 17 0 1134 0z"/><circle cx="24" cy="20" r="7"/></svg>
+        <span>Calle Real, 12, Illescas</span>
+        <a href="https://maps.google.com/?q=Calle+Real+12+Illescas" target="_blank" class="btn btn-outline" style="padding:8px 20px;font-size:.85rem">Ver en Google Maps</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>ESTILO</h4>
+        <p>Barbería y peluquería profesional en Illescas. Transformamos tu estilo con dedicación y arte.</p>
+      </div>
+      <div>
+        <h4>Enlaces</h4>
+        <ul class="footer-links">
+          <li><a href="#services">Servicios</a></li>
+          <li><a href="#stylists">Estilistas</a></li>
+          <li><a href="#gallery">Galería</a></li>
+          <li><a href="#booking">Reservar cita</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <p>Calle Real, 12, Illescas</p>
+        <p><a href="tel:+34658237988">658 23 79 88</a></p>
+        <p>Mar-Sáb: 9:00-14:00 · 16:00-20:00</p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 ESTILO Barbería & Peluquería. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<!-- ===== CHATBOT ===== -->
+<button class="chatbot-btn" id="chatbotBtn" onclick="toggleChatbot()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+</button>
+<div class="chatbot-widget" id="chatbotWidget">
+  <div class="chatbot-header">
+    <div>
+      <h4>Asistente ESTILO</h4>
+      <span>Pregúntanos lo que necesites</span>
+    </div>
+    <button class="chatbot-close" onclick="toggleChatbot()">✕</button>
+  </div>
+  <div class="chatbot-messages" id="chatbotMessages"></div>
+  <div class="chatbot-input">
+    <input type="text" id="chatbotInput" placeholder="Escribe tu mensaje..." onkeydown="if(event.key==='Enter') sendChatbotMsg()">
+    <button onclick="sendChatbotMsg()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const SERVICES = [
+  {id:'corte-hombre',name:'Corte Hombre',duration:15,price:12,icon:'✂️'},
+  {id:'corte-mujer',name:'Corte Mujer',duration:20,price:18,icon:'✂️'},
+  {id:'tinte',name:'Tinte',duration:45,price:35,icon:'🎨'},
+  {id:'mechas',name:'Mechas',duration:60,price:45,icon:'✨'},
+  {id:'peinado',name:'Peinado',duration:30,price:20,icon:'💇'},
+  {id:'cejas',name:'Cejas',duration:10,price:8,icon:'🪞'}
+];
+
+const STYLISTS = [
+  {id:'laura',name:'Laura',role:'Especialista en Color',bio:'Experta en coloración avanzada, mechas y tratamientos capilares. Transforma cualquier look con tonos vibrantes y naturales.',avatar:'L'},
+  {id:'carlos',name:'Carlos',role:'Barbería Clásica',bio:'Maestro barbero con 15 años de experiencia. Cortes clásicos, degradados, arreglo de barba y estilo tradicional con acabado impecable.',avatar:'C'},
+  {id:'ana',name:'Ana',role:'Peinados y Novias',bio:'Especialista en peinados de novia, recogidos elegantes y looks para ocasiones especiales. Creatividad y delicadeza en cada detalle.',avatar:'A'}
+];
+
+const GALLERY_ITEMS = ['1','2','3','4','5','6'];
+const GALLERY_LABELS = ['Corte Moderno','Color & Tinte','Peinados','Barbería Clásica','Mechas','Peinados Novia'];
+
+const REVIEWS = [
+  {author:'María García',text:'Increíble experiencia. Laura hizo un trabajo espectacular con mi tinte. El color quedó exactamente como lo imaginaba. ¡Volveré sin duda!',stars:5},
+  {author:'Javier López',text:'Carlos es un artista con la tijera. El mejor corte degradado que me han hecho nunca. Ambiente súper agradable y trato excelente.',stars:5},
+  {author:'Elena Martínez',text:'Ana me peinó para mi boda y fue sencillamente perfecto. Estaba radiante gracias a su talento. Profesional y encantadora.',stars:5},
+  {author:'Pedro Sánchez',text:'Local con mucho encanto en pleno centro de Illescas. Precios muy razonables para la calidad que ofrecen. Recomendable 100%.',stars:5},
+  {author:'Carmen Ruiz',text:'Me hice mechas con Laura y el resultado es natural y precioso. Explica todo muy bien y aconseja según tu tipo de cabello.',stars:5},
+  {author:'David Fernández',text:'Voy cada mes a que Carlos me arregle la barba y el corte. Nunca sales defraudado. Un verdadero profesional.',stars:5}
+];
+
+// ===== RENDER SERVICES =====
+function renderServices(){
+  const grid = document.getElementById('servicesGrid');
+  grid.innerHTML = SERVICES.map(s => `
+    <div class="service-card">
+      <div class="service-icon">
+        <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="18" cy="10" r="7" stroke-linecap="round"/>
+          <path d="M6 32c0-7 5-12 12-12s12 5 12 12" stroke-linecap="round"/>
+          <path d="M14 8l-6-4M22 8l6-4M18 3V1" stroke-linecap="round" opacity=".5"/>
+        </svg>
+      </div>
+      <h4>${s.name}</h4>
+      <p>${s.duration} min</p>
+      <span class="duration">${s.icon}</span>
+      <span class="price">${s.price} €</span>
+    </div>
+  `).join('');
+}
+
+// ===== RENDER STYLISTS =====
+function renderStylists(){
+  const grid = document.getElementById('stylistsGrid');
+  grid.innerHTML = STYLISTS.map(s => `
+    <div class="stylist-card" onclick="selectStylist('${s.id}')">
+      <div class="stylist-avatar">
+        <svg viewBox="0 0 50 50" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="25" cy="18" r="9" stroke-linecap="round"/>
+          <path d="M8 44c0-10 7-17 17-17s17 7 17 17" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h4>${s.name}</h4>
+      <div class="role">${s.role}</div>
+      <p class="bio">${s.bio}</p>
+    </div>
+  `).join('');
+}
+
+// ===== RENDER GALLERY =====
+function renderGallery(){
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = GALLERY_ITEMS.map((img, i) => `
+    <div class="gallery-item">
+      <img src="gallery/${img}.svg" alt="${GALLERY_LABELS[i]}" loading="lazy">
+      <div class="gallery-overlay"><span>${GALLERY_LABELS[i]}</span></div>
+    </div>
+  `).join('');
+}
+
+// ===== RENDER REVIEWS =====
+function renderReviews(){
+  const grid = document.getElementById('reviewsGrid');
+  grid.innerHTML = REVIEWS.map(r => `
+    <div class="review-card">
+      <div class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+      <p class="review-text">"${r.text}"</p>
+      <div class="review-author">${r.author} <span>· Cliente</span></div>
+    </div>
+  `).join('');
+}
+
+// ===== BOOKING LOGIC =====
+const OPENING_DAYS = {1:'Lunes',2:'Martes',3:'Miércoles',4:'Jueves',5:'Viernes',6:'Sábado',0:'Domingo'};
+const OPENING_HOURS = [
+  {start:'09:00',end:'14:00'},
+  {start:'16:00',end:'20:00'}
+];
+const SLOT_INTERVAL = 15; // minutes
+
+function generateTimeSlots(){
+  const select = document.getElementById('bookingTime');
+  select.innerHTML = '<option value="">Seleccionar hora</option>';
+  const slots = [];
+  OPENING_HOURS.forEach(block => {
+    let [h,m] = block.start.split(':').map(Number);
+    const [eh,em] = block.end.split(':').map(Number);
+    const endMin = eh*60 + em;
+    while(h*60+m < endMin){
+      const hh = String(h).padStart(2,'0');
+      const mm = String(m).padStart(2,'0');
+      slots.push(`${hh}:${mm}`);
+      m += SLOT_INTERVAL;
+      if(m >= 60){h++; m=0;}
+    }
+  });
+  slots.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t;
+    opt.textContent = t;
+    select.appendChild(opt);
+  });
+}
+
+function setMinDate(){
+  const input = document.getElementById('bookingDate');
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = String(today.getMonth()+1).padStart(2,'0');
+  const d = String(today.getDate()).padStart(2,'0');
+  input.min = `${y}-${m}-${d}`;
+  input.value = `${y}-${m}-${d}`;
+}
+
+function getDayName(dateStr){
+  const d = new Date(dateStr+'T12:00:00');
+  return d.getDay();
+}
+
+function validateDate(){
+  const dateInput = document.getElementById('bookingDate');
+  const day = getDayName(dateInput.value);
+  if(day === 1){ // Monday
+    showToast('Horario','Lo siento, cerramos los lunes. Por favor, elige otro día.','error');
+    dateInput.value = '';
+    updateSummary();
+    return false;
+  }
+  if(day === 0){ // Sunday
+    showToast('Horario','Lo siento, cerramos los domingos. Por favor, elige otro día.','error');
+    dateInput.value = '';
+    updateSummary();
+    return false;
+  }
+  updateSummary();
+  return true;
+}
+
+function renderServiceCheckboxes(){
+  const container = document.getElementById('serviceCheckboxes');
+  container.innerHTML = SERVICES.map(s => `
+    <label class="service-checkbox" onclick="toggleService(this,'${s.id}')">
+      <input type="checkbox" value="${s.id}">
+      <span class="s-name">${s.name}</span>
+      <span class="s-duration">${s.duration}min</span>
+      <span class="s-price">${s.price}€</span>
+    </label>
+  `).join('');
+}
+
+function toggleService(el, id){
+  el.classList.toggle('selected');
+  const cb = el.querySelector('input');
+  cb.checked = !cb.checked;
+  updateSummary();
+}
+
+function renderStylistSelect(){
+  const select = document.getElementById('bookingStylist');
+  select.innerHTML = '<option value="">Cualquier estilista</option>';
+  STYLISTS.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.name + ' — ' + s.role;
+    select.appendChild(opt);
+  });
+}
+
+function updateSummary(){
+  const date = document.getElementById('bookingDate').value;
+  const time = document.getElementById('bookingTime').value;
+  const selected = document.querySelectorAll('#serviceCheckboxes .service-checkbox.selected');
+  const stylistEl = document.getElementById('bookingStylist');
+  const stylistName = stylistEl.value ? STYLISTS.find(s => s.id === stylistEl.value)?.name : '';
+
+  document.getElementById('summaryDate').textContent = date ? new Date(date+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}) : '—';
+  document.getElementById('summaryTime').textContent = time || '—';
+
+  if(selected.length){
+    const names = Array.from(selected).map(el => {
+      const id = el.querySelector('input').value;
+      return SERVICES.find(s => s.id === id)?.name;
+    }).join(', ');
+    const totalMin = Array.from(selected).reduce((sum, el) => {
+      const id = el.querySelector('input').value;
+      return sum + (SERVICES.find(s => s.id === id)?.duration || 0);
+    }, 0);
+    const totalPrice = Array.from(selected).reduce((sum, el) => {
+      const id = el.querySelector('input').value;
+      return sum + (SERVICES.find(s => s.id === id)?.price || 0);
+    }, 0);
+    const hours = Math.floor(totalMin / 60);
+    const mins = totalMin % 60;
+    const durStr = hours > 0 ? `${hours}h ${mins}min` : `${mins}min`;
+    document.getElementById('summaryServices').textContent = names;
+    document.getElementById('summaryDuration').textContent = durStr;
+    document.getElementById('summaryTotal').textContent = totalPrice + ' €';
+  } else {
+    document.getElementById('summaryServices').textContent = '—';
+    document.getElementById('summaryDuration').textContent = '—';
+    document.getElementById('summaryTotal').textContent = '0 €';
+  }
+
+  const stylistRow = document.getElementById('summaryStylistRow');
+  if(stylistName){
+    stylistRow.style.display = 'flex';
+    document.getElementById('summaryStylist').textContent = stylistName;
+  } else {
+    stylistRow.style.display = 'none';
+  }
+
+  // Enable/disable submit
+  const submitBtn = document.getElementById('submitBooking');
+  submitBtn.disabled = !(date && time && selected.length);
+  submitBtn.style.opacity = submitBtn.disabled ? '.5' : '1';
+}
+
+function selectStylist(id){
+  document.getElementById('bookingStylist').value = id;
+  document.querySelectorAll('.stylist-card').forEach((el,i) => {
+    el.classList.toggle('selected', STYLISTS[i].id === id);
+  });
+  updateSummary();
+}
+
+// ===== SUBMIT BOOKING =====
+function submitBooking(){
+  const name = document.getElementById('bookingName').value.trim();
+  const phone = document.getElementById('bookingPhone').value.trim();
+  const date = document.getElementById('bookingDate').value;
+  const time = document.getElementById('bookingTime').value;
+  const selected = document.querySelectorAll('#serviceCheckboxes .service-checkbox.selected');
+  const stylistId = document.getElementById('bookingStylist').value;
+
+  if(!name){showToast('Falta tu nombre','Por favor, introduce tu nombre para la reserva.','error');return;}
+  if(!phone){showToast('Falta tu teléfono','Necesitamos tu teléfono para confirmar la cita.','error');return;}
+  if(!date){showToast('Selecciona una fecha','Por favor, elige un día para tu cita.','error');return;}
+  if(!time){showToast('Selecciona una hora','Por favor, elige una hora disponible.','error');return;}
+  if(!selected.length){showToast('Selecciona servicios','Elige al menos un servicio para tu cita.','error');return;}
+
+  // Duplicate check
+  const key = `estilo_booking_${date}_${time}`;
+  const existing = localStorage.getItem(key);
+  if(existing){
+    showToast('Ya existe una reserva','Este horario ya está reservado. Por favor, elige otra fecha u hora.','error');
+    return;
+  }
+
+  const stylistObj = stylistId ? STYLISTS.find(s => s.id === stylistId) : null;
+  const stylistName = stylistObj ? stylistObj.name : 'Sin preferencia';
+
+  const serviceNames = Array.from(selected).map(el => {
+    const id = el.querySelector('input').value;
+    return SERVICES.find(s => s.id === id)?.name;
+  });
+  const totalPrice = Array.from(selected).reduce((sum, el) => {
+    const id = el.querySelector('input').value;
+    return sum + (SERVICES.find(s => s.id === id)?.price || 0);
+  }, 0);
+  const totalMin = Array.from(selected).reduce((sum, el) => {
+    const id = el.querySelector('input').value;
+    return sum + (SERVICES.find(s => s.id === id)?.duration || 0);
+  }, 0);
+  const hours = Math.floor(totalMin / 60);
+  const mins = totalMin % 60;
+  const durStr = hours > 0 ? `${hours}h ${mins}min` : `${mins}min`;
+
+  const dateStr = new Date(date+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+
+  // Build WhatsApp message
+  let msg = `Hola ESTILO! Quiero reservar una cita:%0A%0A`;
+  msg += `👤 *Nombre:* ${name}%0A`;
+  msg += `📞 *Teléfono:* ${phone}%0A`;
+  msg += `📅 *Fecha:* ${dateStr}%0A`;
+  msg += `⏰ *Hora:* ${time}%0A`;
+  msg += `✂️ *Servicios:* ${serviceNames.join(', ')}%0A`;
+  msg += `⏱️ *Duración:* ${durStr}%0A`;
+  msg += `💰 *Total:* ${totalPrice}€%0A`;
+  msg += `💇 *Estilista:* ${stylistName}`;
+
+  // Save to localStorage
+  localStorage.setItem(key, JSON.stringify({name,phone,date,time,stylist:stylistName,services:serviceNames,price:totalPrice}));
+
+  // Open WhatsApp
+  const whatsapp = `https://wa.me/34658237988?text=${msg}`;
+  window.open(whatsapp, '_blank');
+
+  showToast('¡Cita enviada!','Te redirigimos a WhatsApp para confirmar. Revisa tu mensaje.','success');
+}
+
+// ===== CHATBOT =====
+const FAQS = [
+  {q:'¿Cuál es el horario?',a:'Abrimos de martes a sábado de 9:00 a 14:00 y de 16:00 a 20:00. Cerramos lunes y domingo.'},
+  {q:'¿Cómo reservo una cita?',a:'Puedes reservar online en nuestra web seleccionando fecha, hora y servicios. También por WhatsApp al 658 23 79 88.'},
+  {q:'¿Aceptáis tarjeta?',a:'Sí, aceptamos efectivo y tarjetas de crédito/débito.'},
+  {q:'¿Cuánto dura un corte?',a:'El corte de hombre dura unos 15 min y el de mujer unos 20 min. Depende del estilo y acabado.'},
+  {q:'¿Hacéis peinados de novia?',a:'¡Sí! Ana es nuestra especialista en peinados de novia y ocasiones especiales. Recomendamos reservar con antelación.'},
+  {q:'¿Precio del tinte?',a:'El tinte completo son 35€ (unos 45 min). Las mechas son 45€ (60 min). Incluye lavado y acabado.'},
+  {q:'¿Dónde estáis?',a:'En Calle Real, 12, Illescas. Muy cerca de la Plaza de la Constitución.'},
+  {q:'¿Atendéis sin cita?',a:'Preferimos cita previa para garantizarte atención. Pero si tenemos hueco, te atendemos encantados.'}
+];
+
+let chatOpen = false;
+let chatInitialized = false;
+
+function toggleChatbot(){
+  const widget = document.getElementById('chatbotWidget');
+  chatOpen = !chatOpen;
+  widget.classList.toggle('open');
+  if(chatOpen && !chatInitialized){
+    initChatbot();
+  }
+}
+
+function initChatbot(){
+  chatInitialized = true;
+  const msgs = document.getElementById('chatbotMessages');
+  msgs.innerHTML = `
+    <div class="msg bot">¡Hola! 👋 Soy el asistente de <strong>ESTILO</strong>. ¿En qué puedo ayudarte?</div>
+    <div class="msg bot">Aquí tienes algunas preguntas frecuentes:</div>
+  `;
+  FAQS.forEach((f,i) => {
+    msgs.innerHTML += `<div class="msg faq" onclick="askFAQ(${i})">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="6"/><path d="M5.5 5.5A1.5 1.5 0 018 7"/><circle cx="7" cy="9.5" r=".5" fill="currentColor"/></svg>
+      ${f.q}
+    </div>`;
+  });
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function askFAQ(i){
+  const msgs = document.getElementById('chatbotMessages');
+  const faq = FAQS[i];
+  msgs.innerHTML += `<div class="msg user">${faq.q}</div>`;
+  msgs.innerHTML += `<div class="msg bot">${faq.a}</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function sendChatbotMsg(){
+  const input = document.getElementById('chatbotInput');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  const msgs = document.getElementById('chatbotMessages');
+  msgs.innerHTML += `<div class="msg user">${text}</div>`;
+
+  // Simple auto-response
+  const lower = text.toLowerCase();
+  let response = '';
+  if(lower.includes('horario')||lower.includes('abierto')||lower.includes('cerrado')) response = 'Abrimos de martes a sábado, 9:00-14:00 y 16:00-20:00. Cerramos lunes y domingo.';
+  else if(lower.includes('precio')||lower.includes('tarifa')||lower.includes('costar')||lower.includes('cuánto')||lower.includes('€')||lower.includes('euro')) response = 'Corte hombre: 12€ (15min) | Corte mujer: 18€ (20min) | Tinte: 35€ (45min) | Mechas: 45€ (60min) | Peinado: 20€ (30min) | Cejas: 8€ (10min)';
+  else if(lower.includes('reserv')||lower.includes('cita')||lower.includes('teléfono')||lower.includes('llamar')) response = 'Puedes reservar online en nuestra web o llamarnos al 658 23 79 88. ¡También por WhatsApp!';
+  else if(lower.includes('dirección')||lower.includes('dónde')||lower.includes('ubicación')||lower.includes('mapa')) response = 'Estamos en Calle Real, 12, Illescas (Toledo). Muy céntrico, cerca de la Plaza de la Constitución.';
+  else if(lower.includes('estilista')||lower.includes('laura')||lower.includes('carlos')||lower.includes('ana')) response = 'Tenemos 3 profesionales: Laura (especialista en color), Carlos (barbería clásica) y Ana (peinados y novias). Puedes elegir tu preferido al reservar.';
+  else if(lower.includes('gracias')||lower.includes('vale')||lower.includes('ok')) response = '¡De nada! 😊 Si necesitas algo más, aquí estoy. Puedes reservar tu cita directamente en la sección "Reservar" de nuestra web.';
+  else response = 'Perdona, no he entendido bien. Puedes preguntarme sobre horarios, precios, servicios, reservas o nuestra ubicación. O llámanos al 658 23 79 88 📞';
+
+  msgs.innerHTML += `<div class="msg bot">${response}</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ===== TOAST =====
+function showToast(title, msg, type = 'info'){
+  const toast = document.getElementById('toast');
+  const tTitle = document.getElementById('toastTitle');
+  const tMsg = document.getElementById('toastMsg');
+  toast.className = 'toast ' + type;
+  tTitle.textContent = title;
+  tMsg.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// ===== NAV TOGGLE =====
+function toggleNav(){
+  const links = document.getElementById('navLinks');
+  const toggle = document.getElementById('navToggle');
+  links.classList.toggle('open');
+  toggle.classList.toggle('active');
+}
+
+// ===== NAV SCROLL =====
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+  // Active link
+  const sections = ['services','stylists','gallery','reviews','booking','location'];
+  let active = 'services';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if(el && window.scrollY >= el.offsetTop - 150) active = id;
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#'+active);
+  });
+  // Close mobile nav on scroll
+  if(window.innerWidth <= 640){
+    document.getElementById('navLinks').classList.remove('open');
+    document.getElementById('navToggle').classList.remove('active');
+  }
+});
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  renderServices();
+  renderStylists();
+  renderGallery();
+  renderReviews();
+  renderServiceCheckboxes();
+  renderStylistSelect();
+  generateTimeSlots();
+  setMinDate();
+
+  // Event listeners
+  document.getElementById('bookingDate').addEventListener('change', validateDate);
+  document.getElementById('bookingDate').addEventListener('change', updateSummary);
+  document.getElementById('bookingTime').addEventListener('change', updateSummary);
+  document.getElementById('bookingStylist').addEventListener('change', updateSummary);
+  document.getElementById('bookingName').addEventListener('input', updateSummary);
+  document.getElementById('bookingPhone').addEventListener('input', updateSummary);
+
+  // Close chat on Escape
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && chatOpen) toggleChatbot();
+  });
+
+  // Close mobile nav on link click
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('navLinks').classList.remove('open');
+      document.getElementById('navToggle').classList.remove('active');
+    });
+  });
+
+  updateSummary();
+});
+</script>
+</body>
+</html>

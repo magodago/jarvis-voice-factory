@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REFORMA TOTAL - Reformas en Illescas | Llave en mano</title>
+<meta name="description" content="REFORMA TOTAL en Illescas. Reformas integrales de baños, cocinas y pisos completos. Presupuesto gratis. Calidad y confianza.">
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#e8672b;
+  --orange-dark:#c85a1f;
+  --orange-light:#f07a3e;
+  --dark:#2a2a2a;
+  --dark2:#1a1a1a;
+  --light:#f5f5f0;
+  --light2:#e8e8e0;
+  --gray:#6b6b6b;
+  --gray-light:#9a9a9a;
+  --white:#ffffff;
+  --shadow:0 8px 32px rgba(0,0,0,0.12);
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.08);
+  --radius:12px;
+  --radius-sm:8px;
+  --transition:all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--dark);background:var(--light);line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.container{max-width:1200px;margin:0 auto;padding:0 24px;width:100%}
+.section{padding:80px 0}
+.section-title{font-size:clamp(28px,4vw,42px);font-weight:800;text-align:center;margin-bottom:16px;color:var(--dark)}
+.section-subtitle{text-align:center;color:var(--gray);font-size:18px;max-width:600px;margin:0 auto 48px;line-height:1.7}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 32px;border-radius:50px;font-size:16px;font-weight:600;border:none;cursor:pointer;transition:var(--transition);font-family:var(--font)}
+.btn-primary{background:var(--orange);color:var(--white)}
+.btn-primary:hover{background:var(--orange-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,103,43,0.35)}
+.btn-secondary{background:var(--dark);color:var(--white)}
+.btn-secondary:hover{background:#3a3a3a;transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--dark);border:2px solid var(--dark)}
+.btn-outline:hover{background:var(--dark);color:var(--white)}
+.btn-whatsapp{background:#25D366;color:var(--white)}
+.btn-whatsapp:hover{background:#1da851;transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,0.35)}
+/* ===== HEADER ===== */
+.header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(42,42,42,0.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);transition:var(--transition)}
+.header .container{display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{display:flex;align-items:center;gap:12px;font-size:22px;font-weight:800;color:var(--white);letter-spacing:-0.5px}
+.logo-icon{width:40px;height:40px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.logo span{color:var(--orange)}
+.nav{display:flex;align-items:center;gap:32px}
+.nav a{color:rgba(255,255,255,0.8);font-size:14px;font-weight:500;transition:var(--transition);position:relative}
+.nav a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--orange);transition:var(--transition)}
+.nav a:hover{color:var(--white)}
+.nav a:hover::after{width:100%}
+.header-phone{display:flex;align-items:center;gap:8px;color:var(--orange);font-weight:700;font-size:15px;white-space:nowrap}
+.header-phone svg{flex-shrink:0}
+.mobile-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:8px}
+.mobile-toggle span{display:block;width:26px;height:2.5px;background:var(--white);border-radius:2px;transition:var(--transition)}
+.mobile-toggle.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.mobile-toggle.active span:nth-child(2){opacity:0}
+.mobile-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;background:var(--dark);overflow:hidden;padding-top:70px}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--dark2) 0%,var(--dark) 50%,#3a2a1a 100%);z-index:0}
+.hero-pattern{position:absolute;inset:0;z-index:1;opacity:0.04;background-image:radial-gradient(circle at 25% 25%,var(--orange) 1px,transparent 1px),radial-gradient(circle at 75% 75%,var(--orange) 1px,transparent 1px);background-size:60px 60px}
+.hero-accent{position:absolute;top:-120px;right:-120px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(232,103,43,0.15),transparent 70%);z-index:1}
+.hero-accent2{position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(232,103,43,0.1),transparent 70%);z-index:1}
+.hero .container{position:relative;z-index:2}
+.hero-content{max-width:800px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(232,103,43,0.15);border:1px solid rgba(232,103,43,0.3);color:var(--orange);padding:8px 20px;border-radius:50px;font-size:13px;font-weight:600;margin-bottom:24px;text-transform:uppercase;letter-spacing:0.5px}
+.hero h1{font-size:clamp(36px,6vw,68px);font-weight:900;color:var(--white);line-height:1.08;margin-bottom:20px}
+.hero h1 span{color:var(--orange);position:relative}
+.hero h1 span::after{content:'';position:absolute;bottom:4px;left:0;right:0;height:6px;background:var(--orange);opacity:0.3;border-radius:3px}
+.hero p{font-size:clamp(16px,2vw,20px);color:rgba(255,255,255,0.7);max-width:600px;line-height:1.7;margin-bottom:36px}
+.hero-buttons{display:flex;gap:16px;flex-wrap:wrap}
+.hero-stats{display:flex;gap:48px;margin-top:60px;padding-top:40px;border-top:1px solid rgba(255,255,255,0.08)}
+.hero-stat{text-align:center}
+.hero-stat-num{font-size:36px;font-weight:900;color:var(--white)}
+.hero-stat-num span{color:var(--orange)}
+.hero-stat-label{font-size:13px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px}
+/* ===== SERVICES ===== */
+.services{background:var(--white)}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.service-card{background:var(--light);border-radius:var(--radius);padding:32px 28px;transition:var(--transition);border:1px solid transparent;position:relative;overflow:hidden}
+.service-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--orange);transform:scaleY(0);transform-origin:bottom;transition:var(--transition)}
+.service-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:rgba(232,103,43,0.15)}
+.service-card:hover::before{transform:scaleY(1)}
+.service-icon{width:52px;height:52px;background:rgba(232,103,43,0.1);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px}
+.service-card h3{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--dark)}
+.service-card p{color:var(--gray);font-size:14px;line-height:1.7;margin-bottom:12px}
+.service-price{display:inline-block;background:var(--orange);color:var(--white);padding:4px 14px;border-radius:50px;font-size:13px;font-weight:700}
+.service-price.consultar{background:var(--dark);color:var(--white)}
+/* ===== CALCULATOR ===== */
+.calculator{background:var(--dark);position:relative;overflow:hidden}
+.calculator::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(232,103,43,0.08),transparent 50%);pointer-events:none}
+.calculator .section-title{color:var(--white)}
+.calculator .section-subtitle{color:rgba(255,255,255,0.6)}
+.calc-card{background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:40px;max-width:720px;margin:0 auto}
+.calc-group{margin-bottom:24px}
+.calc-label{display:block;color:rgba(255,255,255,0.8);font-size:14px;font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px}
+.calc-options{display:flex;gap:8px;flex-wrap:wrap}
+.calc-option{flex:1;min-width:100px;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius-sm);color:rgba(255,255,255,0.7);font-size:14px;font-weight:500;cursor:pointer;transition:var(--transition);text-align:center;font-family:var(--font)}
+.calc-option:hover{background:rgba(232,103,43,0.1);border-color:rgba(232,103,43,0.3);color:var(--white)}
+.calc-option.active{background:var(--orange);border-color:var(--orange);color:var(--white);box-shadow:0 4px 16px rgba(232,103,43,0.3)}
+.calc-range-container{position:relative}
+.calc-range{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:rgba(255,255,255,0.15);outline:none;transition:var(--transition)}
+.calc-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:var(--orange);cursor:pointer;box-shadow:0 2px 8px rgba(232,103,43,0.4);transition:var(--transition)}
+.calc-range::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.calc-range::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--orange);cursor:pointer;border:none}
+.calc-range-value{text-align:center;color:var(--white);font-size:28px;font-weight:800;margin-top:8px}
+.calc-range-value span{font-size:16px;font-weight:400;color:rgba(255,255,255,0.5)}
+.calc-result{background:rgba(232,103,43,0.12);border:1px solid rgba(232,103,43,0.25);border-radius:var(--radius-sm);padding:24px;text-align:center;margin-top:8px}
+.calc-result-label{color:rgba(255,255,255,0.6);font-size:13px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.calc-result-price{font-size:36px;font-weight:900;color:var(--orange)}
+.calc-result-range{color:rgba(255,255,255,0.5);font-size:14px;margin-top:4px}
+.calc-result .btn{margin-top:16px}
+.calc-m2-display{text-align:center;color:var(--white);font-size:20px;font-weight:600;margin-top:8px}
+/* ===== PORTFOLIO ===== */
+.portfolio{background:var(--white)}
+.portfolio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:32px}
+.portfolio-item{border-radius:var(--radius);overflow:hidden;background:var(--light);transition:var(--transition);cursor:pointer}
+.portfolio-item:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.portfolio-images{display:grid;grid-template-columns:1fr 1fr;gap:2px;position:relative}
+.portfolio-img{position:relative;overflow:hidden;aspect-ratio:1}
+.portfolio-img img{width:100%;height:100%;object-fit:cover;transition:var(--transition)}
+.portfolio-item:hover .portfolio-img img{transform:scale(1.05)}
+.portfolio-img-label{position:absolute;top:12px;left:12px;padding:4px 12px;border-radius:50px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;z-index:2}
+.portfolio-img-label.before{background:var(--dark);color:var(--white)}
+.portfolio-img-label.after{background:var(--orange);color:var(--white)}
+.portfolio-info{padding:20px}
+.portfolio-info h3{font-size:16px;font-weight:700;margin-bottom:4px}
+.portfolio-info p{font-size:13px;color:var(--gray)}
+/* ===== REVIEWS ===== */
+.reviews{background:var(--light)}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+.review-card{background:var(--white);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm);transition:var(--transition);position:relative}
+.review-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.review-stars{color:var(--orange);font-size:18px;margin-bottom:12px;letter-spacing:2px}
+.review-text{font-size:15px;color:var(--gray);line-height:1.7;margin-bottom:16px;font-style:italic;position:relative;padding-left:20px}
+.review-text::before{content:'"';position:absolute;left:0;top:-4px;font-size:28px;color:var(--orange);font-weight:700;font-style:normal}
+.review-author{display:flex;align-items:center;gap:12px}
+.review-avatar{width:44px;height:44px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;color:var(--white);font-weight:700;font-size:18px;flex-shrink:0}
+.review-name{font-size:14px;font-weight:700;color:var(--dark)}
+.review-project{font-size:12px;color:var(--gray-light)}
+/* ===== LOCATION ===== */
+.location{background:var(--white)}
+.location-content{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.location-info h2{font-size:32px;font-weight:800;margin-bottom:16px}
+.location-info p{color:var(--gray);line-height:1.7;margin-bottom:24px}
+.location-details{display:grid;gap:16px}
+.location-detail{display:flex;gap:16px;align-items:flex-start}
+.location-detail-icon{width:44px;height:44px;background:rgba(232,103,43,0.1);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.location-detail h4{font-size:14px;font-weight:700;margin-bottom:2px}
+.location-detail p{font-size:14px;color:var(--gray);margin-bottom:0}
+.location-map{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3;background:var(--light);position:relative;min-height:300px}
+.location-map iframe{width:100%;height:100%;border:0}
+.location-map-fallback{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--light);color:var(--gray);padding:24px;text-align:center}
+.location-map-fallback svg{margin-bottom:16px;opacity:0.4}
+.location-map-fallback p{font-size:14px;max-width:280px}
+.radius-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(232,103,43,0.1);color:var(--orange);padding:6px 16px;border-radius:50px;font-size:13px;font-weight:600;margin-top:8px}
+/* ===== BUDGET FORM ===== */
+.budget{background:var(--dark);position:relative;overflow:hidden}
+.budget::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(232,103,43,0.06),transparent 50%);pointer-events:none}
+.budget .section-title{color:var(--white)}
+.budget .section-subtitle{color:rgba(255,255,255,0.6)}
+.budget-form{max-width:640px;margin:0 auto;background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:40px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;color:rgba(255,255,255,0.8);font-size:13px;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius-sm);color:var(--white);font-size:15px;font-family:var(--font);transition:var(--transition);outline:none}
+.form-group input::placeholder,.form-group textarea::placeholder{color:rgba(255,255,255,0.3)}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,103,43,0.15)}
+.form-group select option{background:var(--dark);color:var(--white)}
+.form-group textarea{min-height:100px;resize:vertical}
+.form-group .btn{width:100%;justify-content:center;padding:16px 32px;font-size:17px}
+/* ===== FOOTER ===== */
+.footer{background:var(--dark2);padding:48px 0 24px;border-top:1px solid rgba(255,255,255,0.06)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand .logo{margin-bottom:12px}
+.footer-brand p{color:rgba(255,255,255,0.5);font-size:14px;line-height:1.7;max-width:360px}
+.footer h4{color:var(--white);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-links a{color:rgba(255,255,255,0.5);font-size:14px;transition:var(--transition)}
+.footer-links a:hover{color:var(--orange)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;text-align:center;color:rgba(255,255,255,0.3);font-size:13px}
+/* ===== FIXED WHATSAPP BUTTON ===== */
+.whatsapp-float{position:fixed;bottom:24px;right:24px;z-index:999;width:60px;height:60px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.4);transition:var(--transition);cursor:pointer;border:none}
+.whatsapp-float:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(37,211,102,0.5)}
+.whatsapp-float svg{width:28px;height:28px;fill:var(--white)}
+/* ===== RESPONSIVE ===== */
+@media(max-width:968px){
+  .location-content{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .hero-stats{gap:24px;flex-wrap:wrap}
+}
+@media(max-width:768px){
+  .section{padding:56px 0}
+  .nav{position:fixed;top:70px;left:0;right:0;background:rgba(42,42,42,0.98);backdrop-filter:blur(12px);flex-direction:column;padding:24px;gap:20px;transform:translateY(-120%);transition:var(--transition);opacity:0;pointer-events:none;border-bottom:1px solid rgba(255,255,255,0.08)}
+  .nav.open{transform:translateY(0);opacity:1;pointer-events:all}
+  .mobile-toggle{display:flex}
+  .header-phone span{display:none}
+  .hero h1{font-size:32px}
+  .hero p{font-size:16px}
+  .hero-stats{gap:16px;justify-content:center}
+  .hero-stat-num{font-size:28px}
+  .hero-buttons .btn{flex:1;justify-content:center}
+  .portfolio-grid{grid-template-columns:1fr}
+  .reviews-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .calc-card{padding:24px}
+  .calc-options{flex-direction:column}
+  .budget-form{padding:24px}
+  .footer-grid{grid-template-columns:1fr;gap:24px}
+  .whatsapp-float{width:52px;height:52px;bottom:16px;right:16px}
+  .whatsapp-float svg{width:24px;height:24px}
+}
+@media(max-width:480px){
+  .container{padding:0 16px}
+  .hero h1{font-size:28px}
+  .section-title{font-size:24px}
+  .calc-result-price{font-size:28px}
+  .service-card{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header" id="header">
+  <div class="container">
+    <a href="#" class="logo">
+      <div class="logo-icon">↵</div>
+      REFORMA <span>TOTAL</span>
+    </a>
+    <nav class="nav" id="nav">
+      <a href="#servicios">Servicios</a>
+      <a href="#calculadora">Calculadora</a>
+      <a href="#proyectos">Proyectos</a>
+      <a href="#opiniones">Opiniones</a>
+      <a href="#contacto">Contacto</a>
+      <a href="#presupuesto" class="btn btn-primary" style="padding:10px 24px;font-size:13px">Pedir presupuesto</a>
+    </nav>
+    <a href="tel:+34658237988" class="header-phone">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span>658 23 79 88</span>
+    </a>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-accent"></div>
+  <div class="hero-accent2"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">🏆 Reformas en Illescas y alrededores</div>
+      <h1>Tu reforma,<br><span>sin estrés.</span> Llave en mano.</h1>
+      <p>En REFORMA TOTAL nos encargamos de todo: desde el diseño hasta la entrega. Reformas integrales de baños, cocinas y pisos completos con calidad profesional, presupuesto cerrado y fechas garantizadas.</p>
+      <div class="hero-buttons">
+        <a href="#presupuesto" class="btn btn-primary">📋 Pedir presupuesto gratis</a>
+        <a href="#proyectos" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.3)">Ver proyectos</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num"><span>150</span>+</div>
+          <div class="hero-stat-label">Reformas realizadas</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num"><span>98</span>%</div>
+          <div class="hero-stat-label">Clientes satisfechos</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num"><span>15</span>+</div>
+          <div class="hero-stat-label">Años de experiencia</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num"><span>30</span>km</div>
+          <div class="hero-stat-label">Radio de servicio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="section services" id="servicios">
+  <div class="container">
+    <h2 class="section-title">Nuestros servicios</h2>
+    <p class="section-subtitle">Ofrecemos soluciones completas de reforma y construcción. Precios transparentes sin sorpresas.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🚿</div>
+        <h3>Reforma integral de baño</h3>
+        <p>Transformamos tu baño por completo: alicatado, sanitarios, plato de ducha, mampara, mobiliario e iluminación.</p>
+        <span class="service-price">Desde 4.500 €</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🍳</div>
+        <h3>Cocina completa</h3>
+        <p>Diseño e instalación de cocina completa con muebles, electrodomésticos, encimera, fontanería y electricidad.</p>
+        <span class="service-price">Desde 8.000 €</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🎨</div>
+        <h3>Pintura y decoración</h3>
+        <p>Pintura profesional de interiores y exteriores. Acabados lisos, gotelé, estucos y pintura decorativa.</p>
+        <span class="service-price">12 €/m²</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🧱</div>
+        <h3>Albañilería</h3>
+        <p>Tabiques, trasdosados, solados, alicatados, reparaciones estructurales y obras de obra civil en general.</p>
+        <span class="service-price consultar">Consultar</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔧</div>
+        <h3>Fontanería</h3>
+        <p>Instalación y reparación de tuberías, desagües, calentadores, radiadores y sistemas de climatización.</p>
+        <span class="service-price consultar">Consultar</span>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <h3>Electricidad</h3>
+        <p>Instalaciones eléctricas completas, cuadros de luz, puntos de carga, domótica y certificados.</p>
+        <span class="service-price consultar">Consultar</span>
+      </div>
+      <div class="service-card" style="grid-column:1/-1;text-align:center;background:var(--dark);color:var(--white);border:none">
+        <div class="service-icon" style="margin:0 auto 16px;background:rgba(232,103,43,0.2)">🏠</div>
+        <h3 style="color:var(--white);font-size:22px">Reforma de piso completo</h3>
+        <p style="color:rgba(255,255,255,0.7);max-width:500px;margin:0 auto 12px">Reforma integral de tu vivienda: distribución, instalaciones, acabados y mobiliario. Proyecto llave en mano.</p>
+        <span class="service-price" style="font-size:15px;padding:6px 20px">Desde 25.000 €</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CALCULATOR ===== -->
+<section class="section calculator" id="calculadora">
+  <div class="container">
+    <h2 class="section-title">Calculadora de reforma</h2>
+    <p class="section-subtitle">Obtén una estimación orientativa del coste de tu reforma en segundos.</p>
+    <div class="calc-card">
+      <div class="calc-group">
+        <span class="calc-label">1. Tipo de estancia</span>
+        <div class="calc-options" id="calcRoom">
+          <div class="calc-option active" data-value="bano">🛁 Baño</div>
+          <div class="calc-option" data-value="cocina">🍳 Cocina</div>
+          <div class="calc-option" data-value="piso">🏠 Piso completo</div>
+        </div>
+      </div>
+      <div class="calc-group">
+        <span class="calc-label">2. Superficie aproximada</span>
+        <div class="calc-range-container">
+          <input type="range" class="calc-range" id="calcSize" min="4" max="120" value="20" step="1">
+          <div class="calc-m2-display"><span id="calcSizeDisplay">20</span> m²</div>
+        </div>
+      </div>
+      <div class="calc-group">
+        <span class="calc-label">3. Calidad de acabados</span>
+        <div class="calc-options" id="calcQuality">
+          <div class="calc-option active" data-value="basica">Básica</div>
+          <div class="calc-option" data-value="media">Media</div>
+          <div class="calc-option" data-value="premium">Premium</div>
+        </div>
+      </div>
+      <div class="calc-result" id="calcResult">
+        <div class="calc-result-label">Presupuesto estimado</div>
+        <div class="calc-result-price" id="calcPrice">4.500 € - 6.500 €</div>
+        <div class="calc-result-range" id="calcDetail">Baño • 20 m² • Calidad media</div>
+        <a href="#" class="btn btn-whatsapp" id="calcWhatsApp" style="display:inline-flex;margin-top:16px" target="_blank">💬 Consultar este presupuesto</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PORTFOLIO ===== -->
+<section class="section portfolio" id="proyectos">
+  <div class="container">
+    <h2 class="section-title">Antes y después</h2>
+    <p class="section-subtitle">Algunos de nuestros proyectos recientes. Cada reforma cuenta una historia de transformación.</p>
+    <div class="portfolio-grid">
+      <div class="portfolio-item">
+        <div class="portfolio-images">
+          <div class="portfolio-img">
+            <span class="portfolio-img-label before">Antes</span>
+            <img src="gallery/project1-before.svg" alt="Baño antes de la reforma" loading="lazy">
+          </div>
+          <div class="portfolio-img">
+            <span class="portfolio-img-label after">Después</span>
+            <img src="gallery/project1-after.svg" alt="Baño después de la reforma" loading="lazy">
+          </div>
+        </div>
+        <div class="portfolio-info"><h3>Reforma integral de baño</h3><p>Illescas • 4.500 €</p></div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-images">
+          <div class="portfolio-img">
+            <span class="portfolio-img-label before">Antes</span>
+            <img src="gallery/project2-before.svg" alt="Cocina antes" loading="lazy">
+          </div>
+          <div class="portfolio-img">
+            <span class="portfolio-img-label after">Después</span>
+            <img src="gallery/project2-after.svg" alt="Cocina después" loading="lazy">
+          </div>
+        </div>
+        <div class="portfolio-info"><h3>Cocina completa</h3><p>Señorío Plaza • 8.000 €</p></div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-images">
+          <div class="portfolio-img">
+            <span class="portfolio-img-label before">Antes</span>
+            <img src="gallery/project3-before.svg" alt="Salón antes" loading="lazy">
+          </div>
+          <div class="portfolio-img">
+            <span class="portfolio-img-label after">Después</span>
+            <img src="gallery/project3-after.svg" alt="Salón después" loading="lazy">
+          </div>
+        </div>
+        <div class="portfolio-info"><h3>Pintura y reforma de salón</h3><p>Yeles • 12 €/m²</p></div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-images">
+          <div class="portfolio-img">
+            <span class="portfolio-img-label before">Antes</span>
+            <img src="gallery/project4-before.svg" alt="Fontanería antes" loading="lazy">
+          </div>
+          <div class="portfolio-img">
+            <span class="portfolio-img-label after">Después</span>
+            <img src="gallery/project4-after.svg" alt="Fontanería después" loading="lazy">
+          </div>
+        </div>
+        <div class="portfolio-info"><h3>Renovación de fontanería</h3><p>Seseña • Consultar</p></div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-images">
+          <div class="portfolio-img">
+            <span class="portfolio-img-label before">Antes</span>
+            <img src="gallery/project5-before.svg" alt="Electricidad antes" loading="lazy">
+          </div>
+          <div class="portfolio-img">
+            <span class="portfolio-img-label after">Después</span>
+            <img src="gallery/project5-after.svg" alt="Electricidad después" loading="lazy">
+          </div>
+        </div>
+        <div class="portfolio-info"><h3>Instalación eléctrica completa</h3><p>Numancia de la Sagra • Consultar</p></div>
+      </div>
+      <div class="portfolio-item">
+        <div class="portfolio-images">
+          <div class="portfolio-img">
+            <span class="portfolio-img-label before">Antes</span>
+            <img src="gallery/project6-before.svg" alt="Piso antes" loading="lazy">
+          </div>
+          <div class="portfolio-img">
+            <span class="portfolio-img-label after">Después</span>
+            <img src="gallery/project6-after.svg" alt="Piso después" loading="lazy">
+          </div>
+        </div>
+        <div class="portfolio-info"><h3>Reforma de piso completo</h3><p>Illescas • 28.000 €</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== REVIEWS ===== -->
+<section class="section reviews" id="opiniones">
+  <div class="container">
+    <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+    <p class="section-subtitle">La satisfacción de nuestros clientes es nuestro mejor aval.</p>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">Estamos encantados con la reforma del baño. Cumplieron los plazos exactamente y el acabado es impecable. Muy profesionales y cercanos.</div>
+        <div class="review-author">
+          <div class="review-avatar">MR</div>
+          <div><div class="review-name">María Rodríguez</div><div class="review-project">Reforma de baño • Illescas</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">Reformaron toda nuestra cocina y el resultado es espectacular. Nos asesoraron en todo momento y respetaron el presupuesto. 100% recomendables.</div>
+        <div class="review-author">
+          <div class="review-avatar">AG</div>
+          <div><div class="review-name">Antonio García</div><div class="review-project">Cocina completa • Yuncos</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">La reforma del piso fue un proceso muy llevadero gracias a su equipo. Se encargaron de todo y nos entregaron las llaves en la fecha prometida.</div>
+        <div class="review-author">
+          <div class="review-avatar">CL</div>
+          <div><div class="review-name">Carmen López</div><div class="review-project">Piso completo • Seseña</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">Contratamos la pintura de toda la casa y el acabado es perfecto. Precio justo y muy buen trato. Sin duda repetiremos para la siguiente reforma.</div>
+        <div class="review-author">
+          <div class="review-avatar">JM</div>
+          <div><div class="review-name">Javier Martínez</div><div class="review-project">Pintura integral • Illescas</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">Excelente trabajo de fontanería. Rápidos, limpios y resolviendo todas nuestras dudas. Llevamos meses sin ningún problema. Muy agradecidos.</div>
+        <div class="review-author">
+          <div class="review-avatar">PS</div>
+          <div><div class="review-name">Patricia Sánchez</div><div class="review-project">Fontanería • Borox</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <div class="review-text">Reformaron el baño de nuestra segunda residencia. El equipo fue puntual, ordenado y dejaron todo impecable. Repetiremos sin dudarlo para más proyectos.</div>
+        <div class="review-author">
+          <div class="review-avatar">FG</div>
+          <div><div class="review-name">Fernando Gómez</div><div class="review-project">Reforma baño • Yeles</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LOCATION ===== -->
+<section class="section location" id="contacto">
+  <div class="container">
+    <div class="location-content">
+      <div class="location-info">
+        <h2>Visítanos o llámanos</h2>
+        <p>Estamos en el corazón de Illescas. Atendemos en toda la comarca de La Sagra con un radio de 30 km. Presupuesto sin compromiso.</p>
+        <div class="location-details">
+          <div class="location-detail">
+            <div class="location-detail-icon">📍</div>
+            <div>
+              <h4>Dirección</h4>
+              <p>C.C. Señorío Plaza, Local 14<br>45200 Illescas, Toledo</p>
+            </div>
+          </div>
+          <div class="location-detail">
+            <div class="location-detail-icon">📞</div>
+            <div>
+              <h4>Teléfono</h4>
+              <p><a href="tel:+34658237988" style="font-weight:700;color:var(--orange)">658 23 79 88</a></p>
+            </div>
+          </div>
+          <div class="location-detail">
+            <div class="location-detail-icon">✉️</div>
+            <div>
+              <h4>Email</h4>
+              <p><a href="mailto:info@reformatotal.es" style="color:var(--orange)">info@reformatotal.es</a></p>
+            </div>
+          </div>
+          <div class="location-detail">
+            <div class="location-detail-icon">🕐</div>
+            <div>
+              <h4>Horario</h4>
+              <p>Lunes a viernes: 9:00 - 19:00<br>Sábados: 10:00 - 14:00</p>
+            </div>
+          </div>
+        </div>
+        <div class="radius-badge">📡 Radio de servicio: 30 km • Illescas, Yuncos, Seseña, Borox, Yeles, Numancia, y más</div>
+      </div>
+      <div class="location-map">
+        <div class="location-map-fallback" id="mapContainer">
+          <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#e8672b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <p><strong>C.C. Señorío Plaza, Illescas</strong><br>Haz clic para ver en Google Maps</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BUDGET FORM ===== -->
+<section class="section budget" id="presupuesto">
+  <div class="container">
+    <h2 class="section-title">Solicita tu presupuesto</h2>
+    <p class="section-subtitle">Cuéntanos qué necesitas y te enviaremos un presupuesto personalizado sin compromiso en 24 horas.</p>
+    <div class="budget-form" id="budgetForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="budgetName">Nombre</label>
+          <input type="text" id="budgetName" placeholder="Tu nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="budgetPhone">Teléfono</label>
+          <input type="tel" id="budgetPhone" placeholder="Tu teléfono" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="budgetType">Tipo de reforma</label>
+          <select id="budgetType">
+            <option value="">Selecciona...</option>
+            <option value="baño">Reforma de baño</option>
+            <option value="cocina">Reforma de cocina</option>
+            <option value="piso">Reforma de piso completo</option>
+            <option value="pintura">Pintura</option>
+            <option value="fontaneria">Fontanería</option>
+            <option value="electricidad">Electricidad</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="budgetSize">Superficie (m²)</label>
+          <input type="number" id="budgetSize" placeholder="Ej: 20" min="1" max="500">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="budgetMsg">Describe tu proyecto</label>
+        <textarea id="budgetMsg" placeholder="Cuéntanos qué necesitas reformar, ideas que tengas, materiales que te gusten..."></textarea>
+      </div>
+      <div class="form-group">
+        <button class="btn btn-whatsapp" onclick="sendBudget()">💬 Enviar por WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <div class="logo-icon">↵</div>
+          REFORMA <span>TOTAL</span>
+        </a>
+        <p>Tu socio de confianza para reformas en Illescas y la comarca de La Sagra. Más de 150 proyectos entregados con calidad y compromiso.</p>
+      </div>
+      <div>
+        <h4>Servicios</h4>
+        <ul class="footer-links">
+          <li><a href="#servicios">Reforma baño</a></li>
+          <li><a href="#servicios">Cocina completa</a></li>
+          <li><a href="#servicios">Pintura</a></li>
+          <li><a href="#servicios">Albañilería</a></li>
+          <li><a href="#servicios">Fontanería</a></li>
+          <li><a href="#servicios">Electricidad</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <ul class="footer-links">
+          <li><a href="tel:+34658237988">📞 658 23 79 88</a></li>
+          <li><a href="mailto:info@reformatotal.es">✉️ info@reformatotal.es</a></li>
+          <li><a href="#contacto">📍 C.C. Señorío Plaza</a></li>
+          <li><a href="#presupuesto">📋 Pedir presupuesto</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 REFORMA TOTAL. Todos los derechos reservados. &nbsp;|&nbsp; Reformas en Illescas, Toledo.
+    </div>
+  </div>
+</footer>
+
+<!-- ===== WHATSAPP FLOATING BUTTON ===== -->
+<a href="https://wa.me/34658237988?text=Hola%2C%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20una%20reforma." class="whatsapp-float" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+// ===== MOBILE MENU =====
+const toggle = document.getElementById('mobileToggle');
+const nav = document.getElementById('nav');
+toggle.addEventListener('click',()=>{
+  toggle.classList.toggle('active');
+  nav.classList.toggle('open');
+});
+document.querySelectorAll('.nav a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    toggle.classList.remove('active');
+    nav.classList.remove('open');
+  });
+});
+
+// ===== HEADER SCROLL =====
+let lastScroll=0;
+const header=document.getElementById('header');
+window.addEventListener('scroll',()=>{
+  const current=window.scrollY;
+  if(current>100){
+    header.style.background=current>lastScroll?'rgba(42,42,42,0.85)':'rgba(42,42,42,0.95)';
+  }
+  lastScroll=current;
+});
+
+// ===== CALCULATOR =====
+const roomBtns=document.querySelectorAll('#calcRoom .calc-option');
+const qualityBtns=document.querySelectorAll('#calcQuality .calc-option');
+const sizeSlider=document.getElementById('calcSize');
+const sizeDisplay=document.getElementById('calcSizeDisplay');
+const priceDisplay=document.getElementById('calcPrice');
+const detailDisplay=document.getElementById('calcDetail');
+const calcWhatsApp=document.getElementById('calcWhatsApp');
+
+const prices={
+  bano:{basica:[3000,4500],media:[4500,6500],premium:[6500,9500]},
+  cocina:{basica:[5000,7500],media:[7500,10000],premium:[10000,15000]},
+  piso:{basica:[18000,25000],media:[25000,35000],premium:[35000,50000]}
+};
+
+const roomNames={bano:'Baño',cocina:'Cocina',piso:'Piso completo'};
+const qualityNames={basica:'Básica',media:'Media',premium:'Premium'};
+
+let selectedRoom='bano',selectedQuality='media';
+
+function updateCalc(){
+  const size=parseInt(sizeSlider.value);
+  sizeDisplay.textContent=size;
+  const base=prices[selectedRoom][selectedQuality];
+  const sizeFactor=selectedRoom==='piso'?size/70:size/20;
+  const min=Math.round(base[0]*sizeFactor);
+  const max=Math.round(base[1]*sizeFactor);
+  priceDisplay.textContent=`${min.toLocaleString('es')} € - ${max.toLocaleString('es')} €`;
+  detailDisplay.textContent=`${roomNames[selectedRoom]} • ${size} m² • Calidad ${qualityNames[selectedQuality]}`;
+  const msg=encodeURIComponent(
+    `Hola, quiero información sobre mi reforma:\n\n🏠 Tipo: ${roomNames[selectedRoom]}\n📏 Superficie: ${size} m²\n⭐ Calidad: ${qualityNames[selectedQuality]}\n💰 Presupuesto estimado: ${min.toLocaleString('es')} € - ${max.toLocaleString('es')} €\n\n¿Podéis enviarme un presupuesto personalizado?`
+  );
+  calcWhatsApp.href=`https://wa.me/34658237988?text=${msg}`;
+}
+
+roomBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    roomBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedRoom=btn.dataset.value;
+    updateCalc();
+  });
+});
+
+qualityBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    qualityBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedQuality=btn.dataset.value;
+    updateCalc();
+  });
+});
+
+sizeSlider.addEventListener('input',updateCalc);
+updateCalc();
+
+// ===== BUDGET FORM → WHATSAPP =====
+function sendBudget(){
+  const name=document.getElementById('budgetName').value.trim();
+  const phone=document.getElementById('budgetPhone').value.trim();
+  const type=document.getElementById('budgetType').value;
+  const size=document.getElementById('budgetSize').value;
+  const msg=document.getElementById('budgetMsg').value.trim();
+  if(!name||!phone){
+    alert('Por favor, rellena tu nombre y teléfono.');
+    return;
+  }
+  const typeNames={bano:'Reforma de baño',cocina:'Reforma de cocina',piso:'Reforma de piso completo',pintura:'Pintura',fontaneria:'Fontanería',electricidad:'Electricidad',otro:'Otro'};
+  let text=`Hola, soy ${name}. Quiero solicitar un presupuesto:\n\n📞 Teléfono: ${phone}\n🏠 Tipo: ${typeNames[type]||'No especificado'}`;
+  if(size) text+=`\n📏 Superficie: ${size} m²`;
+  if(msg) text+=`\n📝 Descripción: ${msg}`;
+  text+='\n\nQuedo a la espera de vuestra respuesta. Gracias.';
+  window.open(`https://wa.me/34658237988?text=${encodeURIComponent(text)}`,'_blank');
+}
+
+// ===== MAP FALLBACK → GOOGLE MAPS =====
+document.getElementById('mapContainer').addEventListener('click',function(){
+  window.open('https://www.google.com/maps/search/?api=1&query=C.C.+Señorío+Plaza+Illescas+Toledo','_blank');
+});
+document.getElementById('mapContainer').style.cursor='pointer';
+
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',function(e){
+    const href=this.getAttribute('href');
+    if(href==='#') return;
+    e.preventDefault();
+    const target=document.querySelector(href);
+    if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>

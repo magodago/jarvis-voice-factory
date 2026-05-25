@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEO AI — IA que vende, no IA que entretiene</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Rajdhani',sans-serif;background:#0a0a1a;color:#e0e0ff;overflow-x:hidden;line-height:1.6}
+img{max-width:100%;display:block}
+a{color:#00d4ff;text-decoration:none}
+::selection{background:#7b2ff7;color:#fff}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:#0a0a1a}
+::-webkit-scrollbar-thumb{background:#7b2ff7;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#00d4ff}
+
+/* ===== KEYFRAMES ===== */
+@keyframes fadeUp{0%{opacity:0;transform:translateY(40px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(123,47,247,.3)}50%{box-shadow:0 0 40px rgba(123,47,247,.6),0 0 60px rgba(0,212,255,.3)}}
+@keyframes gridScroll{0%{transform:translateY(0)}100%{transform:translateY(-50px)}}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.5}}
+@keyframes slideIn{0%{opacity:0;transform:translateX(-30px)}100%{opacity:1;transform:translateX(0)}}
+@keyframes borderPulse{0%,100%{border-color:#7b2ff7}50%{border-color:#00d4ff}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+/* ===== ANIMATED BG ===== */
+.cyber-grid{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.cyber-grid::before{content:'';position:absolute;inset:0;background-image:
+  linear-gradient(rgba(123,47,247,.08) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(123,47,247,.08) 1px,transparent 1px);
+  background-size:60px 60px;animation:gridScroll 8s linear infinite}
+.cyber-grid::after{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 50%,rgba(123,47,247,.15) 0%,transparent 50%),
+  radial-gradient(ellipse at 80% 20%,rgba(0,212,255,.1) 0%,transparent 50%),
+  radial-gradient(ellipse at 50% 80%,rgba(123,47,247,.1) 0%,transparent 50%)}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle 3s ease-in-out infinite}
+.star:nth-child(1){top:10%;left:15%;animation-delay:0s}
+.star:nth-child(2){top:25%;left:75%;animation-delay:1s}
+.star:nth-child(3){top:45%;left:20%;animation-delay:2s}
+.star:nth-child(4){top:60%;left:85%;animation-delay:.5s}
+.star:nth-child(5){top:75%;left:40%;animation-delay:1.5s}
+.star:nth-child(6){top:15%;left:55%;animation-delay:2.5s}
+.star:nth-child(7){top:80%;left:10%;animation-delay:.8s}
+.star:nth-child(8){top:35%;left:90%;animation-delay:1.8s}
+.star:nth-child(9){top:90%;left:60%;animation-delay:.3s}
+.star:nth-child(10){top:5%;left:35%;animation-delay:2.2s}
+.star:nth-child(11){top:50%;left:50%;animation-delay:1.2s}
+.star:nth-child(12){top:70%;left:70%;animation-delay:.7s}
+
+/* ===== LAYOUT ===== */
+section{position:relative;z-index:1;padding:100px 24px}
+.container{max-width:1200px;margin:0 auto;width:100%}
+.section-label{font-family:'Orbitron',sans-serif;font-size:.75rem;letter-spacing:4px;color:#7b2ff7;text-transform:uppercase;margin-bottom:12px}
+.section-title{font-family:'Orbitron',sans-serif;font-size:2.5rem;font-weight:700;margin-bottom:20px;background:linear-gradient(135deg,#fff,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+@media(max-width:768px){.section-title{font-size:1.75rem}}
+.section-subtitle{font-size:1.15rem;color:#8899bb;max-width:640px;margin-bottom:48px;font-weight:400}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 24px;
+  background:rgba(10,10,26,.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(123,47,247,.2);display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;
+  background:linear-gradient(135deg,#7b2ff7,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:flex;align-items:center;gap:10px}
+.nav-logo i{font-size:1.3rem}
+.nav-links{display:flex;gap:28px;list-style:none;align-items:center}
+.nav-links a{color:#8899bb;font-size:.95rem;font-weight:500;transition:color .3s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;
+  background:linear-gradient(90deg,#7b2ff7,#00d4ff);transition:width .3s}
+.nav-links a:hover{color:#fff}
+.nav-links a:hover::after{width:100%}
+.nav-cta{background:linear-gradient(135deg,#7b2ff7,#00d4ff);color:#fff!important;padding:8px 20px;border-radius:6px;font-weight:600}
+.nav-cta::after{display:none!important}
+.nav-cta:hover{opacity:.9}
+.nav-toggle{display:none;background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer}
+@media(max-width:900px){.nav-toggle{display:block}.nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:rgba(10,10,26,.95);backdrop-filter:blur(20px);padding:20px;gap:16px;border-bottom:1px solid rgba(123,47,247,.2)}.nav-links.open{display:flex}}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;z-index:1}
+.hero-content{max-width:900px;animation:fadeUp 1s ease-out}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(123,47,247,.15);border:1px solid rgba(123,47,247,.3);border-radius:100px;padding:6px 18px;font-size:.8rem;color:#b388ff;margin-bottom:28px;font-weight:500;letter-spacing:1px}
+.hero-badge i{color:#00d4ff}
+.hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(2.5rem,7vw,5rem);font-weight:900;line-height:1.1;margin-bottom:20px}
+.hero h1 .gradient-text{background:linear-gradient(135deg,#7b2ff7,#00d4ff,#7b2ff7);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s linear infinite}
+.hero-tagline{font-size:clamp(1.1rem,2vw,1.5rem);color:#8899bb;margin-bottom:12px;font-weight:400}
+.hero-sub{font-size:1rem;color:#667799;margin-bottom:40px}
+.hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#7b2ff7,#00d4ff);color:#fff;padding:16px 36px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;border:none;cursor:pointer;transition:all .3s;text-decoration:none}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 40px rgba(123,47,247,.4)}
+.btn-secondary{display:inline-flex;align-items:center;gap:10px;background:transparent;color:#fff;padding:16px 36px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:600;border:1px solid rgba(123,47,247,.4);cursor:pointer;transition:all .3s;text-decoration:none}
+.btn-secondary:hover{background:rgba(123,47,247,.1);border-color:#7b2ff7;transform:translateY(-3px)}
+.hero-stats{display:flex;gap:48px;justify-content:center;margin-top:60px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-number{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:700;background:linear-gradient(135deg,#7b2ff7,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-stat-label{font-size:.9rem;color:#667799;margin-top:4px}
+
+/* ===== SERVICES ===== */
+.services{background:linear-gradient(180deg,#0a0a1a 0%,#0d0d2b 50%,#0a0a1a 100%)}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:900px){.services-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.services-grid{grid-template-columns:1fr}}
+.service-card{background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.15);border-radius:16px;padding:32px 28px;transition:all .4s;position:relative;overflow:hidden;cursor:default}
+.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#7b2ff7,#00d4ff);opacity:0;transition:opacity .4s}
+.service-card:hover{transform:translateY(-6px);border-color:#7b2ff7;background:rgba(123,47,247,.06);box-shadow:0 20px 60px rgba(123,47,247,.15)}
+.service-card:hover::before{opacity:1}
+.service-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px;
+  background:linear-gradient(135deg,rgba(123,47,247,.2),rgba(0,212,255,.1));color:#00d4ff;border:1px solid rgba(123,47,247,.2)}
+.service-card h3{font-family:'Orbitron',sans-serif;font-size:1.05rem;margin-bottom:10px;color:#fff}
+.service-card p{color:#8899bb;font-size:.95rem;line-height:1.6}
+
+/* ===== PRICING ===== */
+.pricing{background:#0d0d2b}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start}
+@media(max-width:900px){.pricing-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto}}
+.pricing-card{background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.15);border-radius:16px;padding:36px 28px;text-align:center;transition:all .4s;position:relative}
+.pricing-card.featured{background:rgba(123,47,247,.08);border-color:#7b2ff7;transform:scale(1.05);box-shadow:0 0 40px rgba(123,47,247,.15)}
+.pricing-card.featured .pricing-badge{display:inline-block}
+.pricing-card:hover{transform:translateY(-6px);border-color:#7b2ff7;box-shadow:0 20px 60px rgba(123,47,247,.15)}
+.pricing-card.featured:hover{transform:scale(1.05) translateY(-6px)}
+.pricing-badge{display:none;background:linear-gradient(135deg,#7b2ff7,#00d4ff);color:#fff;font-size:.7rem;font-weight:700;padding:4px 14px;border-radius:20px;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;font-family:'Orbitron',sans-serif}
+.pricing-name{font-family:'Orbitron',sans-serif;font-size:1.2rem;color:#fff;margin-bottom:6px}
+.pricing-desc{font-size:.9rem;color:#667799;margin-bottom:20px}
+.pricing-price{font-family:'Orbitron',sans-serif;font-size:3rem;font-weight:700;color:#fff;margin-bottom:4px}
+.pricing-price span{font-size:1rem;color:#667799;font-weight:400}
+.pricing-period{font-size:.85rem;color:#667799;margin-bottom:24px}
+.pricing-features{list-style:none;text-align:left;margin-bottom:28px}
+.pricing-features li{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:.95rem;color:#b0b8d0;border-bottom:1px solid rgba(255,255,255,.04)}
+.pricing-features li i{color:#00d4ff;font-size:.8rem;width:18px;text-align:center}
+.pricing-features li .fa-xmark{color:#ff4466}
+.pricing-cta{width:100%;padding:14px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;border:none;cursor:pointer;transition:all .3s;background:rgba(123,47,247,.15);color:#b388ff}
+.pricing-cta:hover{background:linear-gradient(135deg,#7b2ff7,#00d4ff);color:#fff;transform:translateY(-2px);box-shadow:0 8px 30px rgba(123,47,247,.3)}
+.pricing-card.featured .pricing-cta{background:linear-gradient(135deg,#7b2ff7,#00d4ff);color:#fff}
+
+/* ===== CHAT DEMO ===== */
+.chat-demo{background:#0a0a1a}
+.chat-demo-container{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+@media(max-width:900px){.chat-demo-container{grid-template-columns:1fr}}
+.chat-demo-text .section-title{margin-bottom:16px}
+.chat-demo-text p{color:#8899bb;font-size:1.05rem;margin-bottom:20px;line-height:1.7}
+.chat-demo-text .demo-features{list-style:none;margin-bottom:24px}
+.chat-demo-text .demo-features li{display:flex;align-items:center;gap:10px;padding:6px 0;color:#b0b8d0;font-size:.95rem}
+.chat-demo-text .demo-features li i{color:#00d4ff;font-size:.85rem}
+.chat-box{background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.2);border-radius:16px;overflow:hidden;max-width:440px;margin:0 auto;width:100%;animation:glow 4s ease-in-out infinite}
+.chat-header{background:linear-gradient(135deg,rgba(123,47,247,.2),rgba(0,212,255,.1));padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(123,47,247,.15)}
+.chat-header-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7b2ff7,#00d4ff);display:flex;align-items:center;justify-content:center;font-size:.9rem;color:#fff}
+.chat-header-info h4{font-size:.95rem;color:#fff;font-weight:600}
+.chat-header-info span{font-size:.75rem;color:#667799}
+.chat-header-status{width:8px;height:8px;border-radius:50%;background:#00ff88;margin-left:auto;animation:pulse 2s ease-in-out infinite}
+.chat-messages{height:340px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:#7b2ff7;border-radius:2px}
+.chat-msg{max-width:80%;padding:10px 14px;border-radius:12px;font-size:.88rem;line-height:1.5;animation:fadeUp .3s ease-out}
+.chat-msg.bot{align-self:flex-start;background:rgba(123,47,247,.12);border:1px solid rgba(123,47,247,.15);color:#d0d0ff;border-bottom-left-radius:4px}
+.chat-msg.user{align-self:flex-end;background:linear-gradient(135deg,rgba(123,47,247,.3),rgba(0,212,255,.15));border:1px solid rgba(0,212,255,.2);color:#fff;border-bottom-right-radius:4px}
+.chat-input-wrap{display:flex;gap:8px;padding:12px 16px;border-top:1px solid rgba(123,47,247,.15);background:rgba(0,0,0,.2)}
+.chat-input-wrap input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(123,47,247,.2);border-radius:8px;padding:10px 14px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:.9rem;outline:none;transition:border-color .3s}
+.chat-input-wrap input:focus{border-color:#7b2ff7}
+.chat-input-wrap input::placeholder{color:#445566}
+.chat-input-wrap button{width:42px;height:42px;border-radius:8px;border:none;background:linear-gradient(135deg,#7b2ff7,#00d4ff);color:#fff;font-size:1rem;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center}
+.chat-input-wrap button:hover{transform:scale(1.05);box-shadow:0 4px 20px rgba(123,47,247,.3)}
+.chat-quick{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px}
+.chat-quick button{font-size:.75rem;padding:4px 10px;border-radius:20px;border:1px solid rgba(123,47,247,.2);background:rgba(123,47,247,.08);color:#8899bb;cursor:pointer;transition:all .3s;font-family:'Rajdhani',sans-serif}
+.chat-quick button:hover{background:rgba(123,47,247,.2);color:#fff;border-color:#7b2ff7}
+
+/* ===== CASOS DE USO ===== */
+.casos{background:#0d0d2b}
+.casos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:900px){.casos-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.casos-grid{grid-template-columns:1fr}}
+.caso-card{background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.12);border-radius:16px;padding:28px 24px;transition:all .4s;position:relative;overflow:hidden;cursor:default}
+.caso-card::after{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,rgba(123,47,247,.08),transparent 70%);opacity:0;transition:opacity .5s}
+.caso-card:hover{transform:translateY(-4px);border-color:#7b2ff7;box-shadow:0 12px 40px rgba(123,47,247,.1)}
+.caso-card:hover::after{opacity:1}
+.caso-card>*{position:relative;z-index:1}
+.caso-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:16px;
+  background:linear-gradient(135deg,rgba(123,47,247,.2),rgba(0,212,255,.1));color:#00d4ff}
+.caso-card h3{font-family:'Orbitron',sans-serif;font-size:1rem;margin-bottom:8px;color:#fff}
+.caso-card p{color:#8899bb;font-size:.9rem;line-height:1.6}
+.caso-card .caso-tag{display:inline-block;margin-top:12px;font-size:.75rem;color:#7b2ff7;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+
+/* ===== TESTIMONIALS ===== */
+.testimonials{background:#0a0a1a}
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:900px){.testimonials-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.testimonials-grid{grid-template-columns:1fr}}
+.testimonial-card{background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.12);border-radius:16px;padding:28px;transition:all .4s;cursor:default}
+.testimonial-card:hover{transform:translateY(-4px);border-color:#7b2ff7;box-shadow:0 12px 40px rgba(123,47,247,.1)}
+.testimonial-stars{color:#ffd700;font-size:.85rem;margin-bottom:12px}
+.testimonial-text{color:#b0b8d0;font-size:.92rem;line-height:1.7;margin-bottom:20px;font-style:italic}
+.testimonial-text::before{content:'"';color:#7b2ff7;font-size:1.5rem;font-weight:700;margin-right:4px}
+.testimonial-author{display:flex;align-items:center;gap:12px}
+.testimonial-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7b2ff7,#00d4ff);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.9rem}
+.testimonial-info h4{font-size:.9rem;color:#fff;font-weight:600}
+.testimonial-info span{font-size:.8rem;color:#667799}
+
+/* ===== ROI CALCULATOR ===== */
+.roi{background:#0d0d2b}
+.roi-container{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+@media(max-width:900px){.roi-container{grid-template-columns:1fr}}
+.roi-calc{background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.15);border-radius:16px;padding:36px 32px}
+.roi-calc label{display:block;font-size:.9rem;color:#8899bb;margin-bottom:8px;font-weight:500}
+.roi-calc input[type=range]{width:100%;-webkit-appearance:none;height:6px;border-radius:3px;background:linear-gradient(90deg,rgba(123,47,247,.3),rgba(0,212,255,.3));outline:none;margin-bottom:8px}
+.roi-calc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#7b2ff7,#00d4ff);cursor:pointer;border:2px solid #0a0a1a;box-shadow:0 0 20px rgba(123,47,247,.4)}
+.roi-value{font-family:'Orbitron',sans-serif;font-size:2.5rem;font-weight:700;text-align:center;background:linear-gradient(135deg,#7b2ff7,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:20px 0}
+.roi-details{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+.roi-detail{background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.1);border-radius:10px;padding:16px;text-align:center}
+.roi-detail-number{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;color:#fff}
+.roi-detail-label{font-size:.8rem;color:#667799;margin-top:4px}
+.roi-detail .highlight{color:#00d4ff}
+
+/* ===== CONTACT ===== */
+.contact{background:#0a0a1a}
+.contact-container{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+@media(max-width:900px){.contact-container{grid-template-columns:1fr}}
+.contact-info{padding:32px 0}
+.contact-info h3{font-family:'Orbitron',sans-serif;font-size:1.3rem;color:#fff;margin-bottom:16px}
+.contact-info p{color:#8899bb;font-size:1rem;line-height:1.7;margin-bottom:24px}
+.contact-detail{display:flex;align-items:center;gap:14px;padding:10px 0}
+.contact-detail i{width:40px;height:40px;border-radius:10px;background:rgba(123,47,247,.12);display:flex;align-items:center;justify-content:center;color:#00d4ff;font-size:1rem}
+.contact-detail div{font-size:.95rem;color:#b0b8d0}
+.contact-detail div strong{color:#fff;display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.contact-form{background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.15);border-radius:16px;padding:36px 32px}
+.contact-form .form-group{margin-bottom:16px}
+.contact-form input,.contact-form textarea{width:100%;padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(123,47,247,.15);border-radius:8px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:.95rem;outline:none;transition:border-color .3s}
+.contact-form input:focus,.contact-form textarea:focus{border-color:#7b2ff7;box-shadow:0 0 20px rgba(123,47,247,.1)}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:#445566}
+.contact-form textarea{resize:vertical;min-height:120px}
+.contact-form button{width:100%;padding:14px;border-radius:8px;border:none;background:linear-gradient(135deg,#7b2ff7,#00d4ff);color:#fff;font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:10px}
+.contact-form button:hover{transform:translateY(-3px);box-shadow:0 10px 40px rgba(123,47,247,.4)}
+
+/* ===== FOOTER ===== */
+footer{position:relative;z-index:1;background:#070714;border-top:1px solid rgba(123,47,247,.1);padding:48px 24px 24px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;max-width:1200px;margin:0 auto}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.footer-grid{grid-template-columns:1fr}}
+.footer-brand .nav-logo{margin-bottom:12px}
+.footer-brand p{color:#667799;font-size:.9rem;line-height:1.6;max-width:280px}
+.footer-col h4{font-family:'Orbitron',sans-serif;font-size:.85rem;color:#fff;margin-bottom:16px;letter-spacing:1px}
+.footer-col ul{list-style:none}
+.footer-col ul li{margin-bottom:8px}
+.footer-col ul a{color:#667799;font-size:.9rem;transition:color .3s}
+.footer-col ul a:hover{color:#00d4ff}
+.footer-bottom{max-width:1200px;margin:32px auto 0;padding-top:20px;border-top:1px solid rgba(123,47,247,.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom p{color:#445566;font-size:.85rem}
+.footer-socials{display:flex;gap:12px}
+.footer-socials a{width:36px;height:36px;border-radius:8px;background:rgba(123,47,247,.1);display:flex;align-items:center;justify-content:center;color:#667799;transition:all .3s}
+.footer-socials a:hover{background:#7b2ff7;color:#fff;transform:translateY(-2px)}
+
+/* ===== WHATSAPP FLOAT ===== */
+.whatsapp-float{position:fixed;bottom:24px;right:24px;z-index:999;width:56px;height:56px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:all .3s;text-decoration:none}
+.whatsapp-float:hover{transform:scale(1.1);box-shadow:0 8px 30px rgba(37,211,102,.5)}
+</style>
+</head>
+<body>
+
+<!-- ANIMATED BACKGROUND -->
+<div class="cyber-grid"></div>
+<div class="stars">
+  <div class="star"></div><div class="star"></div><div class="star"></div>
+  <div class="star"></div><div class="star"></div><div class="star"></div>
+  <div class="star"></div><div class="star"></div><div class="star"></div>
+  <div class="star"></div><div class="star"></div><div class="star"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><i class="fas fa-brain"></i> NEO AI</div>
+  <button class="nav-toggle" onclick="this.nextElementSibling.classList.toggle('open')">☰</button>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#precios">Precios</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#casos">Casos</a></li>
+    <li><a href="#roi">ROI</a></li>
+    <li><a href="#contacto" class="nav-cta">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge"><i class="fas fa-bolt"></i> Inteligencia Artificial para Pymes</div>
+    <h1><span class="gradient-text">AI para tu negocio</span></h1>
+    <p class="hero-tagline">IA que vende, no IA que entretiene</p>
+    <p class="hero-sub">Automatiza, analiza y escala tu negocio con herramientas de IA diseñadas para pequeños negocios. Sin complicaciones. Resultados reales.</p>
+    <div class="hero-actions">
+      <a href="#contacto" class="btn-primary"><i class="fab fa-whatsapp"></i> Solicitar Demo</a>
+      <a href="#servicios" class="btn-secondary"><i class="fas fa-arrow-down"></i> Ver Servicios</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-number">+15h</div>
+        <div class="hero-stat-label">Ahorro semanal</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-number">94%</div>
+        <div class="hero-stat-label">Clientes satisfechos</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-number">3x</div>
+        <div class="hero-stat-label">Más conversiones</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-number">24/7</div>
+        <div class="hero-stat-label">Atención continua</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="servicios">
+  <div class="container">
+    <p class="section-label">· Servicios ·</p>
+    <h2 class="section-title">Soluciones IA para tu negocio</h2>
+    <p class="section-subtitle">Seis herramientas diseñadas para impulsar tu negocio local. Cada una resuelve un problema real.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon"><i class="fas fa-robot"></i></div>
+        <h3>Chatbot IA</h3>
+        <p>Atención al cliente 24/7 automatizada. Responde preguntas, capta leads y agenda citas sin intervención humana.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><i class="fas fa-image"></i></div>
+        <h3>Generación de Imágenes</h3>
+        <p>Crea imágenes de productos, branding y contenido visual para redes sociales con IA generativa de última generación.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><i class="fas fa-chart-line"></i></div>
+        <h3>Análisis de Datos</h3>
+        <p>Analiza ventas, comportamiento de clientes y tendencias del mercado para tomar decisiones informadas.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><i class="fas fa-envelope"></i></div>
+        <h3>Automatización</h3>
+        <p>Automatiza emails, WhatsApp, recordatorios de citas y reservas. Ahorra horas cada semana en tareas repetitivas.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><i class="fas fa-file-alt"></i></div>
+        <h3>Contenido SEO</h3>
+        <p>Genera blogs optimizados, publicaciones para redes sociales y descripciones de productos que venden.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><i class="fas fa-database"></i></div>
+        <h3>Dashboard IA</h3>
+        <p>Cuadro de mando inteligente con métricas en tiempo real. Visualiza el rendimiento de tu negocio de un vistazo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="precios">
+  <div class="container">
+    <p class="section-label">· Precios ·</p>
+    <h2 class="section-title">Planes para cada negocio</h2>
+    <p class="section-subtitle">Empieza pequeño, escala cuando quieras. Todos los planes incluyen soporte técnico y actualizaciones.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-badge">Popular</div>
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-desc">Perfecto para negocios que empiezan con IA</div>
+        <div class="pricing-price">49<span>€</span></div>
+        <div class="pricing-period">/mes</div>
+        <ul class="pricing-features">
+          <li><i class="fas fa-check"></i> 1 Chatbot IA personalizado</li>
+          <li><i class="fas fa-check"></i> Atención 24/7 sin límites</li>
+          <li><i class="fas fa-check"></i> Integración WhatsApp / Web</li>
+          <li><i class="fas fa-check"></i> Panel de control básico</li>
+          <li><i class="fas fa-xmark"></i> Analítica avanzada</li>
+          <li><i class="fas fa-xmark"></i> Automatizaciones</li>
+        </ul>
+        <a href="#contacto" class="pricing-cta">Elegir Starter</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Recomendado</div>
+        <div class="pricing-name">Business</div>
+        <div class="pricing-desc">La opción más completa para pymes</div>
+        <div class="pricing-price">99<span>€</span></div>
+        <div class="pricing-period">/mes</div>
+        <ul class="pricing-features">
+          <li><i class="fas fa-check"></i> Chatbot IA + Analítica</li>
+          <li><i class="fas fa-check"></i> Análisis de ventas y clientes</li>
+          <li><i class="fas fa-check"></i> Automatización email/WhatsApp</li>
+          <li><i class="fas fa-check"></i> Dashboard inteligente</li>
+          <li><i class="fas fa-check"></i> 2 flujos de automatización</li>
+          <li><i class="fas fa-xmark"></i> Contenido SEO ilimitado</li>
+        </ul>
+        <a href="#contacto" class="pricing-cta">Elegir Business</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-badge">Premium</div>
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-desc">Todo lo que necesitas, sin límites</div>
+        <div class="pricing-price">199<span>€</span></div>
+        <div class="pricing-period">/mes</div>
+        <ul class="pricing-features">
+          <li><i class="fas fa-check"></i> Todo el plan Business</li>
+          <li><i class="fas fa-check"></i> Chatbots ilimitados</li>
+          <li><i class="fas fa-check"></i> Generación de imágenes IA</li>
+          <li><i class="fas fa-check"></i> Contenido SEO ilimitado</li>
+          <li><i class="fas fa-check"></i> Automatizaciones ilimitadas</li>
+          <li><i class="fas fa-check"></i> Soporte prioritario 24/7</li>
+        </ul>
+        <a href="#contacto" class="pricing-cta">Elegir Enterprise</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAT DEMO -->
+<section class="chat-demo" id="demo">
+  <div class="container">
+    <div class="chat-demo-container">
+      <div class="chat-demo-text">
+        <p class="section-label">· Demo Interactiva ·</p>
+        <h2 class="section-title">Prueba nuestro chatbot</h2>
+        <p>Así funciona la IA que ofrecemos. Pregúntale sobre nuestros servicios, precios o cómo podemos ayudarte. Responde al instante, igual que lo haría con tus clientes.</p>
+        <ul class="demo-features">
+          <li><i class="fas fa-check-circle"></i> Respuestas inmediatas 24/7</li>
+          <li><i class="fas fa-check-circle"></i> Personalizado para tu negocio</li>
+          <li><i class="fas fa-check-circle"></i> Aprendizaje continuo</li>
+          <li><i class="fas fa-check-circle"></i> Integración con WhatsApp y web</li>
+        </ul>
+        <p style="color:#667799;font-size:.9rem"><i class="fas fa-arrow-right" style="color:#00d4ff"></i> Haz una pregunta en el chat para verlo en acción</p>
+      </div>
+      <div class="chat-box" id="chatBox">
+        <div class="chat-header">
+          <div class="chat-header-avatar"><i class="fas fa-robot"></i></div>
+          <div class="chat-header-info">
+            <h4>NEO AI Assistant</h4>
+            <span>En línea · Responde al instante</span>
+          </div>
+          <div class="chat-header-status"></div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-msg bot">¡Hola! Soy NEO AI, tu asistente virtual. 👋<br><br>Puedo ayudarte con información sobre nuestros servicios, precios, casos de uso y más. ¿Qué te gustaría saber?</div>
+        </div>
+        <div class="chat-quick" id="chatQuick">
+          <button onclick="quickChat('¿Qué servicios ofrecen?')">Servicios</button>
+          <button onclick="quickChat('¿Cuánto cuesta el plan Business?')">Precios</button>
+          <button onclick="quickChat('¿Cómo funciona para una peluquería?')">Peluquería</button>
+          <button onclick="quickChat('¿Cuánto ahorro con IA?')">Ahorro</button>
+        </div>
+        <div class="chat-input-wrap">
+          <input type="text" id="chatInput" placeholder="Escribe tu mensaje..." onkeypress="if(event.key==='Enter')sendChat()">
+          <button onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASOS DE USO -->
+<section class="casos" id="casos">
+  <div class="container">
+    <p class="section-label">· Casos de Uso ·</p>
+    <h2 class="section-title">IA para tu sector</h2>
+    <p class="section-subtitle">Soluciones específicas para los negocios más comunes de Illescas y la comarca. La IA se adapta a tu sector.</p>
+    <div class="casos-grid">
+      <div class="caso-card">
+        <div class="caso-icon"><i class="fas fa-utensils"></i></div>
+        <h3>Restauración</h3>
+        <p>Chatbot para reservas, carta digital con IA que recomienda platos, análisis de opiniones de clientes y automatización de pedidos a domicilio.</p>
+        <span class="caso-tag">+30% reservas</span>
+      </div>
+      <div class="caso-card">
+        <div class="caso-icon"><i class="fas fa-cut"></i></div>
+        <h3>Peluquería</h3>
+        <p>Agenda inteligente con recordatorios automáticos, recomendaciones de productos según tipo de pelo, y marketing automatizado para clientes habituales.</p>
+        <span class="caso-tag">-40% no-shows</span>
+      </div>
+      <div class="caso-card">
+        <div class="caso-icon"><i class="fas fa-store"></i></div>
+        <h3>Tiendas</h3>
+        <p>Chatbot de atención al cliente que resuelve dudas de stock, precios y horarios. Generación de descripciones de productos y análisis de tendencias de compra.</p>
+        <span class="caso-tag">+25% ventas</span>
+      </div>
+      <div class="caso-card">
+        <div class="caso-icon"><i class="fas fa-hard-hat"></i></div>
+        <h3>Reformas</h3>
+        <p>Generación de presupuestos automáticos, seguimiento de proyectos con IA, chatbot para consultas de clientes y automatización de captación de leads.</p>
+        <span class="caso-tag">+50% leads</span>
+      </div>
+      <div class="caso-card">
+        <div class="caso-icon"><i class="fas fa-dumbbell"></i></div>
+        <h3>Gimnasios</h3>
+        <p>Chatbot para información de horarios y tarifas, recomendaciones de rutinas personalizadas, automatización de renovaciones y retención de clientes.</p>
+        <span class="caso-tag">-25% bajas</span>
+      </div>
+      <div class="caso-card">
+        <div class="caso-icon"><i class="fas fa-laptop-medical"></i></div>
+        <h3>Clínicas</h3>
+        <p>Gestión inteligente de citas, recordatorios automáticos, chatbot para preguntas frecuentes y análisis de satisfacción de pacientes.</p>
+        <span class="caso-tag">+35% retención</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonios">
+  <div class="container">
+    <p class="section-label">· Testimonios ·</p>
+    <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+    <p class="section-subtitle">Negocios como el tuyo ya están transformando su forma de trabajar con NEO AI.</p>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">Desde que instalamos el chatbot, hemos reducido un 80% las llamadas de consultas básicas. El equipo puede centrarse en cocinar, no en responder el teléfono.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">MJ</div>
+          <div class="testimonial-info">
+            <h4>María José</h4>
+            <span>Restaurante El Rincón · Illescas</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">La IA nos genera las descripciones de productos y las publicaciones de redes sociales en segundos. Antes perdía horas cada semana. Ahora tengo tiempo para vender.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">AL</div>
+          <div class="testimonial-info">
+            <h4>Antonio López</h4>
+            <span>ModaSport · Illescas</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">El sistema de reservas automáticas vía WhatsApp nos ha cambiado la vida. Las clientes reservan solas y los recordatorios han eliminado las ausencias.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">CP</div>
+          <div class="testimonial-info">
+            <h4>Cristina Pérez</h4>
+            <span>Estética Glow · Yuncos</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">El dashboard nos muestra exactamente qué clientes están a punto de irse, qué productos se venden más y cuándo tenemos picos de trabajo. Imprescindible.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">JG</div>
+          <div class="testimonial-info">
+            <h4>Javier García</h4>
+            <span>Gimnasio FitZone · Seseña</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">Generamos presupuestos en segundos gracias a la IA. Antes tardaba 30 minutos por cliente. Ahora los envío en 2 minutos y he duplicado mi cartera.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">RM</div>
+          <div class="testimonial-info">
+            <h4>Raúl Martínez</h4>
+            <span>Reformas RM · Illescas</span>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">Pensaba que la IA era cosa de grandes empresas. NEO AI me demostró que estaba equivocado. Por 49€ al mes tengo un asistente que nunca duerme.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">SN</div>
+          <div class="testimonial-info">
+            <h4>Sandra Núñez</h4>
+            <span>Floristería Azahar · Illescas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROI CALCULATOR -->
+<section class="roi" id="roi">
+  <div class="container">
+    <div class="roi-container">
+      <div class="roi-calc">
+        <p class="section-label">· Calculadora de ROI ·</p>
+        <h2 class="section-title">¿Cuánto ahorrarías con IA?</h2>
+        <p style="color:#8899bb;font-size:.95rem;margin-bottom:24px">Desliza para indicar cuántos clientes atiendes al mes y descubre el tiempo que podrías recuperar.</p>
+        <label><i class="fas fa-users" style="color:#00d4ff;margin-right:6px"></i> Clientes al mes: <strong id="roiClientsLabel" style="color:#fff">200</strong></label>
+        <input type="range" id="roiSlider" min="50" max="1000" value="200" step="10" oninput="calcROI()">
+        <div class="roi-value" id="roiHoursDisplay">+42h</div>
+        <p style="text-align:center;color:#8899bb;font-size:.85rem">Horas ahorradas al mes automatizando con IA</p>
+        <div class="roi-details">
+          <div class="roi-detail">
+            <div class="roi-detail-number" id="roiMoneySaved">1.260€</div>
+            <div class="roi-detail-label">Valor del tiempo ahorrado</div>
+          </div>
+          <div class="roi-detail">
+            <div class="roi-detail-number" id="roiWeekly">+10,5h</div>
+            <div class="roi-detail-label">Horas/semana recuperadas</div>
+          </div>
+          <div class="roi-detail">
+            <div class="roi-detail-number" id="roiEfficiency">87%</div>
+            <div class="roi-detail-label">Eficiencia operativa</div>
+          </div>
+          <div class="roi-detail">
+            <div class="roi-detail-number highlight" id="roiPayback">14 días</div>
+            <div class="roi-detail-label">Recuperación de inversión</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="section-label">· Impacto Real ·</p>
+        <h2 class="section-title">Resultados medibles</h2>
+        <p style="color:#8899bb;font-size:1rem;line-height:1.7;margin-bottom:24px">Cada minuto que la IA trabaja por ti es un minuto que puedes dedicar a hacer crecer tu negocio. Nuestros clientes recuperan una media de <strong style="color:#00d4ff">15 horas semanales</strong>.</p>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.1);border-radius:10px;padding:16px">
+            <div style="width:44px;height:44px;border-radius:10px;background:rgba(123,47,247,.12);display:flex;align-items:center;justify-content:center;color:#00d4ff;font-size:1.1rem;flex-shrink:0"><i class="fas fa-clock"></i></div>
+            <div><strong style="color:#fff">80% menos tiempo</strong><br><span style="color:#667799;font-size:.85rem">en atención al cliente gracias al chatbot 24/7</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.1);border-radius:10px;padding:16px">
+            <div style="width:44px;height:44px;border-radius:10px;background:rgba(123,47,247,.12);display:flex;align-items:center;justify-content:center;color:#00d4ff;font-size:1.1rem;flex-shrink:0"><i class="fas fa-chart-simple"></i></div>
+            <div><strong style="color:#fff">3x más conversiones</strong><br><span style="color:#667799;font-size:.85rem">gracias a la automatización de seguimiento de clientes</span></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.1);border-radius:10px;padding:16px">
+            <div style="width:44px;height:44px;border-radius:10px;background:rgba(123,47,247,.12);display:flex;align-items:center;justify-content:center;color:#00d4ff;font-size:1.1rem;flex-shrink:0"><i class="fas fa-bolt"></i></div>
+            <div><strong style="color:#fff">ROI en 14 días</strong><br><span style="color:#667799;font-size:.85rem">la inversión se recupera en las primeras dos semanas</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contacto">
+  <div class="container">
+    <div class="contact-container">
+      <div class="contact-info">
+        <p class="section-label">· Contacto ·</p>
+        <h2 class="section-title">Hablemos de tu negocio</h2>
+        <p>Cuéntanos qué necesitas y te enviaremos una propuesta personalizada sin compromiso. Estamos en Illescas, Toledo, y ayudamos a negocios de toda la comarca.</p>
+        <div class="contact-detail">
+          <i class="fas fa-map-marker-alt"></i>
+          <div><strong>Ubicación</strong>Illescas, Toledo</div>
+        </div>
+        <div class="contact-detail">
+          <i class="fas fa-phone"></i>
+          <div><strong>Teléfono</strong>658 23 79 88</div>
+        </div>
+        <div class="contact-detail">
+          <i class="fas fa-envelope"></i>
+          <div><strong>Email</strong>info@neoai.es</div>
+        </div>
+        <div class="contact-detail">
+          <i class="fab fa-whatsapp"></i>
+          <div><strong>WhatsApp</strong>658 23 79 88</div>
+        </div>
+        <div style="margin-top:24px;padding:16px 20px;background:rgba(123,47,247,.08);border:1px solid rgba(123,47,247,.15);border-radius:12px">
+          <p style="color:#b0b8d0;font-size:.9rem;margin-bottom:0"><i class="fas fa-clock" style="color:#00d4ff;margin-right:8px"></i> Respondemos en menos de 2 horas en horario laboral</p>
+        </div>
+      </div>
+      <form class="contact-form" onsubmit="return sendWhatsApp(event)">
+        <div class="form-group">
+          <input type="text" id="formName" placeholder="Tu nombre" required>
+        </div>
+        <div class="form-group">
+          <input type="tel" id="formPhone" placeholder="Tu teléfono" required>
+        </div>
+        <div class="form-group">
+          <input type="text" id="formBusiness" placeholder="Nombre de tu negocio">
+        </div>
+        <div class="form-group">
+          <input type="text" id="formService" placeholder="¿Qué servicio te interesa?" list="serviceList">
+          <datalist id="serviceList">
+            <option value="Chatbot IA">
+            <option value="Generación de imágenes">
+            <option value="Análisis de datos">
+            <option value="Automatización">
+            <option value="Contenido SEO">
+            <option value="Dashboard IA">
+            <option value="No lo sé, necesito asesoramiento">
+          </datalist>
+        </div>
+        <div class="form-group">
+          <textarea id="formMessage" placeholder="Cuéntanos tu proyecto o lo que necesitas..."></textarea>
+        </div>
+        <button type="submit"><i class="fab fa-whatsapp"></i> Enviar por WhatsApp</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo"><i class="fas fa-brain"></i> NEO AI</div>
+      <p>IA que vende, no IA que entretiene. Transformamos pequeños negocios con inteligencia artificial accesible y efectiva. Con sede en Illescas, Toledo.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#servicios">Chatbot IA</a></li>
+        <li><a href="#servicios">Generación Imágenes</a></li>
+        <li><a href="#servicios">Análisis de Datos</a></li>
+        <li><a href="#servicios">Automatización</a></li>
+        <li><a href="#servicios">Contenido SEO</a></li>
+        <li><a href="#servicios">Dashboard IA</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Empresa</h4>
+      <ul>
+        <li><a href="#casos">Casos de Uso</a></li>
+        <li><a href="#testimonios">Testimonios</a></li>
+        <li><a href="#precios">Precios</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="#">Illescas, Toledo</a></li>
+        <li><a href="tel:+34658237988">658 23 79 88</a></li>
+        <li><a href="#">info@neoai.es</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 NEO AI. Todos los derechos reservados.</p>
+    <div class="footer-socials">
+      <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+    </div>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<a class="whatsapp-float" href="https://wa.me/34658237988" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<script>
+// ===== CHATBOT =====
+const faqs = {
+  "servicios": "Ofrecemos 6 servicios principales:\n\n🤖 **Chatbot IA** — Atención al cliente 24/7\n🖼️ **Generación de imágenes** — Productos y branding\n📊 **Análisis de datos** — Ventas y clientes\n⚡ **Automatización** — Email, WhatsApp, reservas\n📝 **Contenido SEO** — Blogs y redes sociales\n📈 **Dashboard IA** — Cuadro de mando inteligente\n\n¿Sobre cuál te gustaría saber más?",
+  "precios": "Tenemos 3 planes:\n\n🌟 **Starter** — 49€/mes (1 chatbot IA)\n🔥 **Business** — 99€/mes (chatbot + analítica) *Recomendado*\n💎 **Enterprise** — 199€/mes (todo incluido)\n\nTodos incluyen soporte técnico. ¿Quieres que te recomiende el mejor para tu negocio?",
+  "peluquería": "Para una peluquería, la IA puede:\n\n💇 **Agenda inteligente** con recordatorios automáticos\n📱 **Chatbot** para reservas y consultas de horarios\n📢 **Marketing automatizado** para clientes habituales\n📊 **Análisis** de productos más vendidos y tendencias\n\n¿Quieres una demo personalizada para tu peluquería?",
+  "restaurante": "Para un restaurante, la IA puede:\n\n🍽️ **Chatbot** para reservas y consulta de carta\n📱 **Pedidos automáticos** por WhatsApp\n⭐ **Análisis de reseñas** y opiniones\n📊 **Previsión** de afluencia y stock\n\n¿Te gustaría ver cómo funciona en un restaurante real?",
+  "ahorro": "Nuestros clientes ahorran una media de **15 horas semanales**. Esto supone:\n\n⏱️ ~60 horas al mes recuperadas\n💰 Valor estimado: 1.200-1.800€/mes\n📈 Hasta 3x más conversiones\n😌 Menos estrés y más tiempo para tu negocio\n\n¡Prueba nuestra calculadora de ROI más arriba!",
+  "empresa": "¡Claro! ¿Tienes un negocio local? Dime de qué sector y te cuento exactamente cómo podemos ayudarte con IA.",
+  "contacto": "Puedes contactarnos por:\n\n📞 Teléfono: 658 23 79 88\n💬 WhatsApp: 658 23 79 88\n📧 Email: info@neoai.es\n📍 Illescas, Toledo\n\nTambién puedes rellenar el formulario de contacto y te responderemos en menos de 2 horas.",
+  "hola": "¡Hola! 👋 Soy NEO AI, tu asistente virtual.\n\nPuedo ayudarte con:\n• Información sobre servicios\n• Precios y planes\n• Casos de uso por sector\n• Calculadora de ROI\n• Contacto y soporte\n\n¿Qué te gustaría saber?",
+  "default": "¡Buena pregunta! 😊\n\nPuedes preguntarme sobre:\n\n✅ **Servicios** — Qué ofrecemos y cómo funciona\n💰 **Precios** — Planes y tarifas\n🏪 **Tu sector** — Cómo ayuda la IA a tu negocio\n⏱️ **Ahorro** — Cuánto tiempo puedes recuperar\n📞 **Contacto** — Cómo hablar con nosotros\n\n¿Qué quieres saber?"
+};
+
+function getBotReply(msg) {
+  const m = msg.toLowerCase().trim();
+  if(m.includes('hola')||m.includes('buenas')||m.includes('hey')||m.includes('saludo')) return faqs.hola;
+  if(m.includes('servicio')||m.includes('ofrec')) return faqs.servicios;
+  if(m.includes('precio')||m.includes('cost')||m.includes('plan')||m.includes('tarifa')||m.includes('€')||m.includes('euro')||m.includes('cuanto vale')||m.includes('cuánto cuesta')) return faqs.precios;
+  if(m.includes('peluqu')||m.includes('peliq')||m.includes('pelo')||m.includes('corte')||m.includes('barber')) return faqs.peluquería;
+  if(m.includes('restaur')||m.includes('comid')||m.includes('bar')||m.includes('cafet')||m.includes('cocina')) return faqs.restaurante;
+  if(m.includes('ahorr')||m.includes('tiempo')||m.includes('hora')||m.includes('rentable')||m.includes('merece')) return faqs.ahorro;
+  if(m.includes('contact')||m.includes('teléfono')||m.includes('teléfono')||m.includes('email')||m.includes('correo')||m.includes('dirección')||m.includes('ubicación')||m.includes('donde estáis')||m.includes('dónde estáis')) return faqs.contacto;
+  if(m.includes('empresa')||m.includes('negocio')||m.includes('pyme')||m.includes('pequeño')) return faqs.empresa;
+  if(m.includes('tienda')||m.includes('shop')||m.includes('ropa')||m.includes('zapato')) return 'Para una **tienda**, la IA puede:\n\n🛍️ **Chatbot** que responde dudas de stock y horarios\n📝 **Descripciones** de productos generadas al instante\n📊 **Análisis** de productos más vendidos\n📱 **Marketing** automatizado por WhatsApp\n\n¿Te gustaría una demo?';
+  if(m.includes('gimnas')||m.includes('deporte')||m.includes('fit')||m.includes('entreno')) return 'Para un **gimnasio**, la IA puede:\n\n💪 **Chatbot** para info de horarios y tarifas\n📅 **Recordatorios** de renovaciones automáticos\n📊 **Análisis** de retención de clientes\n🎯 **Recomendaciones** personalizadas de rutinas\n\n¿Te interesa?';
+  if(m.includes('reform')||m.includes('obra')||m.includes('construc')||m.includes('albañil')) return 'Para una **empresa de reformas**, la IA puede:\n\n🔨 **Presupuestos automáticos** en segundos\n📱 **Chatbot** para captar leads 24/7\n📊 **Seguimiento** de proyectos inteligente\n📝 **Generación** de informes automáticos\n\n¿Quieres más info?';
+  if(m.includes('gracias')||m.includes('vale')||m.includes('ok')) return '¡De nada! 😊 Si tienes cualquier otra duda, aquí estoy. También puedes pedir una demo sin compromiso desde el formulario de contacto. ¡Feliz día! 🚀';
+  return faqs.default;
+}
+
+function addMessage(text, isUser) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + (isUser ? 'user' : 'bot');
+  div.innerHTML = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if(!msg) return;
+  addMessage(msg, true);
+  input.value = '';
+  setTimeout(() => {
+    const reply = getBotReply(msg);
+    addMessage(reply, false);
+  }, 400 + Math.random()*600);
+}
+
+function quickChat(msg) {
+  addMessage(msg, true);
+  setTimeout(() => {
+    const reply = getBotReply(msg);
+    addMessage(reply, false);
+  }, 400 + Math.random()*600);
+}
+
+// ===== ROI CALCULATOR =====
+function calcROI() {
+  const slider = document.getElementById('roiSlider');
+  const clients = parseInt(slider.value);
+  document.getElementById('roiClientsLabel').textContent = clients;
+  
+  // Each client interaction saves ~6 minutes with AI
+  const totalMinutes = clients * 6;
+  const hours = Math.round(totalMinutes / 60);
+  const weekly = (hours / 4.33).toFixed(1);
+  const moneySaved = Math.round(hours * 30); // 30€/h estimated value
+  const efficiency = Math.min(95, Math.round(50 + (clients / 20)));
+  const paybackDays = Math.max(7, Math.round(2000 / Math.max(1, moneySaved)) * 7);
+  
+  document.getElementById('roiHoursDisplay').textContent = '+' + hours + 'h';
+  document.getElementById('roiMoneySaved').textContent = moneySaved.toLocaleString() + '€';
+  document.getElementById('roiWeekly').textContent = '+' + weekly + 'h';
+  document.getElementById('roiEfficiency').textContent = efficiency + '%';
+  document.getElementById('roiPayback').textContent = paybackDays + ' días';
+}
+
+// ===== WHATSAPP FORM =====
+function sendWhatsApp(event) {
+  event.preventDefault();
+  const name = document.getElementById('formName').value.trim();
+  const phone = document.getElementById('formPhone').value.trim();
+  const business = document.getElementById('formBusiness').value.trim();
+  const service = document.getElementById('formService').value.trim();
+  const message = document.getElementById('formMessage').value.trim();
+  
+  let text = '¡Hola! Quiero información sobre NEO AI.%0A%0A';
+  text += '*Nombre:* ' + encodeURIComponent(name) + '%0A';
+  text += '*Teléfono:* ' + encodeURIComponent(phone) + '%0A';
+  if(business) text += '*Negocio:* ' + encodeURIComponent(business) + '%0A';
+  if(service) text += '*Interesado en:* ' + encodeURIComponent(service) + '%0A';
+  if(message) text += '*Mensaje:* ' + encodeURIComponent(message);
+  
+  window.open('https://wa.me/34658237988?text=' + text, '_blank');
+  return false;
+}
+
+// Init ROI on load
+calcROI();
+</script>
+</body>
+</html>

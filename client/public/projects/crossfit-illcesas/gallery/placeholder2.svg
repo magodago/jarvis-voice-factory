@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs><linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#0a0a0a"/><stop offset="100%" style="stop-color:#1a1a1a"/></linearGradient></defs>
+  <rect width="800" height="600" fill="url(#bg2)"/>
+  <g transform="translate(400,280)" fill="none" stroke="#ff4500" stroke-width="5">
+    <circle cx="-50" cy="-20" r="25"/><circle cx="50" cy="-20" r="25"/>
+    <path d="M-45,10 Q-30,50 0,55 Q30,50 45,10" stroke-linecap="round"/>
+    <rect x="-15" y="60" width="30" height="50" rx="5"/>
+  </g>
+  <text x="400" y="480" font-family="Arial,sans-serif" font-size="14" fill="#555" text-anchor="middle">GALLERY IMAGE 2</text>
+</svg>

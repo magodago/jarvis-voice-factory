@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1510;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2a2018;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)" rx="8"/>
+  <circle cx="400" cy="260" r="120" fill="none" stroke="#c9a96e" stroke-width="2" opacity="0.8"/>
+  <g transform="translate(370,200)" fill="none" stroke="#c9a96e" stroke-width="2" stroke-linecap="round">
+    <path d="M0,10 Q15,-5 30,10 Q45,-5 60,10" />
+    <path d="M15,10 Q15,25 10,40" />
+    <path d="M45,10 Q45,25 50,40" />
+    <path d="M10,40 Q30,50 50,40" />
+    <!-- Small diamond -->
+    <circle cx="30" cy="20" r="3" fill="#c9a96e"/>
+  </g>
+  <text x="400" y="440" font-family="Playfair Display, Georgia, serif" font-size="22" fill="#c9a96e" text-anchor="middle" letter-spacing="4">PEINADOS NOVIA</text>
+  <text x="400" y="470" font-family="Rajdhani, Arial, sans-serif" font-size="14" fill="#8b6914" text-anchor="middle" letter-spacing="6">ESTILO</text>
+  <rect x="360" y="490" width="80" height="1" fill="#c9a96e" opacity="0.5"/>
+</svg>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f5f0"/>
+      <stop offset="100%" stop-color="#e8e8e0"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg2)"/>
+  <rect x="0" y="0" width="800" height="600" fill="none" stroke="#e8672b" stroke-width="3"/>
+  <!-- Modern bathtub -->
+  <rect x="100" y="240" width="220" height="130" rx="15" fill="#fff" stroke="#ddd" stroke-width="2"/>
+  <rect x="110" y="250" width="200" height="110" rx="10" fill="#f0f0f0"/>
+  <line x1="120" y1="260" x2="300" y2="260" stroke="#e0e0e0" stroke-width="1"/>
+  <!-- Modern faucet -->
+  <rect x="185" y="210" width="50" height="30" rx="5" fill="#e8672b"/>
+  <rect x="195" y="220" width="30" height="20" rx="3" fill="#fff"/>
+  <!-- Modern sink -->
+  <rect x="370" y="290" width="120" height="80" rx="8" fill="#fff" stroke="#ddd" stroke-width="2"/>
+  <ellipse cx="430" cy="330" rx="35" ry="25" fill="#e8e8e8"/>
+  <rect x="415" y="275" width="30" height="15" rx="3" fill="#e8672b"/>
+  <!-- Mirror -->
+  <rect x="370" y="140" width="120" height="120" rx="10" fill="#d8e8f0" stroke="#ccc" stroke-width="2" opacity="0.8"/>
+  <!-- Modern shower -->
+  <rect x="550" y="150" width="160" height="300" rx="8" fill="#d4f0f4" stroke="#ccc" stroke-width="2" opacity="0.5"/>
+  <rect x="620" y="100" width="20" height="50" rx="5" fill="#e8672b"/>
+  <circle cx="630" cy="100" r="12" fill="#e8672b"/>
+  <!-- Tiles pattern -->
+  <g opacity="0.08">
+    <rect x="0" y="400" width="80" height="80" fill="#e8672b" stroke="#e8672b" stroke-width="1"/>
+    <rect x="80" y="400" width="80" height="80" fill="none" stroke="#e8672b" stroke-width="1"/>
+    <rect x="160" y="400" width="80" height="80" fill="#e8672b" stroke="#e8672b" stroke-width="1"/>
+    <rect x="240" y="400" width="80" height="80" fill="none" stroke="#e8672b" stroke-width="1"/>
+    <rect x="320" y="400" width="80" height="80" fill="#e8672b" stroke="#e8672b" stroke-width="1"/>
+    <rect x="400" y="400" width="80" height="80" fill="none" stroke="#e8672b" stroke-width="1"/>
+  </g>
+  <!-- After label -->
+  <rect x="300" y="30" width="200" height="50" rx="25" fill="#e8672b"/>
+  <text x="400" y="62" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="22" font-weight="bold">DESPUÉS</text>
+  <text x="400" y="555" text-anchor="middle" fill="#666" font-family="Arial, sans-serif" font-size="16">Baño reformado - Reforma Integral</text>
+</svg>

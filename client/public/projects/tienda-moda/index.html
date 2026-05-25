@@ -576,12 +576,10 @@ const PRODUCTS = [
 const FEATURED_IDS = [1,5,7,4,9,2];
 
 const GALLERY_ITEMS = [
-  { label:'Fachada', img:'gallery/mujer-1.png' },
-  { label:'Interior', img:'gallery/hombre-1.png' },
-  { label:'Probadores', img:'gallery/mujer-2.png' },
-  { label:'Escaparate', img:'gallery/hombre-2.png' },
-  { label:'Equipo', img:'gallery/accesorios-1.png' },
-  { label:'Evento', img:'gallery/accesorios-2.png' }
+  { label:'Fachada', img:'gallery/tienda-fachada.png' },
+  { label:'Interior', img:'gallery/tienda-interior.png' },
+  { label:'Probadores', img:'gallery/tienda-probadores.png' },
+  { label:'Escaparate', img:'gallery/tienda-escaparate.png' }
 ];
 
 const REVIEWS = [
@@ -756,10 +754,7 @@ function renderProducts(category){
     const imgSrc = p.image;
     card.innerHTML = `
       <div class="product-image">
-        <div class="img-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/></svg>
-          <span>${p.name}</span>
-        </div>
+        <img src="${imgSrc}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">
         ${p.badge ? `<span class="product-category">${p.badge}</span>` : `<span class="product-category">${p.category}</span>`}
       </div>
       <div class="product-info">
@@ -810,10 +805,7 @@ function renderFeatured(){
     card.className = 'product-card';
     card.innerHTML = `
       <div class="product-image">
-        <div class="img-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/></svg>
-          <span>${p.name}</span>
-        </div>
+        <img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy">
         <span class="product-category">⭐ Destacado</span>
       </div>
       <div class="product-info">
@@ -867,11 +859,8 @@ function renderGallery(){
     const div = document.createElement('div');
     div.className = 'gallery-item';
     div.innerHTML = `
-      <div class="gallery-placeholder" style="background:${item.color}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-        <span>${item.label}</span>
-      </div>
-      <div class="gallery-item-overlay"><span>${item.label}</span></div>
+      <img src="${item.img}" alt="${item.label}" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:12px" loading="lazy">
+      <div class="gallery-overlay"><span>${item.label}</span></div>
     `;
     grid.appendChild(div);
   });

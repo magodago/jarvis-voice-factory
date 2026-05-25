@@ -77,7 +77,7 @@ nav.scrolled{background:rgba(26,21,16,.95);backdrop-filter:blur(12px);padding:10
 /* ===== SERVICES ===== */
 .services{background:#1a1510}
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.service-card{background:#1f1913;border:1px solid rgba(201,169,110,.08);border-radius:8px;padding:30px;text-align:center;transition:all .4s;position:relative;overflow:hidden}
+.service-card{background:#1f1913;border:1px solid rgba(201,169,110,.08);border-radius:8px;padding:0 0 20px;text-align:center;transition:all .4s;position:relative;overflow:hidden}
 .service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c9a96e,transparent);opacity:0;transition:opacity .4s}
 .service-card:hover::before{opacity:1}
 .service-card:hover{transform:translateY(-4px);border-color:rgba(201,169,110,.2);box-shadow:0 12px 40px rgba(0,0,0,.3)}
@@ -537,12 +537,12 @@ nav.scrolled{background:rgba(26,21,16,.95);backdrop-filter:blur(12px);padding:10
 <script>
 // ===== DATA =====
 const SERVICES = [
-  {id:'corte-hombre',name:'Corte Hombre',duration:15,price:12,icon:'✂️'},
-  {id:'corte-mujer',name:'Corte Mujer',duration:20,price:18,icon:'✂️'},
-  {id:'tinte',name:'Tinte',duration:45,price:35,icon:'🎨'},
-  {id:'mechas',name:'Mechas',duration:60,price:45,icon:'✨'},
-  {id:'peinado',name:'Peinado',duration:30,price:20,icon:'💇'},
-  {id:'cejas',name:'Cejas',duration:10,price:8,icon:'🪞'}
+  {id:'corte-hombre',name:'Corte Hombre',duration:15,price:12,image:'gallery/4.png'},
+  {id:'corte-mujer',name:'Corte Mujer',duration:20,price:18,image:'gallery/1.png'},
+  {id:'tinte',name:'Tinte',duration:45,price:35,image:'gallery/2.png'},
+  {id:'mechas',name:'Mechas',duration:60,price:45,image:'gallery/5.png'},
+  {id:'peinado',name:'Peinado',duration:30,price:20,image:'gallery/3.png'},
+  {id:'cejas',name:'Cejas',duration:10,price:8,image:'gallery/2.png'}
 ];
 
 const STYLISTS = [
@@ -568,16 +568,11 @@ function renderServices(){
   const grid = document.getElementById('servicesGrid');
   grid.innerHTML = SERVICES.map(s => `
     <div class="service-card">
-      <div class="service-icon">
-        <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="18" cy="10" r="7" stroke-linecap="round"/>
-          <path d="M6 32c0-7 5-12 12-12s12 5 12 12" stroke-linecap="round"/>
-          <path d="M14 8l-6-4M22 8l6-4M18 3V1" stroke-linecap="round" opacity=".5"/>
-        </svg>
+      <div class="service-image">
+        <img src="${s.image}" alt="${s.name}" style="width:100%;height:100%;object-fit:cover;transition:transform .6s" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" loading="lazy">
       </div>
       <h4>${s.name}</h4>
       <p>${s.duration} min</p>
-      <span class="duration">${s.icon}</span>
       <span class="price">${s.price} €</span>
     </div>
   `).join('');

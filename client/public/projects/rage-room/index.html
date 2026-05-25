@@ -138,7 +138,7 @@ nav {
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 2rem;
+  padding: 5rem 2rem 2rem;
 }
 
 .hero-badge {
@@ -916,7 +916,7 @@ footer .footer-logo {
 <div class="particles" id="particles"></div>
 
 <nav>
-  <div class="logo">ROMΔPE TU EΔSTRÉS</div>
+<div class="logo">ROMPE TU ESTRÉS</div>
   <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')">☰</button>
   <div class="nav-links">
     <a href="#packages">Paquetes</a>
@@ -933,7 +933,7 @@ footer .footer-logo {
   <h1 class="animate animate-delay-1">
     Rompe <span class="highlight">TU ESTRÉS</span>
   </h1>
-  <div class="tagline animate animate-delay-1">💥 La experiencia más catártica de Toledo</div>
+  <div class="tagline animate animate-delay-1">💥 ¿Jefe cabrón? ¿Ex que te dejó? ¿Lunes? Ven y rompe.</div>
   <p class="animate animate-delay-2">
     Olvídate del jefe, del tráfico, de las facturas. <strong>Ponte un casco, coge un bate y DESTRÚYELO TODO.</strong><br>
     Platos, vasos, monitores, impresoras… lo que quieras romper. <strong>Sin límites. Sin estrés. Solo destrucción.</strong>
@@ -1292,9 +1292,9 @@ footer .footer-logo {
 </div>
 
 <footer>
-  <div class="footer-logo">ROMΔPE TU EΔSTRÉS</div>
+  <div class="footer-logo">ROMPE TU ESTRÉS</div>
   <p>C.C. Señorío Plaza · Illescas · Toledo</p>
-  <p style="margin:.3rem 0;">📞 WhatsApp: <strong style="color:var(--cyan);">644 12 34 56</strong></p>
+  <p style="margin:.3rem 0;">📞 WhatsApp: <strong style="color:var(--cyan);">658 23 79 88</strong></p>
   <p style="font-size:.85rem;color:rgba(224,224,255,.3);">Lun–Dom: 11:00 – 22:00 · Parking gratuito</p>
   <div class="footer-social">
     <a href="#" title="Instagram" target="_blank">📷</a>
@@ -1305,6 +1305,16 @@ footer .footer-logo {
 </footer>
 
 <script>
+// 🛡️ Check exactua fecha+hora no se haya reservado ya
+function checkBlockedSlot(date, time) {
+  const key = `rte_blocked_${date}_${time}`;
+  return localStorage.getItem(key) === 'true';
+}
+function blockSlot(date, time) {
+  const key = `rte_blocked_${date}_${time}`;
+  localStorage.setItem(key, 'true');
+}
+
 // Particles
 for (let i = 0; i < 50; i++) {
   const p = document.createElement('div');
@@ -1358,8 +1368,15 @@ function handleBooking(e) {
   
   const msg = `💥 *NUEVA RESERVA - Rompe tu Estrés*\n\n👤 *Nombre:* ${name}\n📱 *WhatsApp:* ${phone}\n📅 *Fecha:* ${date}\n⏰ *Hora:* ${time}\n🎯 *Paquete:* ${pkgNames[pkg]}\n👥 *Personas:* ${people}${people > 5 ? '+' : ''}\n📝 *Nota:* ${note || 'Ninguna'}\n\n💰 *Total:* ${document.getElementById('totalPrice').textContent}`;
   
-  // Open WhatsApp with pre-filled message
-  const whatsappUrl = `https://wa.me/34644123456?text=${encodeURIComponent(msg)}`;
+  // 🛡️ Comprobar si ese día y hora ya se reservó
+  if (checkBlockedSlot(date, time)) {
+    alert('❌ Ese día y hora ya tiene una reserva activa.\n\nElige otra fecha u horario, por favor.');
+    return;
+  }
+  
+  // Marcar como reservado y abrir WhatsApp
+  blockSlot(date, time);
+  const whatsappUrl = `https://wa.me/34658237988?text=${encodeURIComponent(msg)}`;
   window.open(whatsappUrl, '_blank');
   
   alert('✅ ¡Gracias por tu reserva!\n\nTe hemos redirigido a WhatsApp para confirmar. Te responderemos en menos de 30 minutos.\n\n¡Prepárate para romperlo todo! 💥');

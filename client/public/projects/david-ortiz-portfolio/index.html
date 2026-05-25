@@ -155,16 +155,6 @@ section{padding:6rem 3rem;max-width:1300px;margin:0 auto;position:relative;z-ind
 .testimonial-role{font-size:.8rem;color:var(--text-dim)}
 
 /* CC Opportunity */
-.opportunity-card{background:linear-gradient(135deg,var(--card),var(--darker));border:1px solid var(--border);border-radius:20px;padding:2.5rem;position:relative;overflow:hidden}
-.opportunity-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--gold),#7b2ff7,var(--gold))}
-.opp-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
-.opp-grid h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);margin-bottom:1rem}
-.opp-grid ul{list-style:none}
-.opp-grid li{padding:.5rem 0;color:var(--text-dim);font-size:.95rem;display:flex;align-items:center;gap:.6rem}
-.opp-grid li::before{content:'✦';color:var(--gold);font-size:.7rem}
-.opp-idea{background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:1.5rem;margin-top:1rem}
-.opp-idea h4{color:var(--gold);font-size:1rem;margin-bottom:.5rem}
-.opp-idea p{color:var(--text-dim);font-size:.9rem;line-height:1.6}
 
 /* CTA */
 .cta{text-align:center;padding:6rem 3rem;position:relative;z-index:1;max-width:800px;margin:0 auto}
@@ -202,7 +192,6 @@ footer{position:relative;z-index:1;padding:4rem 3rem 2rem;border-top:1px solid v
 
 /* Responsive */
 @media(max-width:1024px){
-  .opp-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:768px){
@@ -432,46 +421,7 @@ footer{position:relative;z-index:1;padding:4rem 3rem 2rem;border-top:1px solid v
   </div>
 </section>
 
-<!-- CC SEÑORÍO PLAZA OPPORTUNITY -->
-<section id="opportunity">
-  <div class="section-label anim">Oportunidad</div>
-  <h2 class="section-title anim anim-d1">CC Señorío Plaza · <span style="color:var(--gold)">Sin presencia digital</span></h2>
-  <p class="section-sub anim anim-d2">El nuevo centro comercial de Illescas no tiene web ni app. Los cines y la bolera abren el mes que viene. Hay varias oportunidades para ofrecerles.</p>
-  <div class="opportunity-card anim">
-    <div class="opp-grid">
-      <div>
-        <h3>📊 Diagnóstico</h3>
-        <ul>
-          <li>No tienen web propia</li>
-          <li>No tienen app</li>
-          <li>Solo Facebook (5.791 seg.) e Instagram (nuevo)</li>
-          <li>Cines y bolera abren en 1 mes 🚀</li>
-          <li>No hay plataforma de reservas unificada</li>
-        </ul>
-        <div class="opp-idea">
-          <h4>💡 Tu idea: "Descuento al pasar"</h4>
-          <p>Cuando un cliente camina por delante de un restaurante del CC, recibe una notificación con un código descuento aleatorio válido 30 minutos. Sin app: vía web push + geolocalización. Convierte paseantes en clientes al instante.</p>
-        </div>
-      </div>
-      <div>
-        <h3>🎯 Qué podemos ofrecerles</h3>
-        <ul>
-          <li>🌐 Web corporativa del CC</li>
-          <li>📱 Directorio digital de locales con reservas</li>
-          <li>📍 Notificaciones geolocalizadas (tu idea)</li>
-          <li>🎬 Packs combo: cine + cena + bolera + rage room</li>
-          <li>📊 Panel de analytics para el CC</li>
-          <li>🤖 Chatbot IA de atención al visitante</li>
-        </ul>
-        <div style="margin-top:1.5rem;padding:1rem;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.12);border-radius:12px;">
-          <p style="color:var(--gold);font-weight:600;margin-bottom:.3rem;">💰 Modelo</p>
-          <p style="color:var(--text-dim);font-size:.9rem;">Plataforma gratuita para el CC · 50-100€/mes por local por campañas de geofencing · Los locales pequeños pagan menos, los grandes (cines, bolera) más.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
+<!-- CC Plaza → demo independiente -->
 <!-- TESTIMONIALS -->
 <section id="testimonials">
   <div class="section-label anim">Opiniones</div>

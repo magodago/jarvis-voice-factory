@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca · El Gran Libro de la Magia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--bg2:#0f0f1a;--card:#14141f;--gold:#c9a84c;--gold-light:#e8d48b;--gold-dark:#8a7030;--text:#f0ece4;--text2:#a09888;--text3:#6b6358;--border:rgba(201,168,76,0.08);--border-gold:rgba(201,168,76,0.2);--font-display:'Cormorant Garamond',serif;--font-body:'Inter',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--gold-dark) var(--bg)}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px}
+::selection{background:var(--gold);color:var(--bg)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(10,10,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gold);text-decoration:none}
+nav .logo span{color:var(--text3)}
+nav .back{color:var(--text2);text-decoration:none;font-size:12px;transition:color .3s}
+.hero{position:relative;padding:120px 40px 60px;text-align:center;background:linear-gradient(180deg,var(--bg),var(--bg2))}
+.hero h1{font-family:var(--font-display);font-size:clamp(36px,5vw,56px);font-weight:300;margin-bottom:12px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p{color:var(--text2);font-size:16px;font-weight:300;max-width:600px;margin:0 auto}
+.tabs{display:flex;justify-content:center;gap:4px;padding:0 20px 32px;flex-wrap:wrap}
+.tabs button{padding:8px 20px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .3s}
+.tabs button:hover{border-color:var(--border-gold);color:var(--gold)}
+.tabs button.active{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.content{max-width:1000px;margin:0 auto;padding:0 24px 80px}
+.grid{display:grid;grid-template-columns:1fr;gap:10px}
+.item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 24px;transition:all .3s;display:flex;gap:16px;align-items:flex-start}
+.item:hover{border-color:var(--border-gold)}
+.item .num{font-family:var(--font-display);font-size:32px;font-weight:300;color:var(--gold-dark);min-width:50px;line-height:1}
+.item-body{flex:1}
+.item .title{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--gold);margin-bottom:2px}
+.item .meta{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:500}
+.item .desc{font-size:13px;color:var(--text2);line-height:1.5;font-weight:300;margin-bottom:6px}
+.item .importance{font-size:12px;color:var(--text);line-height:1.4;padding:8px 12px;background:rgba(201,168,76,.04);border-left:2px solid var(--gold-dark);border-radius:0 6px 6px 0;font-weight:400}
+.hero-img{width:100%;height:300px;border-radius:12px;overflow:hidden;margin:0 auto 40px;max-width:900px;position:relative;border:1px solid var(--border)}
+.hero-img img{width:100%;height:100%;object-fit:cover;opacity:.6}
+.hero-img .overlay-text{position:absolute;bottom:20px;left:24px;font-family:var(--font-display);font-size:20px;color:var(--gold);font-weight:400}
+.empty{text-align:center;padding:60px;color:var(--text3);font-size:14px}
+footer{text-align:center;padding:32px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
+footer a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+<nav><a href="." class="logo">El Gran Libro <span>· Biblioteca</span></a><a href="magos.html" class="back">← Magos</a></nav>
+<section class="hero">
+  <h1>Biblioteca <em>Histórica</em></h1>
+  <p>Libros, revistas, manuscritos y documentos fundamentales en la historia del ilusionismo. El archivo esencial para todo mago.</p>
+</section>
+<div class="hero-img"><img src="assets/images/bib_library.jpg" alt=""><div class="overlay-text">📚 El conocimiento es el verdadero secreto</div></div>
+<div class="tabs" id="tabs">
+  <button class="active" data-tab="books">📖 Libros (25)</button>
+  <button data-tab="magazines">📰 Revistas (15)</button>
+  <button data-tab="manuscripts">📜 Manuscritos (10)</button>
+</div>
+<div class="content" id="content"></div>
+<footer>© 2026 <a href=".">El Gran Libro de la Magia</a> · Archivo bibliográfico del ilusionismo</footer>
+<script>
+const DATA = {
+  books: [
+    {n:1,t:"The Discoverie of Witchcraft",a:"Reginald Scot",y:"1584",d:"Primer libro que revela los secretos de los trucos de magia. Escrito para demostrar que la 'brujería' era ilusión técnica.",i:"Fundacional. Sentó las bases de la magia como arte del entretenimiento al desmitificar lo sobrenatural."},
+    {n:2,t:"Secrets of Conjuring and Magic",a:"Jean-Eugène Robert-Houdin",y:"1868",d:"Tratado completo de teoría y práctica mágica por el padre de la magia moderna. Principios de misdirection y psicología.",i:"Estableció el mago como artista teatral de frac, alejándolo del charlatanismo callejero."},
+    {n:3,t:"The Expert at the Card Table",a:"S.W. Erdnase",y:"1902",d:"Tratado definitivo sobre cartomagia avanzada: false deals, palming, second deals y técnica de cartas profesional.",i:"La biblia de la cartomagia. Su autor anónimo es uno de los grandes misterios del oficio."},
+    {n:4,t:"The Old and New Magic",a:"Henry Ridgely Evans",y:"1906",d:"Enciclopedia histórica que documenta la evolución de la magia desde los antiguos egipcios hasta el siglo XX.",i:"Primera gran historia académica de la magia como arte escénico."},
+    {n:5,t:"The Art of Magic",a:"T. Nelson Downs",y:"1909",d:"El Rey de los Magos compila sus rutinas originales de monedas, cartas y manipulación general.",i:"Elevó la manipulación de monedas a su máxima expresión."},
+    {n:6,t:"Our Magic",a:"Maskelyne & David Devant",y:"1911",d:"Tratado teórico que analiza la magia desde la psicología, la puesta en escena y la presentación.",i:"Primer libro que define la magia como un arte con principios y estética propios."},
+    {n:7,t:"The Modern Conjurer",a:"C. Wickson",y:"1920",d:"Manual práctico de magia general con cientos de trucos clasificados por categorías.",i:"Obra de referencia durante décadas por su exhaustividad."},
+    {n:8,t:"Tarbell Course in Magic",a:"Harlan Tarbell",y:"1928-1942 (8 vols.)",d:"Curso por correspondencia que cubre absolutamente todas las áreas de la magia.",i:"El curso más completo jamás escrito. Formó a generaciones de magos profesionales."},
+    {n:9,t:"The Jinx",a:"Theo Annemann",y:"1934-1941",d:"Publicación mensual de mentalismo. 111 números con efectos mentales y parapsicológicos.",i:"La publicación de mentalismo más influyente de la historia."},
+    {n:10,t:"Greater Magic",a:"John Northern Hilliard",y:"1938",d:"Enciclopedia de 1.000+ páginas con contribuciones de los mejores magos de la época.",i:"Considerado 'el libro de los libros'. Obra cumbre de referencia general."},
+    {n:11,t:"Expert Card Technique",a:"Hugard & Braue",y:"1940",d:"Tratado sistemático de técnica de cartas: controles, forces, palming, shuffles.",i:"Complemento técnico perfecto a Erdnase. Más accesible y pedagógico."},
+    {n:12,t:"The Trick Brain",a:"Dariel Fitzkee",y:"1944",d:"Clasificación sistemática de todos los efectos mágicos posibles analizando su estructura.",i:"Catalogó los 19 efectos fundamentales de la magia. Análisis estructural sin precedentes."},
+    {n:13,t:"Practical Mental Magic",a:"Theo Annemann",y:"1944",d:"Obra póstuma con las mejores rutinas de mentalismo: lectura en frío, predicciones, telepatía.",i:"El manual práctico de mentalismo por excelencia. Referencia obligada."},
+    {n:14,t:"The Royal Road to Card Magic",a:"Hugard & Braue",y:"1948",d:"Curso progresivo de cartomagia desde lo básico hasta nivel intermedio-avanzado.",i:"El mejor libro de introducción a la cartomagia jamás escrito."},
+    {n:15,t:"Modern Coin Magic",a:"J.B. Bobo",y:"1952",d:"Compendio enciclopédico de la moneda mágica: vanishes, productions, cambios, rutinas.",i:"La biblia de la moneda mágica. Ningún otro libro se le acerca en completitud."},
+    {n:16,t:"13 Steps to Mentalism",a:"Tony Corinda",y:"1961",d:"Curso en 13 lecciones que cubre cada principio del mentalismo moderno.",i:"La biblia del mentalismo moderno. Punto de partida obligatorio."},
+    {n:17,t:"Pallbearers Review",a:"Dai Vernon",y:"1966-1976",d:"Publicación trimestral de close-up y cartomagia de alto nivel.",i:"Vernon compartió sus secretos más profundos. Material técnico de altísimo nivel."},
+    {n:18,t:"Apocalypse",a:"Harry Lorayne",y:"1977-1996",d:"Publicación periódica de cartomagia avanzada por el legendario Lorayne.",i:"Lorayne es el mayor exponente de la cartomagia de salón. Legado escrito."},
+    {n:19,t:"La Vía Mágica",a:"Juan Tamariz",y:"1987",d:"Tratado sobre el arte de la presentación y la comunicación mágica.",i:"Revolucionó la teoría de la magia centrándose en la experiencia emocional del público."},
+    {n:20,t:"Card College",a:"Roberto Giobbi",y:"1995-2010 (5 vols.)",d:"Curso completo de cartomagia en 5 volúmenes, de principiante a profesional.",i:"La obra pedagógica más ambiciosa y completa del siglo XXI."},
+    {n:21,t:"The Books of Wonder",a:"Tommy Wonder",y:"1996 (2 vols.)",d:"Rutinas de Tommy Wonder, uno de los magos más creativos del siglo XX.",i:"Cada rutina es una obra maestra de presentación, psicología y técnica. Libro de culto."},
+    {n:22,t:"Kabbala",a:"Stephen Minch",y:"1991-1996",d:"Revista de cartomagia avanzada de tiraje limitado. Artículos técnicos profundos.",i:"Cada número es una rareza de colección. Minch fue editor de los libros de Vernon."},
+    {n:23,t:"The Magic of Ascanio",a:"Arturo de Ascanio",y:"2004-2008 (4 vols.)",d:"Teoría revolucionaria de la misdirection y la atención del espectador.",i:"Ascanio es el teórico más profundo de la misdirection."},
+    {n:24,t:"Mnemonica",a:"Juan Tamariz",y:"2004",d:"Sistema de stacked deck con teoría, rutinas y aplicaciones del mazo memorizado.",i:"No solo un stack: toda una filosofía de la cartomagia memorizada."},
+    {n:25,t:"Magische Welt",a:"Wittus Witt",y:"1952-presente",d:"Principal revista de magia en lengua alemana. Cobertura profunda de la escena europea.",i:"Publicación bimestral de alta calidad con décadas de historia."}
+  ],
+  magazines: [
+    {n:1,t:"Genii — The Conjurors' Magazine",a:"William Larsen Sr.",y:"1936–presente",d:"La revista de magia en publicación continua más antigua de EE.UU. Calidad gráfica y cobertura global.",i:"La revista más respetada del siglo XX. Calidad editorial sin igual."},
+    {n:2,t:"The Linking Ring",a:"IBM",y:"1922–presente",d:"Publicación oficial de la International Brotherhood of Magicians. Una de las más leídas del mundo.",i:"Crónica viva de más de 100 años de magia. Archivo histórico invaluable."},
+    {n:3,t:"The Magic Circular",a:"The Magic Circle",y:"1905–presente",d:"Publicación oficial del Magic Circle de Londres. Tono académico y artículos de miembros ilustres.",i:"La revista de magia más antigua en publicación continua."},
+    {n:4,t:"The Sphinx",a:"SAM",y:"1902–1953",d:"Órgano oficial de la Society of American Magicians. Cursó la edad de oro de la magia.",i:"Houdini contribuyó activamente. Tesoro histórico."},
+    {n:5,t:"Mahatma",a:"C.A. George Newmann",y:"1895–1906",d:"Una de las primeras revistas de magia en inglés. Documentó la escena victoriana.",i:"Referencia fundamental para historiadores de la magia."},
+    {n:6,t:"M-U-M",a:"SAM",y:"1911–presente",d:"Publicación oficial mensual de la SAM. Una de las más longevas.",i:"Archivos que son un tesoro histórico del siglo XX mágico."},
+    {n:7,t:"The Wizard",a:"Goodliffe",y:"1906–1970s",d:"Revista británica de larga duración. Cubrió gran parte del siglo XX.",i:"Trucos, biografías y novedades durante décadas."},
+    {n:8,t:"Ibidem",a:"David Bamberg (Fu-Manchú)",y:"1950s–1960s",d:"Revista de vanguardia con enfoque artístico y filosófico.",i:"Muy codiciada por coleccionistas. Ediciones limitadas."},
+    {n:9,t:"The Jinx",a:"Theodore Annemann",y:"1934–1941",d:"111 números de efectos mentales. La revista seminal del mentalismo moderno.",i:"Influencia inconmensurable en el mentalismo actual."},
+    {n:10,t:"Epilogue",a:"Harry Riser",y:"1970s–1990s",d:"Especializada en cartomagia y close-up de autor. Distribución selecta.",i:"Cada artículo era una joya técnica. Muy respetada entre profesionales."},
+    {n:11,t:"Pallbearers Review",a:"Dai Vernon",y:"1966–1976",d:"Publicación trimestral. Vernon compartió secretos nunca antes revelados.",i:"Hoy reimpreso en tomos. Material de culto."},
+    {n:12,t:"Magische Welt",a:"Wittus Witt",y:"1952–presente",d:"Principal revista de magia en alemán. Cobertura europea.",i:"Publicación bimestral de alta calidad."},
+    {n:13,t:"Kabbala",a:"Stephen Minch",y:"1991–1996",d:"Cartomagia avanzada de tiraje limitado.",i:"Cada número es una rareza de colección."},
+    {n:14,t:"Chronicles of the Fraternitas Magica",a:"Robert E. Olson",y:"1990s–presente",d:"Enfoque académico y filosófico. Circulación restringida.",i:"Una de las publicaciones más exclusivas del mundo mágico."},
+    {n:15,t:"The Blue Book of Magic",a:"IBM",y:"1940s–1950s",d:"Serie de publicaciones recopilatorias de trucos y rutinas.",i:"Ampliamente distribuida entre aficionados serios."}
+  ],
+  manuscripts: [
+    {n:1,t:"Papiro Westcar",a:"Egipto Antiguo",y:"c. 2,500 a.C.",d:"El texto mágico más antiguo conocido. Describe las hazañas del mago Djedi: decapitación y reanimación de animales.",i:"Raíz de todos los trucos de restauración modernos."},
+    {n:2,t:"Clavicula Salomonis (Llave de Salomón)",a:"Anónimo",y:"s. XIV-XV",d:"Grimorio fundamental de magia ceremonial. Sellos y símbolos usados por magos escénicos.",i:"Influencia masiva en la imaginería de la magia teatral."},
+    {n:3,t:"Monas Hieroglyphica",a:"John Dee",y:"1564",d:"Obra hermética del matemático isabelino. Símbolo que sintetiza astrología, alquimia y matemáticas.",i:"Alimentó el imaginario mágico por siglos. Santo grial del ocultismo."},
+    {n:4,t:"Manuscrito Voynich",a:"Anónimo",y:"c. 1404-1438",d:"El manuscrito más enigmático del mundo. Nunca descifrado. Ilustrado con plantas y diagramas.",i:"Ningún criptógrafo ni IA ha logrado traducirlo."},
+    {n:5,t:"Cuadernos de Robert-Houdin",a:"Jean-Eugène Robert-Houdin",y:"c. 1840-1860",d:"Planos de autómatas, electroimanes para ilusiones y reflexiones sobre psicología del espectador.",i:"Fundamento del mago como artista teatral."},
+    {n:6,t:"Diarios de Harry Houdini",a:"Harry Houdini",y:"c. 1890-1926",d:"Secretos de escapes, bocetos de aparatos, notas sobre rivales y su cruzada contra médiums.",i:"Ingeniería mágica aplicada a la resistencia humana."},
+    {n:7,t:"Manuscritos de Hofzinser",a:"Johann N. Hofzinser",y:"c. 1850 (destruidos)",d:"La tragedia más grande de la literatura mágica: su viuda los quemó al morir él.",i:"Los fragmentos que sobrevivieron revelan técnicas no superadas hasta el siglo XX."},
+    {n:8,t:"Grimorio de Alberto Magno",a:"Atribuido a Alberto Magno",y:"s. XIII",d:"Compila propiedades mágicas de piedras, plantas y animales.",i:"Masivamente popular en la Edad Media como fuente de sortilegios."},
+    {n:9,t:"Cartas de Dai Vernon",a:"Dai Vernon",y:"c. 1920-1960",d:"Correspondencia del cartómago más influyente. Técnicas revolucionarias y filosofía del movimiento natural.",i:"El equivalente a los manuscritos de Da Vinci para la cartomagia."},
+    {n:10,t:"The Discoverie of Witchcraft",a:"Reginald Scot",y:"1584 (1ª edición)",d:"Primer libro impreso que revela secretos de trucos. Describe cartomagia, levitación y juegos de manos.",i:"La 'Biblia' de la magia moderna. Salvó vidas al demostrar que la brujería era ilusión."}
+  ]
+};
+
+const content = document.getElementById('content');
+let currentTab = 'books';
+
+function render(tab) {
+  currentTab = tab;
+  const items = DATA[tab];
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  content.innerHTML = '<div class="grid">' + items.map(item => {
+    const img = tab === 'books' && item.n <= 3 ? `<img src="assets/images/bib_${item.n === 3 ? 'erdnase' : item.n === 2 ? 'library' : 'library'}.jpg" style="width:60px;height:80px;object-fit:cover;border-radius:4px;opacity:.7;flex-shrink:0">` : '';
+    return `<div class="item">
+      <div class="num">${item.n}</div>
+      ${img}
+      <div class="item-body">
+        <div class="title">${item.t}</div>
+        <div class="meta">${item.a} · ${item.y}</div>
+        <div class="desc">${item.d}</div>
+        <div class="importance">★ ${item.i}</div>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => render(b.dataset.tab)));
+render('books');
+</script>
+</body>
+</html>

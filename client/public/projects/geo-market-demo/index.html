@@ -3,526 +3,120 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>GeoMarket · Señorío Plaza</title>
+<title>Señorío Plaza · Ofertas</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="GeoMarket">
+<meta name="apple-mobile-web-app-title" content="Señorío Plaza">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{height:100%}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0e17;color:#e8edf5;height:100%;overflow:hidden;-webkit-font-smoothing:antialiased}
-::selection{background:#00d4ff33;color:#fff}
-
-/* Status bar */
-#status-bar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;gap:6px;padding:6px 12px;padding-top:calc(6px + env(safe-area-inset-top,0px));background:linear-gradient(180deg,#0a0e17 60%,transparent);font-size:10px;color:#6b7a99;pointer-events:none}
-#status-bar .dot{width:5px;height:5px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite}
-#status-bar .badge{background:#1a2a4a;padding:2px 6px;border-radius:4px;color:#00d4ff;font-weight:600;font-size:9px;border:1px solid #00d4ff22}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-#app{display:flex;flex-direction:column;height:100%;padding-top:32px}
-#map-wrap{flex:1;position:relative;overflow:hidden;margin:0 8px;border-radius:14px;border:1px solid #1a2a4a;background:#0f1420}
-#map-canvas{width:100%;height:100%;position:relative;background:radial-gradient(ellipse at 50% 60%,#0f1f35 0%,#080c15 100%)}
-#map-canvas svg{width:100%;height:100%}
-
-/* Zones */
-.zone{fill-opacity:.12;stroke-width:1.5;transition:all .3s ease;cursor:pointer}
-.zone.active{fill-opacity:.3;stroke-width:2.5}
-.zone.tiendas{fill:#00d4ff;stroke:#00d4ff}
-.zone.restauracion{fill:#f97316;stroke:#f97316}
-.zone.ocio{fill:#a855f7;stroke:#a855f7}
-.zone.alimentacion{fill:#22c55e;stroke:#22c55e}
-.zone.servicios{fill:#eab308;stroke:#eab308}
-.zone-label{font-size:9px;font-weight:700;fill:#b0c4de;text-anchor:middle;pointer-events:none;opacity:.6}
-.zone-label.active{fill:#fff;opacity:1}
-
-/* Toasts */
-#toasts{position:fixed;top:calc(40px + env(safe-area-inset-top,0px));right:8px;z-index:200;display:flex;flex-direction:column;gap:6px;width:260px;pointer-events:none}
-.toast{background:linear-gradient(135deg,#0f1f35 0%,#1a2a4a 100%);border:1px solid;border-radius:10px;padding:10px 12px;animation:slideIn .35s ease-out;box-shadow:0 4px 24px rgba(0,0,0,.5);pointer-events:auto;cursor:pointer}
-.toast.flash{border-color:#ff6b35}
-.toast.permanente{border-color:#00d4ff44}
-.toast .toast-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
-.toast .toast-tag{font-size:8px;font-weight:700;padding:1px 6px;border-radius:3px;letter-spacing:.5px}
-.toast.flash .toast-tag{background:#ff6b3522;color:#ff6b35;border:1px solid #ff6b3533}
-.toast.permanente .toast-tag{background:#00d4ff22;color:#00d4ff;border:1px solid #00d4ff33}
-.toast .toast-timer{font-size:10px;font-family:monospace;color:#ff6b35;font-weight:700}
-.toast .toast-body{font-size:12px;line-height:1.3;color:#e8edf5}
-.toast .toast-store{font-size:9px;color:#6b7a99;margin-top:3px}
-@keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
-
-/* Bottom panel */
-#bottom-panel{background:#0f1420;border-top:1px solid #1a2a4a;padding:8px 12px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));max-height:42vh;display:flex;flex-direction:column}
-#panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-shrink:0}
-#panel-header h2{font-size:13px;font-weight:700}
-#panel-header .tab{display:flex;gap:4px}
-#panel-header .tab button{font-size:9px;padding:3px 10px;border-radius:12px;border:1px solid #1a2a4a;background:transparent;color:#6b7a99;cursor:pointer}
-#panel-header .tab button.active{background:#00d4ff11;border-color:#00d4ff33;color:#00d4ff}
-#panel-scroll{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#1a2a4a transparent}
-#panel-scroll::-webkit-scrollbar{width:3px}
-#panel-scroll::-webkit-scrollbar-thumb{background:#1a2a4a;border-radius:2px}
-
-/* Flash banner */
-#flash-banner{display:none;background:linear-gradient(135deg,#ff6b3511,#ff6b3522);border:1px solid #ff6b3533;border-radius:8px;padding:8px 10px;margin-bottom:6px;flex-shrink:0}
-#flash-banner.show{display:block}
-#flash-banner .fb-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
-#flash-banner .fb-head span{font-size:10px;font-weight:700;color:#ff6b35}
-#flash-banner .fb-timer{font-size:14px;font-family:monospace;color:#ff6b35;font-weight:700}
-#flash-banner .fb-item{font-size:11px;color:#e8edf5;padding:3px 0}
-#flash-banner .fb-store{font-size:9px;color:#6b7a99}
-
-/* Store cards */
-.store-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.store-card{background:#131a28;border:1px solid #1a2a4a;border-radius:8px;padding:8px;cursor:pointer;transition:all .2s}
-.store-card:active{transform:scale(.97);border-color:#00d4ff44}
-.store-card .s-name{font-size:11px;font-weight:700;color:#e8edf5}
-.store-card .s-cat{font-size:8px;color:#6b7a99;text-transform:uppercase;letter-spacing:.3px}
-.store-card .s-reg-offer{font-size:10px;color:#22c55e;margin-top:3px;line-height:1.2}
-.store-card .s-flash{font-size:9px;color:#ff6b35;margin-top:2px;font-weight:600}
-.store-card .s-local{font-size:8px;color:#4a5a7a;margin-top:2px;font-family:monospace}
-
-/* Controls */
-#controls{display:flex;gap:4px;padding:6px 12px 0;flex-shrink:0;flex-wrap:wrap}
-#controls button{flex:1;padding:6px 8px;border:1px solid #1a2a4a;border-radius:6px;background:#0f1420;color:#b0c4de;font-size:10px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;min-width:0}
-#controls button:active{transform:scale(.96)}
-#controls button.active{border-color:#00d4ff;color:#00d4ff;background:#00d4ff11}
-#controls button.sim-btn{background:#1a2a4a;color:#ff6b35;border-color:#ff6b3533}
-#controls button.sim-btn.active{background:#ff6b3522;color:#ff6b35}
-
-/* Zone detail modal */
-#zone-detail{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#0f1420;border-radius:16px 16px 0 0;border-top:1px solid #1a2a4a;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .3s ease;max-height:80vh;overflow-y:auto}
-#zone-detail.open{transform:translateY(0)}
-#zone-detail .close-btn{float:right;background:none;border:none;color:#6b7a99;font-size:18px;cursor:pointer}
-#zone-detail h3{font-size:14px;font-weight:700;margin-bottom:2px}
-#zone-detail .zd-desc{font-size:10px;color:#6b7a99;margin-bottom:10px}
-#zone-detail .zd-store{background:#131a28;border:1px solid #1a2a4a;border-radius:8px;padding:8px;margin-bottom:6px}
-#zone-detail .zd-store h4{font-size:11px;font-weight:700;color:#e8edf5}
-#zone-detail .zd-store .zd-offer{font-size:10px;color:#22c55e;margin-top:2px}
-#zone-detail .zd-store .zd-flash{font-size:9px;color:#ff6b35;margin-top:2px}
-
-#gps-debug{position:fixed;bottom:0;left:0;right:0;z-index:99;padding:2px 8px;padding-bottom:calc(2px + env(safe-area-inset-bottom,0px));font-size:8px;font-family:monospace;color:#4a5a7a;background:linear-gradient(0deg,#080c15 60%,transparent);pointer-events:none;text-align:center}
-
-@media(max-width:480px){.store-grid{grid-template-columns:1fr 1fr;gap:4px}
-.store-card{padding:6px}
-#controls{flex-wrap:nowrap;overflow-x:auto}
-#controls button{font-size:9px;padding:4px 8px;min-width:50px;flex:none}}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f5f7;color:#1d1d1f;height:100%;overflow:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+#status-bar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;padding-top:calc(10px + env(safe-area-inset-top,0px));background:rgba(255,255,255,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.06)}
+#status-bar .left{display:flex;align-items:center;gap:10px}
+#status-bar .logo{font-size:17px;font-weight:700;letter-spacing:-.3px;background:linear-gradient(135deg,#1d1d1f,#434344);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+#status-bar .sub{font-size:12px;color:#86868b;font-weight:500}
+#status-bar .badge{font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;background:#007aff;color:#fff}
+#status-bar .badge.outside{background:#8e8e93;color:#fff}
+#app{height:100%;padding-top:52px;padding-bottom:calc(env(safe-area-inset-bottom,0px))}
+#zone-tabs{display:flex;gap:6px;padding:10px 16px 8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;flex-shrink:0}
+#zone-tabs::-webkit-scrollbar{display:none}
+#zone-tabs button{white-space:nowrap;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;border:none;background:rgba(0,0,0,.05);color:#86868b;cursor:pointer;transition:all .2s;flex-shrink:0}
+#zone-tabs button:active{transform:scale(.95)}
+#zone-tabs button.active{background:#007aff;color:#fff;font-weight:600;box-shadow:0 2px 12px rgba(0,122,255,.3)}
+#content{height:calc(100% - 48px);overflow-y:auto;padding:4px 16px 100px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+#content::-webkit-scrollbar{width:0}
+.store-section{margin-bottom:20px}
+.store-section:last-child{margin-bottom:40px}
+.store-section .section-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;padding:0 4px}
+.store-section .section-title{font-size:15px;font-weight:700;color:#1d1d1f;letter-spacing:-.2px}
+.store-section .section-sub{font-size:11px;color:#86868b;font-weight:500}
+.store-section .section-count{font-size:11px;color:#86868b;font-weight:400}
+.store-card{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.06);transition:all .2s;cursor:pointer}
+.store-card:active{transform:scale(.98)}
+.store-card .sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.store-card .sc-name{font-size:15px;font-weight:700;color:#1d1d1f;letter-spacing:-.2px}
+.store-card .sc-local{font-size:11px;color:#86868b;font-weight:500;font-feature-settings:'tnum';margin-top:1px}
+.store-card .sc-desc{font-size:12px;color:#86868b;line-height:1.3;margin-bottom:8px}
+.store-card .sc-offers{display:flex;flex-direction:column;gap:4px}
+.store-card .sc-offer{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:500;line-height:1.2}
+.store-card .sc-offer.permanent{background:#f0f7ff;color:#0066cc}
+.store-card .sc-offer.permanent .tag{background:#007aff;color:#fff;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;letter-spacing:.3px}
+.store-card .sc-offer.flash{background:#fff5f0;color:#c93400;animation:pulse-glow 2s infinite}
+.store-card .sc-offer.flash .tag{background:#ff3b00;color:#fff;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.3px}
+.store-card .sc-offer .price{font-size:11px;color:#86868b;font-weight:600;margin-left:auto;font-feature-settings:'tnum'}
+@keyframes pulse-glow{0%,100%{opacity:1}50%{opacity:.75}}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center}
+.empty-state .icon{font-size:48px;margin-bottom:12px;opacity:.3}
+.empty-state h3{font-size:17px;font-weight:600;color:#1d1d1f;margin-bottom:4px}
+.empty-state p{font-size:13px;color:#86868b;line-height:1.4;max-width:280px}
+#flash-header{display:none;background:linear-gradient(135deg,#fff5f0,#fff0ea);border-radius:14px;padding:12px 16px;margin:0 0 12px;border:1px solid rgba(255,59,0,.1)}
+#flash-header.show{display:block}
+#flash-header .fh-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+#flash-header .fh-title{font-size:13px;font-weight:700;color:#c93400}
+#flash-header .fh-timer{font-size:16px;font-weight:700;font-feature-settings:'tnum';color:#ff3b00}
+#flash-header .fh-item{font-size:12px;color:#c93400;padding:2px 0;font-weight:500}
+#toasts{position:fixed;top:calc(60px + env(safe-area-inset-top,0px));right:12px;z-index:200;display:flex;flex-direction:column;gap:8px;width:300px;pointer-events:none}
+.toast{background:#fff;border-radius:14px;padding:14px 16px;animation:toastIn .4s cubic-bezier(.16,1,.3,1);box-shadow:0 8px 32px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);pointer-events:auto;cursor:pointer;border:1px solid rgba(0,0,0,.06)}
+.toast.flash{border-left:4px solid #ff3b00}
+.toast.permanent{border-left:4px solid #007aff}
+.toast .t-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.toast .t-tag{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.3px}
+.toast.flash .t-tag{background:#fff5f0;color:#ff3b00}
+.toast.permanent .t-tag{background:#f0f7ff;color:#007aff}
+.toast .t-timer{font-size:12px;font-weight:700;color:#ff3b00;font-feature-settings:'tnum'}
+.toast .t-body{font-size:13px;font-weight:600;color:#1d1d1f;line-height:1.3}
+.toast .t-store{font-size:11px;color:#86868b;margin-top:2px}
+@keyframes toastIn{from{transform:translateX(120%) scale(.9);opacity:0}to{transform:translateX(0) scale(1);opacity:1}}
+#gps-dot{width:8px;height:8px;border-radius:50%;background:#34c759;display:inline-block;animation:gpsPulse 2s infinite;margin-right:4px;vertical-align:middle}
+@keyframes gpsPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(52,199,89,.4)}50%{opacity:.7;box-shadow:0 0 0 6px rgba(52,199,89,0)}}
+#debug-bar{position:fixed;bottom:0;left:0;right:0;z-index:99;padding:3px 12px;padding-bottom:calc(3px + env(safe-area-inset-bottom,0px));font-size:9px;color:rgba(0,0,0,.25);background:rgba(255,255,255,.8);backdrop-filter:blur(10px);border-top:1px solid rgba(0,0,0,.04);text-align:center;font-weight:500}
 </style>
 </head>
 <body>
-
 <div id="status-bar">
-  <span class="dot"></span>
-  <span>Señorío Plaza</span>
-  <span class="badge" id="zone-badge">📍 CENTRO</span>
-</div>
-
-<div id="app">
-  <div id="map-wrap">
-    <div id="map-canvas">
-      <svg viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg">
-        <rect x="20" y="15" width="360" height="260" rx="8" fill="none" stroke="#1a2a4a" stroke-width="2"/>
-        <polygon class="zone tiendas" points="30,25 200,25 200,160 30,160" data-zone="tiendas"/>
-        <text class="zone-label" x="115" y="98">🛍️ TIENDAS</text>
-        <polygon class="zone restauracion" points="210,25 370,25 370,95 210,95" data-zone="restauracion"/>
-        <text class="zone-label" x="290" y="65">🍔 RESTAURACIÓN</text>
-        <polygon class="zone ocio" points="210,105 370,105 370,160 210,160" data-zone="ocio"/>
-        <text class="zone-label" x="290" y="138">🎮 OCIO</text>
-        <polygon class="zone alimentacion" points="30,170 200,170 200,270 30,270" data-zone="alimentacion"/>
-        <text class="zone-label" x="115" y="225">🛒 ALIMENTACIÓN</text>
-        <polygon class="zone servicios" points="210,170 370,170 370,270 210,270" data-zone="servicios"/>
-        <text class="zone-label" x="290" y="225">⚙️ SERVICIOS</text>
-        <circle cx="200" cy="190" r="20" fill="#0f1420" stroke="#1a2a4a" stroke-width="1"/>
-        <text x="200" y="195" text-anchor="middle" font-size="8" fill="#4a5a7a">📍</text>
-        <line x1="200" y1="25" x2="200" y2="270" stroke="#1a2a4a" stroke-width="1" opacity=".4"/>
-        <line x1="30" y1="160" x2="370" y2="160" stroke="#1a2a4a" stroke-width="1" opacity=".4"/>
-        <circle cx="200" cy="190" r="5" fill="#00d4ff" opacity=".9" id="user-dot">
-          <animate attributeName="r" values="5;8;5" dur="3s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="200" cy="190" r="10" fill="none" stroke="#00d4ff" opacity=".3" id="user-glow">
-          <animate attributeName="r" values="10;18;10" dur="3s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".3;.1;.3" dur="3s" repeatCount="indefinite"/>
-        </circle>
-      </svg>
-    </div>
+  <div class="left">
+    <span class="logo">Señorío Plaza</span>
+    <span class="sub">Illescas</span>
   </div>
-
-  <div id="controls">
-    <button data-zone="all" class="active">📍 Todas</button>
+  <span class="badge" id="zone-badge"><span id="gps-dot"></span>En el centro</span>
+</div>
+<div id="app">
+  <div id="zone-tabs">
+    <button data-zone="all" class="active">Todas</button>
     <button data-zone="tiendas">🛍️ Tiendas</button>
-    <button data-zone="restauracion">🍔 Comer</button>
+    <button data-zone="restauracion">🍔 Restauración</button>
     <button data-zone="ocio">🎮 Ocio</button>
     <button data-zone="alimentacion">🛒 Mercado</button>
-    <button class="sim-btn" id="sim-walk">⏰ Simular</button>
+    <button data-zone="servicios">⚙️ Servicios</button>
+    <button id="sim-btn" style="color:#ff3b00;font-weight:600">⏰ Simular</button>
   </div>
-
-  <div id="bottom-panel">
-    <div id="panel-header">
-      <h2 id="panel-title">🏪 Tiendas</h2>
-      <div class="tab">
-        <button id="tab-tiendas" class="active">Ofertas</button>
-        <button id="tab-flash">⏰ Flash</button>
-      </div>
-    </div>
-    <div id="flash-banner">
-      <div class="fb-head">
-        <span>⏰ Ofertas Flash Activas</span>
-        <span class="fb-timer" id="flash-total-timer">30:00</span>
+  <div id="content">
+    <div id="flash-header">
+      <div class="fh-top">
+        <span class="fh-title">⏰ Ofertas Flash</span>
+        <span class="fh-timer" id="flash-timer">30:00</span>
       </div>
       <div id="flash-items"></div>
     </div>
-    <div id="panel-scroll"></div>
+    <div id="store-list"></div>
   </div>
 </div>
-
-<div id="zone-detail">
-  <button class="close-btn" id="close-detail">✕</button>
-  <h3 id="zd-title"></h3>
-  <p class="zd-desc" id="zd-desc"></p>
-  <div id="zd-stores"></div>
-</div>
-
 <div id="toasts"></div>
-<div id="gps-debug">C. Juan Carlos Onetti, 1 · Illescas, Toledo · GPS: 40.1323, -3.8477</div>
-
+<div id="debug-bar">Al entrar en cada zona recibe ofertas flash · C. Juan Carlos Onetti, 1 · Illescas</div>
 <script>
-// SEÑORÍO PLAZA — Datos reales
-const CC = {
-  name: 'Señorío Plaza',
-  address: 'C. Juan Carlos Onetti, 1, 45200 Illescas, Toledo',
-  lat: 40.1323, lng: -3.8477, radius: 0.002,
-  hours: 'L-S 10:00-22:00',
-  zones: {
-    tiendas: { label: '🛍️ Zona Comercial', color: '#00d4ff', desc: 'Moda, deporte, hogar y más.',
-      flash: [
-        { store:'Joma', offer:'⏰ 30min -50% en segunda prenda', price:'Desde 25€' },
-        { store:'Sprinter', offer:'⏰ 30min -40% en chaquetas running', price:'39€' },
-      ],
-      stores: [
-        {name:'Joma', local:'A02', desc:'Calzado y equipamiento deportivo.', offer:'👟 2x1 en calzado running', price:'Desde 39€'},
-        {name:'Max Colchón', local:'A02B', desc:'Colchones, canapés y almohadas.', offer:'💤 -30% en viscoelástica', price:'249€'},
-        {name:'Hôma', local:'A03/B04', desc:'Decoración, mobiliario y menaje.', offer:'🏠 -20% muebles seleccionados', price:'Desde 59€'},
-        {name:'Toy Planet', local:'A05', desc:'Juguetes y juegos de mesa.', offer:'🧸 3x2 en juegos de mesa', price:'Desde 12€'},
-        {name:'Feuvert', local:'B01A', desc:'Mantenimiento y recambios coche.', offer:'🔧 Rev. gratis + -15% neumáticos', price:'Gratis'},
-        {name:'Bermellón', local:'B01B', desc:'Textil hogar y decoración.', offer:'🛏️ -25% ropa de cama', price:'Desde 29€'},
-        {name:'JYSK', local:'B02-B03B', desc:'Muebles y decoración nórdica.', offer:'🇩🇰 -40% colchones seleccionados', price:'Desde 99€'},
-        {name:'Dormity', local:'B04A', desc:'Salud y descanso.', offer:'😴 2ª almohada al 50%', price:'19€'},
-        {name:'Kiwoko', local:'B06', desc:'Todo para mascotas.', offer:'🐾 -20% pienso premium + regalo', price:'Desde 8€'},
-        {name:'Sprinter', local:'B08', desc:'Multimarca deportiva.', offer:'🏃 -50% ropa entrenamiento', price:'Desde 15€'},
-        {name:'Action', local:'B09', desc:'Descuentos no alimentarios.', offer:'🎯 -70% hobby & craft', price:'Desde 1€'},
-        {name:'Kiabi', local:'—', desc:'Moda familiar a buen precio.', offer:'👕 2x1 camisetas básicas', price:'6€'},
-      ]
-    },
-    restauracion: { label: '🍔 Restauración', color: '#f97316', desc: 'Cafés, comidas y cenas para todos los gustos.',
-      flash: [
-        { store:'McDonald's', offer:'⏰ 30min Menú Big Mac 5.99€' },
-        { store:'100 Montaditos', offer:'⏰ 30min Montaditos 0.50€' },
-      ],
-      stores: [
-        {name:'100 Montaditos', local:'R01', desc:'Montaditos a precios de locura.', offer:'🥪 Miércoles/Dom: montaditos 1€', price:'1€'},
-        {name:'McDonald's', local:'R02', desc:'Hamburguesas y Happy Meal.', offer:'🍟 Menú Big Mac 7.99€', price:'7.99€'},
-        {name:'Ginos', local:'R03', desc:'Cocina italiana.', offer:'🍝 Menú pasta + bebida 9.90€', price:'9.90€'},
-        {name:'VIPS', local:'R04', desc:'Americano.', offer:'🥩 Lunes: hamburguesa 2x1', price:'11.50€'},
-        {name:'Makitoki', local:'R05', desc:'Cocina asiática fusión.', offer:'🍣 Menú makis 12.90€', price:'12.90€'},
-        {name:'Anubis', local:'R06', desc:'Mexicano auténtico.', offer:'🌮 Jueves: 3x2 tacos', price:'9€'},
-        {name:'Foodtrucker', local:'R07', desc:'Comida urbana.', offer:'🌭 Menú Foodie 8.50€', price:'8.50€'},
-        {name:'Churrería', local:'R08', desc:'Churros artesanales.', offer:'🍫 Churros+chocolate 3.50€', price:'3.50€'},
-        {name:'Kebap', local:'R09', desc:'Döner y durum.', offer:'🥙 Durum + bebida 5.90€', price:'5.90€'},
-      ]
-    },
-    ocio: { label: '🎮 Ocio', color: '#a855f7', desc: 'Diversión para todas las edades.',
-      flash: [
-        { store:'Bowling Co.', offer:'⏰ 30min 2 partidas gratis + 1 bebida' },
-      ],
-      stores: [
-        {name:'Bowling Co.', local:'O01', desc:'Pistas de bolos profesionales.', offer:'🎳 2 partidas por 1: 9.90€', price:'9.90€'},
-        {name:'Fitness Gym', local:'O02', desc:'Gimnasio completo 06:00-01:00.', offer:'💪 Día GRATIS + -50% inscripción', price:'Gratis'},
-        {name:'Zona Gaming', local:'O03', desc:'VR y arcade.', offer:'🎮 1h VR 8€ (2 jugadores)', price:'8€'},
-      ]
-    },
-    alimentacion: { label: '🛒 Alimentación', color: '#22c55e', desc: 'Supermercados con los mejores precios.',
-      flash: [
-        { store:'Alcampo', offer:'⏰ 30min -50% en pescadería' },
-        { store:'Lidl', offer:'⏰ 30min Lote fruta 2.99€' },
-      ],
-      stores: [
-        {name:'Alcampo', local:'S01', desc:'Hipermercado completo.', offer:'🥩 -20% carne/pescado viernes', price:'Desde 3€'},
-        {name:'Lidl', local:'S02', desc:'Supermercado descuento.', offer:'🍎 Ofertas semanales -30% fruta', price:'Desde 0.99€'},
-      ]
-    },
-    servicios: { label: '⚙️ Servicios', color: '#eab308', desc: 'Todo lo que necesitas en un solo lugar.',
-      flash: [
-        { store:'Farmacia', offer:'⏰ 30min -20% en toda la parafarmacia' },
-      ],
-      stores: [
-        {name:'Lavandería', local:'SV01', desc:'Autoservicio 24h.', offer:'🧺 Lava+seca 5€ (nuevos)', price:'5€'},
-        {name:'Farmacia', local:'SV02', desc:'Horario ampliado.', offer:'💊 -15% vitaminas', price:'Desde 5€'},
-        {name:'Óptica', local:'SV03', desc:'Gafas y revisiones.', offer:'👓 2x1 gafas graduadas + revisión gratis', price:'Desde 49€'},
-        {name:'Belleza', local:'SV04', desc:'Peluquería y estética.', offer:'💇 Corte+peinado 15€ (semana)', price:'15€'},
-        {name:'Loterías', local:'SV05', desc:'Lotería y apuestas.', offer:'🍀 Lleva 5€, llévate boleto regalo', price:'Desde 2€'},
-      ]
-    }
-  }
-};
-
-const ZONE_ORDER = ['tiendas','restauracion','ocio','alimentacion','servicios'];
-let currentZone = null, simInterval = null, simZoneIdx = 0, toastCount = 0, visitedZones = new Set();
-let flashTotalSeconds = 1800; // 30 min
-let flashTimer = null;
-let activeFlashes = [];
-
-// DOM
-const zoneBadge = document.getElementById('zone-badge');
-const panelScroll = document.getElementById('panel-scroll');
-const panelTitle = document.getElementById('panel-title');
-const flashBanner = document.getElementById('flash-banner');
-const flashItems = document.getElementById('flash-items');
-const flashTotalTimer = document.getElementById('flash-total-timer');
-const tabTiendas = document.getElementById('tab-tiendas');
-const tabFlash = document.getElementById('tab-flash');
-const toasts = document.getElementById('toasts');
-const simWalk = document.getElementById('sim-walk');
-
-// Flash timer
-function formatTime(sec) {
-  const m = Math.floor(sec / 60).toString().padStart(2,'0');
-  const s = (sec % 60).toString().padStart(2,'0');
-  return m + ':' + s;
-}
-
-function startFlashTimer() {
-  if (flashTimer) clearInterval(flashTimer);
-  flashTotalSeconds = 1800;
-  flashTimer = setInterval(() => {
-    flashTotalSeconds--;
-    flashTotalTimer.textContent = formatTime(flashTotalSeconds);
-    if (flashTotalSeconds <= 0) {
-      clearInterval(flashTimer);
-      flashTimer = null;
-      flashBanner.classList.remove('show');
-      activeFlashes = [];
-      updatePanel('tiendas');
-    }
-  }, 1000);
-}
-
-// Zone centers for map animation
-const zoneCenters = {
-  tiendas: {x:115, y:98}, restauracion: {x:290, y:65},
-  ocio: {x:290, y:138}, alimentacion: {x:115, y:225}, servicios: {x:290, y:225}
-};
-
-function updateMapZone(zoneKey) {
-  document.querySelectorAll('.zone').forEach(z => z.classList.remove('active'));
-  document.querySelectorAll('.zone-label').forEach(z => z.classList.remove('active'));
-  if (zoneKey) {
-    const el = document.querySelector('.zone.' + zoneKey);
-    if (el) el.classList.add('active');
-  }
-  if (zoneKey && zoneCenters[zoneKey]) {
-    const c = zoneCenters[zoneKey];
-    document.getElementById('user-dot').setAttribute('cx', c.x);
-    document.getElementById('user-dot').setAttribute('cy', c.y);
-    document.getElementById('user-glow').setAttribute('cx', c.x);
-    document.getElementById('user-glow').setAttribute('cy', c.y);
-  }
-}
-
-function showToast(zoneKey, store, isFlash) {
-  const zone = CC.zones[zoneKey];
-  const id = 'toast-' + (toastCount++);
-  const div = document.createElement('div');
-  div.className = 'toast ' + (isFlash ? 'flash' : 'permanente');
-  div.id = id;
-  if (isFlash) {
-    div.innerHTML = '<div class="toast-head"><span class="toast-tag">⏰ FLASH 30min</span></div><div class="toast-body">' + store.offer + '</div><div class="toast-store">' + store.store + '</div>';
-  } else {
-    div.innerHTML = '<div class="toast-head"><span class="toast-tag">🏪 OFERTA</span></div><div class="toast-body">' + store.offer + '</div><div class="toast-store">' + store.name + ' · ' + store.price + '</div>';
-  }
-  div.onclick = () => div.remove();
-  toasts.appendChild(div);
-  setTimeout(() => { const el = document.getElementById(id); if(el) el.remove(); }, 8000);
-}
-
-function enterZone(zoneKey) {
-  if (visitedZones.has(zoneKey)) return;
-  visitedZones.add(zoneKey);
-  currentZone = zoneKey;
-  const zone = CC.zones[zoneKey];
-  zoneBadge.textContent = '📍 ' + zone.label;
-  updateMapZone(zoneKey);
-  updatePanel('tiendas');
-
-  // Trigger flash offers for this zone
-  if (zone.flash && zone.flash.length > 0) {
-    zone.flash.forEach(f => {
-      showToast(zoneKey, f, true);
-      activeFlashes.push({ zone: zoneKey, store: f.store, offer: f.offer, remaining: 1800 });
-    });
-    if (!flashTimer) startFlashTimer();
-    updateFlashBanner();
-    updatePanel('flash');
-  }
-  // Also show a permanent offer
-  if (zone.stores && zone.stores.length > 0) {
-    const rand = zone.stores[Math.floor(Math.random() * zone.stores.length)];
-    showToast(zoneKey, rand, false);
-  }
-}
-
-function updateFlashBanner() {
-  if (activeFlashes.length > 0) {
-    flashBanner.classList.add('show');
-    flashItems.innerHTML = activeFlashes.map(f =>
-      '<div class="fb-item">' + f.offer + '<div class="fb-store">📍 ' + f.store + '</div></div>'
-    ).join('');
-  } else {
-    flashBanner.classList.remove('show');
-  }
-}
-
-function updatePanel(mode) {
-  if (mode === 'flash') {
-    panelTitle.textContent = '⏰ Ofertas Flash Activas';
-    if (activeFlashes.length === 0) {
-      panelScroll.innerHTML = '<div style="text-align:center;padding:20px;color:#6b7a99;font-size:12px">No hay ofertas flash activas. Explora las zonas del centro.</div>';
-    } else {
-      let html = '<div class="store-grid">';
-      activeFlashes.forEach(f => {
-        const zone = CC.zones[f.zone];
-        html += '<div class="store-card" style="border-color:#ff6b3533"><div class="s-name">⏰ ' + f.store + '</div><div class="s-cat">' + (zone ? zone.label : '') + '</div><div class="s-reg-offer" style="color:#ff6b35">' + f.offer + '</div></div>';
-      });
-      html += '</div>';
-      panelScroll.innerHTML = html;
-    }
-    return;
-  }
-
-  // Regular store view
-  panelTitle.textContent = '🏪 Ofertas de Tienda';
-  let html = '<div class="store-grid">';
-  let targetZones = currentZone ? [currentZone] : Object.keys(CC.zones);
-  targetZones.forEach(key => {
-    const zone = CC.zones[key];
-    zone.stores.forEach(s => {
-      const hasFlash = activeFlashes.some(f => f.store === s.name && f.zone === key);
-      html += '<div class="store-card" onclick="openZoneDetail('' + key + '')">';
-      html += '<div class="s-name">' + s.name + '</div>';
-      html += '<div class="s-cat">' + zone.label + ' · Local ' + (s.local||'—') + '</div>';
-      html += '<div class="s-reg-offer">' + s.offer + '</div>';
-      html += '<div class="s-local">' + s.price + '</div>';
-      if (hasFlash) html += '<div class="s-flash">⏰ Oferta flash activa</div>';
-      html += '</div>';
-    });
-  });
-  html += '</div>';
-  panelScroll.innerHTML = html;
-}
-
-// Zone detail
-window.openZoneDetail = function(zoneKey) {
-  const zone = CC.zones[zoneKey];
-  document.getElementById('zd-title').textContent = zone.label;
-  document.getElementById('zd-desc').textContent = zone.desc;
-  let html = '';
-  zone.stores.forEach(s => {
-    const hasFlash = activeFlashes.some(f => f.store === s.name && f.zone === zoneKey);
-    html += '<div class="zd-store"><h4>' + s.name + ' <span style="font-size:9px;color:#4a5a7a;font-weight:400;">Local ' + (s.local||'—') + '</span></h4>';
-    html += '<div style="font-size:9px;color:#6b7a99;margin-top:2px">' + s.desc + '</div>';
-    html += '<div class="zd-offer">🏪 ' + s.offer + '</div>';
-    if (hasFlash) html += '<div class="zd-flash">⏰ Oferta flash activa en esta tienda</div>';
-    html += '</div>';
-  });
-  document.getElementById('zd-stores').innerHTML = html;
-  document.getElementById('zone-detail').classList.add('open');
-};
-document.getElementById('close-detail').onclick = () => document.getElementById('zone-detail').classList.remove('open');
-
-// Tabs
-tabTiendas.onclick = () => {
-  tabTiendas.classList.add('active'); tabFlash.classList.remove('active');
-  updatePanel('tiendas');
-};
-tabFlash.onclick = () => {
-  tabFlash.classList.add('active'); tabTiendas.classList.remove('active');
-  updatePanel('flash');
-};
-
-// Simulation
-simWalk.onclick = function() {
-  if (simInterval) {
-    clearInterval(simInterval); simInterval = null;
-    simWalk.textContent = '⏰ Simular'; simWalk.classList.remove('active');
-    visitedZones.clear(); updateMapZone(null); currentZone = null;
-    zoneBadge.textContent = '📍 CENTRO'; updatePanel('tiendas');
-    if (flashTimer) { clearInterval(flashTimer); flashTimer = null; }
-    flashBanner.classList.remove('show'); activeFlashes = [];
-    toasts.innerHTML = ''; flashTotalSeconds = 1800;
-    return;
-  }
-  simWalk.textContent = '⏹ Parar'; simWalk.classList.add('active');
-  simZoneIdx = 0; visitedZones.clear(); toasts.innerHTML = '';
-  activeFlashes = []; flashTotalSeconds = 1800;
-  enterZone(ZONE_ORDER[0]);
-  simInterval = setInterval(() => {
-    simZoneIdx++;
-    if (simZoneIdx >= ZONE_ORDER.length) {
-      clearInterval(simInterval); simInterval = null;
-      simWalk.textContent = '⏰ Simular'; simWalk.classList.remove('active');
-      return;
-    }
-    enterZone(ZONE_ORDER[simZoneIdx]);
-  }, 3500);
-};
-
-// Filter buttons
-document.querySelectorAll('#controls button[data-zone]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('#controls button[data-zone]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentZone = btn.dataset.zone === 'all' ? null : btn.dataset.zone;
-    zoneBadge.textContent = currentZone ? ('📍 ' + CC.zones[currentZone].label) : '📍 CENTRO';
-    updateMapZone(currentZone);
-    tabTiendas.click();
-  });
-});
-
-// GPS
-if ('geolocation' in navigator) {
-  let lastZone = null;
-  navigator.geolocation.watchPosition(pos => {
-    const { latitude, longitude } = pos.coords;
-    const dLat = latitude - CC.lat, dLng = longitude - CC.lng;
-    const dist = Math.sqrt(dLat*dLat + dLng*dLng);
-    if (dist > CC.radius * 1.5) {
-      if (lastZone !== null) { lastZone = null; zoneBadge.textContent = '📍 FUERA DEL CC'; updateMapZone(null); }
-      return;
-    }
-    const relX = (dLng / CC.radius + 1) / 2;
-    const relY = (dLat / CC.radius + 1) / 2;
-    const zoneMap = {
-      '0,0':'tiendas','1,0':'restauracion','1,1':'ocio','0,1':'alimentacion'
-    };
-    const xi = relX < 0.5 ? 0 : 1;
-    const yi = relY < 0.5 ? 0 : 1;
-    const key = xi + ',' + yi;
-    let zone = null;
-    if (xi === 0 && yi === 0) zone = 'tiendas';
-    else if (xi === 1 && yi === 0) zone = relY < 0.3 ? 'restauracion' : 'ocio';
-    else if (xi === 0 && yi === 1) zone = 'alimentacion';
-    else if (xi === 1 && yi === 1) zone = 'servicios';
-    if (zone && zone !== lastZone) { enterZone(zone); lastZone = zone; }
-  }, () => { if (!simInterval) setTimeout(() => simWalk.click(), 2000); }, { enableHighAccuracy: true, timeout: 10000 });
-} else {
-  setTimeout(() => { if (!simInterval) simWalk.click(); }, 2000);
-}
-
-// Keyboard
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight') { const i = ZONE_ORDER.indexOf(currentZone); enterZone(ZONE_ORDER[(i+1)%ZONE_ORDER.length]); }
-  else if (e.key === 'ArrowLeft') { const i = ZONE_ORDER.indexOf(currentZone); enterZone(ZONE_ORDER[(i-1+ZONE_ORDER.length)%ZONE_ORDER.length]); }
-  else if (e.key === 'Escape') document.getElementById('zone-detail').classList.remove('open');
-});
-
-console.log('🏪 GeoMarket · Señorío Plaza');
-console.log('⏰ Ofertas Flash (30min) + 🏪 Ofertas permanentes de tienda');
+const CC={name:'Señorío Plaza',lat:40.1323,lng:-3.8477,radius:.002,zones:{tiendas:{label:'🛍️ Tiendas',color:'#007aff',flash:[{store:'Joma',offer:'-50% en segunda prenda · todo el día',price:'Desde 25€'},{store:'Sprinter',offer:'-40% en chaquetas running',price:'39€'},{store:'Action',offer:'Lote sorpresa -70% · solo 30 uds',price:'1€'}],stores:[{name:'Joma',local:'A02',desc:'Prestigiosa marca deportiva española. Calzado y equipamiento técnico para fútbol, running y más.',offer:'2x1 en calzado de running',price:'Desde 39€'},{name:'Max Colchón',local:'A02B',desc:'Fabricante especializado en descanso. Colchones viscoelásticos, canapés y almohadas.',offer:'-30% en colchones viscoelásticos',price:'249€'},{name:'Hôma',local:'A03/B04',desc:'Inspiración para tu hogar. Muebles, decoración y menaje de última tendencia.',offer:'-20% en muebles seleccionados',price:'Desde 59€'},{name:'Toy Planet',local:'A05',desc:'La juguetería de toda la vida. Juegos de mesa, muñecos y diversión garantizada.',offer:'3x2 en juegos de mesa seleccionados',price:'Desde 12€'},{name:'Feuvert',local:'B01A',desc:'Expertos en automoción. Taller mecánico rápido y venta de recambios.',offer:'Revisión gratuita + -15% en neumáticos',price:'Gratis'},{name:'Bermellón',local:'B01B',desc:'Textil hogar de calidad. Cortinas, ropa de cama y complementos elegantes.',offer:'-25% en toda la ropa de cama',price:'Desde 29€'},{name:'JYSK',local:'B02-B03B',desc:'Diseño escandinavo para tu hogar. Muebles, decoración y descanso.',offer:'-40% en colchones JYSK seleccionados',price:'Desde 99€'},{name:'Dormity',local:'B04A',desc:'Salud y descanso. Colchones diseñados para mejorar tu sueño.',offer:'2ª unidad al 50% en almohadas viscoelásticas',price:'19€'},{name:'Kiwoko',local:'B06',desc:'Paraíso para mascotas. Alimentación, accesorios y cuidados.',offer:'-20% en pienso premium + regalo sorpresa',price:'Desde 8€'},{name:'Sprinter',local:'B08',desc:'Multimarca deportiva. Las mejores firmas en running, fitness y lifestyle.',offer:'-50% en ropa de entrenamiento',price:'Desde 15€'},{name:'Action',local:'B09',desc:'Descuentos increíbles. Surtido rotativo que cambia cada semana.',offer:'-70% en sección de hobby y craft',price:'Desde 1€'},{name:'Kiabi',local:'—',desc:'Moda para toda la familia a precios que enamoran.',offer:'2x1 en camisetas básicas',price:'6€'}]},restauracion:{label:'🍔 Restauración',color:'#ff9500',flash:[{store:"McDonald's",offer:'Menú Big Mac por solo 5.99€ · 30 min'},{store:'100 Montaditos',offer:'Todos los montaditos a 0.50€ · 30 min'},{store:'Churrería',offer:'Churros con chocolate 2.50€ · 30 min'}],stores:[{name:'100 Montaditos',local:'R01',desc:'Los míticos montaditos. Miércoles y domingos de locura.',offer:'Miércoles y domingo: montaditos a 1€',price:'1€'},{name:"McDonald's",local:'R02',desc:'El clásico de siempre. Rápido, rico y para toda la familia.',offer:'Menú Big Mac por 7.99€',price:'7.99€'},{name:'Ginos',local:'R03',desc:'Auténtica cocina italiana. Pastas artesanales y pizzas al horno.',offer:'Menú pasta + bebida por 9.90€',price:'9.90€'},{name:'VIPS',local:'R04',desc:'El restaurante americano de referencia. Hamburguesas y desayunos.',offer:'Los lunes: hamburguesa VIPS 2x1',price:'11.50€'},{name:'Makitoki',local:'R05',desc:'Cocina asiática fusión. Makis frescos, wok y noodles.',offer:'Menú makis 12.90€ (2ª ración gratis)',price:'12.90€'},{name:'Anubis',local:'R06',desc:'Cocina mexicana auténtica. Tacos, burritos y margaritas.',offer:'Jueves: 3x2 en tacos tradicionales',price:'9€'},{name:'Foodtrucker',local:'R07',desc:'Comida urbana sobre ruedas. Perritos, burgers y pulled pork.',offer:'Menú Foodie: burger+patatas+bebida 8.50€',price:'8.50€'},{name:'Churrería',local:'R08',desc:'Churros artesanales recién hechos. El aroma del centro.',offer:'Churros con chocolate caliente 3.50€',price:'3.50€'},{name:'Kebap',local:'R09',desc:'Comida turca de calidad. Döner, kebab y durum.',offer:'Durum + bebida 5.90€ (menú estudiante)',price:'5.90€'}]},ocio:{label:'🎮 Ocio',color:'#af52de',flash:[{store:'Bowling Co.',offer:'2 partidas gratis + 1 bebida · 30 min'}],stores:[{name:'Bowling Co.',local:'O01',desc:'Pistas de bolos profesionales. Diversión en grupo garantizada.',offer:'2 partidas por 1: 9.90€ (lunes a jueves)',price:'9.90€'},{name:'Fitness Gym',local:'O02',desc:'Gimnasio completo. Abierto de 06:00 a 01:00. Clases incluidas.',offer:'Día de prueba GRATIS + -50% en inscripción',price:'Gratis'},{name:'Zona Gaming',local:'O03',desc:'Simuladores, realidad virtual y máquinas arcade.',offer:'1 hora de VR por 8€ (hasta 2 jugadores)',price:'8€'}]},alimentacion:{label:'🛒 Mercado',color:'#34c759',flash:[{store:'Alcampo',offer:'-50% en pescadería fresca · 30 min'},{store:'Lidl',offer:'Lote de fruta variada por 2.99€ · 30 min'}],stores:[{name:'Alcampo',local:'S01',desc:'Hipermercado completo. Alimentación, hogar, textil y electrónica.',offer:'-20% en carne y pescado fresco (viernes)',price:'Desde 3€'},{name:'Lidl',local:'S02',desc:'Supermercado de descuento. Calidad al mejor precio.',offer:'Ofertas de la semana: fruta y verdura -30%',price:'Desde 0.99€'}]},servicios:{label:'⚙️ Servicios',color:'#ffcc00',flash:[{store:'Farmacia',offer:'-20% en toda la parafarmacia · 30 min'}],stores:[{name:'Lavandería',local:'SV01',desc:'Lavandería autoservicio 24 horas.',offer:'Lava + seca por 5€ (promo nuevos usuarios)',price:'5€'},{name:'Farmacia',local:'SV02',desc:'Farmacia con horario ampliado y parafarmacia.',offer:'-15% en vitaminas y complementos alimenticios',price:'Desde 5€'},{name:'Óptica',local:'SV03',desc:'Gafas graduadas y de sol. Revisiones visuales gratuitas.',offer:'2x1 en gafas graduadas + revisión gratis',price:'Desde 49€'},{name:'Belleza',local:'SV04',desc:'Peluquería, estética y manicura. Mimarte es fácil.',offer:'Corte + peinado por 15€ (entre semana)',price:'15€'},{name:'Loterías',local:'SV05',desc:'Administración de lotería y apuestas del Estado.',offer:'Lleva 5€ y llévate un boleto de regalo',price:'Desde 2€'}]}}},ZONE_ORDER=['tiendas','restauracion','ocio','alimentacion','servicios'],currentView='all',simInterval=null,simIdx=0,toastCount=0,visitedZones=new Set,flashSecs=1800,flashTimer=null,activeFlashes=[];
+const storeList=document.getElementById('store-list'),zoneBadge=document.getElementById('zone-badge'),flashHeader=document.getElementById('flash-header'),flashItems=document.getElementById('flash-items'),flashTimerEl=document.getElementById('flash-timer'),content=document.getElementById('content'),simBtn=document.getElementById('sim-btn');
+function fmt(s){return Math.floor(s/60).toString().padStart(2,'0')+':'+(s%60).toString().padStart(2,'0')}
+function startFlashTimer(){if(flashTimer)clearInterval(flashTimer);flashSecs=1800;flashTimer=setInterval(()=>{flashSecs--;flashTimerEl.textContent=fmt(flashSecs);if(flashSecs<=0){clearInterval(flashTimer);flashTimer=null;flashHeader.classList.remove('show');activeFlashes=[];renderStores()}},1000)}
+function showToast(zoneKey,data,isFlash){const zone=CC.zones[zoneKey],id='t-'+(toastCount++),d=document.createElement('div');d.className='toast '+(isFlash?'flash':'permanent');d.id=id;if(isFlash)d.innerHTML='<div class="t-head"><span class="t-tag">⏰ OFERTA FLASH</span><span class="t-timer">'+fmt(flashSecs)+'</span></div><div class="t-body">'+data.offer+'</div><div class="t-store">'+data.store+' · '+zone.label+'</div>';else d.innerHTML='<div class="t-head"><span class="t-tag">🏪 OFERTA</span></div><div class="t-body">'+data.offer+'</div><div class="t-store">'+data.name+' · '+zone.label+'</div>';d.onclick=()=>d.remove();document.getElementById('toasts').appendChild(d);setTimeout(()=>{const e=document.getElementById(id);if(e)e.remove()},10000)}
+function enterZone(zoneKey){if(visitedZones.has(zoneKey))return;visitedZones.add(zoneKey);const zone=CC.zones[zoneKey];zoneBadge.innerHTML='<span id="gps-dot"></span>'+zone.label;if(zone.flash&&zone.flash.length){zone.flash.forEach(f=>{showToast(zoneKey,f,true);activeFlashes.push({zone:zoneKey,store:f.store,offer:f.offer})});if(!flashTimer)startFlashTimer();updateFlashHeader()}if(zone.stores&&zone.stores.length){const r=zone.stores[Math.floor(Math.random()*zone.stores.length)];showToast(zoneKey,r,false)}renderStores()}
+function updateFlashHeader(){if(activeFlashes.length){flashHeader.classList.add('show');flashItems.innerHTML=activeFlashes.map(f=>'<div class="fh-item">⏰ '+f.store+' · '+f.offer+'</div>').join('')}else flashHeader.classList.remove('show')}
+function renderStores(){if(currentView==='all'){const keys=Object.keys(CC.zones);let html='';keys.forEach(key=>{const zone=CC.zones[key];html+='<div class="store-section"><div class="section-header"><span class="section-title">'+zone.label+'</span><span class="section-count">'+zone.stores.length+' tiendas</span></div>';zone.stores.forEach(s=>{const hf=activeFlashes.some(f=>f.store===s.name&&f.zone===key);html+='<div class="store-card"><div class="sc-top"><span class="sc-name">'+s.name+'</span><span class="sc-local">Local '+(s.local||'—')+'</span></div><div class="sc-desc">'+s.desc+'</div><div class="sc-offers"><div class="sc-offer permanent"><span class="tag">OFERTA</span> '+s.offer+' <span class="price">'+s.price+'</span></div>'+(hf?'<div class="sc-offer flash"><span class="tag">FLASH</span> '+activeFlashes.find(f=>f.store===s.name).offer+'</div>':'')+'</div></div>'})});storeList.innerHTML=html}else{let html='<div class="store-section"><div class="section-header"><span class="section-title">'+CC.zones[currentView].label+'</span><span class="section-count">'+CC.zones[currentView].stores.length+' tiendas</span></div>';CC.zones[currentView].stores.forEach(s=>{const hf=activeFlashes.some(f=>f.store===s.name&&f.zone===currentView);html+='<div class="store-card"><div class="sc-top"><span class="sc-name">'+s.name+'</span><span class="sc-local">Local '+(s.local||'—')+'</span></div><div class="sc-desc">'+s.desc+'</div><div class="sc-offers"><div class="sc-offer permanent"><span class="tag">OFERTA</span> '+s.offer+' <span class="price">'+s.price+'</span></div>'+(hf?'<div class="sc-offer flash"><span class="tag">FLASH</span> '+activeFlashes.find(f=>f.store===s.name).offer+'</div>':'')+'</div></div>'});storeList.innerHTML=html}}
+document.querySelectorAll('#zone-tabs button[data-zone]').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('#zone-tabs button[data-zone]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');currentView=btn.dataset.zone;if(currentView==='all')zoneBadge.innerHTML='<span id="gps-dot"></span>En el centro';else zoneBadge.innerHTML='<span id="gps-dot"></span>'+CC.zones[currentView].label;renderStores();content.scrollTop=0})});
+simBtn.onclick=()=>{if(simInterval){clearInterval(simInterval);simInterval=null;simBtn.textContent='⏰ Simular';visitedZones.clear();currentView='all';document.querySelectorAll('#zone-tabs button[data-zone]').forEach(b=>b.classList.remove('active'));document.querySelector('[data-zone="all"]').classList.add('active');zoneBadge.innerHTML='<span id="gps-dot"></span>En el centro';if(flashTimer){clearInterval(flashTimer);flashTimer=null}flashHeader.classList.remove('show');activeFlashes=[];document.getElementById('toasts').innerHTML='';flashSecs=1800;renderStores();return}simBtn.textContent='⏹ Parar';simIdx=0;visitedZones.clear();document.getElementById('toasts').innerHTML='';activeFlashes=[];flashSecs=1800;enterZone(ZONE_ORDER[0]);simInterval=setInterval(()=>{simIdx++;if(simIdx>=ZONE_ORDER.length){clearInterval(simInterval);simInterval=null;simBtn.textContent='⏰ Simular';return}enterZone(ZONE_ORDER[simIdx])},4000)};
+if('geolocation'in navigator){let lastZone=null;navigator.geolocation.watchPosition(pos=>{const dLat=pos.coords.latitude-CC.lat,dLng=pos.coords.longitude-CC.lng;if(Math.sqrt(dLat*dLat+dLng*dLng)>CC.radius*1.5){if(lastZone!==null){lastZone=null;zoneBadge.innerHTML='<span id="gps-dot"></span>Fuera del centro'}return}const relX=(dLng/CC.radius+1)/2,relY=(dLat/CC.radius+1)/2;let zone=relX<0.5?(relY<0.5?'tiendas':'alimentacion'):(relY<0.3?'restauracion':relY<0.5?'ocio':'servicios');if(zone&&zone!==lastZone){enterZone(zone);lastZone=zone}},()=>{if(!simInterval)setTimeout(()=>simBtn.click(),2000)},{enableHighAccuracy:true,timeout:10000})}else setTimeout(()=>{if(!simInterval)simBtn.click()},2000);
+renderStores();
 </script>
 </body>
-</html>
+</html>'''

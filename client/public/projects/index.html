@@ -58,8 +58,11 @@ nav.scrolled{background:rgba(11,11,26,.95);box-shadow:0 2px 40px rgba(0,0,0,.3)}
 
 /* Hero */
 .hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:6rem 3rem 4rem;max-width:1300px;margin:0 auto}
-.hero-content{max-width:900px}
-.hero-greeting{font-size:.85rem;text-transform:uppercase;letter-spacing:4px;color:var(--gold);margin-bottom:1.5rem;font-weight:500}
+.hero-content{max-width:900px;display:flex;align-items:center;gap:3rem}
+.hero-photo{flex-shrink:0;width:140px;height:140px;border-radius:50%;overflow:hidden;border:3px solid var(--gold);box-shadow:0 0 40px rgba(201,168,76,.2);position:relative}
+.hero-photo img{width:100%;height:100%;object-fit:cover;display:block}
+@media(max-width:768px){.hero-content{flex-direction:column;align-items:flex-start;gap:1.5rem}.hero-photo{width:100px;height:100px}}
+.hero-greeting{font-size:.85rem;text-transform:uppercase;letter-spacing:4px;color:var(--gold);margin-bottom:1rem;font-weight:500}
 .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,6vw,5rem);font-weight:900;line-height:1.08;margin-bottom:1.5rem}
 .hero h1 .highlight{background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero h1 .accent{color:var(--text)}
@@ -249,6 +252,10 @@ footer{position:relative;z-index:1;padding:4rem 3rem 2rem;border-top:1px solid v
 <!-- HERO -->
 <section class="hero">
   <div class="hero-content">
+    <div class="hero-photo anim anim-d1">
+      <img src="david-ortiz-portfolio/photo.jpg" alt="David Ortiz Serrano">
+    </div>
+    <div>
     <div class="hero-greeting anim anim-d1">Hola, soy</div>
     <h1 class="anim anim-d2">
       <span class="accent">David</span> <span class="highlight">Ortiz Serrano</span><br>
@@ -263,6 +270,7 @@ footer{position:relative;z-index:1;padding:4rem 3rem 2rem;border-top:1px solid v
     <div class="hero-actions anim anim-d4">
       <a href="#projects" class="btn-primary">Ver proyectos →</a>
       <a href="https://wa.me/34658237988?text=¡Hola! Quiero%20una%20web%20para%20mi%20negocio" target="_blank" class="btn-secondary">📱 WhatsApp</a>
+    </div>
     </div>
     <div class="stats anim anim-d4">
       <div class="stat-item"><div class="stat-num">6</div><div class="stat-lbl">Proyectos demo</div></div>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grandes Magos · El Gran Libro de la Magia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--bg2:#0f0f1a;--card:#14141f;--gold:#c9a84c;--gold-light:#e8d48b;--gold-dark:#8a7030;--text:#f0ece4;--text2:#a09888;--text3:#6b6358;--border:rgba(201,168,76,0.08);--border-gold:rgba(201,168,76,0.2);--font-display:'Cormorant Garamond',serif;--font-body:'Inter',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--gold-dark) var(--bg)}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(10,10,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:.5px;color:var(--gold);text-decoration:none}
+nav .logo span{color:var(--text3)}
+nav .back{color:var(--text2);text-decoration:none;font-size:12px;transition:color .3s}
+
+/* Hero */
+.hero{position:relative;padding:100px 40px 60px;text-align:center;background:linear-gradient(180deg,var(--bg),var(--bg2))}
+.hero h1{font-family:var(--font-display);font-size:clamp(36px,5vw,60px);font-weight:300;letter-spacing:-1px;margin-bottom:12px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p{color:var(--text2);font-size:16px;font-weight:300;max-width:600px;margin:0 auto}
+.hero .stats{margin-top:24px;display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
+.hero .stat{text-align:center}
+.hero .stat-num{font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--gold)}
+.hero .stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+/* Filters */
+#filters{padding:0 40px 20px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+#filters button{padding:6px 16px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .3s}
+#filters button:hover{border-color:var(--border-gold);color:var(--gold)}
+#filters button.active{background:var(--gold);color:var(--bg);border-color:var(--gold);font-weight:600}
+
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--border);max-width:1200px;margin:0 auto 60px;border-radius:8px;overflow:hidden;padding:0 20px}
+.card{background:var(--card);padding:0;position:relative;cursor:pointer;transition:all .3s;overflow:hidden;aspect-ratio:3/4;min-height:400px}
+.card:hover{transform:scale(1.02);z-index:2;box-shadow:0 8px 40px rgba(201,168,76,.15)}
+.card .bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.3;transition:opacity .5s}
+.card:hover .bg-img{opacity:.5}
+.card .overlay{position:absolute;bottom:0;left:0;right:0;padding:24px;background:linear-gradient(0deg,rgba(10,10,15,.95) 0%,transparent 80%)}
+.card .era-tag{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;font-weight:500}
+.card .name{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--text);margin-bottom:2px}
+.card .real-name{font-size:11px;color:var(--text3);font-weight:400;margin-bottom:6px}
+.card .specialty{font-size:11px;color:var(--text2);font-weight:400;display:flex;align-items:center;gap:6px}
+.card .specialty .dot{width:4px;height:4px;border-radius:50%;background:var(--gold-dark);display:inline-block}
+.card .years{font-size:10px;color:var(--text3);margin-top:4px;font-feature-settings:'tnum'}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border-gold);border-radius:16px;max-width:700px;width:100%;max-height:85vh;overflow-y:auto;padding:32px;position:relative;animation:modalIn .3s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal .close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text3);font-size:24px;cursor:pointer;transition:color .3s;z-index:2}
+.modal .close:hover{color:var(--gold)}
+.modal .m-era-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:4px}
+.modal .m-name{font-family:var(--font-display);font-size:32px;font-weight:600;margin-bottom:2px}
+.modal .m-real{font-size:12px;color:var(--text3);margin-bottom:16px}
+.modal .m-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.modal .m-info div{background:var(--card);padding:10px 14px;border-radius:6px;border:1px solid var(--border)}
+.modal .m-info .label{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:2px}
+.modal .m-info .value{font-size:13px;color:var(--text)}
+.modal .m-bio{font-size:14px;color:var(--text2);line-height:1.7;font-weight:300;margin-bottom:16px}
+.modal .m-effects h3{font-family:var(--font-display);font-size:18px;color:var(--gold);margin-bottom:10px}
+.modal .m-effects li{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:6px;padding-left:16px;list-style:none;position:relative}
+.modal .m-effects li::before{content:'✦';position:absolute;left:0;color:var(--gold-dark);font-size:9px}
+.modal .m-curiosities h3{font-family:var(--font-display);font-size:18px;color:var(--gold);margin:16px 0 8px}
+.modal .m-curiosities p{font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;background:var(--card);padding:12px 16px;border-radius:6px;border:1px solid var(--border)}
+.modal .read-more{display:inline-block;margin-top:16px;padding:10px 24px;background:var(--gold);color:var(--bg);text-decoration:none;border-radius:4px;font-size:12px;font-weight:600;letter-spacing:.5px;transition:all .3s}
+.modal .read-more:hover{background:var(--gold-light)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="." class="logo">El Gran Libro <span>· Magos</span></a>
+  <a href="historia.html" class="back">← Historia</a>
+</nav>
+
+<section class="hero">
+  <h1>Los grandes <em>magos</em></h1>
+  <p>Biografías extensas de los ilusionistas más influyentes de la historia. Cada ficha contiene su vida, efectos, logros y legado.</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="totalCount">0</div><div class="stat-label">Magos</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--text3)">3</div><div class="stat-label">Siglos</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--text3)">12</div><div class="stat-label">Países</div></div>
+  </div>
+</section>
+
+<div id="filters">
+  <button class="active" data-filter="all">Todos</button>
+  <button data-filter="cartomagia">🃏 Cartomagia</button>
+  <button data-filter="escapismo">⛓️ Escapismo</button>
+  <button data-filter="ilusionismo">🎩 Ilusionismo</button>
+  <button data-filter="mentalismo">🧠 Mentalismo</button>
+  <button data-filter="close-up">🤏 Close-up</button>
+  <button data-filter="moderna">📺 Moderna</button>
+  <button data-filter="clasico">🏛️ Clásico</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+const MAGICIANS = [
+  {id:"robert-houdin",name:"Jean-Eugène Robert-Houdin",real:"Jean-Eugène Robert-Houdin",born:1805,died:1871,country:"Francia",specialty:"Ilusionismo",era:"Clásico",eraTag:"Ilusionismo Clásico · 1780-1900",filter:["ilusionismo","clasico"],image:"assets/images/mago-portrait.jpg",
+   bio:"Considerado el padre del ilusionismo moderno. Relojero de formación, abrió el primer teatro de magia de París en 1854. Inventó la levitación, la segunda vista y el árbol de seda. Enviado por Napoleón III a Argelia para demostrar la superioridad de la magia francesa.",
+   effects:["La Suspensión Etérea — Primera levitación documentada de la historia moderna","La Segunda Vista — Código secreto con su hijo para adivinar objetos","El Árbol de la Seda — Hacía crecer un árbol desde semilla en minutos","El Cofre Ligero y Pesado — Caja que cambiaba de peso mediante electroimán"],
+   curiosity:"Houdini tomó su nombre artístico de Robert-Houdin como homenaje, añadiendo la 'i' al final significando 'como Houdin'. Más tarde escribiría un libro criticando a su ídolo."},
+  {id:"houdini",name:"Harry Houdini",real:"Erik Weisz",born:1874,died:1926,country:"Hungría/EE.UU.",specialty:"Escapismo",era:"Houdini",eraTag:"Era Houdini · 1900-1930",filter:["escapismo","clasico"],image:"assets/images/hero-bg.jpg",
+   bio:"El mago más famoso de la historia. Nacido en Budapest, revolucionó el escapismo con escapes imposibles: la camisa de fuerza en suspensión, la celda de tortura china y el desafío del tanque de leche. Dedicó sus últimos años a desenmascarar médiums espiritistas.",
+   effects:["Chinese Water Torture Cell — Suspendido de cabeza en un tanque de agua con tobillos encadenados","Metamorfosis — Intercambiaba posiciones con su esposa Bess en 3 segundos dentro de un baúl","Camisa de Fuerza en Suspensión — Colgado de los tobillos desde una grúa, se liberaba ante multitudes"],
+   curiosity:"El código secreto que Houdini acordó con su esposa Bess para comunicarse después de muerto era 'Rosabelle'. Bess realizó sesiones durante 10 años. Nunca recibió el mensaje."},
+  {id:"dai-vernon",name:"Dai Vernon",real:"David Frederick Wingfield Verner",born:1894,died:1992,country:"Canadá",specialty:"Cartomagia",era:"Edad de Oro",eraTag:"Edad de Oro · 1930-1970",filter:["cartomagia","close-up"],image:"assets/images/timeline-deco.jpg",
+   bio:"El Profesor. Considerado el mago de los magos. Engañó a Houdini con un juego de cartas en 1919, demostrando que existía magia que ni el escapista más famoso podía explicar. Revolucionó la cartomagia durante 70 años.",
+   effects:["Ambitious Card — La carta que vuelve a la parte superior de la baraja una y otra vez","Twisting the Aces — Cuatro ases que se voltean uno a uno sin tocarlos","Clip Shift — Corte de baraja imposible con una sola mano"],
+   curiosity:"Sus cenizas descansan en el Magic Castle de Hollywood. Los magos tocan su urna antes de actuar, en busca de una bendición de 'El Profesor'."},
+  {id:"tamariz",name:"Juan Tamariz",real:"Juan Tamariz Martel",born:1942,died:null,country:"España",specialty:"Cartomagia",era:"Contemporánea",eraTag:"Magia Televisiva · 1970-2000",filter:["cartomagia","moderna"],image:"assets/images/mago-portrait.jpg",
+   bio:"El mago español más influyente de todos los tiempos. Ganador del Premio Mundial FISM en 1973. Su libro 'La Vía Mágica' es considerado la biblia de la cartomagia. Su sistema Mnemonica revolucionó la memorización de barajas.",
+   effects:["La Vía Mágica — Sistema completo de cartomagia que es estudio obligatorio mundial","Mnemonica — Sistema de memorización de baraja que permite saber la posición de cada carta","El Ardid — La rutina de cartas más famosa de la historia de la magia"],
+   curiosity:"La CIA tenía un ejemplar de 'La Vía Mágica' en su biblioteca de Langley. David Blaine dijo de él: 'Tamariz es el mejor mago del mundo'."},
+  {id:"copperfield",name:"David Copperfield",real:"David Seth Kotkin",born:1956,died:null,country:"EE.UU.",specialty:"Grandes Ilusiones",era:"Contemporánea",eraTag:"Magia Televisiva · 1970-2000",filter:["ilusionismo","moderna"],image:"assets/images/poster-vintage.jpg",
+   bio:"El mago más rico y famoso del mundo. Ha recaudado más de 4.000 millones de dólares. 21 premios Emmy, 11 Guinness World Records. Hizo desaparecer la Estatua de la Libertad, caminó por el Gran Cañón y voló sobre el escenario.",
+   effects:['Desaparición de la Estatua de la Libertad — 1983, ante 20 millones de espectadores','El Vuelo — Voló sobre el escenario durante 7 minutos sin cables aparentes','Death Saw — Una sierra circular gigante le cortaba el cuerpo en dos'],
+   curiosity:"Su museo privado en Las Vegas contiene 80.000 objetos de magia, la mayor colección del mundo. Posee 11 islas en el Caribe (Musha Cay) donde ofrece experiencias mágicas."},
+  {id:"penn-teller",name:"Penn & Teller",real:"Penn Jillette & Teller",born:1955,died:null,country:"EE.UU.",specialty:"Magia Cómica",era:"Contemporánea",eraTag:"Magia Televisiva · 1970-2000",filter:["ilusionismo","moderna"],image:"assets/images/hero-bg.jpg",
+   bio:"El dúo más famoso de la magia. Penn habla; Teller nunca habla en escena. Su filosofía: revelan cómo se hacen sus trucos pero el público sigue sin creerlo. Show en Las Vegas desde 2001 con más de 5.000 funciones.",
+   effects:["La Bala Atrapada — Penn atrapa una bala disparada por Teller con los dientes","La Caja de Sombras — Teller hace aparecer objetos dentro de una caja vacía"],
+   curiosity:"Teller (el que no habla) tiene una uña pintada de rojo desde hace décadas. Nadie sabe por qué. Nunca lo ha explicado."},
+  {id:"blaine",name:"David Blaine",real:"David Blaine White",born:1973,died:null,country:"EE.UU.",specialty:"Magia de Calle",era:"Digital",eraTag:"Era Digital · 2000-Actualidad",filter:["moderna"],image:"assets/images/hero-bg.jpg",
+   bio:"Revolucionó la magia con 'Street Magic' (1997). Sus resistencias extremas incluyen 44 días sin comida, 17 minutos bajo el agua y una descarga de 10.000 voltios. Su estilo íntimo y callejero transformó la magia para siempre.",
+   effects:["Above the Below — 44 días en una caja de cristal sin comida sobre el río Támesis","Drowned Alive — 17 minutos y 4 segundos bajo el agua (récord mundial)","The Ascension — Vuelo con 52 globos de helio"],
+   curiosity:"Durante 'Above the Below', el New England Journal of Medicine publicó un estudio sobre su cuerpo. Demostró que el cuerpo humano puede sobrevivir sin comida pero con agua superando todos los límites médicos conocidos."},
+  {id:"derren-brown",name:"Derren Brown",real:"Derren Brown",born:1971,died:null,country:"Reino Unido",specialty:"Mentalismo",era:"Digital",eraTag:"Era Digital · 2000-Actualidad",filter:["mentalismo","moderna"],image:"assets/images/hero-bg.jpg",
+   bio:"El mentalista más influyente del siglo XXI. Psicólogo de formación, ha demostrado que la sugestión, la hipnosis y la manipulación psicológica pueden lograr cosas que parecen sobrenaturales. Dos premios Laurence Olivier y un BAFTA.",
+   effects:["Russian Roulette — Ruleta rusa en televisión en directo (2003)","The Heist — Convirtió a un ciudadano normal en ladrón de banco","The Push — Demostró que se puede empujar a alguien a matar en 72 minutos"],
+   curiosity:'Es ateo y ex-cristiano evangélico. Su especial "Messiah" exploraba los mecanismos psicológicos de la fe religiosa. Recibió amenazas de grupos religiosos por ello.'},
+  {id:"criss-angel",name:"Criss Angel",real:"Christopher Sarantakos",born:1967,died:null,country:"EE.UU.",specialty:"Ilusionismo Extremo",era:"Digital",eraTag:"Era Digital · 2000-Actualidad",filter:["moderna","ilusionismo"],image:"assets/images/hero-bg.jpg",
+   bio:'Creador de "Mindfreak" (A&E, 2005-2010, 96 episodios). Su show "Believe" en el Luxor de Las Vegas (2008-2019) fue el más caro de la historia del Strip. Nombrado "Mago del Siglo" y "Mago de la Década".',
+   effects:["Levitación sobre el Luxor — Levitó sobre la pirámide del hotel Luxor en Las Vegas","Caminar sobre Agua — Caminó sobre la superficie del lago del Mirage"],
+   curiosity:'Se hizo llamar "Criss Angel" porque de niño sus amigos le decían "Angel" por su carácter. Su ídolo era Harry Houdini y su primer truco fue un escape de una camisa de fuerza a los 7 años.'},
+  {id:"dynamo",name:"Dynamo",real:"Steven Frayne",born:1982,died:null,country:"Reino Unido",specialty:"Magia Urbana",era:"Digital",eraTag:"Era Digital · 2000-Actualidad",filter:["moderna","ilusionismo"],image:"assets/images/hero-bg.jpg",
+   bio:"De una infancia difícil en Bradford a fenómeno global. Su serie 'Magician Impossible' (2011-2014) se emitió en 193 países con más de 250 millones de espectadores. Caminó sobre el río Támesis y levitó junto a un autobús.",
+   effects:["Caminar sobre el Támesis — Caminó sobre las aguas del río Támesis (2011)","Levitación del Autobús — Levitó junto a un autobús de dos pisos en Londres"],
+   curiosity:"Sufre la enfermedad de Crohn desde los 13 años. Cuando era niño, su abuelo —su mayor inspiración— le enseñó su primer truco de magia antes de morir. El nombre Dynamo viene del centenario de Houdini."},
+  {id:"ascanio",name:"Arturo de Ascanio",real:"Arturo de Ascanio y Navaz",born:1929,died:1997,country:"España",specialty:"Cartomagia",era:"Edad de Oro",eraTag:"Edad de Oro · 1930-1970",filter:["cartomagia","close-up","clasico"],image:"assets/images/mago-portrait.jpg",
+   bio:"Considerado el mayor teórico de la cartomagia del siglo XX. Abogado de profesión, transformó la magia con su concepto de 'naturalidad' y 'ocultación'. Su obra en 4 tomos 'La Magia de Ascanio' es tratado fundamental.",
+   effects:["El Ascanio Spread — Extensión de cartas que es sello de identidad","Tiempos Muertos — Teoría revolucionaria sobre los momentos de descanso del espectador","Control Ascanio — Técnica de control de carta superior"],
+   curiosity:"Era abogado de día y mago de noche. Su despacho profesional en Barcelona ocultaba su otra vida. Solo tras su jubilación se dedicó plenamente a la magia."},
+  {id:"rene-lavand",name:"René Lavand",real:"José René Lavandera",born:1928,died:2015,country:"Argentina",specialty:"Cartomagia",era:"Contemporánea",eraTag:"Magia Televisiva · 1970-2000",filter:["cartomagia","close-up","clasico"],image:"assets/images/mago-portrait.jpg",
+   bio:'Perdió la mano derecha a los 8 años en un accidente. Se convirtió en uno de los mejores cartómagos del mundo usando solo su mano izquierda. Su frase "No se puede hacer más lento" es su legado.',
+   effects:["La Firma en la Mano — Un espectador firmaba una carta que aparecía en la mano del mago","Agua y Aceite — Su versión lentísima de este clásico"],
+   curiosity:'Acuñó el término "lentidigitación" como contrapunto a la prestidigitación. Su lema: "no se puede hacer más lento" se convirtió en el título de su biografía.'},
+  {id:"slydini",name:"Slydini",real:"Quintino Marucci",born:1900,died:1991,country:"Italia/EE.UU.",specialty:"Close-up",era:"Edad de Oro",eraTag:"Edad de Oro · 1930-1970",filter:["close-up","clasico"],image:"assets/images/hero-bg.jpg",
+   bio:'Maestro absoluto de la misdirection. Su técnica de la "mano lenta" (slow motion) revolucionó el close-up. Dai Vernon dijo de él: "Slydini es el único mago que podría engañarme".',
+   effects:["Paper Balls Over the Head — Bolas de papel que desaparecían en la mano de forma imposible","The Coin in the Hand — Moneda que se desvanecía en cámara lenta"],
+   curiosity:'Su truco de las bolas de papel fue estudiado por neurocientíficos. En 2015 se publicó un paper en Frontiers in Human Neuroscience analizando por qué su "mano lenta" engaña al cerebro.'},
+  {id:"maskelyne",name:"John Nevil Maskelyne",real:"John Nevil Maskelyne",born:1839,died:1917,country:"Reino Unido",specialty:"Ilusionismo",era:"Clásico",eraTag:"Ilusionismo Clásico · 1780-1900",filter:["ilusionismo","clasico"],image:"assets/images/timeline-deco.jpg",
+   bio:"Relojero, mago e inventor. Desenmascaró a los hermanos Davenport en 1865 demostrando que su espiritismo era un fraude. Dirigió el Egyptian Hall de Londres durante 31 años. Inventó la levitación moderna.",
+   effects:["La Levitación de Maskelyne — Primera levitación escénica moderna","Desenmascaramiento de Médiums — Demostraciones públicas de trucos espiritistas"],
+   curiosity:"Inventó el primer retrete de pago ('pay toilet') de la historia. El mecanismo que diseñó para cerrar la puerta al introducir una moneda dio origen al eufemismo inglés 'spend a penny'."},
+  {id:"chung-ling-soo",name:"Chung Ling Soo",real:"William Ellsworth Robinson",born:1861,died:1918,country:"EE.UU.",specialty:"Magia Oriental",era:"Clásico",eraTag:"Era Houdini · 1900-1930",filter:["ilusionismo","clasico"],image:"assets/images/poster-vintage.jpg",
+   bio:"Fingió ser chino toda su carrera, vistiendo trajes orientales y nunca rompiendo el personaje en público. Murió en el escenario del Teatro Wood Green de Londres al fallar el truco de la bala atrapada.",
+   effects:["Condemned to Death by the Boxers — El truco de la bala que le costó la vida","The Mystic Bottle — Una botella que se llenaba y vaciaba a voluntad"],
+   curiosity:'Sus últimas palabras en escena fueron en inglés: "Oh my God. Something\'s happened. Lower the curtain." Fue el fin de la farsa: había fingido no hablar inglés durante 18 años.'},
+  {id:"thurston",name:"Howard Thurston",real:"Howard Thurston",born:1869,died:1936,country:"EE.UU.",specialty:"Ilusionismo",era:"Clásico",eraTag:"Era Houdini · 1900-1930",filter:["ilusionismo","clasico"],image:"assets/images/hero-bg.jpg",
+   bio:'"El Mago Americano". Su espectáculo empleaba a 40 personas y viajaba en 8 vagones de ferrocarril. Rival de Houdini, fue considerado el mago más grande de Estados Unidos en su época.',
+   effects:["La Levitación de la Princesa Karnac — Una princesa levitaba sobre el escenario","Rising Cards — Cartas que subían solas de la baraja"],
+   curiosity:"Vio actuar a Alexander Herrmann a los 14 años y decidió ser mago. Más tarde, Herrmann le dijo: 'Tú serás mi sucesor'. Y lo fue."},
+  {id:"richiardi",name:"Richiardi Jr.",real:"Aldo Izquierdo Colosi",born:1923,died:1985,country:"Perú",specialty:"Grandes Ilusiones",era:"Edad de Oro",eraTag:"Edad de Oro · 1930-1970",filter:["ilusionismo"],image:"assets/images/hero-bg.jpg",
+   bio:'Conocido como "The Bloody Magician". Inventó la ilusión de la motosierra humana en 1953. Su estilo sangriento y teatral le hizo famoso mundialmente. Actuó en el Ed Sullivan Show.',
+   effects:["La Motosierra Humana — Aserraba a su asistente con una motosierra real (1953)","La Decapitación — Ilusión de decapitación con sangre"],
+   curiosity:'Era conocido como "The Bloody Magician". Su estilo tan extremo inspiró a Criss Angel y a los magos de shock modernos.'},
+  {id:"hofzinser",name:"Johann N. Hofzinser",real:"Johann Nepomuk Hofzinser",born:1806,died:1875,country:"Austria",specialty:"Cartomagia",era:"Clásico",eraTag:"Ilusionismo Clásico · 1780-1900",filter:["cartomagia","clasico"],image:"assets/images/mago-portrait.jpg",
+   bio:'El verdadero padre de la cartomagia moderna. Creó efectos de cartas y monedas en el Viena del siglo XIX mucho antes que Robert-Houdin. Su salón privado era el centro de la magia vienesa.',
+   effects:["El Sobre Imposible — Carta firmada que aparecía dentro de un sobre lacrado","Pase Hofzinser — Pase de cartas fundamental, erróneamente llamado Herrmann Pass"],
+   curiosity:'Su esposa Wilhelmine quemó la mayoría de sus manuscritos tras su muerte. Solo sobrevivieron unos 270 efectos documentados por su discípulo Ottokar Fischer.'},
+  {id:"tommy-wonder",name:"Tommy Wonder",real:"Jacobus Maria Bemelman",born:1953,died:2006,country:"Países Bajos",specialty:"Close-up",era:"Contemporánea",eraTag:"Magia Televisiva · 1970-2000",filter:["close-up","moderna"],image:"assets/images/hero-bg.jpg",
+   bio:'Considerado el mejor mago de close-up de su generación. Sus dos tomos "The Books of Wonder" son obras maestras. Su filosofía de la naturalidad y su técnica impecable lo convirtieron en leyenda.',
+   effects:["Tamed Cards — Una de las rutinas de cartas más hermosas jamás creadas","El Monedero — Monedas que desaparecían y reaparecían con elegancia"],
+   curiosity:'Su filosofía era que "la misdirection no existe". Creía que el mago no debe dirigir la atención, sino merecerla.'}
+];
+
+let currentFilter = 'all';
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  const filtered = currentFilter === 'all' ? MAGICIANS : MAGICIANS.filter(m => m.filter.includes(currentFilter));
+  grid.innerHTML = filtered.map(m => `
+    <div class="card" onclick="openModal('${m.id}')">
+      <img class="bg-img" src="${m.image}" alt="${m.name}" loading="lazy">
+      <div class="overlay">
+        <div class="era-tag">${m.eraTag || ''}</div>
+        <div class="name">${m.name}</div>
+        <div class="real-name">${m.real}</div>
+        <div class="specialty"><span class="dot"></span>${m.specialty}</div>
+        <div class="years">${m.born}${m.died ? ' — '+m.died : ' — Actualidad'}</div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('totalCount').textContent = MAGICIANS.length;
+}
+
+function openModal(id) {
+  const m = MAGICIANS.find(x => x.id === id);
+  if (!m) return;
+  const content = document.getElementById('modalContent');
+  content.innerHTML = `
+    <div class="m-era-tag">${m.eraTag || ''}</div>
+    <div class="m-name">${m.name}</div>
+    <div class="m-real">${m.real} · ${m.country}</div>
+    <div class="m-info">
+      <div><div class="label">Nacimiento</div><div class="value">${m.born}</div></div>
+      <div><div class="label">Fallecimiento</div><div class="value">${m.died || '—'}</div></div>
+      <div><div class="label">Especialidad</div><div class="value">${m.specialty}</div></div>
+      <div><div class="label">País</div><div class="value">${m.country}</div></div>
+    </div>
+    <div class="m-bio">${m.bio}</div>
+    ${m.effects ? `<div class="m-effects"><h3>✨ Efectos y logros</h3><ul>${m.effects.map(e => '<li>'+e+'</li>').join('')}</ul></div>` : ''}
+    ${m.curiosity ? `<div class="m-curiosities"><h3>🔮 Dato curioso</h3><p>${m.curiosity}</p></div>` : ''}
+    <a href="data/bio-${m.id}.md" class="read-more" target="_blank">📖 Leer biografía completa →</a>
+  `;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// Filters
+document.querySelectorAll('#filters button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#filters button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderGrid();
+  });
+});
+
+renderGrid();
+</script>
+</body>
+</html>

@@ -8,4 +8,4 @@ uploads/*
 !uploads/.gitkeep
 .DS_Store
 *.log
-projects/
+# projects/

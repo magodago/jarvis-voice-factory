@@ -211,7 +211,9 @@ footer .copyright{grid-column:1/-1;text-align:center;padding-top:32px;border-top
     <li><a href="#magos">Magos</a></li>
     <li><a href="#biblioteca">Biblioteca</a></li>
     <li><a href="#comunidad">Comunidad</a></li>
-    <li><a href="#firmas" class="nav-cta">Firmar</a></li>
+      <a href="firmas.html" class="hero-cta">
+        ✍️ Firmar ahora <span class="arrow">→</span>
+      </a>
   </ul>
   <button class="mobile-toggle" id="mobileToggle" aria-label="Menú">
     <span></span><span></span><span></span>
@@ -369,11 +371,11 @@ footer .copyright{grid-column:1/-1;text-align:center;padding-top:32px;border-top
       <div class="sc-title">Frases Célebres</div>
       <div class="sc-desc">La sabiduría de los grandes maestros. Citas inspiradoras sobre magia, misterio y arte.</div>
     </div>
-    <div class="section-card fade-in">
+    <a href="firmas.html" style="text-decoration:none;color:inherit" class="section-card fade-in">
       <span class="sc-icon">✍️</span>
       <div class="sc-title">Libro de Firmas</div>
       <div class="sc-desc">Firma en el libro de honor de la magia mundial. Forma parte de esta historia.</div>
-    </div>
+    </a>
     <div class="section-card fade-in">
       <span class="sc-icon">🔮</span>
       <div class="sc-title">Curiosidades</div>
@@ -392,7 +394,9 @@ footer .copyright{grid-column:1/-1;text-align:center;padding-top:32px;border-top
   <div class="fade-in">
     <h2>Forma parte de esta <em style="color:var(--gold);font-style:italic">historia</em></h2>
     <p>Recibe contenido exclusivo, avances de nuevas secciones y acceso anticipado a la comunidad de magos.</p>
-    <form class="cta-form" onsubmit="event.preventDefault();alert('¡Gracias! Te avisaremos cuando el libro esté completo.')">
+    <form class="cta-form" action="firmas.html" method="get">
+      <input type="hidden" name="ref" value="home">
+      <button type="submit" style="padding:14px 32px;background:var(--gold);color:var(--bg);border:none;border-radius:4px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:var(--font-body)">Quiero firmar</button>
       <input type="email" placeholder="tu@email.com" required>
       <button type="submit">Unirme</button>
     </form>

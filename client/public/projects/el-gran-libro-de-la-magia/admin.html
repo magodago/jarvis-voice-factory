@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Libro de Firmas · El Gran Libro de la Magia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--text:#f0ece4;--text2:#a09888;--text3:#6b6358;--gold:#c9a84c;--border:rgba(201,168,76,0.08);--card:#14141f}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:24px;-webkit-font-smoothing:antialiased}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+header h1{font-size:18px;font-weight:600;color:var(--gold)}
+header .stats{display:flex;gap:20px;font-size:12px;color:var(--text2)}
+header .stats strong{color:var(--text)}
+.actions{display:flex;gap:8px;margin-bottom:20px}
+.actions button{padding:8px 16px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:12px;cursor:pointer;transition:all .2s}
+.actions button:hover{border-color:var(--gold);color:var(--gold)}
+.actions .export{background:var(--gold);color:var(--bg);font-weight:600;border-color:var(--gold)}
+.actions .export:hover{opacity:.9}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:10px 12px;text-align:left;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-size:10px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+tr:hover td{background:var(--card)}
+tr .name{color:var(--gold);font-weight:600}
+tr .country{font-size:11px}
+tr .specialty{font-size:11px}
+tr .time{font-size:10px;color:var(--text3);font-family:monospace}
+.empty{padding:60px;text-align:center;color:var(--text3);font-size:14px}
+#counts{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:20px}
+.count-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 20px;text-align:center;flex:1;min-width:120px}
+.count-box .num{font-size:28px;font-weight:700;color:var(--gold)}
+.count-box .label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.search-bar{display:flex;gap:8px;margin-bottom:16px}
+.search-bar input{flex:1;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none}
+.search-bar input:focus{border-color:var(--gold)}
+.search-bar select{padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:12px;outline:none;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+  <h1>📖 Admin · Libro de Firmas</h1>
+  <div class="stats" id="headerStats"></div>
+</header>
+<div id="counts"></div>
+<div class="actions">
+  <button onclick="exportCSV()" class="export">⬇ Exportar CSV</button>
+  <button onclick="filter='all';render()">Todas</button>
+  <button onclick="alert('Estadísticas:\n\n' + getStats())">📊 Estadísticas</button>
+  <button onclick="if(confirm('¿Eliminar TODAS las firmas?')){localStorage.removeItem('magia_firmas');render()}">🗑 Limpiar</button>
+</div>
+<div class="search-bar">
+  <input type="text" id="search" placeholder="Buscar por nombre, país, especialidad..." oninput="render()">
+  <select id="specialtyFilter" onchange="render()">
+    <option value="">Todas las especialidades</option>
+    <option>Cartomagia</option>
+    <option>Mentalismo</option>
+    <option>Grandes ilusiones</option>
+    <option>Close-up</option>
+    <option>Escapismo</option>
+    <option>Manipulación</option>
+  </select>
+</div>
+<div id="tableWrap" style="overflow-x:auto"></div>
+<script>
+const KEY = 'magia_firmas';
+function get(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch{return[]}}
+
+function render(){
+  const firmas = get();
+  let filtered = firmas;
+  const q = document.getElementById('search').value.toLowerCase();
+  const sf = document.getElementById('specialtyFilter').value;
+  if(q) filtered = filtered.filter(f=>f.artisticName?.toLowerCase().includes(q)||f.realName?.toLowerCase().includes(q)||f.country?.toLowerCase().includes(q)||f.specialty?.toLowerCase().includes(q)||f.city?.toLowerCase().includes(q));
+  if(sf) filtered = filtered.filter(f=>f.specialty===sf);
+
+  // Counts
+  const countries = new Set(firmas.map(f=>f.country));
+  const specialties = new Set(firmas.map(f=>f.specialty));
+  document.getElementById('counts').innerHTML = `
+    <div class="count-box"><div class="num">${firmas.length}</div><div class="label">Total firmas</div></div>
+    <div class="count-box"><div class="num">${countries.size}</div><div class="label">Países</div></div>
+    <div class="count-box"><div class="num">${specialties.size}</div><div class="label">Especialidades</div></div>
+    <div class="count-box"><div class="num">${filtered.length}</div><div class="label">Filtradas</div></div>
+  `;
+  document.getElementById('headerStats').innerHTML = `<span>📊 <strong>${firmas.length}</strong> firmas · <strong>${countries.size}</strong> países</span>`;
+
+  const wrap = document.getElementById('tableWrap');
+  if(!filtered.length){
+    wrap.innerHTML='<div class="empty">No hay firmas que coincidan con tu búsqueda.</div>';return;
+  }
+
+  let html='<table><thead><tr><th>Nombre</th><th>Real</th><th>País</th><th>Ciudad</th><th>Especialidad</th><th>Email</th><th>Teléfono</th><th>Instagram</th><th>Web</th><th>Mensaje</th><th>Fecha</th></tr></thead><tbody>';
+  filtered.slice().reverse().forEach(f=>{
+    const d = f.timestamp ? new Date(f.timestamp).toLocaleDateString('es-ES') : '—';
+    html+=`<tr><td class="name">${f.artisticName||'—'}</td><td>${f.realName||'—'}</td><td class="country">${f.country||'—'}</td><td>${f.city||'—'}</td><td class="specialty">${f.specialty||'—'}</td><td>${f.email||'—'}</td><td>${f.phone||'—'}</td><td>${f.instagram||'—'}</td><td>${f.website||'—'}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">${f.message||'—'}</td><td class="time">${d}</td></tr>`;
+  });
+  html+='</tbody></table>';
+  wrap.innerHTML=html;
+}
+
+function exportCSV(){
+  const firmas=get();
+  const headers=['Nombre artístico','Nombre real','País','Ciudad','Especialidad','Email','Teléfono','Instagram','Web','Mensaje','Fecha'];
+  let csv=headers.join(',')+'\n';
+  firmas.forEach(f=>{
+    const row=[f.artisticName||'',f.realName||'',f.country||'',f.city||'',f.specialty||'',f.email||'',f.phone||'',f.instagram||'',f.website||'',(f.message||'').replace(/"/g,'""'),f.timestamp?new Date(f.timestamp).toISOString():''];
+    csv+=row.map(v=>`"${v}"`).join(',')+'\n';
+  });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`firmas-magia-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+function getStats(){
+  const f=get();
+  const c={};const s={};
+  f.forEach(x=>{c[x.country]=(c[x.country]||0)+1;s[x.specialty]=(s[x.specialty]||0)+1});
+  let r='=== POR PAÍS ===\n';
+  Object.entries(c).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>r+=`${k}: ${v}\n`);
+  r+='\n=== POR ESPECIALIDAD ===\n';
+  Object.entries(s).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>r+=`${k}: ${v}\n`);
+  return r;
+}
+
+render();
+</script>
+</body>
+</html>

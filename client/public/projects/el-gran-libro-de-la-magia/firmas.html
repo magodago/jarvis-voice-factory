@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Libro de Firmas · El Gran Libro de la Magia</title>
+<meta name="description" content="Firma en el libro de honor de la magia mundial. Forma parte de la historia del ilusionismo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--bg2:#0f0f1a;--card:#14141f;--gold:#c9a84c;--gold-light:#e8d48b;--gold-dark:#8a7030;--text:#f0ece4;--text2:#a09888;--text3:#6b6358;--border:rgba(201,168,76,0.08);--border-gold:rgba(201,168,76,0.2);--input-bg:rgba(255,255,255,.03);--font-display:'Cormorant Garamond',serif;--font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:var(--bg)}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:2px}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(10,10,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gold);text-decoration:none;letter-spacing:.5px}
+nav .logo span{color:var(--text3)}
+nav .back{color:var(--text2);text-decoration:none;font-size:12px;transition:color .3s;display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--gold)}
+
+/* Hero */
+.hero{position:relative;padding:120px 40px 60px;text-align:center;background:linear-gradient(180deg,var(--bg),var(--bg2));overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,.04),transparent 70%);pointer-events:none}
+.hero h1{font-family:var(--font-display);font-size:clamp(36px,5vw,56px);font-weight:300;letter-spacing:-1px;margin-bottom:12px;position:relative}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p{color:var(--text2);font-size:16px;font-weight:300;max-width:600px;margin:0 auto;line-height:1.6;position:relative}
+.hero .count{font-size:13px;color:var(--text3);margin-top:16px;position:relative}
+.hero .count strong{color:var(--gold);font-weight:600}
+
+/* Stats */
+.stats{display:flex;justify-content:center;gap:40px;padding:0 40px 40px;flex-wrap:wrap}
+.stat{text-align:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 32px;min-width:140px}
+.stat-num{font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--gold)}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+/* Form section */
+.form-section{max-width:720px;margin:0 auto;padding:0 24px 80px}
+.form-section .form-intro{text-align:center;margin-bottom:40px}
+.form-section .form-intro h2{font-family:var(--font-display);font-size:26px;font-weight:300;color:var(--text);margin-bottom:8px}
+.form-section .form-intro p{font-size:13px;color:var(--text3);line-height:1.5}
+.form-card{background:var(--card);border:1px solid var(--border-gold);border-radius:16px;padding:40px;box-shadow:0 4px 40px rgba(201,168,76,.04)}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:640px){.form-row{grid-template-columns:1fr}}
+.form-group{position:relative;margin-bottom:16px}
+.form-group.full{grid-column:1/-1}
+.form-group label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin-bottom:6px}
+.form-group label .required{color:#c93400;margin-left:2px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:var(--font-body);transition:all .3s;outline:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.08);background:rgba(255,255,255,.05)}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--text3);font-weight:300}
+.form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='%236b6358'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer}
+.form-group select option{background:var(--bg2);color:var(--text)}
+.form-group textarea{resize:vertical;min-height:100px}
+.form-group .char-count{text-align:right;font-size:10px;color:var(--text3);margin-top:4px}
+
+/* GDPR */
+.gdpr{margin:20px 0;padding:16px;background:rgba(201,168,76,.03);border:1px solid var(--border);border-radius:8px;display:flex;gap:12px;align-items:flex-start;cursor:pointer;transition:all .3s}
+.gdpr:hover{border-color:var(--border-gold)}
+.gdpr input[type="checkbox"]{margin-top:3px;accent-color:var(--gold);width:16px;height:16px;cursor:pointer;flex-shrink:0}
+.gdpr .gdpr-text{font-size:11px;color:var(--text2);line-height:1.5;font-weight:300;cursor:pointer}
+.gdpr .gdpr-text strong{color:var(--text)}
+
+/* Submit */
+.submit-btn{width:100%;padding:16px;background:var(--gold);color:var(--bg);border:none;border-radius:8px;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .3s;font-family:var(--font-body);text-transform:uppercase}
+.submit-btn:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 8px 30px rgba(201,168,76,.2)}
+.submit-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* Success */
+.success-screen{display:none;text-align:center;padding:60px 20px}
+.success-screen.show{display:block;animation:fadeUp .6s ease}
+.success-screen .icon{font-size:64px;margin-bottom:16px}
+.success-screen h2{font-family:var(--font-display);font-size:32px;font-weight:300;margin-bottom:8px}
+.success-screen h2 em{font-style:italic;color:var(--gold)}
+.success-screen p{color:var(--text2);font-size:15px;line-height:1.6;font-weight:300;max-width:480px;margin:0 auto}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Recent signatories */
+.recent-section{max-width:720px;margin:0 auto;padding:0 24px 80px}
+.recent-section h3{font-family:var(--font-display);font-size:22px;font-weight:300;color:var(--text);margin-bottom:20px;text-align:center}
+.recent-section h3 em{font-style:italic;color:var(--gold)}
+.recent-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.recent-grid{grid-template-columns:1fr}}
+.recent-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px;transition:all .3s}
+.recent-card .rc-name{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gold)}
+.recent-card .rc-real{font-size:11px;color:var(--text3);margin-top:1px}
+.recent-card .rc-specialty{font-size:11px;color:var(--text2);margin-top:4px;display:flex;align-items:center;gap:6px}
+.recent-card .rc-country{font-size:10px;color:var(--text3);margin-top:2px}
+.recent-card .rc-time{font-size:9px;color:var(--text3);margin-top:4px;font-family:var(--font-mono)}
+.recent-card .dot{width:4px;height:4px;border-radius:50%;background:var(--gold-dark);display:inline-block}
+
+/* Footer */
+footer{text-align:center;padding:32px;border-top:1px solid var(--border)}
+footer p{font-size:11px;color:var(--text3)}
+footer a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="." class="logo">El Gran Libro <span>· Firmas</span></a>
+  <a href="magos.html" class="back">← Magos</a>
+</nav>
+
+<section class="hero">
+  <h1>Libro de <em>Firmas</em></h1>
+  <p>Deja tu huella en la historia de la magia. Este libro recoge el nombre de magos, mentalistas e ilusionistas de todo el mundo. Forma parte de este legado.</p>
+  <div class="count" id="signatoryCount">🌍 <strong>0</strong> magos de <strong>0</strong> países ya han firmado</div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Firmas</div></div>
+  <div class="stat"><div class="stat-num" id="statCountries">0</div><div class="stat-label">Países</div></div>
+  <div class="stat"><div class="stat-num" id="statSpecialties">0</div><div class="stat-label">Especialidades</div></div>
+</div>
+
+<div class="form-section" id="formSection">
+  <div class="form-intro">
+    <h2>Firma en el libro</h2>
+    <p>Todos los datos se almacenan de forma segura. Al firmar, pasas a formar parte del archivo histórico de la magia mundial.</p>
+  </div>
+
+  <form class="form-card" id="magicForm" onsubmit="return submitForm(event)">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre artístico <span class="required">*</span></label>
+        <input type="text" id="artisticName" placeholder="Ej: El Misterioso" required>
+      </div>
+      <div class="form-group">
+        <label>Nombre real <span style="color:var(--text3);font-weight:400;font-size:10px">(opcional)</span></label>
+        <input type="text" id="realName" placeholder="Ej: Carlos Martínez">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>País <span class="required">*</span></label>
+        <select id="country" required>
+          <option value="">Selecciona tu país</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Ciudad <span class="required">*</span></label>
+        <input type="text" id="city" placeholder="Ej: Madrid" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Especialidad principal <span class="required">*</span></label>
+        <select id="specialty" required>
+          <option value="">Selecciona tu especialidad</option>
+          <option>Cartomagia</option>
+          <option>Mentalismo</option>
+          <option>Grandes ilusiones</option>
+          <option>Magia infantil</option>
+          <option>Close-up</option>
+          <option>Escapismo</option>
+          <option>Pickpocket</option>
+          <option>Hipnosis</option>
+          <option>Manipulación</option>
+          <option>Magia cómica</option>
+          <option>Ilusionismo general</option>
+          <option>Magia digital / IA</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Email <span class="required">*</span></label>
+        <input type="email" id="email" placeholder="tu@email.com" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Teléfono <span style="color:#c93400;font-weight:500">*</span> <span style="color:var(--text3);font-weight:400;font-size:10px">(importante)</span></label>
+        <input type="tel" id="phone" placeholder="+34 600 000 000" required>
+      </div>
+      <div class="form-group">
+        <label>Instagram</label>
+        <input type="text" id="instagram" placeholder="@tu_usuario">
+      </div>
+    </div>
+
+    <div class="form-group full">
+      <label>Web</label>
+      <input type="url" id="website" placeholder="https://tumagia.com">
+    </div>
+
+    <div class="form-group full">
+      <label>Mensaje <span style="color:var(--text3);font-weight:400;font-size:10px">(opcional)</span></label>
+      <textarea id="message" placeholder="Escribe algo para la historia..." maxlength="500"></textarea>
+      <div class="char-count"><span id="charCount">0</span>/500</div>
+    </div>
+
+    <div class="gdpr" onclick="document.getElementById('gdprCheck').click()">
+      <input type="checkbox" id="gdprCheck" required onclick="event.stopPropagation()">
+      <div class="gdpr-text">He leído y acepto la <strong>política de privacidad</strong>. Consiento el almacenamiento de mis datos para formar parte del archivo histórico de El Gran Libro de la Magia. Podré solicitar la eliminación de mis datos en cualquier momento. <span style="color:var(--text3)">(RGPD)</span></div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">✍️ Firmar en el libro</button>
+  </form>
+
+  <div class="success-screen" id="successScreen">
+    <div class="icon">📖</div>
+    <h2>Tu firma ha quedado <em>grabada</em></h2>
+    <p>Eres oficialmente parte de la historia de la magia. Tu nombre aparece ya en el Libro de Firmas de El Gran Libro de la Magia.</p>
+  </div>
+</div>
+
+<section class="recent-section" id="recentSection">
+  <h3>Últimas <em>firmas</em></h3>
+  <div class="recent-grid" id="recentGrid"></div>
+</section>
+
+<footer>
+  <p>© 2026 <a href=".">El Gran Libro de la Magia</a> · Datos protegidos bajo RGPD · Proyecto de David Ortiz</p>
+</footer>
+
+<script>
+// Countries list
+const COUNTRIES = ["España","Argentina","México","Colombia","Chile","Perú","Venezuela","Ecuador","Guatemala","Cuba","Bolivia","República Dominicana","Honduras","Paraguay","El Salvador","Nicaragua","Costa Rica","Panamá","Uruguay","Puerto Rico","EE.UU.","Reino Unido","Francia","Italia","Alemania","Países Bajos","Bélgica","Suiza","Portugal","Japón","Corea del Sur","China","India","Australia","Canadá","Brasil","Suecia","Noruega","Dinamarca","Finlandia","Rusia","Turquía","Israel","Egipto","Marruecos","Sudáfrica","Filipinas","Singapur","Malasia","Otro"];
+
+// Init
+const STORAGE_KEY = 'magia_firmas';
+
+function getFirmas() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+}
+
+function saveFirmas(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function updateStats() {
+  const firmas = getFirmas();
+  const countries = new Set(firmas.map(f => f.country).filter(Boolean));
+  const specialties = new Set(firmas.map(f => f.specialty).filter(Boolean));
+
+  document.getElementById('signatoryCount').innerHTML = `🌍 <strong>${firmas.length}</strong> magos de <strong>${countries.size}</strong> países ya han firmado`;
+  document.getElementById('statTotal').textContent = firmas.length;
+  document.getElementById('statCountries').textContent = countries.size;
+  document.getElementById('statSpecialties').textContent = specialties.size;
+}
+
+function renderRecent() {
+  const firmas = getFirmas().slice().reverse().slice(0, 10);
+  const grid = document.getElementById('recentGrid');
+  if (firmas.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3);font-size:13px;font-weight:300">Sé el primero en firmar ✨</div>';
+    return;
+  }
+  grid.innerHTML = firmas.map(f => {
+    const timeAgo = f.timestamp ? Math.floor((Date.now() - f.timestamp) / (1000*60*60*24)) : 0;
+    const timeStr = timeAgo === 0 ? 'Hoy' : timeAgo === 1 ? 'Ayer' : `Hace ${timeAgo} días`;
+    return `<div class="recent-card">
+      <div class="rc-name">${f.artisticName}</div>
+      ${f.realName ? `<div class="rc-real">${f.realName}</div>` : ''}
+      <div class="rc-specialty"><span class="dot"></span> ${f.specialty || '—'}</div>
+      <div class="rc-country">${f.city ? f.city + ', ' : ''}${f.country || '—'}</div>
+      <div class="rc-time">${timeStr}</div>
+    </div>`;
+  }).join('');
+}
+
+// Populate countries
+document.addEventListener('DOMContentLoaded', () => {
+  const select = document.getElementById('country');
+  COUNTRIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    select.appendChild(opt);
+  });
+  updateStats();
+  renderRecent();
+
+  // Character count
+  document.getElementById('message').addEventListener('input', function() {
+    document.getElementById('charCount').textContent = this.value.length;
+  });
+});
+
+// Submit
+async function submitForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '✍️ Firmando...';
+
+  const data = {
+    artisticName: document.getElementById('artisticName').value.trim(),
+    realName: document.getElementById('realName').value.trim(),
+    country: document.getElementById('country').value,
+    city: document.getElementById('city').value.trim(),
+    specialty: document.getElementById('specialty').value,
+    email: document.getElementById('email').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    instagram: document.getElementById('instagram').value.trim(),
+    website: document.getElementById('website').value.trim(),
+    message: document.getElementById('message').value.trim(),
+    timestamp: Date.now(),
+    id: 'firma_' + Date.now() + '_' + Math.random().toString(36).slice(2,7)
+  };
+
+  // Save to localStorage
+  const firmas = getFirmas();
+  firmas.push(data);
+  saveFirmas(firmas);
+
+  // Try to send via Web3Forms (free tier)
+  try {
+    await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: 'demo-key', // Replace with real key
+        subject: `🎩 Nueva firma: ${data.artisticName}`,
+        from_name: 'El Gran Libro de la Magia',
+        ...data
+      })
+    });
+  } catch {}
+
+  // Show success
+  document.getElementById('formSection').querySelector('.form-card').style.display = 'none';
+  document.getElementById('successScreen').classList.add('show');
+  updateStats();
+  renderRecent();
+
+  btn.textContent = '✍️ Firmado ✓';
+  return false;
+}
+
+// Pre-fill demo data
+function addDemoData() {
+  const demos = [
+    {artisticName:"El Misterioso",realName:"Carlos Martínez",country:"España",city:"Madrid",specialty:"Cartomagia",email:"carlos@example.com",phone:"+34 600 111 222",instagram:"@elmisterioso",message:"La magia es el único arte que exige que el espectador quiera ser engañado.",timestamp:Date.now()-86400000*3},
+    {artisticName:"Dani Mental",realName:"Daniel Pérez",country:"Argentina",city:"Buenos Aires",specialty:"Mentalismo",email:"dani@example.com",phone:"+54 11 5555 3333",instagram:"@danimental",message:"El verdadero secreto está en la atención del espectador.",timestamp:Date.now()-86400000*2},
+    {artisticName:"Mago Rafa",realName:"Rafael Gómez",country:"México",city:"CDMX",specialty:"Close-up",email:"rafa@example.com",phone:"+52 55 1234 5678",message:"Ilusionista mexicano, 15 años de experiencia.",timestamp:Date.now()-86400000}
+  ];
+  const firmas = getFirmas();
+  if (firmas.length === 0) {
+    saveFirmas(demos);
+    updateStats();
+    renderRecent();
+  }
+}
+addDemoData();
+</script>
+</body>
+</html>

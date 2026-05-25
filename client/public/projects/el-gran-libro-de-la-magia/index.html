@@ -155,11 +155,17 @@ nav .nav-cta:hover{background:var(--gold);color:var(--bg-primary)!important}
    SECTIONS GRID
    ============================================ */
 .sections-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;max-width:1200px;margin:0 auto}
-.section-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:8px;padding:32px 24px;text-align:center;transition:all .4s;cursor:pointer;position:relative;overflow:hidden}
+.section-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:8px;padding:0 0 28px 0;text-align:center;transition:all .4s;cursor:pointer;position:relative;overflow:hidden;animation:breathe 4s ease-in-out infinite}
+.section-card:nth-child(2){animation-delay:0.3s}
+.section-card:nth-child(3){animation-delay:0.6s}
+.section-card:nth-child(4){animation-delay:0.9s}
+.section-card:nth-child(5){animation-delay:1.2s}
+.section-card:nth-child(6){animation-delay:1.5s}
 .section-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .4s;transform-origin:left}
 .section-card:hover::before{transform:scaleX(1)}
 .section-card:hover{border-color:var(--border-gold);transform:translateY(-4px);box-shadow:var(--shadow-gold)}
 .section-card .sc-icon{font-size:36px;margin-bottom:16px;display:block}
+.section-card .sc-img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:4px 4px 0 0;margin-bottom:16px;display:block;background:var(--bg2)}
 .section-card .sc-title{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--gold);margin-bottom:8px}
 .section-card .sc-desc{font-size:13px;color:var(--text-secondary);line-height:1.5;font-weight:300}
 
@@ -282,67 +288,6 @@ footer .copyright{grid-column:1/-1;text-align:center;padding-top:32px;border-top
   </div>
 </section>
 
-<!-- MAGICIANS PREVIEW -->
-<section class="section" id="magos" style="background:var(--bg-secondary)">
-    <div class="section-header fade-in">
-      <a href="magos.html" style="text-decoration:none;color:inherit">
-        <div class="section-tag">Grandes Maestros</div>
-        <h2 class="section-title">Los <em>magos</em> que marcaron la historia</h2>
-        <p class="section-desc">Conoce las vidas, los trucos y el legado de los ilusionistas más influyentes de todos los tiempos.</p>
-      </a>
-    </div>
-  <div class="magician-grid">
-    <div class="magician-card fade-in">
-      <img src="assets/images/hero-bg.jpg" alt="" loading="lazy" style="object-position:center 30%">
-      <div class="card-overlay">
-        <div class="m-name">Harry Houdini</div>
-        <div class="m-era">1874 · 1926 · Escapismo</div>
-        <div class="m-specialty">El rey del escapismo. Cadenas, camisas de fuerza y tanques de agua.</div>
-      </div>
-    </div>
-    <div class="magician-card fade-in">
-      <img src="assets/images/mago-portrait.jpg" alt="" loading="lazy" style="object-position:center 20%">
-      <div class="card-overlay">
-        <div class="m-name">Jean-Eugène Robert-Houdin</div>
-        <div class="m-era">1805 · 1871 · Ilusionismo</div>
-        <div class="m-specialty">El padre del ilusionismo moderno. Mago, relojero y hombre de ciencia.</div>
-      </div>
-    </div>
-    <div class="magician-card fade-in">
-      <img src="assets/images/timeline-deco.jpg" alt="" loading="lazy" style="object-position:center 50%">
-      <div class="card-overlay">
-        <div class="m-name">Juan Tamariz</div>
-        <div class="m-era">1942 · Actualidad · Cartomagia</div>
-        <div class="m-specialty">El mago español más influyente del mundo. Teoría, humor y pura magia.</div>
-      </div>
-    </div>
-    <div class="magician-card fade-in">
-      <img src="assets/images/poster-vintage.jpg" alt="" loading="lazy" style="object-position:center 30%">
-      <div class="card-overlay">
-        <div class="m-name">David Copperfield</div>
-        <div class="m-era">1956 · Actualidad · Grandes Ilusiones</div>
-        <div class="m-specialty">El mago más rico y famoso del mundo. Hizo desaparecer la Estatua de la Libertad.</div>
-      </div>
-    </div>
-    <div class="magician-card fade-in">
-      <img src="assets/images/hero-bg.jpg" alt="" loading="lazy" style="object-position:center 40%">
-      <div class="card-overlay">
-        <div class="m-name">Derren Brown</div>
-        <div class="m-era">1971 · Actualidad · Mentalismo</div>
-        <div class="m-specialty">Psicólogo, hipnotista y mentalista. La magia como herramienta de exploración humana.</div>
-      </div>
-    </div>
-    <div class="magician-card fade-in">
-      <img src="assets/images/timeline-deco.jpg" alt="" loading="lazy" style="object-position:center 30%">
-      <div class="card-overlay">
-        <div class="m-name">Dai Vernon</div>
-        <div class="m-era">1894 · 1992 · Close-up</div>
-        <div class="m-specialty">El profesor. El mago de los magos. Revolucionó la cartomagia y el close-up.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- SECTIONS INDEX -->
 <section class="section" id="biblioteca">
   <div class="section-header fade-in">
@@ -352,52 +297,52 @@ footer .copyright{grid-column:1/-1;text-align:center;padding-top:32px;border-top
   </div>
   <div class="sections-grid">
     <a href="historia.html" style="text-decoration:none;color:inherit" class="section-card fade-in">
-      <span class="sc-icon">📜</span>
+      <img class="sc-img" src="assets/images/sections/historia.jpg" alt="Historia" loading="lazy">
       <div class="sc-title">Historia Completa</div>
       <div class="sc-desc">5000 años de magia en una cronología interactiva. Cada era, cada personaje, cada descubrimiento.</div>
     </a>
     <a href="magos.html" style="text-decoration:none;color:inherit" class="section-card fade-in">
-      <span class="sc-icon">🎭</span>
+      <img class="sc-img" src="assets/images/sections/magos.jpg" alt="Magos" loading="lazy">
       <div class="sc-title">Grandes Magos</div>
       <div class="sc-desc">Biografías premium de los ilusionistas más influyentes. Fotos, cronología, efectos y legado.</div>
     </a>
     <a href="mapa.html" style="text-decoration:none;color:inherit" class="section-card fade-in">
-      <span class="sc-icon">🗺️</span>
+      <img class="sc-img" src="assets/images/sections/mapa.jpg" alt="Mapa" loading="lazy">
       <div class="sc-title">Mapa Mundial</div>
       <div class="sc-desc">Encuentra magos cerca de ti. Directorio global por país, ciudad y especialidad.</div>
     </a>
     <a href="biblioteca.html" style="text-decoration:none;color:inherit" class="section-card fade-in">
-      <span class="sc-icon">📖</span>
+      <img class="sc-img" src="assets/images/sections/biblioteca.jpg" alt="Biblioteca" loading="lazy">
       <div class="sc-title">Biblioteca</div>
       <div class="sc-desc">Libros, revistas, carteles y manuscritos históricos restaurados. El archivo visual del ilusionismo.</div>
     </a>
     <a href="magia-espanola.html" style="text-decoration:none;color:inherit" class="section-card fade-in">
-      <span class="sc-icon">🇪🇸</span>
+      <img class="sc-img" src="assets/images/sections/esp.jpg" alt="Magia Española" loading="lazy">
       <div class="sc-title">Magia Española</div>
       <div class="sc-desc">De Ascanio a Tamariz, de Pepe Carroll a Jorge Blass. 31 magos que hicieron historia en España.</div>
     </a>
     <a href="ciencia.html" style="text-decoration:none;color:inherit" class="section-card fade-in">
-      <span class="sc-icon">🔬</span>
+      <img class="sc-img" src="assets/images/sections/ciencia.jpg" alt="Ciencia" loading="lazy">
       <div class="sc-title">Ciencia de la Magia</div>
       <div class="sc-desc">Neurociencia, misdirection y psicología. Por qué el cerebro humano cree lo imposible.</div>
     </a>
     <a href="cine.html" style="text-decoration:none;color:inherit" class="section-card fade-in">
-      <span class="sc-icon">🎬</span>
+      <img class="sc-img" src="assets/images/sections/cine.jpg" alt="Cine" loading="lazy">
       <div class="sc-title">Magia en el Cine</div>
       <div class="sc-desc">The Prestige, Now You See Me, El Ilusionista. Las películas que mejor han retratado la magia.</div>
     </a>
     <a href="ranking-fism.html" style="text-decoration:none;color:inherit" class="section-card fade-in">
-      <span class="sc-icon">🏆</span>
+      <img class="sc-img" src="assets/images/sections/fism.jpg" alt="Ranking FISM" loading="lazy">
       <div class="sc-title">Ranking FISM</div>
       <div class="sc-desc">Los campeones mundiales de la magia. Grand Prix, medallas y leyendas del ilusionismo.</div>
     </a>
     <a href="galeria.html" style="text-decoration:none;color:inherit" class="section-card fade-in">
-      <span class="sc-icon">📸</span>
+      <img class="sc-img" src="assets/images/sections/galeria.jpg" alt="Galería" loading="lazy">
       <div class="sc-title">Galería de Magos</div>
       <div class="sc-desc">47 retratos reales de los magos más importantes de la historia, desde Houdini hasta Tamariz.</div>
     </a>
     <a href="firmas.html" style="text-decoration:none;color:inherit" class="section-card fade-in">
-      <span class="sc-icon">✍️</span>
+      <img class="sc-img" src="assets/images/sections/firmas.jpg" alt="Firmas" loading="lazy">
       <div class="sc-title">Libro de Firmas</div>
       <div class="sc-desc">Firma en el libro de honor de la magia mundial. Forma parte de esta historia.</div>
     </a>

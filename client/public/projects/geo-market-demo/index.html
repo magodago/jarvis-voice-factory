@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>GeoMarket · Demo Geolocalización</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GeoMarket">
+<link rel="manifest" href="data:application/json,{}">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0e17;color:#e8edf5;height:100%;overflow:hidden;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
+input,textarea,button{font-size:16px}
+::selection{background:#00d4ff33;color:#fff}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes notifSlide{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
+@keyframes notifOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(100px)}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(0,212,255,.15)}50%{box-shadow:0 0 40px rgba(0,212,255,.3)}}
+@keyframes dotPulse{0%,100%{r:4;opacity:.6}50%{r:6;opacity:1}}
+@keyframes walkPath{from{stroke-dashoffset:600}to{stroke-dashoffset:0}}
+
+.app{height:100%;display:flex;flex-direction:column;position:relative;max-width:480px;margin:0 auto;padding:env(safe-area-inset-top,10px) 0 env(safe-area-inset-bottom,10px)}
+
+/* Header */
+.header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,212,255,.08);flex-shrink:0}
+.header h1{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#00d4ff,#7b2ff7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header .status{display:flex;align-items:center;gap:6px;font-size:.7rem;color:rgba(232,237,245,.5)}
+.header .status-dot{width:6px;height:6px;border-radius:50%;background:#666}
+.header .status-dot.active{background:#00ff88;animation:pulse 1.5s ease-in-out infinite}
+.header .status-dot.searching{background:#ffd700;animation:pulse .8s ease-in-out infinite}
+
+/* Map area */
+.map-container{flex:1;position:relative;overflow:hidden;background:linear-gradient(135deg,#0d1220,#141b2b)}
+.map-container svg{width:100%;height:100%}
+.map-zones{position:absolute;inset:0}
+.zone-label{position:absolute;font-size:.55rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;padding:2px 8px;border-radius:4px;pointer-events:none;z-index:2}
+.zone-label.active{animation:glow 2s ease-in-out infinite}
+.zone-offer-count{position:absolute;font-size:.5rem;color:rgba(232,237,245,.4);pointer-events:none;z-index:2}
+
+/* User dot */
+.user-dot{position:absolute;width:16px;height:16px;border-radius:50%;background:#00d4ff;box-shadow:0 0 20px rgba(0,212,255,.5),0 0 40px rgba(0,212,255,.2);z-index:5;transform:translate(-50%,-50%);transition:left .8s ease,top .8s ease;pointer-events:none}
+.user-dot::after{content:'';position:absolute;top:-6px;left:-6px;width:28px;height:28px;border-radius:50%;border:2px solid rgba(0,212,255,.3);animation:pulse 2s ease-in-out infinite}
+.user-dot-label{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:.55rem;color:#00d4ff;white-space:nowrap;font-weight:600;background:rgba(0,212,255,.1);padding:2px 8px;border-radius:4px;backdrop-filter:blur(4px)}
+
+/* Notification overlay */
+.notification-container{position:fixed;top:calc(env(safe-area-inset-top,10px) + 60px);right:12px;z-index:100;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:320px}
+.notification{background:linear-gradient(135deg,rgba(13,18,32,.95),rgba(20,27,43,.95));border:1px solid;border-radius:14px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;animation:notifSlide .4s ease-out;backdrop-filter:blur(20px);box-shadow:0 8px 40px rgba(0,0,0,.4);pointer-events:auto;cursor:pointer;transition:all .3s}
+.notification:hover{transform:scale(1.02)}
+.notification.closing{animation:notifOut .3s ease-in forwards}
+.notif-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.notif-text{flex:1;min-width:0}
+.notif-title{font-size:.8rem;font-weight:700;margin-bottom:2px}
+.notif-desc{font-size:.7rem;color:rgba(232,237,245,.6);line-height:1.4}
+.notif-store{font-size:.65rem;margin-top:4px;font-weight:600}
+.notif-time{font-size:.55rem;color:rgba(232,237,245,.3);flex-shrink:0}
+
+/* Bottom bar */
+.bottom-bar{flex-shrink:0;padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(0,212,255,.08);background:rgba(10,14,23,.95);backdrop-filter:blur(20px)}
+.bottom-bar .info{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bottom-bar .info .zone-name{font-size:.75rem;font-weight:600;color:#00d4ff}
+.bottom-bar .info .offers-count{font-size:.65rem;color:rgba(232,237,245,.4)}
+.bottom-bar .actions{display:flex;gap:8px}
+.bottom-bar .actions button{flex:1;padding:10px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .3s;font-family:inherit}
+.btn-primary{background:linear-gradient(135deg,#00d4ff,#7b2ff7);color:#fff}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-secondary{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)!important;color:rgba(232,237,245,.7)}
+.btn-secondary:hover{background:rgba(255,255,255,.1)}
+
+/* Intro overlay */
+.intro-overlay{position:fixed;inset:0;z-index:200;background:rgba(10,14,23,.97);backdrop-filter:blur(30px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;animation:fadeIn .5s}
+.intro-overlay h2{font-size:1.5rem;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#00d4ff,#7b2ff7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.intro-overlay p{font-size:.9rem;color:rgba(232,237,245,.6);margin-bottom:24px;max-width:320px;line-height:1.6}
+.intro-overlay .stores-preview{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px}
+.intro-overlay .stores-preview .store-tag{font-size:.7rem;padding:4px 12px;border-radius:20px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15);color:#00d4ff}
+.intro-overlay .btn-start{background:linear-gradient(135deg,#00d4ff,#7b2ff7);color:#fff;border:none;padding:14px 40px;border-radius:14px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s;font-family:inherit;box-shadow:0 8px 30px rgba(0,212,255,.3)}
+.intro-overlay .btn-start:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,212,255,.4)}
+.intro-overlay .note{font-size:.7rem;color:rgba(232,237,245,.3);margin-top:16px;max-width:280px}
+
+/* Controls */
+.sim-controls{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:8px;background:rgba(10,14,23,.9);backdrop-filter:blur(10px);padding:8px 12px;border-radius:12px;border:1px solid rgba(0,212,255,.1)}
+.sim-controls button{width:32px;height:32px;border-radius:8px;border:1px solid rgba(0,212,255,.15);background:rgba(0,212,255,.05);color:#00d4ff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.sim-controls button:hover{background:rgba(0,212,255,.15);border-color:rgba(0,212,255,.3)}
+.sim-controls .zone-name{font-size:.65rem;color:rgba(232,237,245,.5);padding:0 8px;display:flex;align-items:center}
+
+@media(max-width:480px){
+  .notification-container{right:8px;left:8px}
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- Header -->
+  <div class="header">
+    <h1>📍 GeoMarket</h1>
+    <div class="status">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Esperando ubicación...</span>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <div class="map-container" id="mapContainer">
+    <svg viewBox="0 0 400 500" style="width:100%;height:100%">
+      <!-- Mall base -->
+      <rect x="20" y="20" width="360" height="460" rx="12" fill="none" stroke="rgba(0,212,255,.06)" stroke-width="1"/>
+      
+      <!-- Center aisle (main walkway) -->
+      <line x1="200" y1="25" x2="200" y2="475" stroke="rgba(0,212,255,.04)" stroke-width="2" stroke-dasharray="4,4"/>
+      
+      <!-- Cross aisle -->
+      <line x1="25" y1="170" x2="375" y2="170" stroke="rgba(0,212,255,.04)" stroke-width="2" stroke-dasharray="4,4"/>
+      <line x1="25" y1="340" x2="375" y2="340" stroke="rgba(0,212,255,.04)" stroke-width="2" stroke-dasharray="4,4"/>
+      
+      <!-- Zones (rectangles) -->
+      <!-- Zona Moda - left top -->
+      <rect x="30" y="30" width="160" height="130" rx="8" fill="rgba(0,212,255,.03)" stroke="rgba(0,212,255,.08)" stroke-width="1" id="zone-moda"/>
+      <!-- Zona Restauración - right top -->
+      <rect x="210" y="30" width="160" height="130" rx="8" fill="rgba(255,215,0,.03)" stroke="rgba(255,215,0,.08)" stroke-width="1" id="zone-food"/>
+      <!-- Zona Tecnología - left middle -->
+      <rect x="30" y="180" width="160" height="150" rx="8" fill="rgba(123,47,247,.03)" stroke="rgba(123,47,247,.08)" stroke-width="1" id="zone-tech"/>
+      <!-- Zona Ocio - right middle -->
+      <rect x="210" y="180" width="160" height="150" rx="8" fill="rgba(255,69,0,.03)" stroke="rgba(255,69,0,.08)" stroke-width="1" id="zone-ocio"/>
+      <!-- Zona Hogar - left bottom -->
+      <rect x="30" y="350" width="160" height="120" rx="8" fill="rgba(0,255,136,.03)" stroke="rgba(0,255,136,.08)" stroke-width="1" id="zone-hogar"/>
+      <!-- Zona Deportes - right bottom -->
+      <rect x="210" y="350" width="160" height="120" rx="8" fill="rgba(255,136,0,.03)" stroke="rgba(255,136,0,.08)" stroke-width="1" id="zone-deporte"/>
+    </svg>
+    
+    <!-- Zone labels (overlay) -->
+    <div class="zone-label" style="top:80px;left:50px;color:#00d4ff;border:1px solid rgba(0,212,255,.15);background:rgba(0,212,255,.05)" data-zone="moda">👕 Moda</div>
+    <div class="zone-offer-count" style="top:140px;left:50px" data-zone="moda">3 ofertas</div>
+    
+    <div class="zone-label" style="top:80px;left:250px;color:#ffd700;border:1px solid rgba(255,215,0,.15);background:rgba(255,215,0,.05)" data-zone="food">🍕 Restauración</div>
+    <div class="zone-offer-count" style="top:140px;left:250px" data-zone="food">4 ofertas</div>
+    
+    <div class="zone-label" style="top:230px;left:50px;color:#b088ff;border:1px solid rgba(123,47,247,.15);background:rgba(123,47,247,.05)" data-zone="tech">💻 Tecnología</div>
+    <div class="zone-offer-count" style="top:300px;left:50px" data-zone="tech">2 ofertas</div>
+    
+    <div class="zone-label" style="top:230px;left:250px;color:#ff6a33;border:1px solid rgba(255,69,0,.15);background:rgba(255,69,0,.05)" data-zone="ocio">🎬 Ocio</div>
+    <div class="zone-offer-count" style="top:300px;left:250px" data-zone="ocio">5 ofertas</div>
+    
+    <div class="zone-label" style="top:400px;left:50px;color:#66ffaa;border:1px solid rgba(0,255,136,.15);background:rgba(0,255,136,.05)" data-zone="hogar">🏠 Hogar</div>
+    <div class="zone-offer-count" style="top:455px;left:50px" data-zone="hogar">3 ofertas</div>
+    
+    <div class="zone-label" style="top:400px;left:250px;color:#ffaa44;border:1px solid rgba(255,136,0,.15);background:rgba(255,136,0,.05)" data-zone="deporte">⚽ Deportes</div>
+    <div class="zone-offer-count" style="top:455px;left:250px" data-zone="deporte">4 ofertas</div>
+
+    <!-- User dot -->
+    <div class="user-dot" id="userDot" style="left:50%;top:50%">
+      <div class="user-dot-label">TÚ</div>
+    </div>
+
+    <!-- Sim controls -->
+    <div class="sim-controls" id="simControls">
+      <button onclick="moveToZone(-1)" id="btnPrev">◀</button>
+      <span class="zone-name" id="currentZoneLabel">Centro</span>
+      <button onclick="moveToZone(1)" id="btnNext">▶</button>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <div class="info">
+      <span class="zone-name" id="currentZone">Esperando...</span>
+      <span class="offers-count" id="offersCount">0 ofertas disponibles</span>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" onclick="simulateGeolocation()">📍 Simular llegada al centro</button>
+      <button class="btn-secondary" onclick="clearNotifications()">Limpiar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Intro overlay -->
+<div class="intro-overlay" id="introOverlay">
+  <h2>📍 GeoMarket Demo</h2>
+  <p>Simulación de geolocalización en centros comerciales. Al entrar en una zona del centro, recibirás ofertas de las tiendas cercanas.</p>
+  <div class="stores-preview">
+    <span class="store-tag">👕 Zara</span>
+    <span class="store-tag">👖 Pull&Bear</span>
+    <span class="store-tag">🍕 Telepizza</span>
+    <span class="store-tag">🍔 Burger King</span>
+    <span class="store-tag">💻 MediaMarkt</span>
+    <span class="store-tag">📱 fnac</span>
+    <span class="store-tag">🎬 Cines</span>
+    <span class="store-tag">🎳 Bolera</span>
+    <span class="store-tag">🏠 IKEA</span>
+    <span class="store-tag">⚽ Decathlon</span>
+    <span class="store-tag">💄 Sephora</span>
+    <span class="store-tag">☕ Starbucks</span>
+  </div>
+  <p style="font-size:.8rem;margin-bottom:8px">Funciona en todo el centro comercial, no solo en tiendas individuales.</p>
+  <button class="btn-start" onclick="startDemo()">Comenzar Demo</button>
+  <p class="note">También detectará tu ubicación real si estás en un centro comercial.</p>
+</div>
+
+<!-- Notification container -->
+<div class="notification-container" id="notifContainer"></div>
+
+<script>
+// === DATA ===
+const ZONES = [
+  { id:'moda', name:'Moda', color:'#00d4ff', x:110, y:95, stores:[
+    {name:'Zara', offers:['20% en toda la colección','2x1 en complementos','Tarjeta regalo 10€ por cada 50€']},
+    {name:'Pull&Bear', offers:['30% en jeans','Llévate 3 paga 2 en camisetas','10% estudiantes']},
+    {name:'Sephora', offers:['15% en perfumes','Set regalo con tu compra','Maquillaje gratis en tu cumpleaños']},
+  ]},
+  { id:'food', name:'Restauración', color:'#ffd700', x:290, y:95, stores:[
+    {name:'Telepizza', offers:['2x1 en pizzas familiares','Menú del día 9.90€','Envío gratis +10€']},
+    {name:'Burger King', offers:['Whopper + patatas + bebida 7.50€','Cumpleaños: whopper gratis','App: 2x1 en hamburguesas']},
+    {name:'Starbucks', offers:['3€ cualquier café','Tamaño grande por precio pequeño','Tarjeta fidelización: 5º café gratis']},
+    {name:'Restaurante El Fogón', offers:['Menú degustación 25€','20% en cenas entre semana','Vino de la casa con segundo plato']},
+  ]},
+  { id:'tech', name:'Tecnología', color:'#b088ff', x:110, y:255, stores:[
+    {name:'MediaMarkt', offers:['Hasta 40% en electrónica','Financiación 12 meses sin intereses','Mejor precio garantizado']},
+    {name:'fnac', offers:['3x2 en libros','10% en videojuegos','Club fnac: descuento extra 5%']},
+  ]},
+  { id:'ocio', name:'Ocio', color:'#ff6a33', x:290, y:255, stores:[
+    {name:'Cines', offers:['Martes: 2 entradas al precio de 1','Pack palomitas + bebida 5€','Sesión matinal 4.90€']},
+    {name:'Bolera', offers:['2 partidas por el precio de 1','Jueves universitarios 50%','Pack cumpleaños 15€/persona']},
+    {name:'Gaming Center', offers:['1 hora gratis con consumición','Torneo semanal: premio 100€','VR Experience 2x1']},
+  ]},
+  { id:'hogar', name:'Hogar', color:'#66ffaa', x:110, y:410, stores:[
+    {name:'IKEA', offers:['Descuento en muebles seleccionados','Transporte gratis +200€','Pack descanso: colchón + almohada']},
+    {name:'Maisons du Monde', offers:['15% en decoración','Envío gratis online','Cheque regalo 20€']},
+  ]},
+  { id:'deporte', name:'Deportes', color:'#ffaa44', x:290, y:410, stores:[
+    {name:'Decathlon', offers:['30% en ropa deportiva','2x1 en accesorios','Sábados: taller gratuito']},
+    {name:'JD Sports', offers:['20% en zapatillas seleccionadas','Pack deporte: mochila + botella','Club JD: 10% extra']},
+  ]},
+];
+
+const ZONE_COORDS = {
+  moda: {x:110, y:95}, food: {x:290, y:95}, tech: {x:110, y:255},
+  ocio: {x:290, y:255}, hogar: {x:110, y:410}, deporte: {x:290, y:410},
+  center: {x:200, y:250}
+};
+
+let currentZone = null;
+let notificationTimers = [];
+let isRealGPS = false;
+let watchId = null;
+
+// === DEMO START ===
+function startDemo() {
+  document.getElementById('introOverlay').style.display = 'none';
+  document.getElementById('statusText').textContent = 'Demo activa';
+  document.getElementById('statusDot').className = 'status-dot active';
+  
+  // Try real GPS first
+  if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        isRealGPS = true;
+        document.getElementById('statusText').textContent = 'GPS real activo';
+        checkRealLocation(pos.coords.latitude, pos.coords.longitude);
+        // Watch for changes
+        watchId = navigator.geolocation.watchPosition(
+          (p) => checkRealLocation(p.coords.latitude, p.coords.longitude),
+          null, {enableHighAccuracy:true, timeout:10000, maximumAge:5000}
+        );
+      },
+      () => {
+        console.log('GPS denegado - usando demo simulada');
+        document.getElementById('statusText').textContent = 'Modo simulación';
+        // Start simulation after a moment
+        setTimeout(() => simulateZoneEntry('moda'), 1500);
+      },
+      {timeout:5000}
+    );
+  } else {
+    setTimeout(() => simulateZoneEntry('moda'), 1500);
+  }
+}
+
+// === REAL GPS CHECK ===
+function checkRealLocation(lat, lon) {
+  // Check if within a generic shopping center area
+  // Señorío Plaza: ~40.12, -3.85
+  const dist = distance(lat, lon, 40.12, -3.85);
+  if (dist < 0.5) {
+    document.getElementById('statusText').textContent = '📍 CC Señorío Plaza';
+    document.getElementById('statusDot').className = 'status-dot active';
+    // Determine zone by position
+    // In real app, this would use indoor positioning
+    simulateZoneEntry('moda');
+  } else {
+    document.getElementById('statusText').textContent = `📍 ${dist.toFixed(1)}km del CC`;
+    // Still simulate for testing
+    setTimeout(() => simulateZoneEntry('moda'), 2000);
+  }
+}
+
+function distance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLon = (lon2-lon1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// === SIMULATION ===
+let simZoneIndex = 0;
+const simOrder = ['moda', 'food', 'tech', 'ocio', 'hogar', 'deporte'];
+
+function moveToZone(dir) {
+  simZoneIndex = (simZoneIndex + dir + simOrder.length) % simOrder.length;
+  simulateZoneEntry(simOrder[simZoneIndex]);
+}
+
+function simulateGeolocation() {
+  document.getElementById('statusText').textContent = '📍 Llegando al centro...';
+  document.getElementById('statusDot').className = 'status-dot searching';
+  // Animate user dot from top
+  const dot = document.getElementById('userDot');
+  dot.style.left = '50%';
+  dot.style.top = '0%';
+  setTimeout(() => {
+    dot.style.top = '40%';
+    dot.style.left = '30%';
+  }, 300);
+  setTimeout(() => {
+    document.getElementById('statusDot').className = 'status-dot active';
+    document.getElementById('statusText').textContent = '📍 Dentro del centro comercial';
+    simulateZoneEntry('moda');
+  }, 2000);
+}
+
+function simulateZoneEntry(zoneId) {
+  const zone = ZONES.find(z => z.id === zoneId);
+  if (!zone) return;
+  
+  currentZone = zoneId;
+  simZoneIndex = simOrder.indexOf(zoneId);
+  
+  // Move user dot to zone
+  const coord = ZONE_COORDS[zoneId];
+  const dot = document.getElementById('userDot');
+  dot.style.left = coord.x + '%';
+  dot.style.top = coord.y + '%';
+  
+  // Update bottom bar
+  document.getElementById('currentZone').textContent = `📍 ${zone.name}`;
+  const totalOffers = zone.stores.reduce((s, st) => s + st.offers.length, 0);
+  document.getElementById('offersCount').textContent = `${totalOffers} ofertas en ${zone.stores.length} tiendas`;
+  
+  // Highlight zone
+  document.querySelectorAll('.zone-label').forEach(el => el.classList.remove('active'));
+  const zl = document.querySelector(`[data-zone="${zoneId}"]`);
+  if (zl) zl.classList.add('active');
+  
+  // Show zone offers
+  showNotifications(zone);
+  
+  document.getElementById('statusText').textContent = `📍 Zona ${zone.name}`;
+}
+
+// === NOTIFICATIONS ===
+function showNotifications(zone) {
+  // Pick one random offer per store in the zone
+  let delay = 0;
+  zone.stores.forEach(store => {
+    const offer = store.offers[Math.floor(Math.random() * store.offers.length)];
+    setTimeout(() => {
+      showNotification(store.name, offer, zone.color, zone.name);
+    }, delay);
+    delay += 800 + Math.random() * 1200;
+  });
+}
+
+function showNotification(storeName, offer, color, zoneName) {
+  const container = document.getElementById('notifContainer');
+  const notif = document.createElement('div');
+  notif.className = 'notification';
+  notif.style.borderColor = color + '30';
+  
+  const colors = ['#00d4ff','#ffd700','#b088ff','#ff6a33','#66ffaa','#ffaa44'];
+  const iconBg = colors[Math.floor(Math.random() * colors.length)];
+  
+  notif.innerHTML = `
+    <div class="notif-icon" style="background:${iconBg}20;color:${iconBg}">🎯</div>
+    <div class="notif-text">
+      <div class="notif-title" style="color:${color}">${storeName}</div>
+      <div class="notif-desc">${offer}</div>
+      <div class="notif-store" style="color:${color}">📍 ${zoneName}</div>
+    </div>
+    <div class="notif-time">Ahora</div>
+  `;
+  
+  notif.onclick = () => {
+    notif.classList.add('closing');
+    setTimeout(() => notif.remove(), 300);
+  };
+  
+  container.appendChild(notif);
+  
+  // Auto-remove after 8 seconds
+  const timer = setTimeout(() => {
+    if (notif.parentNode) {
+      notif.classList.add('closing');
+      setTimeout(() => notif.remove(), 300);
+    }
+  }, 8000);
+  notificationTimers.push(timer);
+  
+  // Max 4 notifications
+  while (container.children.length > 4) {
+    const first = container.children[0];
+    first.classList.add('closing');
+    setTimeout(() => first.remove(), 300);
+  }
+}
+
+function clearNotifications() {
+  const container = document.getElementById('notifContainer');
+  while (container.firstChild) container.removeChild(container.firstChild);
+  notificationTimers.forEach(t => clearTimeout(t));
+  notificationTimers = [];
+}
+
+// Keyboard controls
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') moveToZone(1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') moveToZone(-1);
+});
+</script>
+</body>
+</html>

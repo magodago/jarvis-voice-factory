@@ -63,7 +63,7 @@ function AppContent() {
       />
 
       {/* Status bar — centered DAVID OS with date */}
-      <div className="fixed top-0 left-0 right-0 z-20 h-10 bg-gradient-to-b from-cyber-bg/90 to-transparent flex items-center justify-center pointer-events-none">
+      <div className="fixed top-0 left-0 right-0 z-20 pt-[env(safe-area-inset-top,12px)] h-[calc(10px+env(safe-area-inset-top,12px))] bg-gradient-to-b from-cyber-bg/90 to-transparent flex items-center justify-center pointer-events-none">
         <div className="flex items-center gap-4">
             <span className="text-[9px] font-display tracking-[0.2em] text-cyber-cyan drop-shadow-[0_0_8px_rgba(0,212,255,0.5)]">
             {isCallActive ? '📞 EN LLAMADA' : 'DAVID OS'}

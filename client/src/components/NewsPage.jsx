@@ -294,7 +294,7 @@ export default function NewsPage({ isOpen, onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-40 flex flex-col bg-[#060010]/98 backdrop-blur-2xl"
+      className="fixed inset-0 z-40 flex flex-col bg-[#060010]/98 backdrop-blur-2xl pb-[env(safe-area-inset-bottom,20px)]"
     >
       {/* === HEADER === */}
       <div className="px-5 pt-5 pb-3 border-b border-cyber-cyan/10">

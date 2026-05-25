@@ -22,7 +22,7 @@ export default function CallInterface({
   usePushNotifications();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen w-full max-w-[430px] mx-auto px-5 py-6 relative">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full max-w-[430px] mx-auto px-5 pt-[env(safe-area-inset-top,20px)] pb-[env(safe-area-inset-bottom,20px)] relative">
       {/* Scanline overlay */}
       <div className="fixed inset-0 pointer-events-none z-20 overflow-hidden opacity-[0.03]">
         <div className="absolute inset-0" style={{

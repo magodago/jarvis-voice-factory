@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SABOR · Restaurante · Illescas · Cocina con alma</title>
+<meta name="description" content="Restaurante SABOR en Illescas. Carta con productos locales, cocina de autor. Reserva online. Menú del día y carta.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Rajdhani:wght@300;500;600;700&display=swap');
+:root{--gold:#d4a853;--copper:#c17817;--cream:#f5efe0;--dark:#1a1410;--darker:#0f0b08;--card:#2a221c;--text:#e8ddd0;--warm:#e8c87a;--green:#7bc67e;--red:#e87060}:root{--bg:#1a1410;--card-bg:#2a221c;--text:#e8ddd0;--text-dim:#a09080;--accent:#d4a853;--accent2:#c17817;--border:rgba(212,168,83,.2)}*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+.bg-pattern{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 20% 50%, rgba(212,168,83,.04) 0%, transparent 60%),radial-gradient(ellipse at 80% 50%, rgba(193,120,23,.03) 0%, transparent 60%);z-index:0;pointer-events:none}
+/* Nav */nav{position:fixed;top:0;width:100%;z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;background:rgba(26,20,16,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}.logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--copper));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px}.nav-links a{color:var(--text);text-decoration:none;margin-left:2rem;font-weight:500;font-size:1.05rem;transition:color .3s;position:relative}.nav-links a:hover{color:var(--gold)}.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--gold);transition:width .3s}.nav-links a:hover::after{width:100%}.mobile-menu-btn{display:none;font-size:1.8rem;background:none;border:none;color:var(--gold);cursor:pointer}
+/* Hero */.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:5rem 2rem 2rem;background:linear-gradient(180deg, rgba(26,20,16,.3) 0%, rgba(26,20,16,.95) 100%);overflow:hidden}.hero-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center, rgba(212,168,83,.08) 0%, transparent 70%);z-index:-1}.hero-badge{font-family:'Playfair Display',serif;font-size:.9rem;color:var(--gold);letter-spacing:6px;text-transform:uppercase;border:1px solid var(--gold);padding:.5rem 1.5rem;border-radius:50px;margin-bottom:2rem;animation:pulse-glow 3s infinite}@keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(212,168,83,.2)}50%{box-shadow:0 0 50px rgba(212,168,83,.4)}}.hero h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,10vw,7rem);font-weight:900;line-height:1;margin-bottom:1rem}.hero h1 .highlight{background:linear-gradient(135deg,var(--gold),#f0d080,var(--copper));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.hero .tagline{font-size:clamp(1.1rem,2.5vw,1.8rem);font-weight:300;color:var(--text-dim);margin-bottom:1rem;letter-spacing:2px}.hero p{font-size:clamp(1rem,1.8vw,1.2rem);max-width:600px;color:var(--text-dim);margin-bottom:2.5rem;line-height:1.7}.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}.btn-primary{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;padding:1rem 2.5rem;border:none;border-radius:50px;background:linear-gradient(135deg,var(--gold),var(--copper));color:var(--darker);cursor:pointer;transition:all .3s;text-decoration:none;display:inline-block}.btn-primary:hover{transform:scale(1.05);box-shadow:0 0 40px rgba(212,168,83,.4)}.btn-secondary{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;padding:1rem 2.5rem;border:2px solid var(--gold);border-radius:50px;background:transparent;color:var(--gold);cursor:pointer;transition:all .3s;text-decoration:none;display:inline-block}.btn-secondary:hover{background:rgba(212,168,83,.1);box-shadow:0 0 30px rgba(212,168,83,.2)}.scroll-indicator{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);color:var(--text-dim);font-size:.75rem;letter-spacing:4px;text-transform:uppercase;animation:bounce 2s infinite;display:flex;flex-direction:column;align-items:center;gap:.5rem}@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}.scroll-indicator .arrow{width:16px;height:16px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg)}
+/* Sections */section{position:relative;z-index:1;padding:6rem 2rem;max-width:1200px;margin:0 auto}.section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;text-align:center;margin-bottom:.5rem;color:var(--gold)}.section-subtitle{text-align:center;color:var(--text-dim);font-size:1.1rem;margin-bottom:3rem;max-width:600px;margin-left:auto;margin-right:auto}
+/* Menu */#menu{padding-top:5rem}.menu-categories{display:flex;justify-content:center;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap}.menu-cat-btn{padding:.6rem 1.5rem;border:1px solid var(--border);border-radius:50px;background:transparent;color:var(--text);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:600;transition:all .3s}.menu-cat-btn:hover,.menu-cat-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,168,83,.1)}.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.2rem}.menu-item{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.5rem;transition:all .3s;display:flex;flex-direction:column}.menu-item:hover{border-color:rgba(212,168,83,.4);transform:translateY(-2px)}.menu-item-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}.menu-item h3{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700}.menu-item .price{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--gold);white-space:nowrap;margin-left:1rem}.menu-item .desc{color:var(--text-dim);font-size:.95rem;line-height:1.5;margin-bottom:.5rem}.menu-item .allergens{display:flex;gap:.4rem;margin-top:auto;flex-wrap:wrap}.allergen-tag{font-size:.7rem;padding:.15rem .6rem;border-radius:4px;font-weight:600;letter-spacing:.5px}.allergen-tag.gf{background:rgba(123,198,126,.15);color:var(--green);border:1px solid rgba(123,198,126,.3)}.allergen-tag.v{background:rgba(232,200,122,.15);color:var(--warm);border:1px solid rgba(232,200,122,.3)}.allergen-tag.vg{background:rgba(76,175,80,.15);color:#4caf50;border:1px solid rgba(76,175,80,.3)}.allergen-tag.l{background:rgba(232,112,96,.15);color:var(--red);border:1px solid rgba(232,112,96,.3)}.allergen-tag.hc{background:rgba(66,165,245,.15);color:#42a5f5;border:1px solid rgba(66,165,245,.3)}
+/* Gallery */.gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}.gallery-item{aspect-ratio:4/3;border-radius:14px;overflow:hidden;position:relative;cursor:pointer;border:1px solid var(--border);transition:all .3s}.gallery-item:hover{transform:scale(1.02);border-color:var(--gold)}.gallery-item img{width:100%;height:100%;object-fit:cover;display:block}.gallery-item .overlay{position:absolute;bottom:0;left:0;right:0;padding:1.5rem 1rem 1rem;background:linear-gradient(transparent,rgba(10,8,6,.9));font-weight:600;font-size:.95rem;color:var(--cream);transform:translateY(20px);opacity:0;transition:all .3s}.gallery-item:hover .overlay{transform:translateY(0);opacity:1}
+/* Reviews */.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}.review-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:all .3s}.review-card:hover{border-color:rgba(212,168,83,.3)}
+.review-stars{color:var(--gold);font-size:1.1rem;margin-bottom:.8rem;letter-spacing:2px}.review-text{font-size:1rem;line-height:1.6;color:var(--text-dim);margin-bottom:1rem;font-style:italic}.review-text::before{content:'"'}
+.review-text::after{content:'"'}.review-author{font-weight:600;color:var(--gold)}.review-date{font-size:.8rem;color:var(--text-dim)}
+/* Booking */.cta-section{text-align:center}.cta-section h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);margin-bottom:.5rem;color:var(--gold)}.cta-section>p{max-width:550px;margin:0 auto 2.5rem;color:var(--text-dim);font-size:1.1rem}.booking-form{max-width:580px;margin:0 auto;background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:2.5rem;text-align:left}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.form-group{margin-bottom:1rem}.form-group label{display:block;font-weight:600;margin-bottom:.4rem;color:var(--text-dim);font-size:.9rem}.form-group input,.form-group select,.form-group textarea{width:100%;padding:.85rem 1.2rem;background:rgba(10,8,6,.5);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:1rem;transition:border-color .3s;outline:none}.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}.form-group select option{background:var(--dark);color:var(--text)}.form-group textarea{min-height:70px;resize:vertical}.form-group input[type="date"],.form-group input[type="time"]{color-scheme:dark}.booking-form .btn-primary{width:100%;font-size:1.1rem;padding:1.1rem}
+/* Location */.location-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}.location-info h3{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:1rem;color:var(--gold)}.location-info p{color:var(--text-dim);line-height:1.8;margin-bottom:1.5rem;font-size:1.05rem}.location-detail{display:flex;align-items:center;gap:1rem;margin-bottom:.8rem;font-size:1rem}.location-detail .icon{font-size:1.3rem;width:1.8rem;text-align:center}.location-map-frame{border-radius:16px;overflow:hidden;border:1px solid var(--border)}.location-map-frame iframe{width:100%;height:320px;border:0;display:block}
+/* AI Chatbot */.ai-widget{position:fixed;bottom:2rem;right:2rem;z-index:200;font-family:'Rajdhani',sans-serif}.ai-toggle{width:60px;height:60px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--gold),var(--copper));color:var(--darker);font-size:1.5rem;cursor:pointer;box-shadow:0 4px 20px rgba(212,168,83,.4);transition:all .3s;display:flex;align-items:center;justify-content:center}.ai-toggle:hover{transform:scale(1.1)}.ai-modal{display:none;position:absolute;bottom:80px;right:0;width:360px;max-height:520px;background:var(--card-bg);border:1px solid var(--border);border-radius:20px;overflow:hidden;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,.5)}.ai-modal.active{display:flex}.ai-header{background:linear-gradient(135deg,rgba(212,168,83,.15),rgba(193,120,23,.1));padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.ai-header h3{font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold)}.ai-header .close-btn{background:none;border:none;color:var(--text-dim);font-size:1.5rem;cursor:pointer;transition:color .3s}.ai-header .close-btn:hover{color:var(--gold)}.ai-messages{flex:1;padding:1rem;overflow-y:auto;display:flex;flex-direction:column;gap:.8rem;min-height:200px;max-height:300px}.ai-msg{max-width:85%;padding:.7rem 1rem;border-radius:12px;font-size:.95rem;line-height:1.5;animation:fadeInUp .3s ease-out}.ai-msg.bot{align-self:flex-start;background:rgba(212,168,83,.1);border:1px solid rgba(212,168,83,.15);color:var(--text)}.ai-msg.user{align-self:flex-end;background:rgba(212,168,83,.2);border:1px solid rgba(212,168,83,.25);color:#fff}.ai-input{display:flex;padding:.8rem;border-top:1px solid var(--border);gap:.5rem}.ai-input input{flex:1;padding:.7rem 1rem;background:rgba(10,8,6,.5);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.95rem;outline:none;transition:border-color .3s}.ai-input input:focus{border-color:var(--gold)}.ai-input button{padding:.7rem 1.2rem;border:none;border-radius:10px;background:var(--gold);color:var(--darker);font-weight:700;cursor:pointer;transition:all .3s;font-family:'Rajdhani',sans-serif;font-size:.9rem}.ai-input button:hover{background:var(--copper)}.ai-typing{display:flex;gap:4px;padding:.5rem 1rem;align-items:center}.ai-typing span{width:6px;height:6px;border-radius:50%;background:var(--text-dim);animation:typing 1.4s infinite}.ai-typing span:nth-child(2){animation-delay:.2s}.ai-typing span:nth-child(3){animation-delay:.4s}@keyframes typing{0%,60%,100%{opacity:.3}30%{opacity:1}}
+/* Footer */footer{position:relative;z-index:1;text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-dim);font-size:.9rem}footer .footer-logo{font-family:'Playfair Display',serif;font-size:1.3rem;background:linear-gradient(135deg,var(--gold),var(--copper));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem}
+/* Lightbox */.lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:150;justify-content:center;align-items:center;cursor:pointer}.lightbox.active{display:flex}.lightbox img{max-width:90%;max-height:90%;border-radius:8px;border:1px solid var(--border)}.lightbox-close{position:absolute;top:1.5rem;right:2rem;font-size:2.5rem;color:var(--text);cursor:pointer;background:none;border:none;z-index:151}.lightbox-close:hover{color:var(--gold)}
+/* Animations */@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}.animate{animation:fadeInUp .7s ease-out forwards;opacity:0}.animate-delay-1{animation-delay:.15s}.animate-delay-2{animation-delay:.3s}.animate-delay-3{animation-delay:.45s}
+/* Responsive */@media(max-width:768px){nav{padding:1rem}.nav-links{display:none}.nav-links.active{display:flex;flex-direction:column;position:absolute;top:100%;left:0;width:100%;background:rgba(26,20,16,.95);padding:1rem;border-bottom:1px solid var(--border)}.nav-links a{margin:.5rem 0}.mobile-menu-btn{display:block}section{padding:4rem 1rem}.form-row{grid-template-columns:1fr}.location-grid{grid-template-columns:1fr}.gallery-grid{grid-template-columns:repeat(2,1fr)}.ai-modal{width:300px;right:-20px}.booking-form{padding:1.5rem}.reviews-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.gallery-grid{grid-template-columns:1fr}.hero h1{font-size:clamp(2.5rem,12vw,4rem)}.ai-modal{width:280px}}
+</style>
+</head>
+<body>
+<div class="bg-pattern"></div>
+
+<nav>
+  <div class="logo">SABOR</div>
+  <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')">☰</button>
+  <div class="nav-links">
+    <a href="#menu">Carta</a>
+    <a href="#gallery">Galería</a>
+    <a href="#reviews">Opiniones</a>
+    <a href="#location">Ubicación</a>
+    <a href="#booking" style="color:var(--gold);font-weight:700;">Reserva</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-badge animate">📍 Illescas · Toledo</div>
+  <h1 class="animate animate-delay-1"><span class="highlight">SABOR</span></h1>
+  <div class="tagline animate animate-delay-1">Cocina con alma · Producto local</div>
+  <p class="animate animate-delay-2">
+    Donde cada plato cuenta una historia. <strong>Producto fresco, recetas de autor, 
+    y un ambiente que sabe a casa.</strong> Ven a descubrir por qué en Illescas 
+    se habla de nosotros.
+  </p>
+  <div class="hero-cta animate animate-delay-3">
+    <a href="#booking" class="btn-primary">🍽️ RESERVAR MESA</a>
+    <a href="#menu" class="btn-secondary">VER CARTA</a>
+  </div>
+  <div class="scroll-indicator">
+    DESCUBRE
+    <div class="arrow"></div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <h2 class="section-title animate">📜 CARTA</h2>
+  <p class="section-subtitle animate animate-delay-1">Producto local, temporada y mucho amor</p>
+  
+  <div class="menu-categories animate animate-delay-1" id="menuCategories">
+    <button class="menu-cat-btn active" data-cat="all">🍽️ Todo</button>
+  </div>
+  
+  <div class="menu-grid" id="menuGrid"></div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <h2 class="section-title animate">📸 GALERÍA</h2>
+  <p class="section-subtitle animate animate-delay-1">Así se vive SABOR</p>
+  <div class="gallery-grid" id="galleryGrid">
+    <div class="gallery-item animate" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/plato-principal.png" alt="Plato principal" loading="lazy">
+      <div class="overlay">🥩 Plato estrella</div>
+    </div>
+    <div class="gallery-item animate animate-delay-1" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/interior.png" alt="Interior del restaurante" loading="lazy">
+      <div class="overlay">🏠 Nuestro espacio</div>
+    </div>
+    <div class="gallery-item animate animate-delay-2" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/postre.png" alt="Postre" loading="lazy">
+      <div class="overlay">🍫 Tentaciones dulces</div>
+    </div>
+    <div class="gallery-item animate animate-delay-3" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/grupo-comiendo.png" alt="Grupo de amigos" loading="lazy">
+      <div class="overlay">🎉 Momentos que recordar</div>
+    </div>
+    <div class="gallery-item animate" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/chef.png" alt="Chef cocinando" loading="lazy">
+      <div class="overlay">👨‍🍳 Manos que crean</div>
+    </div>
+    <div class="gallery-item animate animate-delay-1" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/bebida.png" alt="Copa de vino" loading="lazy">
+      <div class="overlay">🍷 Nuestra selección</div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <h2 class="section-title animate">⭐ OPINIONES</h2>
+  <p class="section-subtitle animate animate-delay-1">Lo que dicen nuestros comensales</p>
+  <div class="reviews-grid">
+    <div class="review-card animate"><div class="review-stars">⭐⭐⭐⭐⭐</div><div class="review-text">El mejor restaurante de Illescas sin duda. El solomillo estaba espectacular y el trato increíble. Repetimos cada mes.</div><div class="review-author">Ana M.</div><div class="review-date">Hace 1 semana · Google</div></div>
+    <div class="review-card animate animate-delay-1"><div class="review-stars">⭐⭐⭐⭐⭐</div><div class="review-text">Fuimos a celebrar nuestro aniversario y nos mimaron de principio a fin. El menú degustación es una experiencia que recomiendo a todo el mundo.</div><div class="review-author">Carlos y Lucía</div><div class="review-date">Hace 2 semanas · Google</div></div>
+    <div class="review-card animate animate-delay-2"><div class="review-stars">⭐⭐⭐⭐⭐</div><div class="review-text">Producto de temporada bien trabajado. El arroz con bogavante es de los mejores que he probado. Volveremos con toda la familia.</div><div class="review-author">Javier R.</div><div class="review-date">Hace 3 semanas · Google</div></div>
+    <div class="review-card animate"><div class="review-stars">⭐⭐⭐⭐⭐</div><div class="review-text">Ambiente acogedor, carta variada y precios justos. Ideal para cena romántica o comida con amigos. La tarta de queso... ¡brutal!</div><div class="review-author">Marta G.</div><div class="review-date">Hace 1 mes · Google</div></div>
+    <div class="review-card animate animate-delay-1"><div class="review-stars">⭐⭐⭐⭐⭐</div><div class="review-text">Vinimos con la empresa y nos prepararon un menú especial. Todo perfecto, el servicio excelente y la comida de 10. Repetiremos seguro.</div><div class="review-author">Pedro S. · RRHH</div><div class="review-date">Hace 1 mes · Google</div></div>
+    <div class="review-card animate animate-delay-2"><div class="review-stars">⭐⭐⭐⭐⭐</div><div class="review-text">Un descubrimiento. La ensalada de tomates de la tierra con ventresca es para chuparse los dedos. Y el precio calidad es inmejorable.</div><div class="review-author">Laura F.</div><div class="review-date">Hace 3 semanas · Google</div></div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section id="location">
+  <h2 class="section-title animate">📍 UBICACIÓN</h2>
+  <p class="section-subtitle animate animate-delay-1">En el corazón de Illescas</p>
+  <div class="location-grid">
+    <div class="location-info animate">
+      <h3>🏪 Restaurante SABOR</h3>
+      <p>Estamos en el centro de Illescas, a 25 minutos de Madrid por la A-42. Fácil aparcamiento en la zona. Un espacio acogedor para disfrutar de la buena mesa.</p>
+      <div class="location-detail"><span class="icon">📍</span><span><strong>Calle Real, 12</strong> · Illescas · Toledo</span></div>
+      <div class="location-detail"><span class="icon">🚗</span><span>Parking público a 50m</span></div>
+      <div class="location-detail"><span class="icon">⏰</span><span><strong>Horario:</strong> Mar–Dom · Comida 13:00-16:00 · Cena 20:30-23:30</span></div>
+      <div class="location-detail"><span class="icon">📞</span><span><strong>Reservas:</strong> 658 23 79 88</span></div>
+      <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
+        <a href="https://www.google.com/maps/dir//Illescas+Toledo" target="_blank" class="btn-secondary" style="font-size:.85rem;padding:.8rem 1.5rem;">🗺️ CÓMO LLEGAR</a>
+      </div>
+    </div>
+    <div class="location-map-frame animate animate-delay-1">
+      <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-3.84%2C40.14%2C-3.81%2C40.16&amp;layer=mapnik&amp;marker=40.15%2C-3.825" loading="lazy"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section id="booking" class="cta-section">
+  <h2 class="animate">🍽️ RESERVA TU MESA</h2>
+  <p class="animate animate-delay-1">Elige cuándo vienes y te esperamos con una sonrisa</p>
+  <form class="booking-form animate animate-delay-2" id="bookingForm">
+    <div class="form-row">
+      <div class="form-group">
+        <label>📅 Fecha</label>
+        <input type="date" id="bookingDate" required>
+      </div>
+      <div class="form-group">
+        <label>⏰ Hora</label>
+        <select id="bookingTime" required><option value="">Elige fecha</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>👤 Nombre</label>
+        <input type="text" id="bookingName" placeholder="Tu nombre" required>
+      </div>
+      <div class="form-group">
+        <label>📱 WhatsApp</label>
+        <input type="tel" id="bookingPhone" placeholder="658 23 79 88" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>👥 Comensales</label>
+      <select id="bookingPeople" required>
+        <option value="1">1 persona</option><option value="2" selected>2 personas</option>
+        <option value="3">3 personas</option><option value="4">4 personas</option>
+        <option value="5">5 personas</option><option value="6">6 personas</option>
+        <option value="8">8 personas</option><option value="10">10+ (consúltanos)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>🥜 Alérgenos o necesidades</label>
+      <textarea id="bookingNote" placeholder="Celíaco, alérgico a frutos secos, celebración especial..."></textarea>
+    </div>
+    <button type="submit" class="btn-primary">🍽️ RESERVAR MESA</button>
+  </form>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close">&times;</button>
+  <img id="lightboxImg" src="" alt="Galería SABOR">
+</div>
+
+<!-- AI CHATBOT -->
+<div class="ai-widget" id="aiWidget">
+  <div class="ai-modal" id="aiModal">
+    <div class="ai-header">
+      <h3>🤖 SABOR AI</h3>
+      <button class="close-btn" onclick="toggleAI()">&times;</button>
+    </div>
+    <div class="ai-messages" id="aiMessages">
+      <div class="ai-msg bot">¡Hola! Soy el asistente de SABOR 🍽️ ¿Tienes alguna duda sobre la carta, horarios o reservas? Pregúntame lo que quieras.</div>
+    </div>
+    <div class="ai-input">
+      <input type="text" id="aiInput" placeholder="Escribe tu pregunta..." onkeydown="if(event.key==='Enter') sendAI()">
+      <button onclick="sendAI()">Enviar</button>
+    </div>
+  </div>
+  <button class="ai-toggle" onclick="toggleAI()" id="aiToggle">🤖</button>
+</div>
+
+<footer>
+  <div class="footer-logo">SABOR</div>
+  <p>Calle Real, 12 · Illescas · Toledo</p>
+  <p style="margin:.3rem 0;">📞 <strong style="color:var(--gold);">658 23 79 88</strong></p>
+  <p style="font-size:.85rem;">Mar–Dom 13-16h · 20:30-23:30h</p>
+  <p style="margin-top:1.5rem;font-size:.8rem;color:var(--text-dim);">© 2026 SABOR · Cocina con alma</p>
+</footer>
+
+<script>
+// Mobile nav
+document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>document.querySelector('.nav-links').classList.remove('active')));
+// Lightbox
+function openLightbox(img){if(!img||!img.src)return;document.getElementById('lightboxImg').src=img.src;document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden'}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('active');document.body.style.overflow=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox()});
+// Scroll animations
+const observer=new IntersectionObserver((e)=>{e.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}})},{threshold:.1});
+document.querySelectorAll('.animate').forEach(e=>observer.observe(e));
+
+// === MENU DATA ===
+const menuData = {
+  entrantes: [
+    {name:"Croquetas de jamón ibérico",desc:"Bechamel cremosa con jamón 100% ibérico. 6 unidades.",price:"12€",allergens:["gf","l"]},
+    {name:"Tartar de atún rojo",desc:"Con aguacate, salsa de soja y sésamo tostado.",price:"16€",allergens:["hc"]},
+    {name:"Ensalada de tomate raf",desc:"Tomate raf con ventresca, cebolla morada y aceite oliva virgen extra.",price:"11€",allergens:["v","gf"]},
+    {name:"Patatas bravas SABOR",desc:"Con salsa brava casera y alioli negro.",price:"8€",allergens:["v"]}
+  ],
+  principales: [
+    {name:"Solomillo ibérico al Pedro Ximénez",desc:"Solomillo de cerdo ibérico con salsa dulce de Pedro Ximénez y patatas panaderas.",price:"24€",allergens:["l"]},
+    {name:"Arroz con bogavante",desc:"Arroz meloso de bogavante con fumet casero y alioli.",price:"26€",allergens:["gf","hc"]},
+    {name:"Merluza de pincho en salsa verde",desc:"Merluza del Cantábrico con almejas y perejil.",price:"22€",allergens:["gf"]},
+    {name:"Risotto de boletus y parmesano",desc:"Risotto cremoso con boletus edulis y parmesano Reggiano.",price:"18€",allergens:["v","l","gf"]},
+    {name:"Secreto ibérico con pimientos",desc:"Secreto ibérico a la plancha con pimientos de Padrón.",price:"20€",allergens:["gf"]}
+  ],
+  postres: [
+    {name:"Tarta de queso vasca",desc:"Con coulis de frutos rojos. Cremosa y espectacular.",price:"8€",allergens:["l","gf"]},
+    {name:"Brownie de chocolate",desc:"Con helado de vainilla y virutas de chocolate blanco.",price:"9€",allergens:["l","gf"]},
+    {name:"Crema catalana",desc:"Con canela y caramelo quemado en el momento.",price:"7€",allergens:["l","gf"]}
+  ],
+  vinos: [
+    {name:"Ribera del Duero Crianza",desc:"Protos. Cuerpo y elegancia.",price:"28€",allergens:["hc"]},
+    {name:"Albariño",desc:"Pazo de Señorans. Fresco y afrutado.",price:"24€",allergens:["hc"]},
+    {name:"Rioja Reserva",desc:"Muga. Clásico de la casa.",price:"32€",allergens:["hc"]}
+  ]
+};
+
+const catLabels = {entrantes:"🥗 Entrantes",principales:"🍽️ Principales",postres:"🍰 Postres",vinos:"🍷 Vinos"};
+const catKeys = Object.keys(menuData);
+
+// Generate category buttons
+const catContainer = document.getElementById('menuCategories');
+catKeys.forEach(key => {
+  const btn = document.createElement('button');
+  btn.className = 'menu-cat-btn';
+  btn.textContent = catLabels[key];
+  btn.dataset.cat = key;
+  btn.onclick = () => filterMenu(key);
+  catContainer.appendChild(btn);
+});
+
+function filterMenu(cat) {
+  document.querySelectorAll('.menu-cat-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.menu-cat-btn').forEach(b => { if(b.dataset.cat === cat) b.classList.add('active'); });
+  renderMenu(cat);
+}
+
+function renderMenu(cat) {
+  const grid = document.getElementById('menuGrid');
+  grid.innerHTML = '';
+  const items = cat === 'all' ? Object.values(menuData).flat() : menuData[cat];
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'menu-item animate';
+    const alTags = item.allergens.map(a => {
+      const labels = {gf:'🔄 Sin Gluten',v:'🥦 Vegano',vg:'🥬 Vegetariano',l:'🥛 Lactosa',hc:'⚠️ Alérgeno'};
+      const cls = {gf:'gf',v:'v',vg:'vg',l:'l',hc:'hc'};
+      return `<span class="allergen-tag ${cls[a]||''}">${labels[a]||a}</span>`;
+    }).join('');
+    div.innerHTML = `
+      <div class="menu-item-header"><h3>${item.name}</h3><span class="price">${item.price}</span></div>
+      <div class="desc">${item.desc}</div>
+      <div class="allergens">${alTags}</div>
+    `;
+    grid.appendChild(div);
+  });
+  // Re-observe new items
+  document.querySelectorAll('#menuGrid .animate').forEach(el => observer.observe(el));
+}
+renderMenu('all');
+
+// === BOOKING ===
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('bookingDate').setAttribute('min', today);
+document.getElementById('bookingDate').value = today;
+document.getElementById('bookingDate').addEventListener('change', generateSlots);
+document.getElementById('bookingDate').addEventListener('input', generateSlots);
+
+function generateSlots() {
+  const select = document.getElementById('bookingTime');
+  const dateVal = document.getElementById('bookingDate').value;
+  select.innerHTML = '';
+  if (!dateVal) { select.innerHTML = '<option value="">Elige fecha</option>'; return; }
+  
+  const date = new Date(dateVal+'T12:00:00');
+  const day = date.getDay();
+  const isToday = dateVal === today;
+  const now = new Date();
+  const curH = now.getHours(), curM = now.getMinutes();
+  
+  // Cerrado lunes
+  if (day === 1) {
+    select.innerHTML = '<option value="">Cerrados los lunes</option>';
+    return;
+  }
+  
+  // Lunch slots
+  const lunch = ['13:00','13:30','14:00','14:30','15:00','15:30'];
+  // Dinner slots
+  const dinner = ['20:30','21:00','21:30','22:00','22:30'];
+  
+  let available = [];
+  
+  lunch.forEach(s => {
+    const [h,m] = s.split(':').map(Number);
+    if (!isToday || h > curH || (h === curH && m > curM)) available.push({slot:s,label:`🍽️ Comida ${s}`});
+  });
+  dinner.forEach(s => {
+    const [h,m] = s.split(':').map(Number);
+    if (!isToday || h > curH || (h === curH && m > curM)) available.push({slot:s,label:`🌙 Cena ${s}`});
+  });
+  
+  if (available.length === 0) {
+    select.innerHTML = '<option value="">No hay horarios disponibles hoy</option>';
+    return;
+  }
+  
+  select.innerHTML = '<option value="">Selecciona hora</option>';
+  available.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a.slot;
+    opt.textContent = a.label;
+    select.appendChild(opt);
+  });
+}
+generateSlots();
+
+// Booking submit
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name = document.getElementById('bookingName').value.trim();
+  const phone = document.getElementById('bookingPhone').value.trim();
+  const date = document.getElementById('bookingDate').value;
+  const time = document.getElementById('bookingTime').value;
+  const people = document.getElementById('bookingPeople').value;
+  const note = document.getElementById('bookingNote').value.trim();
+  
+  if (!name || !phone || !time) return;
+  
+  // Check duplicate
+  const key = `sabor_${date}_${time}`;
+  if (localStorage.getItem(key) === 'true') {
+    alert('❌ Ese día y hora ya tiene una reserva.\nElige otra fecha u horario.');
+    return;
+  }
+  localStorage.setItem(key, 'true');
+  
+  const fmtDate = new Date(date+'T12:00:00').toLocaleDateString('es-ES', {weekday:'long',day:'numeric',month:'long'});
+  const period = time <= '16:00' ? 'Comida' : 'Cena';
+  
+  const msg = `🍽️ *RESERVA - SABOR*\n\n👤 *Nombre:* ${name}\n📱 *WhatsApp:* ${phone}\n📅 *Fecha:* ${fmtDate}\n⏰ *Hora:* ${time} (${period})\n👥 *Comensales:* ${people}${people > 10 ? '+' : ''}\n🥜 *Notas:* ${note || 'Ninguna'}`;
+  
+  window.open(`https://wa.me/34658237988?text=${encodeURIComponent(msg)}`, '_blank');
+  alert('✅ ¡Reserva enviada!\nTe confirmamos por WhatsApp en breve.\n\n¡Te esperamos en SABOR! 🍽️');
+});
+
+// === AI CHATBOT ===
+const aiResponses = {
+  "horario": "Estamos abiertos de **martes a domingo**. Comida de 13:00 a 16:00 y cena de 20:30 a 23:30. Los lunes cerramos 🛌",
+  "menu": "Nuestra carta cambia con la temporada, pero siempre tenemos: entrantes, principales (carne y pescado), postres caseros y selección de vinos. En la sección CARTA de la web lo ves todo al detalle 📜",
+  "carta": "¡Claro! Arriba en el menú tienes la sección CARTA con todos los platos, precios y alérgenos etiquetados 🏷️",
+  "reserva": "Para reservar, ve a la sección RESERVA de la web o llámanos al 658 23 79 88. También puedes preguntarme aquí y te ayudo 📅",
+  "precio": "Nuestros platos van desde 8€ (entrantes) hasta 26€ (principales). Los postres sobre 7-9€. ¡Relación calidad-precio espectacular! 💰",
+  "alergeno": "Todos nuestros platos tienen etiquetados los alérgenos en la carta digital: 🔄 Sin Gluten, 🥦 Vegano, 🥬 Vegetariano, 🥛 Lactosa. Pregunta al camarero cualquier duda 🥜",
+  "donde": "Estamos en **Calle Real, 12, Illescas** (Toledo). A 25 min de Madrid por la A-42. En la sección UBICACIÓN tienes mapa 🗺️",
+  "domingo": "Los domingos abrimos **solo para comida** (13:00-16:00). Los lunes cerramos. El resto de días horario normal 🗓️",
+  "vino": "Tenemos una selección de vinos: Ribera del Duero Crianza (28€), Albariño (24€), Rioja Reserva (32€) y más. ¡Pregunta al sumiller! 🍷",
+  "postre": "Nuestros postres estrella: Tarta de queso vasca (8€), Brownie con helado (9€) y Crema catalana (7€). Todos caseros 🤤",
+  "menu del dia": "Actualmente no tenemos menú del día fijo, pero nuestra carta es variada y hay opción de menú degustación para grupos (consultar)",
+  "default": ["¡Bueno! Pregúntame sobre horarios, carta, reservas, precios o alérgenos y te ayudo encantado 🍽️","No tengo esa respuesta programada, pero pregúntame sobre: horario, carta, reservas, precios o alérgenos y te respondo al instante 😊","Dime qué necesitas saber: horarios, carta, precios, reservas o alérgenos. ¡Estoy aquí para ayudarte! 🤖"]
+};
+
+function toggleAI() {
+  const modal = document.getElementById('aiModal');
+  const toggle = document.getElementById('aiToggle');
+  modal.classList.toggle('active');
+  toggle.textContent = modal.classList.contains('active') ? '✕' : '🤖';
+}
+
+function sendAI() {
+  const input = document.getElementById('aiInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  
+  const container = document.getElementById('aiMessages');
+  // User message
+  const userDiv = document.createElement('div');
+  userDiv.className = 'ai-msg user';
+  userDiv.textContent = msg;
+  container.appendChild(userDiv);
+  
+  // Typing indicator
+  const typing = document.createElement('div');
+  typing.className = 'ai-msg bot ai-typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  typing.id = 'aiTyping';
+  container.appendChild(typing);
+  container.scrollTop = container.scrollHeight;
+  
+  // Simulate response
+  setTimeout(() => {
+    document.getElementById('aiTyping')?.remove();
+    
+    const lower = msg.toLowerCase();
+    let response = null;
+    
+    for (const [key, val] of Object.entries(aiResponses)) {
+      if (key !== 'default' && lower.includes(key)) {
+        response = val;
+        break;
+      }
+    }
+    
+    if (!response) {
+      const defs = aiResponses.default;
+      response = defs[Math.floor(Math.random() * defs.length)];
+    }
+    
+    const botDiv = document.createElement('div');
+    botDiv.className = 'ai-msg bot';
+    botDiv.innerHTML = response;
+    container.appendChild(botDiv);
+    container.scrollTop = container.scrollHeight;
+  }, 800 + Math.random() * 600);
+}
+
+// Gallery fallback
+document.querySelectorAll('.gallery-item img').forEach(img => {
+  img.addEventListener('error', function() {
+    this.style.display = 'none';
+    const overlay = this.nextElementSibling;
+    if (overlay) overlay.style.transform = 'translateY(0)';
+  });
+});
+</script>
+</body>
+</html>

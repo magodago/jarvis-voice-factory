@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmallBiz Dashboard · Panel de Negocio</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;600;700&display=swap');
+:root{--cyan:#00d4ff;--magenta:#ff15d0;--purple:#7b2ff7;--dark:#0a0a1a;--darker:#050510;--card:#12122a;--text:#e0e0ff;--gold:#ffd700;--green:#00ff88;--orange:#ff8800}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Rajdhani',sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden;padding:2rem}
+.bg-grid{position:fixed;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:60px 60px;z-index:0;pointer-events:none}
+.dash-wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto}
+
+/* Header */
+.dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.dash-header h1{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--cyan),var(--magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.dash-header .date{color:var(--text);opacity:.5;font-size:1rem}
+.dash-header .badge{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);color:var(--green);padding:.3rem 1rem;border-radius:50px;font-size:.85rem;font-weight:600}
+
+/* Stats Grid */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--card);border:1px solid rgba(0,212,255,.1);border-radius:16px;padding:1.5rem;transition:all .3s}
+.stat-card:hover{border-color:var(--cyan);box-shadow:0 5px 30px rgba(0,212,255,.1);transform:translateY(-2px)}
+.stat-card .icon{font-size:2rem;margin-bottom:.5rem}
+.stat-card .label{color:rgba(224,224,255,.5);font-size:.85rem;text-transform:uppercase;letter-spacing:1px}
+.stat-card .value{font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,var(--cyan),var(--magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:.3rem 0}
+.stat-card .change{font-size:.85rem;font-weight:600}
+.stat-card .change.up{color:var(--green)}
+.stat-card .change.down{color:var(--orange)}
+
+/* Charts Row */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-bottom:2rem}
+.chart-card{background:var(--card);border:1px solid rgba(0,212,255,.1);border-radius:16px;padding:1.5rem}
+.chart-card h3{font-family:'Orbitron',sans-serif;font-size:1rem;margin-bottom:1.5rem;color:var(--cyan)}
+.chart-card .chart-container{position:relative;height:250px}
+.chart-card .chart-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:rgba(224,224,255,.2);font-size:3rem}
+
+/* Table */
+.table-section{background:var(--card);border:1px solid rgba(0,212,255,.1);border-radius:16px;padding:1.5rem;margin-bottom:2rem}
+.table-section h3{font-family:'Orbitron',sans-serif;font-size:1rem;margin-bottom:1rem;color:var(--cyan)}
+.table-section table{width:100%;border-collapse:collapse}
+.table-section th{padding:.8rem .5rem;text-align:left;color:rgba(224,224,255,.4);font-size:.8rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid rgba(0,212,255,.1);font-weight:500}
+.table-section td{padding:.8rem .5rem;border-bottom:1px solid rgba(0,212,255,.05);font-size:.95rem}
+.table-section tr:hover td{background:rgba(0,212,255,.03)}
+.table-section .product-cell{display:flex;align-items:center;gap:.8rem}
+.table-section .product-dot{width:8px;height:8px;border-radius:50%}
+.table-section .status{font-size:.75rem;padding:.2rem .6rem;border-radius:50px;font-weight:600}
+.status.active{background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.2)}
+.status.pending{background:rgba(255,136,0,.1);color:var(--orange);border:1px solid rgba(255,136,0,.2)}
+
+/* Quick Actions */
+.actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+.action-card{background:var(--card);border:1px solid rgba(0,212,255,.1);border-radius:16px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .3s;text-decoration:none;color:var(--text)}
+.action-card:hover{border-color:var(--magenta);transform:translateY(-3px);box-shadow:0 5px 30px rgba(255,21,208,.15)}
+.action-card .icon{font-size:2.5rem;margin-bottom:.5rem}
+.action-card h4{font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--cyan);margin-bottom:.3rem}
+.action-card p{font-size:.8rem;color:rgba(224,224,255,.4)}
+
+/* Responsive */
+@media(max-width:768px){
+  body{padding:1rem}
+  .charts-row{grid-template-columns:1fr}
+  .stat-card .value{font-size:1.8rem}
+  .dash-header h1{font-size:1.5rem}
+  .table-section table{font-size:.85rem}
+  .table-section th,.table-section td{padding:.5rem .3rem}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="dash-wrap">
+  <div class="dash-header">
+    <div>
+      <h1>📊 SmallBiz Dashboard</h1>
+      <div class="date" id="currentDate"></div>
+    </div>
+    <div class="badge">🟢 Demo en vivo</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card" style="--accent:var(--cyan)">
+      <div class="icon">💰</div>
+      <div class="label">Ventas este mes</div>
+      <div class="value" id="statSales">0€</div>
+      <div class="change up">↑ 12.4% vs mes pasado</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">📅</div>
+      <div class="label">Reservas esta semana</div>
+      <div class="value" id="statBookings">0</div>
+      <div class="change up">↑ 8.2% vs semana anterior</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">👥</div>
+      <div class="label">Clientes nuevos</div>
+      <div class="value" id="statClients">0</div>
+      <div class="change up">↑ 23.5% este mes</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">⭐</div>
+      <div class="label">Valoración media</div>
+      <div class="value" id="statRating">0.0</div>
+      <div class="change up">★ Excelente</div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <h3>📈 Ventas últimos 7 días</h3>
+      <div class="chart-container" id="salesChart">
+        <div class="chart-placeholder" id="salesPlaceholder">📊</div>
+        <canvas id="salesCanvas" style="display:none;width:100%;height:100%"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>🔝 Más vendidos</h3>
+      <div style="display:flex;flex-direction:column;gap:1rem;padding-top:.5rem" id="topProducts">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid rgba(0,212,255,.05)">
+          <span>🔄 Cargando...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Products Table -->
+  <div class="table-section">
+    <h3>📋 Últimas reservas / pedidos</h3>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr><th>Cliente</th><th>Producto/Servicio</th><th>Importe</th><th>Fecha</th><th>Estado</th></tr>
+        </thead>
+        <tbody id="ordersTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <h3 style="font-family:'Orbitron',sans-serif;font-size:1rem;margin-bottom:1rem;color:var(--cyan)">⚡ Acciones rápidas</h3>
+  <div class="actions-grid">
+    <a class="action-card" onclick="alert('📅 Panel de reservas completo - Versión demo')">
+      <div class="icon">📅</div>
+      <h4>Gestionar Reservas</h4>
+      <p>Ver, confirmar, cancelar</p>
+    </a>
+    <a class="action-card" onclick="alert('📦 Inventario - Versión demo')">
+      <div class="icon">📦</div>
+      <h4>Inventario</h4>
+      <p>Control de stock</p>
+    </a>
+    <a class="action-card" onclick="alert('👥 Clientes - Versión demo')">
+      <div class="icon">👥</div>
+      <h4>Clientes</h4>
+      <p>Base de datos CRM</p>
+    </a>
+    <a class="action-card" onclick="alert('📊 Informes - Versión demo')">
+      <div class="icon">📊</div>
+      <h4>Informes</h4>
+      <p>Exportar datos</p>
+    </a>
+    <a class="action-card" onclick="alert('⚙️ Configuración - Versión demo')">
+      <div class="icon">⚙️</div>
+      <h4>Configuración</h4>
+      <p>Horarios, personal</p>
+    </a>
+  </div>
+
+  <div style="text-align:center;margin-top:3rem;padding:2rem;border:1px solid rgba(0,212,255,.1);border-radius:16px;background:var(--card)">
+    <p style="color:rgba(224,224,255,.4);font-size:.9rem">
+      🧪 <strong style="color:var(--cyan);">Demo interactiva</strong> · Los datos se generan aleatoriamente al cargar la página · 
+      <span style="color:var(--magenta);">Conéctalo a tu base de datos real</span>
+    </p>
+  </div>
+</div>
+
+<script>
+// Date
+document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-ES', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+// Random data generator
+function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+function randf(min,max){return (Math.random()*(max-min)+min).toFixed(1)}
+
+// Stats
+const totalSales = rand(8000,15000);
+document.getElementById('statSales').textContent = totalSales.toLocaleString() + '€';
+document.getElementById('statBookings').textContent = rand(18,45);
+document.getElementById('statClients').textContent = rand(12,35);
+document.getElementById('statRating').textContent = (4.5 + Math.random()*0.5).toFixed(1);
+
+// Weekly sales data
+const days = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const salesData = days.map(() => rand(300,2500));
+
+// Canvas Chart (bar chart)
+const canvas = document.getElementById('salesCanvas');
+const placeholder = document.getElementById('salesPlaceholder');
+canvas.style.display = 'block';
+placeholder.style.display = 'none';
+canvas.width = canvas.parentElement.clientWidth;
+canvas.height = canvas.parentElement.clientHeight;
+const ctx = canvas.getContext('2d');
+
+function drawChart() {
+  const w = canvas.width, h = canvas.height;
+  const pad = {top:20,bottom:30,left:40,right:20};
+  const chartW = w - pad.left - pad.right;
+  const chartH = h - pad.top - pad.bottom;
+  const maxVal = Math.max(...salesData) * 1.15;
+  const barW = chartW / salesData.length * 0.6;
+  const gap = chartW / salesData.length;
+  
+  ctx.clearRect(0,0,w,h);
+  
+  // Grid lines
+  ctx.strokeStyle = 'rgba(0,212,255,.06)';
+  ctx.lineWidth = 1;
+  for(let i=0;i<=4;i++){
+    const y = pad.top + (chartH/4)*i;
+    ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(w-pad.right,y); ctx.stroke();
+  }
+  
+  // Bars
+  salesData.forEach((val,i) => {
+    const x = pad.left + i * gap + (gap - barW)/2;
+    const barH = (val/maxVal) * chartH;
+    const y = pad.top + chartH - barH;
+    
+    const grad = ctx.createLinearGradient(x,y,x,pad.top+chartH);
+    grad.addColorStop(0,'rgba(0,212,255,.8)');
+    grad.addColorStop(1,'rgba(255,21,208,.3)');
+    
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect(x,y,barW,barH,4);
+    ctx.fill();
+    
+    // Value on top
+    ctx.fillStyle = 'rgba(224,224,255,.6)';
+    ctx.font = '11px Rajdhani';
+    ctx.textAlign = 'center';
+    ctx.fillText(val+'€', x+barW/2, y-6);
+    
+    // Day label
+    ctx.fillStyle = 'rgba(224,224,255,.3)';
+    ctx.fillText(days[i], x+barW/2, pad.top+chartH+18);
+  });
+}
+
+// roundRect polyfill
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath()}
+}
+
+drawChart();
+
+// Resize handler
+window.addEventListener('resize',()=>{
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = canvas.parentElement.clientHeight;
+  drawChart();
+});
+
+// Top products
+const products = [
+  {name:'Menú del día',color:var(--cyan),pct:rand(25,40)},
+  {name:'Solomillo',color:var(--magenta),pct:rand(15,30)},
+  {name:'Arroz bogavante',color:'#ffd700',pct:rand(10,22)},
+  {name:'Tarta queso',color:'#00ff88',pct:rand(8,18)},
+  {name:'Croquetas',color:'#7b2ff7',pct:rand(5,12)}
+].sort((a,b)=>b.pct-a.pct);
+const maxPct = products[0].pct;
+
+const topDiv = document.getElementById('topProducts');
+topDiv.innerHTML = '';
+products.forEach(p => {
+  const w = (p.pct/maxPct)*100;
+  topDiv.innerHTML += `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;">
+      <span style="font-size:.9rem">${p.name}</span>
+      <span style="font-size:.85rem;color:rgba(224,224,255,.5)">${p.pct}%</span>
+    </div>
+    <div style="height:4px;background:rgba(255,255,255,.05);border-radius:4px;margin-bottom:.3rem;overflow:hidden">
+      <div style="height:100%;width:${w}%;background:${p.color};border-radius:4px;opacity:.8"></div>
+    </div>
+  `;
+});
+
+// Orders table
+const names = ['Carlos García','Laura Martínez','Miguel Sánchez','Ana López','Javier Ruiz','Marta Pérez','David Gómez','Elena Díaz','Pablo Torres','Sara Fernández'];
+const statuses = ['active','pending'];
+const statusLabels = {active:'✅ Completado',pending:'⏳ Pendiente'};
+const orderItems = ['Menú del día','Solomillo','Arroz bogavante','Tarta de queso','Croquetas','Ensalada','Risotto','Secreto ibérico'];
+
+const tbody = document.getElementById('ordersTable');
+for(let i=0;i<8;i++){
+  const name = names[rand(0,names.length-1)];
+  const item = orderItems[rand(0,orderItems.length-1)];
+  const amount = rand(15,80);
+  const date = new Date();
+  date.setDate(date.getDate()-rand(0,6));
+  const st = statuses[rand(0,1)];
+  const colors = [var(--cyan),var(--magenta),'#ffd700',var(--green),'#7b2ff7'];
+  
+  tbody.innerHTML += `
+    <tr>
+      <td><div class="product-cell"><div class="product-dot" style="background:${colors[i%colors.length]}"></div>${name}</div></td>
+      <td>${item}</td>
+      <td><strong>${amount}€</strong></td>
+      <td style="color:rgba(224,224,255,.4)">${date.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'})}</td>
+      <td><span class="status ${st}">${statusLabels[st]}</span></td>
+    </tr>
+  `;
+}
+
+// Quick action hover effects
+console.log('📊 SmallBiz Dashboard cargado');
+</script>
+</body>
+</html>

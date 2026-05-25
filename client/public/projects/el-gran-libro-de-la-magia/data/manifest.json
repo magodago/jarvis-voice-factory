@@ -55,9 +55,9 @@
   ],
   "status": {
     "home": "complete",
-    "timeline": "preview",
+    "timeline": "complete",
     "magicians": "listing",
-    "biographies": "pending",
+    "biographies": "partial",
     "library": "pending",
     "map": "pending",
     "registry": "pending",
@@ -65,5 +65,5 @@
     "curiosities": "pending",
     "documentaries": "pending"
   },
-  "lastGenerated": "2026-05-25T15:00:00Z"
+  "lastGenerated": "2026-05-25T20:00:00Z"
 }

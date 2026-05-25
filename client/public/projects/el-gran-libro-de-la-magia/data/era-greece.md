@@ -1,0 +1,53 @@
+## GRECIA Y ROMA (500 a.C. - 400 d.C.)
+
+### Introducción
+
+Entre el siglo V a.C. y el siglo IV d.C., los mundos griego y romano fueron el crisol donde la magia, entendida como técnica ilusionista y espectáculo de asombro, comenzó a separarse de la superstición para convertirse en un oficio reconocible. En los templos de la Hélade, sacerdotes-ingenieros utilizaban mecanismos neumáticos e hidráulicos para simular milagros: puertas que se abrían solas al encender un fuego, estatuas que vertían vino o agua bendita mediante conductos ocultos, y fuentes que brotaban al sonido de una trompeta. Estos prodigios, atribuidos a la voluntad divina, eran en realidad obra de mentes brillantes como Herón de Alejandría y su predecesor Ctesibio. Paralelamente, en las plazas de Roma, los *circulatores* —prestidigitadores ambulantes— ejecutaban juegos de manos, tragafuegos y trucos con copas y bolas ante multitudes analfabetas y patricios por igual. La magia no era aún un arte escénico independiente, sino una constelación de prácticas que oscilaban entre la ingeniería sagrada, la adivinación oracular, la medicina popular y el entretenimiento callejero. Fue en este periodo cuando se documentaron por primera vez muchos de los principios que siglos después conformarían el ilusionismo moderno.
+
+### Contexto histórico
+
+El periodo comprendido entre el apogeo de la Atenas clásica (siglo V a.C.) y la caída del Imperio romano de Occidente (476 d.C.) fue testigo de una transformación profunda en la concepción de lo sobrenatural. En la Grecia clásica, la religión cívica y la magia popular coexistían en un equilibrio tenso: los oráculos oficiales, como el de Delfos, gozaban de prestigio institucional, mientras que las prácticas mágicas privadas —hechizos de amor, maldiciones, amuletos— eran toleradas pero a menudo sospechosas. Con la expansión del helenismo tras Alejandro Magno (323 a.C.) y la posterior hegemonía romana, Egipto, Grecia y Oriente Próximo confluyeron en un sincretismo cultural sin precedentes. En este caldo de cultivo nacieron los Papiros Mágicos Griegos, colecciones de rituales que mezclaban deidades egipcias, fórmulas griegas y símbolos judíos. Roma, pragmática y legalista, legisló contra la magia maléfica (la *Lex Cornelia de sicariis et veneficis* del 81 a.C. castigaba el envenenamiento y la hechicería dañina), pero al mismo tiempo adoptó con entusiasmo los misterios orientales, la astrología caldea y los espectáculos de feria.
+
+### Personajes clave
+
+**Herón de Alejandría (c. 10-70 d.C.)** — Ingeniero y matemático greco-egipcio, considerado el padre de la neumática aplicada al ilusionismo. En su tratado *Neumática* describe decenas de dispositivos diseñados para crear efectos «milagrosos» en templos: puertas de santuario que se abrían automáticamente al encender un fuego sacrificial, estatuas que escanciaban vino o leche, fuentes que cantaban al entrar en contacto con el sol, y la eolípila —el primer motor a vapor de la historia—, un dispositivo que hacía girar una esfera hueca impulsada por vapor de agua. Herón elevó la ingeniería a la categoría de magia escénica.
+
+**Ctesibio de Alejandría (c. 285-222 a.C.)** — Predecesor directo de Herón, fue el primero en documentar sistemáticamente el uso de aire comprimido y agua para accionar mecanismos. Inventó el órgano hidráulico (*hydraulis*), bombas de doble efecto y relojes de agua con figuras animadas. Sus dispositivos se instalaron en templos alejandrinos, donde los fieles contemplaban asombrados estatuas que se movían y sonaban sin intervención humana visible.
+
+**Publio Cornelio Escipión Emiliano (c. 185-129 a.C.) y Escipión el Africano (236-183 a.C.)** — En torno a la tumba de los Escipiones, en la Vía Apia de Roma, surgió una leyenda de maldición que persiste hasta nuestros días. La cámara funeraria, descubierta en 1780, contenía inscripciones y sarcófagos que, según la tradición popular, protegían el reposo de la familia con conjuros contra profanadores. Aunque arqueológicamente la evidencia es ambigua, la «maldición de los Escipiones» se convirtió en uno de los relatos de advertencia más célebres de la arqueología romana.
+
+### Hitos y eventos
+
+- **c. 480 a.C. — Construcción del templo de Apolo en Delfos con el *omphalos* y la cámara del oráculo.** La Pitonisa, sentada sobre un trípode en el *adyton* (santuario interior), pronunciaba profecías en estado de trance. Plutarco, sacerdote de Delfos en el siglo I d.C., documentó que los vapores que emergían de una grieta en la roca —identificados modernamente como etileno, metano o dióxido de carbono— inducían el éxtasis profético. Los sacerdotes traducían estos balbuceos en hexámetros, un proceso que los escépticos tachaban de ilusionismo organizado.
+
+- **c. 230 a.C. — Ctesibio construye el primer órgano hidráulico.** Usado en templos y teatros, este instrumento anticipó la automatización musical y creaba la ilusión de que las estatuas de los dioses podían «cantar».
+
+- **c. 60 d.C. — Herón de Alejandría escribe la *Neumática*.** Este tratado de 70 capítulos describe máquinas para templos: un recipiente que vierte agua bendita al introducir una moneda (el antecedente directo de las máquinas expendedoras), puertas de templo que se abren solas al encender un fuego, y una fuente donde el agua brota al compás del canto de pájaros mecánicos.
+
+- **siglo II d.C. — Apogeo de los *circulatores* en las calles de Roma.** Estos artistas callejeros ejecutaban juegos de manos con cálices y bolas (*acetabula et calculi*), tragaban espadas, escupían fuego y realizaban ventriloquía. El escritor romano Séneca los menciona con desdén, pero su popularidad era inmensa.
+
+- **siglos II-IV d.C. — Compilación de los Papiros Mágicos Griegos (PGM).** La colección más importante de textos mágicos de la Antigüedad tardía. Incluye más de 500 hechizos, himnos y rituales en griego, copto y demótico. Destaca la «Liturgia de Mitra» (PGM IV.475-829), un ritual de ascensión celeste que combina invocaciones, gestos y secretos de magia óptica.
+
+- **1780 d.C. — Descubrimiento de la tumba de los Escipiones.** Aunque fuera de nuestro marco cronológico, el hallazgo reveló inscripciones funerarias y evidencias de prácticas mágico-protectoras romanas que habían permanecido ocultas durante milenios.
+
+- **c. 200 a.C. — Primera bola de cristal documentada en uso adivinatorio.** Plinio el Viejo (siglo I d.C.) recoge tradiciones anteriores sobre el uso de esferas de cristal de roca para la adivinación (*crystallomanteia*). Los escitas, según Plinio, utilizaban esferas de cristal para predecir el futuro, y la práctica fue adoptada por adivinos griegos y romanos. La primera referencia literaria clara a la cristalomancia se atribuye a un templo de Deméter en Patras (Grecia), donde se empleaba un espejo de agua o una esfera reflectante para visiones proféticas.
+
+### Efectos y trucos representativos
+
+**1. Las puertas automáticas del templo (Herón, *Neumática*, capítulo 37):** Sobre un altar oculto en el exterior del templo se colocaba un fuego. El calor calentaba el aire dentro de un recipiente metálico sellado, que expandía el aire y forzaba el agua a través de un sifón hacia un sistema de poleas y contrapesos conectados a las puertas. Al encenderse el fuego ritual, las puertas del santuario se abrían *solas*. Cuando el fuego se extinguía, el aire se contraía, el agua retrocedía y las puertas se cerraban. La concurrencia, ignorante del mecanismo, contemplaba la «voluntad divina» manifestándose.
+
+**2. El recipiente de vino y agua (Herón, *Neumática*, capítulo 31):** Una estatua de un dios o una ninfa sostenía una copa. Al acercar una ofrenda o al realizar cierta invocación, la estatua vertía un chorro de vino (o leche) en la copa. El mecanismo se basaba en depósitos ocultos conectados mediante tubos y válvulas que, al ser activados por el peso del visitante sobre una losa o por la apertura de un pestillo remoto, liberaban el líquido.
+
+**3. Los juegos de cálices y bolas (*acetabula et calculi*):** Los *circulatores* romanos ejecutaban una versión primitiva del clásico «juego de las tres copas». Colocaban tres cuencos boca abajo sobre una mesa y, bajo uno de ellos, escondían una pequeña bola o un guijarro. Mediante movimientos rápidos y hábiles desplazamientos, confundían al espectador sobre la ubicación de la bola. Séneca (*Epístolas*, 45.8) y otros autores aluden a estos juegos como metáforas del engaño y la agilidad.
+
+### Influencia en la magia moderna
+
+Herón de Alejandría es, sin exageración, el antepasado intelectual de la magia de ilusiones técnicas. Sus principios neumáticos e hidráulicos —aire comprimido, pistones, sifones, válvulas— son los mismos que emplearon los grandes ilusionistas del siglo XIX (Robert-Houdin, Maskelyne) para construir autómatas, cajas misteriosas y escenarios de «espíritus mecánicos». El juego de las tres copas romano sobrevive hoy en cada esquina del mundo como el clásico «trile» o «juego de la almohadilla». La cristalomancia antigua pervive en la bola de cristal del mago moderno, aunque hoy sea un accesorio teatral más que un instrumento adivinatorio. Incluso la liturgia mágica de los PGM, con sus invocaciones crípticas y gestos rituales, encuentra eco en el «misterio» que todo mago de escena construye alrededor de su actuación. La separación entre técnica y superstición que empezó a vislumbrarse en los talleres de Herón y las plazas de Roma es el germen de la magia como arte escénico profesional.
+
+### Dato curioso
+
+La máquina expendedora de agua bendita de Herón de Alejandría funcionaba con el mismo principio que las modernas expendedoras de refrescos: al introducir una moneda (una dracma de bronce), esta caía sobre una palanca que abría una válvula, liberando una cantidad fija de agua lustral. El mecanismo, descrito en la *Neumática* hace casi dos mil años, es considerado el primer «vending machine» de la historia. Herón llamaba a este ingenio «el recipiente que da agua bendita».
+
+### Prompt para imagen
+
+Imagen en claroscuro, estilo fresco clásico o grabado neoclásico en tonos sepia y dorado. En primer plano, un sacerdote griego con túnica blanca enciende un fuego en un altar de mármol. Al fondo, las puertas de bronce de un templo dórico —el Partenón o el templo de Apolo en Delfos— se abren lentamente, solas, ante una multitud de fieles atónitos. A la derecha, detalles del mecanismo oculto: un recipiente de bronce con tubos, engranajes y palancas talladas, como si la pared del templo se hubiera partido para revelar el secreto de la ilusión. Humo ceremonial y rayos de sol tamizados por columnas. Inscripción en griego antiguo: «Τέχνη θεῶν μίμησις» (El arte es imitación de los dioses).

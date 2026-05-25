@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historia de la Magia · El Gran Libro de la Magia</title>
+<meta name="description" content="Recorrido completo por 5000 años de historia del ilusionismo. Desde los chamanes paleolíticos hasta la magia digital del siglo XXI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--bg2:#0f0f1a;--card:#14141f;--gold:#c9a84c;--gold-light:#e8d48b;--gold-dark:#8a7030;--text:#f0ece4;--text2:#a09888;--text3:#6b6358;--border:rgba(201,168,76,0.08);--border-gold:rgba(201,168,76,0.2);--font-display:'Cormorant Garamond',serif;--font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--gold-dark) var(--bg)}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px}
+::selection{background:var(--gold);color:var(--bg)}
+
+/* Navigation */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(10,10,15,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:transform .4s}
+nav .logo{font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:.5px;color:var(--gold);text-decoration:none}
+nav .logo span{color:var(--text3)}
+nav .back{color:var(--text2);text-decoration:none;font-size:12px;letter-spacing:.5px;transition:color .3s;display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--gold)}
+
+/* Progress bar */
+#progress{position:fixed;top:64px;left:0;right:0;height:2px;z-index:999;background:var(--border)}
+#progress-bar{height:100%;width:0%;background:var(--gold);transition:width .3s ease}
+
+/* Era navigation dots */
+#era-nav{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:6px}
+#era-nav a{width:3px;height:40px;background:var(--text3);border-radius:2px;transition:all .4s;opacity:.4;cursor:pointer}
+#era-nav a.active{background:var(--gold);opacity:1;height:60px;box-shadow:0 0 12px rgba(201,168,76,.2)}
+
+/* Hero */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 40px;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%, rgba(201,168,76,.08), transparent 70%),radial-gradient(ellipse at 70% 30%, rgba(10,10,15,0), transparent 50%),linear-gradient(180deg,rgba(10,10,15,0) 0%,var(--bg) 100%);z-index:1}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:800px;animation:fadeUp 1.2s ease-out}
+@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.hero h1{font-family:var(--font-display);font-size:clamp(42px,6vw,72px);font-weight:300;letter-spacing:-1px;line-height:1.1;margin-bottom:20px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero .sub{font-size:clamp(14px,1.5vw,18px);color:var(--text2);line-height:1.6;max-width:600px;margin:0 auto 40px;font-weight:300}
+.hero-stats{display:flex;gap:40px;justify-content:center;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-num{font-family:var(--font-display);font-size:32px;font-weight:600;color:var(--gold)}
+.hero-stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.scroll-indicator{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text3);font-size:10px;letter-spacing:2px;text-transform:uppercase;animation:bob 2s infinite}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+.scroll-line{width:1px;height:32px;background:linear-gradient(180deg,var(--gold-dark),transparent)}
+
+/* Era section */
+.era{padding:80px 40px 100px;position:relative}
+.era:nth-child(odd){background:var(--bg2)}
+.era-header{margin-bottom:40px}
+.era-year{font-family:var(--font-mono);font-size:13px;color:var(--gold);margin-bottom:8px;font-weight:500}
+.era-title{font-family:var(--font-display);font-size:clamp(28px,3.5vw,42px);font-weight:300;letter-spacing:-.5px;margin-bottom:6px}
+.era-subtitle{font-size:14px;color:var(--text3);font-weight:400;margin-bottom:4px}
+.era-content{max-width:900px;margin:0 auto}
+.era-intro{font-size:16px;color:var(--text);line-height:1.8;margin-bottom:32px;font-weight:300}
+
+/* Content blocks */
+.content-block{margin-bottom:32px}
+.content-block h3{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--gold);margin-bottom:12px;letter-spacing:.3px}
+.content-block h4{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:12px}
+.content-block p{font-size:14px;color:var(--text2);line-height:1.7;font-weight:300;margin-bottom:8px}
+.character-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:10px;transition:all .3s}
+.character-card:hover{border-color:var(--border-gold)}
+.character-card .name{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gold);margin-bottom:2px}
+.character-card .desc{font-size:13px;color:var(--text2);line-height:1.5;font-weight:300}
+
+.event-list{list-style:none}
+.event-list li{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);line-height:1.5;font-weight:300}
+.event-list li:last-child{border:none}
+.event-list .year{font-family:var(--font-mono);font-size:11px;color:var(--gold);font-weight:600;margin-right:8px}
+
+.effect-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:10px;border-left:3px solid var(--gold-dark)}
+.effect-card .effect-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.effect-card .effect-desc{font-size:12px;color:var(--text2);line-height:1.5;font-weight:300}
+
+.curiosity-box{background:linear-gradient(135deg,rgba(201,168,76,.05),rgba(201,168,76,.02));border:1px solid var(--border-gold);border-radius:8px;padding:16px 20px;margin-top:16px;font-size:13px;color:var(--text2);line-height:1.6;font-weight:300}
+.curiosity-box strong{color:var(--gold)}
+.curiosity-box::before{content:'🔮 ';font-size:16px}
+
+/* Images */
+.era-image-wrap{width:100%;margin:24px 0;border-radius:8px;overflow:hidden;border:1px solid var(--border);position:relative;aspect-ratio:16/9;background:var(--card)}
+.era-image-wrap img{width:100%;height:100%;object-fit:cover;opacity:.8}
+.era-image-wrap .img-caption{position:absolute;bottom:0;left:0;right:0;padding:12px 16px;background:linear-gradient(0deg,rgba(0,0,0,.8),transparent);font-size:11px;color:var(--text2);font-weight:300}
+
+/* Navigation arrows */
+.era-nav-arrows{display:flex;justify-content:space-between;margin-top:40px;padding-top:24px;border-top:1px solid var(--border)}
+.era-nav-arrows a{color:var(--text2);text-decoration:none;font-size:13px;letter-spacing:.5px;transition:all .3s;display:flex;align-items:center;gap:8px}
+.era-nav-arrows a:hover{color:var(--gold)}
+.era-nav-arrows .next{margin-left:auto}
+
+/* Footer */
+footer{padding:48px 40px 32px;border-top:1px solid var(--border);text-align:center}
+footer p{font-size:12px;color:var(--text3);font-weight:300}
+footer a{color:var(--gold);text-decoration:none}
+
+/* Responsive */
+@media(max-width:768px){
+  .hero,.era{padding:60px 20px}
+  #era-nav{display:none}
+  nav{padding:0 16px}
+  .hero-stats{gap:20px}
+}
+
+/* Animations */
+.fade-in{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="." class="back">← El Gran Libro de la Magia</a>
+  <a href="." class="logo">El Gran Libro <span>· Historia</span></a>
+</nav>
+<div id="progress"><div id="progress-bar"></div></div>
+
+<div id="era-nav"></div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <h1>5000 años de <em>magia</em></h1>
+    <p class="sub">Un viaje a través de las diez eras que transformaron el ilusionismo, desde el chamán paleolítico hasta la inteligencia artificial. Cada época, sus magos, sus trucos y su legado.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num">10</div><div class="hero-stat-label">Eras</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">50+</div><div class="hero-stat-label">Magos</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">100+</div><div class="hero-stat-label">Efectos</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">5</div><div class="hero-stat-label">Milenios</div></div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Explora</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div id="eras-container"></div>
+
+<footer>
+  <p>© 2026 <a href=".">El Gran Libro de la Magia</a> · Un proyecto de David Ortiz · 30 años de magia</p>
+</footer>
+
+<script>
+// ============================================
+// ERA DATA (compiled from research)
+// ============================================
+const ERAS = [
+  {
+    id: 'shamans', year: '40,000 - 3,000 a.C.', title: 'Chamanes y Rituales', subtitle: 'El nacimiento de la magia',
+    intro: 'Mucho antes de que existieran los templos, los grimorios o los teatros de ilusionismo, hubo una figura que encarnó el poder de lo inexplicable: el chamán. Durante aproximadamente treinta y siete mil años —desde las primeras migraciones del Homo sapiens hasta el alba de las primeras civilizaciones— el chamán fue el primer mago, el primer médico, el primer artista y el primer puente entre el mundo visible y el invisible.',
+    context: 'El Paleolítico Superior (c. 50,000 - 10,000 a.C.) fue una era de glaciaciones, migraciones y explosión cultural. Los Homo sapiens llegaron a Europa hace unos 45,000 años. Hacia el 40,000 a.C. surgió un florecimiento artístico sin precedentes: las Venus esteatopigias, las flautas de hueso y las primeras pinturas rupestres figurativas. Cada tribu tenía su chamán: venerado por su poder de sanar y comunicarse con los espíritus, pero también temido.',
+    characters: [
+      { name: 'El Hechicero de Trois-Frères', desc: 'Figura híbrida pintada en la cueva de Trois-Frères (Ariège, Francia, c. 13,000 a.C.). Con cuerpo humano, astas de ciervo, orejas de lobo, ojos de búho y cola de caballo, es la representación chamánica más antigua conocida.' },
+      { name: 'Chamán de la Cueva de los Tayos', desc: 'Arquetipo sudamericano. En las cuevas ecuatorianas se han hallado objetos rituales que sugieren prácticas chamánicas con plantas enteógenas desde al menos 5,000 a.C.' },
+      { name: 'Venus de Hohle Fels', desc: 'Figurilla de marfil de mamut (c. 35,000 a.C., Alemania). Es la representación figurativa humana más antigua del mundo, probablemente usada en rituales de fertilidad.' }
+    ],
+    events: [
+      'c. 45,000 a.C. — Primeros enterramientos intencionales con ajuar funerario en Oriente Próximo y Europa.',
+      'c. 40,000 a.C. — Primeras pinturas rupestres figurativas en Sulawesi y El Castillo (España).',
+      'c. 30,000 a.C. — Cueva Chauvet (Francia). Más de 400 animales representados. Un santuario iniciático.',
+      'c. 15,000 a.C. — Pinturas de Lascaux. El "Pozo del Hombre Herido" documenta un ritual chamánico de cacería.',
+      'c. 13,000 a.C. — El Hechicero de Trois-Frères: la representación más explícita de un chamán paleolítico.',
+      'c. 9,500 a.C. — Göbekli Tepe (Turquía): el templo más antiguo del mundo, centro de peregrinación chamánica.',
+      'c. 5,000 a.C. — Chamanismo siberiano consolidado. Primeros tambores chamánicos decorados.'
+    ],
+    effects: [
+      { name: 'El Vuelo Extático', desc: 'Durante el trance, el chamán "viaja" al mundo de los espíritus. Para la tribu, esto se manifestaba como la capacidad de abandonar el cuerpo físico.' },
+      { name: 'La Cura por Extracción', desc: 'El chamán "extraía" un objeto sólido del cuerpo del enfermo, mostrándolo como prueba tangible de la expulsión del mal.' },
+      { name: 'La Transformación en Animal', desc: 'Cubierto con pieles y máscaras, el chamán danzaba hasta "volverse" animal. Origen de todos los mitos de hombres-lobo.' },
+      { name: 'El Fuego que No Quema', desc: 'En trance profundo, algunos chamanes caminaban sobre brasas o sostenían ascuas sin sufrir daño.' }
+    ],
+    influence: 'Cada mago que sube a un escenario hoy es heredero indirecto del chamán paleolítico. La estructura dramática del ilusionismo —suspense, trance, revelación— replica el arco del ritual chamánico. El mentalismo moderno tiene su raíz en las curaciones chamánicas. Incluso la iconografía del mago —túnica, bastón, gestos solemnes— proviene de la parafernalia del chamán siberiano.',
+    curiosity: 'La palabra "chamán" proviene del tungús evenki, un idioma siberiano. Šamán significa literalmente "el que sabe" o "el que ve en la oscuridad".'
+  },
+  {
+    id: 'egypt', year: '3,000 - 500 a.C.', title: 'Egipto Antiguo', subtitle: 'El poder de Heka',
+    intro: 'Ninguna civilización antigua veneró la magia con tanta profundidad como el Antiguo Egipto. Para los egipcios, la magia —Heka— no era un mero entretenimiento, sino una fuerza cósmica primordial que había existido antes que los propios dioses. Los sacerdotes-magos (kher-heb) constituían una élite intelectual que dominaba el lenguaje secreto de la creación.',
+    context: 'El Antiguo Egipto floreció a lo largo del Nilo durante más de tres milenios. La religión impregnaba cada aspecto de la vida: el cosmos funcionaba gracias a Ma\'at (orden, verdad, justicia). Los templos eran vastos centros económicos y espirituales. La magia se enseñaba en las "Casas de la Vida" (Per Ankh), bibliotecas-escuela anexas a los grandes templos.',
+    characters: [
+      { name: 'Dedi (c. 2,550 a.C.)', desc: 'Mago legendario de la corte del faraón Keops. Protagonista central del Papiro Westcar. Se le atribuía la capacidad de decapitar animales y reanimarlos.' },
+      { name: 'Isis (diosa)', desc: 'La "Gran Maga", considerada la hechicera suprema del panteón egipcio. Engañó al dios Ra para que le revelara su nombre secreto, transfiriéndoselo a su hijo Horus.' },
+      { name: 'Heka (deidad)', desc: 'Dios primordial de la magia, anterior incluso a los dioses del panteón. Su nombre significa "activar el poder del Ka".' }
+    ],
+    events: [
+      'c. 3,100 a.C. — Unificación de Egipto. Primeras dinastías. Magia vinculada al poder real.',
+      'c. 2,550 a.C. — Composición del Papiro Westcar, el texto más antiguo que describe trucos de magia.',
+      'c. 2,400 a.C. — Textos de las Pirámides: los primeros conjuros religiosos escritos.',
+      'c. 1,550 a.C. — Apogeo de los sacerdotes de Amón en Karnak. Magia institucionalizada.',
+      '525 a.C. — Conquista persa de Egipto. Dispersión del conocimiento mágico egipcio.'
+    ],
+    effects: [
+      { name: 'La Decapitación Animada', desc: 'Dedi decapitaba un ganso, un pelícano y un buey, y los reanimaba. El efecto más famoso documentado en el Papiro Westcar.' },
+      { name: 'El Cocodrilo de Cera', desc: 'Ubaoner, mago del rey Snefru, creó un cocodrilo de cera que cobraba vida al ser lanzado al agua.' },
+      { name: 'La Estatua Parlante', desc: 'Sacerdotes escondidos tras estatuas huecas hablaban en nombre de los dioses, haciendo que las estatuas "respondieran" preguntas.' }
+    ],
+    influence: 'La magia egipcia estableció el modelo del mago como sabio, mago-sacerdote y mago-médico que perduraría por milenios. Los grimorios medievales y renacentistas beben directamente de los papiros egipcios reinterpretados a través del hermetismo alejandrino.',
+    curiosity: 'Los egipcios creían que el ser humano tenía cinco componentes espirituales: Ka (energía vital), Ba (personalidad), Akh (espíritu transformado), Ren (nombre) y Sheut (sombra). El secreto de la magia estaba en conocer el nombre secreto de cada cosa.'
+  },
+  {
+    id: 'greece', year: '500 a.C. - 400 d.C.', title: 'Grecia y Roma', subtitle: 'Ingeniería sagrada y prestidigitación',
+    intro: 'Entre el siglo V a.C. y el siglo IV d.C., los mundos griego y romano fueron el crisol donde la magia ilusionista comenzó a separarse de la superstición para convertirse en un oficio reconocible. En los templos, sacerdotes-ingenieros usaban mecanismos neumáticos para simular milagros. En las plazas de Roma, los circulatores ejecutaban juegos de manos ante multitudes.',
+    context: 'Atenas clásica, el Imperio de Alejandro y la hegemonía romana crearon un sincretismo cultural sin precedentes. Los oráculos gozaban de prestigio institucional mientras las prácticas mágicas privadas eran toleradas pero sospechosas. Nacieron los Papiros Mágicos Griegos, mezcla de deidades egipcias, fórmulas griegas y símbolos judíos.',
+    characters: [
+      { name: 'Herón de Alejandría (c. 10-70 d.C.)', desc: 'Ingeniero y matemático greco-egipcio. En su tratado Neumática describe dispositivos para crear efectos milagrosos: puertas de templo automáticas y la eolípila (primer motor a vapor).' },
+      { name: 'Ctesibio de Alejandría (c. 285-222 a.C.)', desc: 'Predecesor de Herón, documentó el uso de aire comprimido y agua para accionar mecanismos. Inventó el órgano hidráulico y bombas de doble efecto.' },
+      { name: 'Los Circulatores', desc: 'Prestidigitadores ambulantes romanos que ejecutaban el juego de las tres copas (acetabula et calculi), tragafuegos y manipulaciones en plazas públicas.' }
+    ],
+    events: [
+      'c. 500 a.C. — Apogeo del Oráculo de Delfos. La Pitonisa y los mecanismos ocultos del templo.',
+      'c. 285 a.C. — Ctesibio desarrolla los primeros mecanismos neumáticos en Alejandría.',
+      'c. 50 d.C. — Herón escribe la Neumática. La ingeniería aplicada al ilusionismo.',
+      '81 a.C. — Lex Cornelia de sicariis et veneficis: Roma legisla contra la magia maléfica.',
+      '1780 d.C. — Descubrimiento de la tumba de los Escipiones y su leyenda de maldición.'
+    ],
+    effects: [
+      { name: 'Puertas Automáticas del Templo', desc: 'Al encender un fuego en el altar, el calor expandía el aire en un mecanismo oculto que abría las puertas del santuario. Los fieles creían que era la voluntad divina.' },
+      { name: 'La Estatua Vertedora', desc: 'Estatuas huecas con conductos ocultos que vertían vino o leche cuando se pronunciaban las palabras sagradas.' },
+      { name: 'Las Tres Copas (Acetabula et Calculi)', desc: 'El juego de cubiletes más antiguo documentado. Un ancestro directo del ilusionismo moderno con copas y bolas.' }
+    ],
+    influence: 'Herón y Ctesibio sentaron las bases de la ingeniería teatral que siglos después usarían los teatros de magia. El juego de las tres copas se practica aún hoy, siendo uno de los efectos continuos más antiguos de la historia.',
+    curiosity: 'Herón inventó la primera máquina expendedora de la historia: un dispositivo que dispensaba agua bendita al introducir una moneda. El primer "vending machine" documentado.'
+  },
+  {
+    id: 'medieval', year: '400 - 1500', title: 'Edad Media y Trovadores', subtitle: 'Entre la herejía y el asombro',
+    intro: 'Un milenio de contradicciones: la magia fue perseguida como herejía y al mismo tiempo practicada como entretenimiento en plazas y cortes. Los trovadores y juglares mantuvieron viva la tradición de la prestidigitación ambulante, mientras los alquimistas y ocultistas desarrollaban grimorios y manuscritos que mezclaban religión, ciencia y magia.',
+    context: 'Caída del Imperio Romano, auge del cristianismo, Inquisición. El Canon Episcopi (c. 900 d.C.) declaraba que creer en la magia era una ilusión diabólica. La imprenta de Gutenberg (1450) democratizó el conocimiento oculto. Los grimorios circulaban en secreto.',
+    characters: [
+      { name: 'Alberto Magno (c. 1200-1280)', desc: 'Dominico, filósofo y científico. Se le atribuye la creación de un autómata parlante de bronce que respondía preguntas. Su discípulo Tomás de Aquino lo destruyó por considerarlo obra del diablo.' },
+      { name: 'Reginald Scot (c. 1538-1599)', desc: 'Autor de The Discoverie of Witchcraft (1584), el primer libro publicado que revelaba los secretos técnicos de los trucos de magia para desmontar acusaciones de brujería.' },
+      { name: 'Roger Bacon (c. 1214-1292)', desc: 'Franciscano y científico. Escribió sobre óptica, pólvora y autómatas. Sus "invenciones maravillosas" fueron consideradas mágicas.' }
+    ],
+    events: [
+      'c. 900 — Canon Episcopi: la Iglesia condena la creencia en la magia como ilusión.',
+      'c. 1250 — El autómata parlante de Alberto Magno.',
+      '1300 — Circulación de la Clavícula Salomonis (Llave de Salomón), el grimorio más influyente de la historia.',
+      '1404-1438 — Elaboración del Manuscrito Voynich: el libro más misterioso jamás escrito.',
+      '1450 — La imprenta de Gutenberg permite la difusión masiva de grimorios.',
+      '1584 — Publicación de The Discoverie of Witchcraft de Reginald Scot.'
+    ],
+    effects: [
+      { name: 'Cubiletes y Bolas', desc: 'Los juglares medievales perfeccionaron el juego de cubiletes, moviendo bolas entre recipientes con velocidad y destreza.' },
+      { name: 'La Moneda que Desaparece', desc: 'El primer "palm" documentado: el mago finge transferir una moneda de una mano a otra mientras la oculta en la palma.' },
+      { name: 'El Nudo Cortado y Restaurado', desc: 'Un clásico de los juglares: cortaban una cuerda por la mitad y la restauraban "mágicamente" ante los espectadores.' }
+    ],
+    influence: 'El juglar medieval es el ancestro directo del mago de calle moderno. Reginald Scot creó el primer manual de magia, estableciendo la tradición de revelar secretos para desmitificar lo sobrenatural.',
+    curiosity: 'El truco de la "decapitación simulada" descrito por Reginald Scot en 1584 es el precursor directo de los escapes de Houdini y las ilusiones de decapitación escénica.'
+  },
+  {
+    id: 'renaissance', year: '1500 - 1780', title: 'Renacimiento y Alquimia', subtitle: 'Entre la ciencia y lo sobrenatural',
+    intro: 'El Renacimiento fue una era de fronteras borrosas entre ciencia, filosofía y magia. Figuras como John Dee navegaban entre la matemática, la astrología y la comunicación con ángeles. Mientras tanto, en ferias ambulantes de toda Europa, prestidigitadores y saltimbanquis entretenían al pueblo con juegos de manos.',
+    context: 'La imprenta democratizó el conocimiento. El escepticismo ilustrado comenzó a separar la magia como espectáculo de la magia como superstición. La óptica, la mecánica y la química nacieron del caldo de cultivo alquímico.',
+    characters: [
+      { name: 'John Dee (1527-1609)', desc: 'Matemático, astrólogo, alquimista y espía de la reina Isabel I. Tuvo la biblioteca más grande de Inglaterra y afirmaba comunicarse con ángeles a través de un espejo de obsidiana.' },
+      { name: 'Wolfgang von Kempelen (1734-1804)', desc: 'Inventor húngaro que creó "El Turco", un autómata ajedrecista que derrotó a Napoleón y Benjamin Franklin. En realidad, ocultaba a un operador humano.' },
+      { name: 'Isaac Newton (1643-1727)', desc: 'El padre de la física moderna escribió más sobre alquimia que sobre ciencia. Sus manuscritos alquímicos suman más de un millón de palabras.' }
+    ],
+    events: [
+      '1500 — Apogeo de la magia naturalis de Giovanni Battista della Porta.',
+      '1589 — Publicación de Magiae Naturalis de della Porta.',
+      '1650 — El Turco de von Kempelen realiza su primera exhibición en Viena.',
+      '1700 — Isaac Newton completa su manuscrito alquímico Praxis.',
+      '1760 — Apogeo de las ferias ambulantes en Europa.'
+    ],
+    effects: [
+      { name: 'El Turco Ajedrecista', desc: 'Un maniquí vestido a la turca que jugaba al ajedrez y ganaba. Su secreto: un operador humano oculto en el gabinete que movía las piezas mediante imanes.' },
+      { name: 'La Cámara Oscura', desc: 'Della Porta describió la cámara oscura como un "efecto mágico". La óptica se usaba para crear imágenes fantasmales.' },
+      { name: 'La Carta que Adivina', desc: 'Sistemas de memoria y lectura mental rudimentaria que los feriantes usaban para asombrar al público.' }
+    ],
+    influence: 'El Turco fue el precursor de la fascinación por los autómatas y la inteligencia artificial. John Dee estableció el modelo del mago-erudito que influiría en ocultistas y magos escénicos durante siglos.',
+    curiosity: 'Newton pasó más tiempo escribiendo sobre alquimia que sobre física. Sus manuscritos alquímicos contienen recetas para replicar el "Árbol de Diana" y la búsqueda de la piedra filosofal.'
+  },
+  {
+    id: 'classical', year: '1780 - 1900', title: 'Ilusionismo Clásico', subtitle: 'El nacimiento del mago moderno',
+    intro: 'Entre 1780 y 1900, la magia se transformó de entretenimiento callejero a arte escénico respetable. Jean-Eugène Robert-Houdin, considerado el padre del ilusionismo moderno, llevó la magia de las plazas a los teatros. fundó el primer teatro de magia permanentey y estableció el código del mago moderno: frac, elegancia y misterio.',
+    context: 'La Revolución Industrial trajo el ferrocarril, el gas y la electricidad. La magia se benefició de la nueva tecnología escénica. El espiritismo ganó millones de seguidores, y magos como Maskelyne se dedicaron a desenmascarar a falsos médiums.',
+    characters: [
+      { name: 'Jean-Eugène Robert-Houdin (1805-1871)', desc: 'El padre del ilusionismo moderno. Relojero de formación, abrió su teatro en París en 1854. Inventó la levitación, la suspensión etérea y la segunda vista.' },
+      { name: 'John Henry Anderson (1814-1874)', desc: '"El Mago del Norte". Pionero del marketing en magia. Popularizó el conejo saliendo del sombrero.' },
+      { name: 'Maskelyne & Cooke', desc: 'Dirigieron el Egyptian Hall de Londres durante 30 años. Desenmascararon médiums espiritistas e inventaron la levitación moderna.' }
+    ],
+    events: [
+      '1845 — Robert-Houdin abre su teatro en el Palais Royal de París.',
+      '1856 — Robert-Houdin viaja a Argelia para una misión diplomática: usa la magia para impresionar a los líderes rebeldes.',
+      '1873 — Maskelyne & Cooke toman el Egyptian Hall de Londres.',
+      '1880 — Alexander Herrmann se convierte en el mago más famoso de Estados Unidos.',
+      '1890 — Los Hermanos Davenport popularizan el espiritualismo de gabinete.'
+    ],
+    effects: [
+      { name: 'La Suspensión Etérea', desc: 'Robert-Houdin hacía levitar a su hijo sobre una silla, usando un sistema oculto de varillas de acero.' },
+      { name: 'La Segunda Vista', desc: 'Robert-Houdin y su hijo se comunicaban mediante un código de palabras para adivinar objetos elegidos por el público.' },
+      { name: 'El Árbol de la Seda', desc: 'Robert-Houdin hacía crecer un árbol desde una semilla hasta la floración en cuestión de minutos.' }
+    ],
+    influence: 'Robert-Houdin estableció el estándar del mago como artista, no como brujo. Su legado incluye el teatro de magia, la profesionalización del oficio y la idea de que la magia debe ser elegante.',
+    curiosity: 'Robert-Houdin fue enviado por el gobierno francés a Argelia para "competir" con los marabutos locales. Usó trucos como electrificar una caja para demostrar que la magia francesa era superior.'
+  },
+  {
+    id: 'houdini', year: '1900 - 1930', title: 'Era Houdini', subtitle: 'El escapismo conquista el mundo',
+    intro: 'Ningún mago ha alcanzado la fama global de Harry Houdini. Nacido Erik Weisz en Budapest en 1874, se convirtió en el nombre más reconocible de la magia. Sus escapes imposibles —camisas de fuerza, celdas acuáticas, cadenas— cautivaron al mundo y establecieron el escapismo como género independiente.',
+    context: 'Época dorada del vodevil y el music hall. El cine comenzaba a competir con el teatro. El espiritismo estaba en su apogeo, y Houdini dedicó los últimos años de su vida a desenmascarar a falsos médiums.',
+    characters: [
+      { name: 'Harry Houdini (1874-1926)', desc: 'El mago más famoso de la historia. Nacido en Budapest, creció en Wisconsin. Revolucionó el escapismo, la publicidad y la lucha contra el fraude espiritista.' },
+      { name: 'Howard Thurston (1869-1936)', desc: 'El mago americano por excelencia. Su espectáculo incluía 40 ilusionistas y 8 vagones de ferrocarril. Viajó por todo el mundo.' },
+      { name: 'Chung Ling Soo (1861-1918)', desc: 'Se hacía pasar por mago chino aunque era estadounidense. Murió en escena al fallar el truco de la bala atrapada.' }
+    ],
+    events: [
+      '1900 — Houdini conquista Europa. Desafía a todas las comisarías a encadenarlo.',
+      '1908 — Invención del Chinese Water Torture Cell, su escape más famoso.',
+      '1918 — Muerte de Chung Ling Soo en escena por el truco de la bala atrapada.',
+      '1924 — Houdini publica A Magician Among the Spirits, atacando el espiritismo.',
+      '1926 — 31 de octubre: Houdini muere de peritonitis tras recibir un puñetazo no solicitado.'
+    ],
+    effects: [
+      { name: 'Chinese Water Torture Cell', desc: 'Houdini era suspendido de cabeza en un tanque de vidrio lleno de agua, con los tobillos encadenados. Debía escapar en menos de tres minutos.' },
+      { name: 'La Camisa de Fuerza en Suspensión', desc: 'Colgado de los tobillos desde una grúa, Houdini se liberaba de una camisa de fuerza ante multitudes en la calle.' },
+      { name: 'Metamorfosis', desc: 'Houdini y Bess intercambiaban posiciones en tres segundos dentro de un baúl cerrado con candados.' }
+    ],
+    influence: 'Houdini elevó el escapismo a arte mayor y demostró que un mago podía ser una celebridad global. Su lucha contra el espiritismo sentó las bases del movimiento escéptico moderno.',
+    curiosity: 'Tras su muerte, su esposa Bess realizó sesiones de espiritismo durante 10 años buscando un mensaje de Houdini. El código acordado era "Rosabelle". Nunca llegó.'
+  },
+  {
+    id: 'golden', year: '1930 - 1970', title: 'Edad de Oro', subtitle: 'El profesor, la mano lenta y la motosierra',
+    intro: 'Entre 1930 y 1970, la magia alcanzó su madurez artística. Dai Vernon, "El Profesor", revolucionó la cartomagia con su toque sutil. Tony Slydini transformó el close-up en poesía visual. Richiardi Jr. aterrorizó al mundo con su ilusión de la motosierra humana. Fue la era del mago de los magos.',
+    context: 'Depresión, Segunda Guerra Mundial, auge de la televisión. La FISM (Fédération Internationale des Sociétés Magiques) se fundó en 1948. El Magic Castle abrió sus puertas en Hollywood en 1963, creando el primer santuario de la magia moderna.',
+    characters: [
+      { name: 'Dai Vernon (1894-1992)', desc: 'El Profesor. Considerado el mago de los magos. Engañó a Houdini con un juego de cartas. Revolucionó la cartomagia con más de 60 años de innovación.' },
+      { name: 'Tony Slydini (1900-1991)', desc: 'Maestro del close-up. Inventó "la mano lenta": movimientos tan sutiles que el ojo no podía seguirlos.' },
+      { name: 'Richiardi Jr. (1923-1985)', desc: 'El mago peruano más famoso. Inventó la ilusión de la motosierra humana en 1953. Su acto era sangriento y teatral.' }
+    ],
+    events: [
+      '1937 — Dai Vernon se muda a Nueva York y comienza a enseñar en la tienda de Lou Tannen.',
+      '1948 — Fundación de la FISM en Lausana, Suiza.',
+      '1953 — Richiardi Jr. presenta la motosierra humana por primera vez.',
+      '1963 — Apertura del Magic Castle en Hollywood.',
+      '1969 — Vernon recibe el título de "Mago de los Magos".'
+    ],
+    effects: [
+      { name: 'La Mano Lenta (Slydini)', desc: 'Movimientos deliberadamente lentos que desviaban la atención. Slydini podía hacer desaparecer una moneda en cámara lenta.' },
+      { name: 'La Motosierra Humana', desc: 'Richiardi aserraba a su asistente con una motosierra real. Sangre, gritos y talco. El efecto más impactante de su época.' },
+      { name: 'El Toque Vernon', desc: 'La técnica de Dai Vernon para manejar cartas era tan natural que los espectadores juraban que no había hecho nada.' }
+    ],
+    influence: 'Vernon elevó la cartomagia a la categoría de bellas artes. Slydini estableció la misdirection como disciplina psicológica. Richiardi llevó la magia al terror.',
+    curiosity: 'Las cenizas de Dai Vernon descansan en el Magic Castle, dentro de una urna en la biblioteca. Los magos le rinden homenaje tocando la urna antes de sus actuaciones.'
+  },
+  {
+    id: 'tvdigital', year: '1970 - Actualidad', title: 'Magia Televisiva y Digital', subtitle: 'De Copperfield a YouTube',
+    intro: 'La televisión llevó la magia a millones de hogares. David Copperfield se convirtió en el mago más rico de la historia con especiales televisivos que hacían desaparecer la Estatua de la Libertad. Luego llegó David Blaine con su magia callejera, Derren Brown con su mentalismo psicológico, y la revolución digital transformó para siempre cómo se consume y se aprende magia.',
+    context: 'Era dorada de la televisión, crisis del directo, auge de internet, YouTube y TikTok. La magia pasó del teatro al salón, luego al bolsillo (móvil). Los secretos se democratizaron. La IA empieza a crear magia.',
+    characters: [
+      { name: 'David Copperfield (1956-)', desc: 'El mago más famoso y rico del mundo. 21 premios Emmy. Hizo desaparecer la Estatua de la Libertad, caminó por el Gran Cañón. Su museo en Las Vegas es el mayor archivo de magia del mundo.' },
+      { name: 'David Blaine (1973-)', desc: 'Revolucionó la magia callejera con Street Magic (1997). Sus resistencias extremas incluyen 44 días sin comida, 17 minutos bajo el agua y congelado en hielo.' },
+      { name: 'Derren Brown (1971-)', desc: 'El mentalista británico. Hipnosis, sugestión, psicología. Sus especiales incluyen The Heist (convertir a alguien en ladrón) y Russian Roulette en televisión en directo.' },
+      { name: 'Juan Tamariz (1942-)', desc: 'El mago español más influyente del mundo. Autor de La Vía Mágica, Mnemonica y El Ardid. Su teoría de los cinco puntos mágicos es estudiada globalmente.' },
+      { name: 'Penn & Teller (1955-)', desc: 'El dúo más famoso. Penn habla, Teller no. Su filosofía: revelar trucos sin perder el misterio. Su programa Fool Us busca magos que los engañen.' }
+    ],
+    events: [
+      '1975 — Doug Henning produce el especial de TV Metamorfosis de Houdini.',
+      '1983 — Copperfield hace desaparecer la Estatua de la Libertad en directo.',
+      '1997 — Street Magic de David Blaine transforma la magia para siempre.',
+      '2003 — Derren Brown presenta Russian Roulette en televisión en directo.',
+      '2011 — Dynamo camina sobre el agua del río Támesis.',
+      '2015 — Shin Lim gana America\'s Got Talent con cartomagia silenciosa.',
+      '2020 — Explosión de la magia en TikTok y YouTube.'
+    ],
+    effects: [
+      { name: 'Desaparición de la Estatua de la Libertad', desc: '1983. Copperfield hizo desaparecer la Estatua de la Libertad ante 20 millones de espectadores. El efecto combinaba giroscopios, plataformas giratorias y luces.' },
+      { name: 'Above the Below (Blaine)', desc: '44 días encerrado en una caja de cristal sobre el Támesis sin comida. Solo agua. Resistencia física y mental extrema.' },
+      { name: 'Mnemonica (Tamariz)', desc: 'Un sistema de memorización de cartas que permite al mago saber la posición exacta de cada carta de la baraja.' }
+    ],
+    influence: 'La televisión transformó la magia de experiencia en vivo a contenido grabado. La era digital democratizó los secretos: cualquier persona puede aprender magia en YouTube. La IA empieza a generar efectos mágicos imposibles antes.',
+    curiosity: 'El truco de la desaparición de la Estatua de la Libertad usó una plataforma giratoria gigante y un sistema de luces que cegaba al público durante 4 segundos. Cuando la luz volvía, la Estatua ya no estaba donde la habían visto.'
+  }
+];
+
+// ============================================
+// BUILD UI
+// ============================================
+const container = document.getElementById('eras-container');
+const eraNav = document.getElementById('era-nav');
+const progressBar = document.getElementById('progress-bar');
+
+ERAS.forEach((era, i) => {
+  // Navigation dot
+  const dot = document.createElement('a');
+  dot.href = `#era-${era.id}`;
+  dot.title = era.title;
+  dot.dataset.index = i;
+  eraNav.appendChild(dot);
+
+  // Era section
+  const section = document.createElement('section');
+  section.className = 'era';
+  section.id = `era-${era.id}`;
+
+  const html = `
+    <div class="era-header fade-in">
+      <div class="era-year">${era.year}</div>
+      <h2 class="era-title">${era.title}</h2>
+      <div class="era-subtitle">${era.subtitle}</div>
+    </div>
+    <div class="era-content">
+      <div class="era-intro fade-in">${era.intro}</div>
+
+      <div class="content-block fade-in">
+        <h3>📜 Contexto histórico</h3>
+        <p>${era.context}</p>
+      </div>
+
+      ${era.characters ? `
+      <div class="content-block fade-in">
+        <h3>🎭 Personajes clave</h3>
+        ${era.characters.map(c => `
+          <div class="character-card">
+            <div class="name">${c.name}</div>
+            <div class="desc">${c.desc}</div>
+          </div>
+        `).join('')}
+      </div>` : ''}
+
+      ${era.events ? `
+      <div class="content-block fade-in">
+        <h3>📅 Hitos y eventos</h3>
+        <ul class="event-list">
+          ${era.events.map(e => `<li><span class="year">${e.split(' — ')[0]}</span>${e.split(' — ').slice(1).join(' — ')}</li>`).join('')}
+        </ul>
+      </div>` : ''}
+
+      ${era.effects ? `
+      <div class="content-block fade-in">
+        <h3>✨ Efectos y trucos representativos</h3>
+        ${era.effects.map(e => `
+          <div class="effect-card">
+            <div class="effect-name">${e.name}</div>
+            <div class="effect-desc">${e.desc}</div>
+          </div>
+        `).join('')}
+      </div>` : ''}
+
+      ${era.influence ? `
+      <div class="content-block fade-in">
+        <h3>🔄 Influencia en la magia moderna</h3>
+        <p>${era.influence}</p>
+      </div>` : ''}
+
+      ${era.curiosity ? `
+      <div class="content-block fade-in">
+        <h3>🔮 Dato curioso</h3>
+        <div class="curiosity-box"><strong>${era.curiosity.split('.')[0]}.</strong>${era.curiosity.substring(era.curiosity.indexOf('.')+1)}</div>
+      </div>` : ''}
+
+      <div class="era-nav-arrows fade-in">
+        ${i > 0 ? `<a href="#era-${ERAS[i-1].id}" class="prev">← ${ERAS[i-1].title}</a>` : '<span></span>'}
+        ${i < ERAS.length - 1 ? `<a href="#era-${ERAS[i+1].id}" class="next">${ERAS[i+1].title} →</a>` : '<span></span>'}
+      </div>
+    </div>
+  `;
+
+  section.innerHTML = html;
+  container.appendChild(section);
+});
+
+// ============================================
+// INTERACTIONS
+// ============================================
+// Fade-in observer
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// Active era dot
+const eraSections = document.querySelectorAll('.era');
+const dots = document.querySelectorAll('#era-nav a');
+
+const activateDot = () => {
+  let current = 0;
+  eraSections.forEach((section, i) => {
+    const rect = section.getBoundingClientRect();
+    if (rect.top < window.innerHeight / 2) current = i;
+  });
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+};
+
+window.addEventListener('scroll', () => {
+  activateDot();
+  // Progress bar
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = `${(scrollTop / docHeight) * 100}%`;
+});
+
+// Smooth scroll for nav dots
+dots.forEach(dot => {
+  dot.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(dot.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+activateDot();
+</script>
+</body>
+</html>

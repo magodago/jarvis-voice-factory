@@ -776,6 +776,317 @@ section {
   line-height: 1.5;
 }
 
+/* === PAYMENT MODAL === */
+.payment-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,.92);
+  z-index: 300;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.payment-overlay.active { display: flex; }
+
+.payment-modal {
+  background: var(--card);
+  border: 1px solid rgba(0,212,255,.2);
+  border-radius: 24px;
+  padding: 2.5rem;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.payment-modal h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: .5rem;
+}
+
+.payment-modal .sub {
+  text-align: center;
+  color: rgba(224,224,255,.5);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.payment-summary {
+  background: rgba(0,212,255,.05);
+  border: 1px solid rgba(0,212,255,.1);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.payment-summary .row {
+  display: flex;
+  justify-content: space-between;
+  padding: .4rem 0;
+  font-size: 1rem;
+}
+
+.payment-summary .row.total {
+  border-top: 1px solid rgba(0,212,255,.15);
+  margin-top: .5rem;
+  padding-top: .8rem;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.payment-summary .row.total .val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, var(--gold), var(--magenta));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.payment-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: .8rem;
+  margin-bottom: 2rem;
+}
+
+.payment-method {
+  padding: 1.2rem .5rem;
+  text-align: center;
+  border: 2px solid rgba(0,212,255,.15);
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+  transition: all .3s;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.payment-method:hover {
+  border-color: var(--cyan);
+  background: rgba(0,212,255,.05);
+}
+
+.payment-method.selected {
+  border-color: var(--magenta);
+  background: rgba(255,21,208,.1);
+  box-shadow: 0 0 20px rgba(255,21,208,.2);
+}
+
+.payment-method .pm-icon { font-size: 1.8rem; display: block; margin-bottom: .4rem; }
+
+.pay-btn {
+  width: 100%;
+  padding: 1.2rem;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .3s;
+  background: linear-gradient(135deg, var(--green), #00cc66);
+  color: #003300;
+}
+
+.pay-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 30px rgba(0,255,136,.3);
+}
+
+.pay-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pay-btn.loading {
+  pointer-events: none;
+  opacity: .8;
+}
+
+.close-modal {
+  position: absolute;
+  top: 1rem;
+  right: 1.2rem;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: rgba(224,224,255,.4);
+  cursor: pointer;
+  transition: color .3s;
+}
+
+.close-modal:hover { color: var(--magenta); }
+
+/* === TICKET === */
+.ticket-container {
+  display: none;
+  animation: fadeInUp .5s ease-out;
+}
+
+.ticket-container.active { display: block; }
+
+.ticket {
+  background: linear-gradient(135deg, #0a0a1a, #12122a);
+  border: 1px solid rgba(0,212,255,.25);
+  border-radius: 20px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.ticket::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 4px;
+  background: linear-gradient(90deg, var(--cyan), var(--magenta), var(--gold));
+}
+
+.ticket-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px dashed rgba(0,212,255,.2);
+}
+
+.ticket-header .logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--cyan), var(--magenta));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ticket-header .check {
+  font-size: 3rem;
+  margin-top: .5rem;
+}
+
+.ticket-header h3 {
+  color: var(--green);
+  font-size: 1.3rem;
+  margin-top: .3rem;
+}
+
+.ticket-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .8rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.ticket-field {
+  font-size: .95rem;
+}
+
+.ticket-field .label {
+  color: rgba(224,224,255,.4);
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.ticket-field .value {
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.ticket-price-box {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 1rem;
+  border: 1px solid rgba(255,215,0,.2);
+  border-radius: 12px;
+  background: rgba(255,215,0,.05);
+}
+
+.ticket-price-box .amount {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold), var(--magenta));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ticket-price-box .paid-label {
+  font-size: .8rem;
+  color: var(--green);
+  font-weight: 600;
+}
+
+.ticket-footer {
+  border-top: 1px dashed rgba(0,212,255,.2);
+  padding-top: 1rem;
+  text-align: center;
+}
+
+.ticket-footer .fun-msg {
+  font-size: 1rem;
+  color: rgba(224,224,255,.6);
+  font-style: italic;
+}
+
+.ticket-footer .info {
+  font-size: .8rem;
+  color: rgba(224,224,255,.3);
+  margin-top: .5rem;
+}
+
+.ticket-actions {
+  display: flex;
+  gap: .8rem;
+  margin-top: 1.5rem;
+}
+
+.ticket-actions .btn-secondary,
+.ticket-actions .btn-primary {
+  flex: 1;
+  text-align: center;
+  font-size: .9rem;
+  padding: .8rem 1rem;
+}
+
+/* Payment processing spinner */
+.spinner {
+  display: none;
+  text-align: center;
+  padding: 2rem;
+}
+
+.spinner.active { display: block; }
+
+.spinner .spin {
+  width: 50px; height: 50px;
+  border: 3px solid rgba(0,212,255,.1);
+  border-top-color: var(--cyan);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spinner p {
+  color: rgba(224,224,255,.5);
+  font-size: 1rem;
+}
+
 /* Footer */
 footer {
   position: relative;
@@ -886,11 +1197,16 @@ footer .footer-logo {
   .stat-number { font-size: 1.5rem; }
   
   .booking-form { padding: 1.5rem; }
+  .payment-modal { padding: 1.5rem; }
+  .payment-methods { grid-template-columns: 1fr 1fr 1fr; }
+  .ticket-body { grid-template-columns: 1fr; }
+  .ticket-actions { flex-direction: column; }
 }
 
 @media (max-width: 480px) {
   .gallery-grid { grid-template-columns: 1fr; }
   .hero h1 { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+  .payment-methods { grid-template-columns: 1fr; }
 }
 
 /* Animations */
@@ -916,7 +1232,7 @@ footer .footer-logo {
 <div class="particles" id="particles"></div>
 
 <nav>
-<div class="logo">ROMPE TU ESTRÉS</div>
+  <div class="logo">ROMPE TU ESTRÉS</div>
   <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')">☰</button>
   <div class="nav-links">
     <a href="#packages">Paquetes</a>
@@ -1198,10 +1514,10 @@ footer .footer-logo {
 <section id="booking" class="cta-section">
   <h2 class="animate">💥 RESERVA TU DESTRUCCIÓN</h2>
   <p class="animate animate-delay-1">
-    Elige fecha, hora y paquete. Te confirmamos al instante por WhatsApp. <strong>¡Las plazas vuelan!</strong>
+    Elige fecha, hora y paquete. <strong>Después pagas y tienes tu ticket al instante.</strong>
   </p>
   
-  <form class="booking-form animate animate-delay-2" id="bookingForm" onsubmit="handleBooking(event)">
+  <form class="booking-form animate animate-delay-2" id="bookingForm">
     <div class="form-row">
       <div class="form-group">
         <label>📅 Fecha</label>
@@ -1243,7 +1559,7 @@ footer .footer-logo {
       </div>
       <div class="form-group">
         <label>📱 WhatsApp</label>
-        <input type="tel" id="bookingPhone" placeholder="Ej: 612 345 678" required>
+        <input type="tel" id="bookingPhone" placeholder="Ej: 658 23 79 88" required>
       </div>
     </div>
     
@@ -1274,16 +1590,112 @@ footer .footer-logo {
     </div>
     
     <div class="booking-total">
-      <span>💰 Total estimado</span>
+      <span>💰 Total</span>
       <span class="total-price" id="totalPrice">35€</span>
     </div>
     
-    <button type="submit" class="btn-primary">💥 ROMPER MI ESTRÉS AHORA</button>
-    <p style="text-align:center;margin-top:1rem;font-size:.85rem;color:rgba(224,224,255,.4);">
-      Te confirmamos la disponibilidad en menos de 30 minutos por WhatsApp
-    </p>
+    <button type="button" class="btn-primary" onclick="openPayment()" id="goToPayBtn">💥 IR A PAGAR</button>
   </form>
 </section>
+
+<!-- PAYMENT MODAL -->
+<div class="payment-overlay" id="paymentOverlay">
+  <div class="payment-modal">
+    <button class="close-modal" onclick="closePayment()">&times;</button>
+    
+    <!-- Payment form -->
+    <div id="paymentForm">
+      <h2>💳 PAGO SEGURO</h2>
+      <p class="sub">Elige tu método de pago</p>
+      
+      <div class="payment-summary" id="paymentSummary">
+        <div class="row"><span>📅 Fecha</span><span class="val" id="payDate">—</span></div>
+        <div class="row"><span>⏰ Hora</span><span class="val" id="payTime">—</span></div>
+        <div class="row"><span>🎯 Paquete</span><span class="val" id="payPackage">—</span></div>
+        <div class="row"><span>👥 Personas</span><span class="val" id="payPeople">—</span></div>
+        <div class="row total"><span>💰 TOTAL</span><span class="val" id="payTotal">—</span></div>
+      </div>
+      
+      <p style="color:rgba(224,224,255,.5);text-align:center;margin-bottom:.8rem;font-size:.9rem;">Método de pago</p>
+      <div class="payment-methods" id="paymentMethods">
+        <div class="payment-method" data-method="bizum" onclick="selectMethod(this)">
+          <span class="pm-icon">📱</span>
+          Bizum
+        </div>
+        <div class="payment-method" data-method="card" onclick="selectMethod(this)">
+          <span class="pm-icon">💳</span>
+          Tarjeta
+        </div>
+        <div class="payment-method" data-method="cash" onclick="selectMethod(this)">
+          <span class="pm-icon">💵</span>
+          Efectivo
+        </div>
+      </div>
+      
+      <button class="pay-btn" id="payBtn" onclick="processPayment()" disabled>
+        ✅ PAGAR AHORA
+      </button>
+      <p style="text-align:center;margin-top:.8rem;font-size:.8rem;color:rgba(224,224,255,.3);">
+        🔒 Pago simulado — versión demo. Próximamente pasarela real.
+      </p>
+    </div>
+    
+    <!-- Spinner -->
+    <div class="spinner" id="paySpinner">
+      <div class="spin"></div>
+      <p>🔄 Procesando pago...</p>
+    </div>
+    
+    <!-- Ticket -->
+    <div class="ticket-container" id="ticketContainer">
+      <div class="ticket" id="ticketContent">
+        <div class="ticket-header">
+          <div class="logo-text">ROMPE TU ESTRÉS</div>
+          <div class="check">✅</div>
+          <h3>PAGO CONFIRMADO</h3>
+        </div>
+        <div class="ticket-body" id="ticketBody">
+          <div class="ticket-field">
+            <div class="label">Reserva</div>
+            <div class="value" id="ticketId">#000000</div>
+          </div>
+          <div class="ticket-field">
+            <div class="label">Cliente</div>
+            <div class="value" id="ticketName">—</div>
+          </div>
+          <div class="ticket-field">
+            <div class="label">Fecha</div>
+            <div class="value" id="ticketDate">—</div>
+          </div>
+          <div class="ticket-field">
+            <div class="label">Hora</div>
+            <div class="value" id="ticketTime">—</div>
+          </div>
+          <div class="ticket-field">
+            <div class="label">Paquete</div>
+            <div class="value" id="ticketPackage">—</div>
+          </div>
+          <div class="ticket-field">
+            <div class="label">Método pago</div>
+            <div class="value" id="ticketMethod">—</div>
+          </div>
+          <div class="ticket-price-box">
+            <div class="paid-label">✅ PAGADO</div>
+            <div class="amount" id="ticketAmount">0€</div>
+          </div>
+        </div>
+        <div class="ticket-footer">
+          <div class="fun-msg" id="ticketFunMsg">"Los platos no se rompen solos. ¡Ve a por ellos!"</div>
+          <div class="info">C.C. Señorío Plaza · Illescas · Toledo · 658 23 79 88</div>
+        </div>
+      </div>
+      <div class="ticket-actions">
+        <button class="btn-secondary" onclick="sendWhatsAppTicket()">📱 WhatsApp</button>
+        <button class="btn-primary" onclick="window.print()">🖨️ Imprimir</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -1305,7 +1717,7 @@ footer .footer-logo {
 </footer>
 
 <script>
-// 🛡️ Check exactua fecha+hora no se haya reservado ya
+// 🛡️ Evitar reservas duplicadas
 function checkBlockedSlot(date, time) {
   const key = `rte_blocked_${date}_${time}`;
   return localStorage.getItem(key) === 'true';
@@ -1314,6 +1726,9 @@ function blockSlot(date, time) {
   const key = `rte_blocked_${date}_${time}`;
   localStorage.setItem(key, 'true');
 }
+
+// --- Booking data (global) ---
+let bookingData = {};
 
 // Particles
 for (let i = 0; i < 50; i++) {
@@ -1341,10 +1756,13 @@ document.querySelectorAll('.animate').forEach(el => observer.observe(el));
 const dateInput = document.getElementById('bookingDate');
 const today = new Date().toISOString().split('T')[0];
 dateInput.setAttribute('min', today);
-dateInput.value = today;
+if (!dateInput.value) dateInput.value = today;
 
 // Price calculation
 const prices = { basico: 25, premium: 35, vip: 50 };
+const pkgNames = { basico: 'Básico (25€)', premium: 'Premium (35€)', vip: 'VIP (50€)' };
+const pkgDurations = { basico: '20 min', premium: '30 min', vip: '45 min' };
+
 function calcTotal() {
   const pkg = document.getElementById('bookingPackage').value;
   const people = parseInt(document.getElementById('bookingPeople').value);
@@ -1353,33 +1771,130 @@ function calcTotal() {
   document.getElementById('totalPrice').textContent = total + '€';
 }
 
-// Handle booking
-function handleBooking(e) {
-  e.preventDefault();
-  const name = document.getElementById('bookingName').value;
-  const phone = document.getElementById('bookingPhone').value;
+const funMessages = [
+  '"Los platos no se rompen solos. ¡Ve a por ellos!"',
+  '"El paquete VIP incluye 45 min de paz interior (y 50 platos rotos)."',
+  '"No, la impresora del jefe no vale para descargar estrés. Bueno, sí."',
+  '"Pro tip: empieza con los vasos, calienta, y ve a por el monitor."',
+  '"La Rage Room: el único sitio donde romper es construir."',
+  '"¿Examen? ¿Jefe? ¿Hipoteca? Nosotros ponemos los platos."',
+  '"20 min de sesión = 3 días sin estrés. Matemáticas simples."',
+  '"Aplastar, romper, destrozar. En ese orden."'
+];
+
+// --- PAYMENT FLOW ---
+function openPayment() {
+  // Validate form
+  const name = document.getElementById('bookingName').value.trim();
+  const phone = document.getElementById('bookingPhone').value.trim();
   const date = document.getElementById('bookingDate').value;
   const time = document.getElementById('bookingTime').value;
   const pkg = document.getElementById('bookingPackage').value;
   const people = document.getElementById('bookingPeople').value;
-  const note = document.getElementById('bookingNote').value;
+  const note = document.getElementById('bookingNote').value.trim();
   
-  const pkgNames = { basico: 'Básico (25€)', premium: 'Premium (35€)', vip: 'VIP (50€)' };
-  
-  const msg = `💥 *NUEVA RESERVA - Rompe tu Estrés*\n\n👤 *Nombre:* ${name}\n📱 *WhatsApp:* ${phone}\n📅 *Fecha:* ${date}\n⏰ *Hora:* ${time}\n🎯 *Paquete:* ${pkgNames[pkg]}\n👥 *Personas:* ${people}${people > 5 ? '+' : ''}\n📝 *Nota:* ${note || 'Ninguna'}\n\n💰 *Total:* ${document.getElementById('totalPrice').textContent}`;
-  
-  // 🛡️ Comprobar si ese día y hora ya se reservó
-  if (checkBlockedSlot(date, time)) {
-    alert('❌ Ese día y hora ya tiene una reserva activa.\n\nElige otra fecha u horario, por favor.');
+  if (!name || !phone) {
+    alert('✋ Rellena tu nombre y WhatsApp primero.');
     return;
   }
   
-  // Marcar como reservado y abrir WhatsApp
-  blockSlot(date, time);
-  const whatsappUrl = `https://wa.me/34658237988?text=${encodeURIComponent(msg)}`;
-  window.open(whatsappUrl, '_blank');
+  // Check duplicate slot
+  if (checkBlockedSlot(date, time)) {
+    alert('❌ Ese día y hora ya tiene una reserva activa.\n\nElige otra fecha u horario.');
+    return;
+  }
   
-  alert('✅ ¡Gracias por tu reserva!\n\nTe hemos redirigido a WhatsApp para confirmar. Te responderemos en menos de 30 minutos.\n\n¡Prepárate para romperlo todo! 💥');
+  // Store booking data
+  const total = prices[pkg] * Math.min(parseInt(people), 5);
+  bookingData = { name, phone, date, time, pkg, people, note, total };
+  
+  // Fill payment summary
+  const fmtDate = new Date(date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('payDate').textContent = fmtDate;
+  document.getElementById('payTime').textContent = time;
+  document.getElementById('payPackage').textContent = pkgNames[pkg];
+  document.getElementById('payPeople').textContent = people + (people > 5 ? '+' : '');
+  document.getElementById('payTotal').textContent = total + '€';
+  
+  // Reset payment UI
+  document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+  document.getElementById('payBtn').disabled = true;
+  document.getElementById('payBtn').textContent = '✅ PAGAR AHORA';
+  document.getElementById('paymentForm').style.display = 'block';
+  document.getElementById('paySpinner').classList.remove('active');
+  document.getElementById('ticketContainer').classList.remove('active');
+  
+  // Show modal
+  document.getElementById('paymentOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePayment() {
+  document.getElementById('paymentOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function selectMethod(el) {
+  document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('payBtn').disabled = false;
+  document.getElementById('payBtn').textContent = `✅ PAGAR ${bookingData.total}€ con ${el.dataset.method.toUpperCase()}`;
+}
+
+function processPayment() {
+  const selectedMethod = document.querySelector('.payment-method.selected');
+  if (!selectedMethod) return;
+  
+  // Show spinner
+  document.getElementById('paymentForm').style.display = 'none';
+  document.getElementById('paySpinner').classList.add('active');
+  
+  // Simulate payment processing (2.5s)
+  setTimeout(() => {
+    // Generate ticket
+    document.getElementById('paySpinner').classList.remove('active');
+    showTicket(selectedMethod.dataset.method);
+  }, 2500);
+}
+
+function showTicket(method) {
+  // Block the slot
+  blockSlot(bookingData.date, bookingData.time);
+  
+  const num = 'RTE-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+  const fmtDate = new Date(bookingData.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  
+  const methodNames = { bizum: 'Bizum', card: 'Tarjeta', cash: 'Efectivo' };
+  const funMsg = funMessages[Math.floor(Math.random() * funMessages.length)];
+  
+  document.getElementById('ticketId').textContent = num;
+  document.getElementById('ticketName').textContent = bookingData.name;
+  document.getElementById('ticketDate').textContent = fmtDate;
+  document.getElementById('ticketTime').textContent = bookingData.time;
+  document.getElementById('ticketPackage').textContent = `${pkgNames[bookingData.pkg]} · ${pkgDurations[bookingData.pkg]}`;
+  document.getElementById('ticketMethod').textContent = methodNames[method] || 'Tarjeta';
+  document.getElementById('ticketAmount').textContent = bookingData.total + '€';
+  document.getElementById('ticketFunMsg').textContent = funMsg;
+  
+  document.getElementById('ticketContainer').classList.add('active');
+}
+
+function sendWhatsAppTicket() {
+  const d = bookingData;
+  const msg = `💥 *ROMPE TU ESTRÉS — TICKET DE RESERVA* 💥\n\n` +
+    `🎫 *Reserva:* ${document.getElementById('ticketId').textContent}\n` +
+    `👤 *Cliente:* ${d.name}\n` +
+    `📅 *Fecha:* ${new Date(d.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}\n` +
+    `⏰ *Hora:* ${d.time}\n` +
+    `🎯 *Paquete:* ${pkgNames[d.pkg]} · ${pkgDurations[d.pkg]}\n` +
+    `👥 *Personas:* ${d.people}${d.people > 5 ? '+' : ''}\n` +
+    `💰 *Pagado:* ${d.total}€ ✅\n\n` +
+    `📍 C.C. Señorío Plaza · Illescas · Toledo\n\n` +
+    `🔥 *¡Prepárate para romperlo todo!*\n\n` +
+    `🔔 *Importante:* Llega 10 min antes para firmar el seguro y ponerte el equipo.`;
+  
+  // Open WhatsApp with the message
+  window.open(`https://wa.me/34658237988?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
 // Lightbox
@@ -1397,7 +1912,7 @@ function closeLightbox() {
 
 // Close lightbox on Esc
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'Escape') { closeLightbox(); closePayment(); }
 });
 
 // Close mobile menu on link click
@@ -1407,7 +1922,7 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   });
 });
 
-// Gallery image fallback — if image doesn't load, show emoji
+// Gallery image fallback
 document.querySelectorAll('.gallery-item img').forEach(img => {
   img.addEventListener('error', function() {
     const overlay = this.nextElementSibling;

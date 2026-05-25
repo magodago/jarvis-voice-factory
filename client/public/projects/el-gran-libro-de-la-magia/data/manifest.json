@@ -18,7 +18,7 @@
     {"id": "houdini", "year": "1900", "title": "Era Houdini", "era": "Contemporánea", "description": "El escapismo conquista el mundo.", "complete": false},
     {"id": "tv", "year": "1950", "title": "Magia Televisiva", "era": "Contemporánea", "description": "La magia llega a millones de hogares.", "complete": false},
     {"id": "modern", "year": "2000", "title": "Mentalismo Moderno", "era": "Contemporánea", "description": "Psicología y magia de calle.", "complete": false},
-    {"id": "digital", "year": "2024", "title": "IA y Futuro", "era": "Digital", "description": "Realidad aumentada y nueva frontera.", "complete": false}
+    {"id": "digital", "year": "2000", "title": "Magia en Redes", "era": "Contemporánea", "description": "YouTube, TikTok y la nueva generación de magos.", "complete": false}
   ],
   "magicians": [
     {"id": "robert-houdin", "name": "Jean-Eugène Robert-Houdin", "born": 1805, "died": 1871, "country": "Francia", "specialty": "Ilusionismo", "complete": false},

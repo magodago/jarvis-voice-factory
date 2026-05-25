@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magia Española · El Gran Libro de la Magia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0f;--bg2:#0f0f1a;--card:#14141f;--gold:#c9a84c;--gold-light:#e8d48b;--gold-dark:#8a7030;--text:#f0ece4;--text2:#a09888;--text3:#6b6358;--border:rgba(201,168,76,0.08);--font-display:'Cormorant Garamond',serif;--font-body:'Inter',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+::selection{background:var(--gold);color:var(--bg)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(10,10,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gold);text-decoration:none}
+nav .logo span{color:var(--text3)}
+nav .back{color:var(--text2);text-decoration:none;font-size:12px;transition:color .3s}
+.hero{position:relative;padding:120px 40px 60px;text-align:center;background:linear-gradient(135deg,#0a0a0f,#1a0f0a);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,76,.06),transparent 70%)}
+.hero h1{font-family:var(--font-display);font-size:clamp(36px,5vw,56px);font-weight:300;margin-bottom:8px;position:relative}
+.hero h1 .flag{font-size:32px;margin-right:8px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p{color:var(--text2);font-size:15px;font-weight:300;max-width:600px;margin:0 auto;line-height:1.6;position:relative}
+.hero .subtitle{font-family:var(--font-display);font-size:16px;color:var(--gold-dark);margin-top:8px;letter-spacing:1px;position:relative}
+.content{max-width:900px;margin:0 auto;padding:40px 24px 80px}
+
+/* Era sections */
+.era-section{margin-bottom:48px}
+.era-section .era-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.era-section .era-year{font-family:var(--font-display);font-size:24px;font-weight:300;color:var(--gold-dark);min-width:80px}
+.era-section .era-title{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--gold)}
+.era-section .era-intro{font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.5}
+
+.mago-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:12px;transition:all .3s}
+.mago-card:hover{border-color:var(--border-gold)}
+.mago-card .mc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.mago-card .mc-name{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--gold)}
+.mago-card .mc-years{font-size:11px;color:var(--text3);font-feature-settings:'tnum'}
+.mago-card .mc-real{font-size:11px;color:var(--text3);margin-bottom:6px}
+.mago-card .mc-specialty{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.mago-card .mc-desc{font-size:13px;color:var(--text2);line-height:1.5;font-weight:300;margin-bottom:8px}
+.mago-card .mc-logros{font-size:11px;color:var(--text);line-height:1.4;padding:8px 12px;background:rgba(201,168,76,.04);border-left:2px solid var(--gold-dark);border-radius:0 6px 6px 0}
+
+footer{text-align:center;padding:32px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
+footer a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+<nav>
+  <a href="." class="logo">El Gran Libro <span>· Magia Española</span></a>
+  <a href="magos.html" class="back">← Todos los magos</a>
+</nav>
+<section class="hero">
+  <h1><span class="flag">🇪🇸</span> Magia <em>Española</em></h1>
+  <p>España ha dado al mundo algunos de los magos más influyentes de la historia. Desde los pioneros del siglo XIX hasta los fenómenos televisivos del siglo XXI, la magia española tiene una tradición rica, original y reconocida mundialmente.</p>
+  <div class="subtitle">— La escuela mágica española: teoría, humor y genialidad —</div>
+</section>
+<div class="content">
+
+<div class="era-section">
+  <div class="era-header">
+    <div class="era-year">S. XIX</div>
+    <div class="era-title">Pioneros</div>
+  </div>
+  <div class="era-intro">Los primeros magos españoles documentados, que sentaron las bases del ilusionismo en nuestro país.</div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">José de Letamendi</div><div class="mc-years">1828-1897</div></div>
+    <div class="mc-real">Médico, escritor y pionero de la magia científica</div>
+    <div class="mc-desc">Famoso por su frase sobre la magia y el arte. Médico de profesión pero gran aficionado a la magia, escribió sobre los principios psicológicos del ilusionismo mucho antes de que nadie los teorizara.</div>
+    <div class="mc-logros">★ Considerado el primer teórico español de la magia. Su frase "El verdadero secreto de la magia está en la atención del espectador" anticipó en décadas la teoría de la misdirection.</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Félix el Mago</div><div class="mc-years">1840-1910</div></div>
+    <div class="mc-real">Félix García Sobrino</div>
+    <div class="mc-desc">Uno de los primeros ilusionistas españoles en actuar internacionalmente. Recorrió Europa y América con su espectáculo de magia de salón y grandes ilusiones.</div>
+    <div class="mc-logros">★ Introdujo en España las técnicas del ilusionismo moderno francés. Actuó para la realeza europea.</div>
+  </div>
+</div>
+
+<div class="era-section">
+  <div class="era-header">
+    <div class="era-year">S. XX</div>
+    <div class="era-title">Los Maestros Fundacionales</div>
+  </div>
+  <div class="era-intro">La generación que creó la Escuela Mágica Española, reconocida mundialmente por su profundidad teórica.</div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Arturo de Ascanio</div><div class="mc-years">1929-1997</div></div>
+    <div class="mc-real">Arturo de Ascanio y Navaz · Santa Cruz de Tenerife</div>
+    <div class="mc-specialty">🃏 Cartomagia · Teoría</div>
+    <div class="mc-desc">Considerado el mayor teórico de la cartomagia del siglo XX. Abogado de profesión, transformó para siempre la comprensión de la naturalidad y la ocultación en la magia. Su obra 'La Magia de Ascanio' (4 tomos) es tratado fundamental en todo el mundo.</div>
+    <div class="mc-logros">★ Premio Mundial FISM (1970) ★ Co-fundador de la Escuela Mágica de Barcelona (1972) ★ Teoría de los tiempos muertos y la naturalidad ★ Considerado el mago de magos español</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Juan Tamariz</div><div class="mc-years">1942-actualidad</div></div>
+    <div class="mc-real">Juan Tamariz Martel · Madrid</div>
+    <div class="mc-specialty">🃏 Cartomagia · Teoría · TV</div>
+    <div class="mc-desc">El mago español más influyente de todos los tiempos. Genio de la cartomagia y la comunicación mágica. Su libro 'La Vía Mágica' es la biblia de la presentación mágica. Su sistema 'Mnemonica' revolucionó la cartomagia de memoria. Su sentido del humor y su capacidad de conectar con el público lo han convertido en leyenda viva.</div>
+    <div class="mc-logros">★ Primer Premio Mundial FISM (París 1973) ★ Medalla de Oro al Mérito en Bellas Artes (2020) ★ John Nevil Maskelyne Prize ★ 'La Vía Mágica' estudiado por la CIA ★ Creador del stack Mnemonica</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Frakson</div><div class="mc-years">1932-2017</div></div>
+    <div class="mc-real">Francisco González López · Madrid</div>
+    <div class="mc-specialty">🎩 Magia General · Cartomagia</div>
+    <div class="mc-desc">Uno de los grandes nombres de la magia española del siglo XX. Dominaba todas las ramas de la magia con especial maestría en la cartomagia. Su nombre artístico Frakson es un acrónimo de su nombre real.</div>
+    <div class="mc-logros">★ Premio Nacional de Magia ★ Gran figura de los Congresos Mágicos españoles durante décadas</div>
+  </div>
+</div>
+
+<div class="era-section">
+  <div class="era-header">
+    <div class="era-year">1970-2000</div>
+    <div class="era-title">La Edad de Oro Española</div>
+  </div>
+  <div class="era-intro">La explosión de la magia española: la Escuela Mágica de Barcelona, los congresos, las convenciones y el reconocimiento internacional.</div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">José María Aragonés</div><div class="mc-years">1946-actualidad</div></div>
+    <div class="mc-real">Barcelona</div>
+    <div class="mc-specialty">🎩 Ilusionismo · Grandes Ilusiones</div>
+    <div class="mc-desc">Histórico mago español, referente del ilusionismo de escena. Miembro destacado de la Escuela Mágica de Barcelona y figura clave en los congresos nacionales.</div>
+    <div class="mc-logros">★ Pionero del ilusionismo escénico en España ★ Referente de varias generaciones</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Rafa G. Villar</div><div class="mc-years">1950-actualidad</div></div>
+    <div class="mc-real">Rafael González Villar</div>
+    <div class="mc-specialty">🃏 Cartomagia · Close-up</div>
+    <div class="mc-desc">Uno de los grandes nombres del close-up español. Su técnica impecable y su carisma en la mesa lo convirtieron en un referente para los cartómagos españoles de los 80 y 90.</div>
+    <div class="mc-logros">★ Figura clave del close-up español ★ Maestro de la cartomagia de salón</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Pepe el Mago</div><div class="mc-years">1935-2010</div></div>
+    <div class="mc-real">José Pepe Figueras · Barcelona</div>
+    <div class="mc-specialty">🎩 Magia General · Cómica</div>
+    <div class="mc-desc">Figura mítica de la magia en Barcelona. Su estilo cómico y cercano lo convirtió en un habitual de la televisión y los teatros. Representaba el alma popular de la magia española.</div>
+    <div class="mc-logros">★ Pionero de la magia televisiva en España ★ Actuó en los principales programas de TVE</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Gran Alexander</div><div class="mc-years">1905-1985</div></div>
+    <div class="mc-real">Alejandro Abad</div>
+    <div class="mc-specialty">🎩 Ilusionismo · Escena</div>
+    <div class="mc-desc">El ilusionista español de referencia durante décadas. Su espectáculo de grandes ilusiones recorrió España y Latinoamérica.</div>
+    <div class="mc-logros">★ Referente del ilusionismo escénico español ★ Giras por España y América</div>
+  </div>
+</div>
+
+<div class="era-section">
+  <div class="era-header">
+    <div class="era-year">2000-Act.</div>
+    <div class="era-title">Magia Española Contemporánea</div>
+  </div>
+  <div class="era-intro">La nueva generación de magos españoles que triunfan en televisión, redes sociales y escenarios internacionales.</div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Jorge Blass</div><div class="mc-years">1979-actualidad</div></div>
+    <div class="mc-real">Jorge Blass · Madrid</div>
+    <div class="mc-specialty">🎩 Ilusionismo · TV · Grandes Ilusiones</div>
+    <div class="mc-desc">El mago español contemporáneo más famoso. Ha realizado múltiples especiales de televisión (Antena 3, Telecinco). Su estilo mezcla grandes ilusiones, magia de cerca y un carisma arrollador. Ha actuado en más de 40 países.</div>
+    <div class="mc-logros">★ Mago del Año (Academia de las Artes Mágicas) ★ Especiales TV en Antena 3 y Telecinco ★ Giras internacionales ★ Director artístico de congresos de magia</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Jandro</div><div class="mc-years">1978-actualidad</div></div>
+    <div class="mc-real">Alejandro López · Barcelona</div>
+    <div class="mc-specialty">🎩 Magia Cómica · TV</div>
+    <div class="mc-desc">El mago más mediático de la televisión española actual. Colaborador habitual de 'El Hormiguero' (Antena 3), donde sus apariciones son virales. Su estilo es pura comedia mezclada con magia visual.</div>
+    <div class="mc-logros">★ Colaborador estrella de 'El Hormiguero' ★ Millones de visualizaciones en redes ★ Giras nacionales</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Miguel Puga</div><div class="mc-years">1985-actualidad</div></div>
+    <div class="mc-real">Miguel Puga · Madrid</div>
+    <div class="mc-specialty">🧠 Mentalismo</div>
+    <div class="mc-desc">El mentalista español de referencia. Sus shows combinan psicología, hipnosis y lectura mental con una puesta en escena moderna. Ha actuado en los principales teatros de España y Latinoamérica.</div>
+    <div class="mc-logros">★ Giras nacionales e internacionales ★ Referente del mentalismo en español ★ Show regular en teatros de Madrid</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Yunke</div><div class="mc-years">1970-actualidad</div></div>
+    <div class="mc-real">Juan José López</div>
+    <div class="mc-specialty">🎩 Grandes Ilusiones</div>
+    <div class="mc-desc">Ilusionista español especializado en grandes ilusiones. Ha participado en congresos internacionales y ha llevado su espectáculo por todo el mundo.</div>
+    <div class="mc-logros">★ Congresos FISM ★ Giras internacionales</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Mag Lari</div><div class="mc-years">1966-actualidad</div></div>
+    <div class="mc-real">Josep Lari · Barcelona</div>
+    <div class="mc-specialty">🎩 Ilusionismo · Teatro</div>
+    <div class="mc-desc">Mago, actor y presentador catalán. Su estilo teatral y cercano lo ha convertido en un referente de la magia en Cataluña. Ha presentado programas en TV3 y tiene un show estable en Barcelona.</div>
+    <div class="mc-logros">★ Show estable en Barcelona ★ Televisión autonómica ★ Giras</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">Woody Aragón</div><div class="mc-years">1975-actualidad</div></div>
+    <div class="mc-real">Woody Aragón · Zaragoza</div>
+    <div class="mc-specialty">🃏 Cartomagia · Close-up</div>
+    <div class="mc-desc">Reconocido cartómago español con proyección internacional. Su manejo de las cartas y su estilo personal lo han llevado a actuar en congresos y festivales de magia de todo el mundo.</div>
+    <div class="mc-logros">★ Congresos internacionales ★ Embajador de la cartomagia española</div>
+  </div>
+  <div class="mago-card">
+    <div class="mc-header"><div class="mc-name">El Mago Xuso</div><div class="mc-years">1980-actualidad</div></div>
+    <div class="mc-real">Jesús González</div>
+    <div class="mc-specialty">📺 Magia Callejera · Redes</div>
+    <div class="mc-desc">Nueva generación de la magia española en redes sociales. Ha sabido adaptar la magia a TikTok e Instagram, acumulando miles de seguidores y llevando la magia a un público joven.</div>
+    <div class="mc-logros">★ Creador de contenido mágico ★ Magia adaptada a redes sociales</div>
+  </div>
+</div>
+
+<p style="text-align:center;color:var(--text3);font-size:13px;font-weight:300;margin-top:40px">🇪🇸 Esta sección está en constante expansión. ¿Conoces a algún mago español que debería estar aquí? <a href="firmas.html" style="color:var(--gold)">Escríbenos</a>.</p>
+</div>
+<footer>© 2026 <a href=".">El Gran Libro de la Magia</a> · Sección: Magia Española</footer>
+</body>
+</html>

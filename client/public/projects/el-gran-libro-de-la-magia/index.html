@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Gran Libro de la Magia · The Grand Book of Magic</title>
+<meta name="description" content="La web definitiva sobre la historia de la magia e ilusionismo. Biografías, cronología, biblioteca visual y comunidad global de magos.">
+<meta property="og:title" content="El Gran Libro de la Magia">
+<meta property="og:description" content="La historia definitiva del ilusionismo. De chamanes a la era digital.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0a0a0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   ROOT & RESET
+   ============================================ */
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #0f0f1a;
+  --bg-card: #14141f;
+  --gold: #c9a84c;
+  --gold-light: #e8d48b;
+  --gold-dark: #8a7030;
+  --text-primary: #f0ece4;
+  --text-secondary: #a09888;
+  --text-muted: #6b6358;
+  --accent-red: #8b2f2f;
+  --accent-blue: #2a3f6b;
+  --border-subtle: rgba(201,168,76,0.08);
+  --border-gold: rgba(201,168,76,0.2);
+  --shadow-gold: 0 4px 30px rgba(201,168,76,0.08);
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --nav-height: 72px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--gold-dark) var(--bg-primary)}
+body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-primary);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg-primary)}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px}
+::selection{background:var(--gold);color:var(--bg-primary)}
+img{max-width:100%;height:auto;display:block}
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-height);display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(10,10,15,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border-subtle);transition:transform .4s ease,background .4s}
+nav.scrolled{background:rgba(10,10,15,.95)}
+nav .logo{font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:1px;color:var(--gold);text-decoration:none}
+nav .logo span{font-weight:300;color:var(--text-muted)}
+nav .nav-links{display:flex;gap:32px;list-style:none;align-items:center}
+nav .nav-links a{color:var(--text-secondary);text-decoration:none;font-size:12px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;transition:color .3s;position:relative}
+nav .nav-links a:hover{color:var(--gold)}
+nav .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width .3s}
+nav .nav-links a:hover::after{width:100%}
+nav .nav-cta{padding:8px 20px;border:1px solid var(--gold);border-radius:4px;color:var(--gold)!important;font-weight:600!important;transition:all .3s}
+nav .nav-cta:hover{background:var(--gold);color:var(--bg-primary)!important}
+.mobile-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.mobile-toggle span{width:24px;height:1.5px;background:var(--text-secondary);transition:all .3s}
+
+@media(max-width:900px){
+  nav{padding:0 20px}
+  nav .nav-links{position:fixed;top:var(--nav-height);left:0;right:0;background:rgba(10,10,15,.98);flex-direction:column;padding:24px;gap:20px;transform:translateY(-120%);opacity:0;transition:all .4s;pointer-events:none;border-bottom:1px solid var(--border-subtle)}
+  nav .nav-links.open{transform:translateY(0);opacity:1;pointer-events:auto}
+  .mobile-toggle{display:flex}
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:120px 40px 80px}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover;opacity:.35;transform:scale(1.05)}
+.hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(10,10,15,.6) 0%,rgba(10,10,15,.85) 50%,var(--bg-primary) 100%)}
+.hero-particle{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;animation:float 8s infinite;opacity:0}
+@keyframes float{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:.4}90%{opacity:.4}100%{transform:translateY(-100vh) scale(1);opacity:0}}
+.hero-content{position:relative;z-index:2;max-width:900px;text-align:center;animation:fadeUp 1.5s ease-out}
+@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.hero-badge{display:inline-block;padding:6px 20px;border:1px solid var(--border-gold);border-radius:20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:32px;font-weight:500}
+.hero h1{font-family:var(--font-display);font-size:clamp(48px,8vw,96px);font-weight:300;letter-spacing:-1px;line-height:1.05;margin-bottom:24px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero h1 .accent{font-weight:700;color:var(--gold-light)}
+.hero .subtitle{font-size:clamp(16px,2vw,22px);color:var(--text-secondary);line-height:1.6;max-width:680px;margin:0 auto 48px;font-weight:300}
+.hero .subtitle em{color:var(--gold-light);font-style:italic}
+.hero-cta{display:inline-flex;align-items:center;gap:12px;padding:16px 40px;background:var(--gold);color:var(--bg-primary);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:none;border-radius:4px;cursor:pointer;transition:all .3s}
+.hero-cta:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 8px 40px rgba(201,168,76,.25)}
+.hero-cta .arrow{transition:transform .3s}
+.hero-cta:hover .arrow{transform:translateX(4px)}
+.hero .scroll-indicator{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--text-muted);font-size:10px;letter-spacing:2px;text-transform:uppercase;animation:bob 2s infinite}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+.scroll-line{width:1px;height:40px;background:linear-gradient(180deg,var(--gold-dark),transparent)}
+
+/* ============================================
+   STATS BAR
+   ============================================ */
+.stats-bar{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border-subtle);margin:0 40px;border-radius:8px;overflow:hidden;transform:translateY(-50%)}
+.stats-bar .stat{background:var(--bg-secondary);padding:28px 20px;text-align:center}
+.stats-bar .stat-num{font-family:var(--font-display);font-size:36px;font-weight:600;color:var(--gold);margin-bottom:4px}
+.stats-bar .stat-label{font-size:11px;color:var(--text-muted);letter-spacing:.5px;text-transform:uppercase;font-weight:500}
+
+@media(max-width:768px){
+  .stats-bar{grid-template-columns:repeat(2,1fr);margin:0 20px}
+  .hero{padding:100px 20px 60px}
+}
+
+/* ============================================
+   SECTION COMMON
+   ============================================ */
+.section{padding:100px 40px;position:relative}
+.section-header{max-width:800px;margin:0 auto 60px;text-align:center}
+.section-tag{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:16px}
+.section-title{font-family:var(--font-display);font-size:clamp(32px,4vw,52px);font-weight:300;letter-spacing:-.5px;margin-bottom:16px;line-height:1.15}
+.section-title em{font-style:italic;color:var(--gold)}
+.section-desc{font-size:16px;color:var(--text-secondary);line-height:1.7;font-weight:300;max-width:600px;margin:0 auto}
+.divider{width:60px;height:1px;background:var(--gold-dark);margin:24px auto}
+
+/* ============================================
+   TIMELINE PREVIEW
+   ============================================ */
+.timeline-scroll{display:flex;gap:0;overflow-x:auto;padding:20px 40px 40px;scrollbar-width:none;cursor:grab;scroll-snap-type:x mandatory}
+.timeline-scroll::-webkit-scrollbar{display:none}
+.timeline-item{flex-shrink:0;width:280px;padding:24px;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:8px;margin-right:12px;scroll-snap-align:start;transition:all .4s;position:relative;cursor:pointer}
+.timeline-item:hover{border-color:var(--border-gold);transform:translateY(-4px);box-shadow:var(--shadow-gold)}
+.timeline-item .era-year{font-family:var(--font-mono);font-size:12px;color:var(--gold);margin-bottom:8px}
+.timeline-item .era-title{font-family:var(--font-display);font-size:22px;color:var(--text-primary);margin-bottom:8px;font-weight:600}
+.timeline-item .era-desc{font-size:13px;color:var(--text-secondary);line-height:1.5;font-weight:300}
+.timeline-item .era-icon{font-size:32px;margin-bottom:12px;opacity:.6}
+
+/* ============================================
+   FEATURED MAGICIANS
+   ============================================ */
+.magician-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;max-width:1200px;margin:0 auto}
+.magician-card{position:relative;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:8px;overflow:hidden;transition:all .5s;cursor:pointer;aspect-ratio:3/4}
+.magician-card:hover{border-color:var(--border-gold);transform:scale(1.02);box-shadow:var(--shadow-gold)}
+.magician-card img{width:100%;height:100%;object-fit:cover;transition:transform .8s;opacity:.7}
+.magician-card:hover img{transform:scale(1.05);opacity:.9}
+.magician-card .card-overlay{position:absolute;bottom:0;left:0;right:0;padding:24px;background:linear-gradient(0deg,rgba(10,10,15,.95) 0%,transparent 100%)}
+.magician-card .m-name{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--gold);margin-bottom:2px}
+.magician-card .m-era{font-size:11px;color:var(--text-muted);letter-spacing:.5px;text-transform:uppercase;font-weight:500}
+.magician-card .m-specialty{font-size:12px;color:var(--text-secondary);margin-top:6px;font-weight:300}
+
+/* ============================================
+   QUOTE SECTION
+   ============================================ */
+.quote-section{background:linear-gradient(180deg,var(--bg-primary),var(--bg-secondary),var(--bg-primary));text-align:center;padding:120px 40px;position:relative;overflow:hidden}
+.quote-section::before{content:'"';position:absolute;top:20px;left:50%;transform:translateX(-50%);font-family:var(--font-display);font-size:200px;color:var(--gold);opacity:.04;line-height:1}
+.quote-section blockquote{font-family:var(--font-display);font-size:clamp(28px,3.5vw,48px);font-weight:300;font-style:italic;color:var(--text-primary);line-height:1.4;max-width:720px;margin:0 auto 24px}
+.quote-section .quote-author{font-size:14px;color:var(--gold);font-weight:500;letter-spacing:1px}
+
+/* ============================================
+   SECTIONS GRID
+   ============================================ */
+.sections-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;max-width:1200px;margin:0 auto}
+.section-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:8px;padding:32px 24px;text-align:center;transition:all .4s;cursor:pointer;position:relative;overflow:hidden}
+.section-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .4s;transform-origin:left}
+.section-card:hover::before{transform:scaleX(1)}
+.section-card:hover{border-color:var(--border-gold);transform:translateY(-4px);box-shadow:var(--shadow-gold)}
+.section-card .sc-icon{font-size:36px;margin-bottom:16px;display:block}
+.section-card .sc-title{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--gold);margin-bottom:8px}
+.section-card .sc-desc{font-size:13px;color:var(--text-secondary);line-height:1.5;font-weight:300}
+
+/* ============================================
+   CTA SECTION
+   ============================================ */
+.cta-section{text-align:center;padding:120px 40px;position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center, rgba(201,168,76,.03) 0%, transparent 70%)}
+.cta-section h2{font-family:var(--font-display);font-size:clamp(28px,3vw,42px);font-weight:300;margin-bottom:12px}
+.cta-section p{color:var(--text-secondary);font-size:16px;font-weight:300;margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto}
+.cta-form{display:flex;gap:12px;max-width:480px;margin:0 auto;justify-content:center}
+.cta-form input{flex:1;padding:14px 20px;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:4px;color:var(--text-primary);font-size:14px;outline:none;transition:border-color .3s;font-family:var(--font-body)}
+.cta-form input:focus{border-color:var(--gold)}
+.cta-form input::placeholder{color:var(--text-muted)}
+.cta-form button{padding:14px 32px;background:var(--gold);color:var(--bg-primary);border:none;border-radius:4px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .3s;font-family:var(--font-body)}
+.cta-form button:hover{background:var(--gold-light)}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer{padding:60px 40px 40px;border-top:1px solid var(--border-subtle);display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1200px;margin:0 auto}
+footer h3{font-family:var(--font-display);font-size:18px;color:var(--gold);margin-bottom:16px}
+footer p{font-size:13px;color:var(--text-muted);line-height:1.6;font-weight:300}
+footer ul{list-style:none}
+footer ul li{margin-bottom:8px}
+footer ul li a{color:var(--text-secondary);text-decoration:none;font-size:13px;transition:color .3s}
+footer ul li a:hover{color:var(--gold)}
+footer .copyright{grid-column:1/-1;text-align:center;padding-top:32px;border-top:1px solid var(--border-subtle);font-size:11px;color:var(--text-muted);letter-spacing:.5px}
+
+@media(max-width:900px){
+  footer{grid-template-columns:1fr 1fr;padding:40px 20px}
+  .section{padding:60px 20px}
+  .timeline-scroll{padding:20px}
+}
+
+/* ============================================
+   FADE IN ANIMATIONS
+   ============================================ */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="/" class="logo">El Gran Libro <span>· de la Magia</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#historia">Historia</a></li>
+    <li><a href="#magos">Magos</a></li>
+    <li><a href="#biblioteca">Biblioteca</a></li>
+    <li><a href="#comunidad">Comunidad</a></li>
+    <li><a href="#firmas" class="nav-cta">Firmar</a></li>
+  </ul>
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <img src="assets/images/hero-bg.jpg" alt="" loading="lazy">
+  </div>
+  <div class="hero-overlay"></div>
+  <!-- Particles -->
+  <div id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Desde los chamanes hasta la inteligencia artificial</div>
+    <h1>El Gran Libro<br>de la <em>Magia</em></h1>
+    <p class="subtitle">Un viaje a través de <em>5000 años</em> de ilusionismo, misterio y asombro. La historia definitiva del arte más antiguo de la humanidad.</p>
+    <a href="#historia" class="hero-cta">
+      Comenzar el viaje <span class="arrow">→</span>
+    </a>
+  </div>
+  <div class="scroll-indicator">
+    <span>Descubre</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar" id="stats">
+  <div class="stat"><div class="stat-num" data-target="5000">0</div><div class="stat-label">Años de historia</div></div>
+  <div class="stat"><div class="stat-num" data-target="200">0</div><div class="stat-label">Magos documentados</div></div>
+  <div class="stat"><div class="stat-num" data-target="50">0</div><div class="stat-label">Países representados</div></div>
+  <div class="stat"><div class="stat-num" data-target="15">0</div><div class="stat-label">Épocas históricas</div></div>
+</div>
+
+<!-- QUOTE -->
+<section class="quote-section fade-in">
+  <blockquote>La magia es la única forma de arte que puede hacer que el público adulto vuelva a sentir lo que sentía cuando era niño.</blockquote>
+  <div class="quote-author">— David Copperfield</div>
+</section>
+
+<!-- TIMELINE PREVIEW -->
+<section class="section" id="historia">
+  <div class="section-header fade-in">
+    <div class="section-tag">Línea del Tiempo</div>
+    <h2 class="section-title">La historia de la <em>magia</em></h2>
+    <p class="section-desc">Desde los rituales chamánicos del Paleolítico hasta la magia digital del siglo XXI. Explora cada era del ilusionismo.</p>
+  </div>
+  <div class="timeline-scroll" id="timelineScroll">
+    <div class="timeline-item"><div class="era-icon">🕯️</div><div class="era-year">40,000 a.C.</div><div class="era-title">Chamanes</div><div class="era-desc">Los primeros "magos" de la humanidad. Rituales, trances y curaciones chamánicas en las cavernas prehistóricas.</div></div>
+    <div class="timeline-item"><div class="era-icon">🏛️</div><div class="era-year">3,000 a.C.</div><div class="era-title">Egipto Antiguo</div><div class="era-desc">Los sacerdotes egipcios dominaban ilusiones con agua, fuego y apareciones. El Papiro Westcar documenta los primeros trucos.</div></div>
+    <div class="timeline-item"><div class="era-icon">🏺</div><div class="era-year">500 a.C.</div><div class="era-title">Grecia y Roma</div><div class="era-desc">Autómatas sagrados, templos con mecanismos ocultos. Herón de Alejandría crea la primera puerta automática "mágica".</div></div>
+    <div class="timeline-item"><div class="era-icon">📜</div><div class="era-year">400 d.C.</div><div class="era-title">Edad Media</div><div class="era-desc">Trovadores, juglares y alquimistas. La magia callejera sobrevive entre la inquisición y el asombro popular.</div></div>
+    <div class="timeline-item"><div class="era-icon">⚗️</div><div class="era-year">1500</div><div class="era-title">Alquimia</div><div class="era-desc">Entre la ciencia y la magia. Transformación de metales, elixires y la búsqueda de la piedra filosofal.</div></div>
+    <div class="timeline-item"><div class="era-icon">🎩</div><div class="era-year">1780</div><div class="era-title">Ilusionismo Clásico</div><div class="era-desc">Robert-Houdin funda el ilusionismo moderno. Nacen los teatros de magia y la figura del mago de sociedad.</div></div>
+    <div class="timeline-item"><div class="era-icon">⛓️</div><div class="era-year">1900</div><div class="era-title">Era Houdini</div><div class="era-desc">El escapismo revoluciona la magia. Houdini se convierte en el primer mago global. Desafíos, mitos y leyendas.</div></div>
+    <div class="timeline-item"><div class="era-icon">📺</div><div class="era-year">1950</div><div class="era-title">Magia Televisiva</div><div class="era-desc">La TV lleva la magia a millones. Mark Wilson, David Copperfield y los especiales televisivos transforman el arte.</div></div>
+    <div class="timeline-item"><div class="era-icon">🧠</div><div class="era-year">2000</div><div class="era-title">Mentalismo</div><div class="era-desc">Derren Brown, Criss Angel y David Blaine. La magia vuelve a la calle, al cine ya la psicología.</div></div>
+    <div class="timeline-item"><div class="era-icon">🤖</div><div class="era-year">2024</div><div class="era-title">IA y Futuro</div><div class="era-desc">Realidad aumentada, inteligencia artificial y neurociencia. ¿Dónde termina la magia y empieza la tecnología?</div></div>
+  </div>
+</section>
+
+<!-- MAGICIANS PREVIEW -->
+<section class="section" id="magos" style="background:var(--bg-secondary)">
+  <div class="section-header fade-in">
+    <div class="section-tag">Grandes Maestros</div>
+    <h2 class="section-title">Los <em>magos</em> que marcaron la historia</h2>
+    <p class="section-desc">Conoce las vidas, los trucos y el legado de los ilusionistas más influyentes de todos los tiempos.</p>
+  </div>
+  <div class="magician-grid">
+    <div class="magician-card fade-in">
+      <img src="assets/images/hero-bg.jpg" alt="" loading="lazy" style="object-position:center 30%">
+      <div class="card-overlay">
+        <div class="m-name">Harry Houdini</div>
+        <div class="m-era">1874 · 1926 · Escapismo</div>
+        <div class="m-specialty">El rey del escapismo. Cadenas, camisas de fuerza y tanques de agua.</div>
+      </div>
+    </div>
+    <div class="magician-card fade-in">
+      <img src="assets/images/mago-portrait.jpg" alt="" loading="lazy" style="object-position:center 20%">
+      <div class="card-overlay">
+        <div class="m-name">Jean-Eugène Robert-Houdin</div>
+        <div class="m-era">1805 · 1871 · Ilusionismo</div>
+        <div class="m-specialty">El padre del ilusionismo moderno. Mago, relojero y hombre de ciencia.</div>
+      </div>
+    </div>
+    <div class="magician-card fade-in">
+      <img src="assets/images/timeline-deco.jpg" alt="" loading="lazy" style="object-position:center 50%">
+      <div class="card-overlay">
+        <div class="m-name">Juan Tamariz</div>
+        <div class="m-era">1942 · Actualidad · Cartomagia</div>
+        <div class="m-specialty">El mago español más influyente del mundo. Teoría, humor y pura magia.</div>
+      </div>
+    </div>
+    <div class="magician-card fade-in">
+      <img src="assets/images/poster-vintage.jpg" alt="" loading="lazy" style="object-position:center 30%">
+      <div class="card-overlay">
+        <div class="m-name">David Copperfield</div>
+        <div class="m-era">1956 · Actualidad · Grandes Ilusiones</div>
+        <div class="m-specialty">El mago más rico y famoso del mundo. Hizo desaparecer la Estatua de la Libertad.</div>
+      </div>
+    </div>
+    <div class="magician-card fade-in">
+      <img src="assets/images/hero-bg.jpg" alt="" loading="lazy" style="object-position:center 40%">
+      <div class="card-overlay">
+        <div class="m-name">Derren Brown</div>
+        <div class="m-era">1971 · Actualidad · Mentalismo</div>
+        <div class="m-specialty">Psicólogo, hipnotista y mentalista. La magia como herramienta de exploración humana.</div>
+      </div>
+    </div>
+    <div class="magician-card fade-in">
+      <img src="assets/images/timeline-deco.jpg" alt="" loading="lazy" style="object-position:center 30%">
+      <div class="card-overlay">
+        <div class="m-name">Dai Vernon</div>
+        <div class="m-era">1894 · 1992 · Close-up</div>
+        <div class="m-specialty">El profesor. El mago de los magos. Revolucionó la cartomagia y el close-up.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTIONS INDEX -->
+<section class="section" id="biblioteca">
+  <div class="section-header fade-in">
+    <div class="section-tag">Explora</div>
+    <h2 class="section-title">El <em>universo</em> de la magia</h2>
+    <p class="section-desc">Sumérgete en cada rincón del ilusionismo: historia, biografías, biblioteca, comunidad y mucho más.</p>
+  </div>
+  <div class="sections-grid">
+    <div class="section-card fade-in">
+      <span class="sc-icon">📜</span>
+      <div class="sc-title">Historia Completa</div>
+      <div class="sc-desc">5000 años de magia en una cronología interactiva. Cada era, cada personaje, cada descubrimiento.</div>
+    </div>
+    <div class="section-card fade-in">
+      <span class="sc-icon">🎭</span>
+      <div class="sc-title">Grandes Magos</div>
+      <div class="sc-desc">Biografías premium de los ilusionistas más influyentes. Fotos, cronología, efectos y legado.</div>
+    </div>
+    <div class="section-card fade-in">
+      <span class="sc-icon">🗺️</span>
+      <div class="sc-title">Mapa Mundial</div>
+      <div class="sc-desc">Encuentra magos cerca de ti. Directorio global por país, ciudad y especialidad.</div>
+    </div>
+    <div class="section-card fade-in">
+      <span class="sc-icon">📖</span>
+      <div class="sc-title">Biblioteca</div>
+      <div class="sc-desc">Libros, revistas, carteles y manuscritos históricos restaurados. El archivo visual del ilusionismo.</div>
+    </div>
+    <div class="section-card fade-in">
+      <span class="sc-icon">💬</span>
+      <div class="sc-title">Frases Célebres</div>
+      <div class="sc-desc">La sabiduría de los grandes maestros. Citas inspiradoras sobre magia, misterio y arte.</div>
+    </div>
+    <div class="section-card fade-in">
+      <span class="sc-icon">✍️</span>
+      <div class="sc-title">Libro de Firmas</div>
+      <div class="sc-desc">Firma en el libro de honor de la magia mundial. Forma parte de esta historia.</div>
+    </div>
+    <div class="section-card fade-in">
+      <span class="sc-icon">🔮</span>
+      <div class="sc-title">Curiosidades</div>
+      <div class="sc-desc">Muertes misteriosas, rivalidades, fraudes, secretos y anécdotas. El lado oscuro de la magia.</div>
+    </div>
+    <div class="section-card fade-in">
+      <span class="sc-icon">🎥</span>
+      <div class="sc-title">Documentales</div>
+      <div class="sc-desc">Shows históricos, entrevistas y clips restaurados. El archivo audiovisual de la magia.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="fade-in">
+    <h2>Forma parte de esta <em style="color:var(--gold);font-style:italic">historia</em></h2>
+    <p>Recibe contenido exclusivo, avances de nuevas secciones y acceso anticipado a la comunidad de magos.</p>
+    <form class="cta-form" onsubmit="event.preventDefault();alert('¡Gracias! Te avisaremos cuando el libro esté completo.')">
+      <input type="email" placeholder="tu@email.com" required>
+      <button type="submit">Unirme</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <h3>El Gran Libro de la Magia</h3>
+    <p>Preservando y celebrando la historia del ilusionismo. Un proyecto de David Ortiz · 30 años de magia.</p>
+  </div>
+  <div>
+    <h3>Explorar</h3>
+    <ul>
+      <li><a href="#historia">Historia</a></li>
+      <li><a href="#magos">Magos</a></li>
+      <li><a href="#biblioteca">Biblioteca</a></li>
+      <li><a href="#firmas">Firmas</a></li>
+    </ul>
+  </div>
+  <div>
+    <h3>Comunidad</h3>
+    <ul>
+      <li><a href="#mapa">Mapa de Magos</a></li>
+      <li><a href="#foro">Foro</a></li>
+      <li><a href="#newsletter">Newsletter</a></li>
+    </ul>
+  </div>
+  <div>
+    <h3>Legal</h3>
+    <ul>
+      <li><a href="#">Aviso Legal</a></li>
+      <li><a href="#">Privacidad</a></li>
+      <li><a href="#">Cookies</a></li>
+    </ul>
+  </div>
+  <div class="copyright">© 2026 El Gran Libro de la Magia · Creado con ❤️ por un mago para magos de todo el mundo.</div>
+</footer>
+
+<script>
+// ============================================
+// Navigation
+// ============================================
+const nav = document.getElementById('nav');
+const mobileToggle = document.getElementById('mobileToggle');
+const navLinks = document.getElementById('navLinks');
+let lastScroll = 0;
+
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  nav.classList.toggle('scrolled', y > 100);
+  // Hide on scroll down, show on scroll up
+  if (y > lastScroll && y > 200) nav.style.transform = 'translateY(-100%)';
+  else nav.style.transform = 'translateY(0)';
+  lastScroll = y;
+});
+
+mobileToggle.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+
+// ============================================
+// Particles
+// ============================================
+const particles = document.getElementById('particles');
+for (let i = 0; i < 30; i++) {
+  const p = document.createElement('div');
+  p.className = 'hero-particle';
+  p.style.left = Math.random() * 100 + '%';
+  p.style.animationDelay = Math.random() * 8 + 's';
+  p.style.animationDuration = (6 + Math.random() * 6) + 's';
+  p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+  particles.appendChild(p);
+}
+
+// ============================================
+// Stats counter animation
+// ============================================
+function animateCounters() {
+  document.querySelectorAll('.stat-num').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    const duration = 2000;
+    const start = performance.now();
+    const initial = parseInt(el.textContent) || 0;
+
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(eased * target);
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  });
+}
+
+// ============================================
+// Intersection Observer for fade-in
+// ============================================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      if (entry.target.id === 'stats') animateCounters();
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.fade-in, #stats').forEach(el => observer.observe(el));
+
+// ============================================
+// Timeline horizontal scroll with mouse
+// ============================================
+const timeline = document.getElementById('timelineScroll');
+let isDown = false, startX, scrollLeft;
+
+timeline.addEventListener('mousedown', e => {
+  isDown = true;
+  timeline.style.cursor = 'grabbing';
+  startX = e.pageX - timeline.offsetLeft;
+  scrollLeft = timeline.scrollLeft;
+});
+timeline.addEventListener('mouseleave', () => { isDown = false; timeline.style.cursor = 'grab'; });
+timeline.addEventListener('mouseup', () => { isDown = false; timeline.style.cursor = 'grab'; });
+timeline.addEventListener('mousemove', e => {
+  if (!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - timeline.offsetLeft;
+  const walk = (x - startX) * 2;
+  timeline.scrollLeft = scrollLeft - walk;
+});
+
+// ============================================
+// Keyboard nav
+// ============================================
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') navLinks.classList.remove('open');
+});
+
+console.log('🎩 El Gran Libro de la Magia · Bienvenido, mago.');
+console.log('📖 Esta web se construye sección por sección.');
+console.log('✨ Próximamente: biografías, timeline interactiva, biblioteca y más.');
+</script>
+</body>
+</html>

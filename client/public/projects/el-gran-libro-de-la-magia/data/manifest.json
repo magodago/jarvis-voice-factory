@@ -1,0 +1,69 @@
+{
+  "site": {
+    "title": "El Gran Libro de la Magia",
+    "subtitle": "The Grand Book of Magic",
+    "description": "La web definitiva sobre la historia de la magia e ilusionismo",
+    "creator": "David Ortiz",
+    "creatorYears": 30,
+    "version": "1.0.0",
+    "lastUpdated": "2026-05-25"
+  },
+  "timeline": [
+    {"id": "shamans", "year": "40,000 a.C.", "title": "Chamanes y Rituales", "era": "Prehistoria", "description": "Los primeros 'magos' de la humanidad.", "complete": false},
+    {"id": "egypt", "year": "3,000 a.C.", "title": "Egipto Antiguo", "era": "Antigüedad", "description": "Sacerdotes ilusionistas del Nilo.", "complete": false},
+    {"id": "greece", "year": "500 a.C.", "title": "Grecia y Roma", "era": "Clásica", "description": "Autómatas y templos mágicos.", "complete": false},
+    {"id": "medieval", "year": "400 d.C.", "title": "Edad Media", "era": "Medieval", "description": "Trovadores y alquimistas.", "complete": false},
+    {"id": "alchemy", "year": "1500", "title": "Alquimia", "era": "Renacimiento", "description": "Entre la ciencia y lo sobrenatural.", "complete": false},
+    {"id": "classical", "year": "1780", "title": "Ilusionismo Clásico", "era": "Moderna", "description": "Nacimiento del mago moderno.", "complete": false},
+    {"id": "houdini", "year": "1900", "title": "Era Houdini", "era": "Contemporánea", "description": "El escapismo conquista el mundo.", "complete": false},
+    {"id": "tv", "year": "1950", "title": "Magia Televisiva", "era": "Contemporánea", "description": "La magia llega a millones de hogares.", "complete": false},
+    {"id": "modern", "year": "2000", "title": "Mentalismo Moderno", "era": "Contemporánea", "description": "Psicología y magia de calle.", "complete": false},
+    {"id": "digital", "year": "2024", "title": "IA y Futuro", "era": "Digital", "description": "Realidad aumentada y nueva frontera.", "complete": false}
+  ],
+  "magicians": [
+    {"id": "robert-houdin", "name": "Jean-Eugène Robert-Houdin", "born": 1805, "died": 1871, "country": "Francia", "specialty": "Ilusionismo", "complete": false},
+    {"id": "houdini", "name": "Harry Houdini", "born": 1874, "died": 1926, "country": "EE.UU.", "specialty": "Escapismo", "complete": false},
+    {"id": "dai-vernon", "name": "Dai Vernon", "born": 1894, "died": 1992, "country": "Canadá", "specialty": "Cartomagia", "complete": false},
+    {"id": "tamariz", "name": "Juan Tamariz", "born": 1942, "country": "España", "specialty": "Cartomagia", "complete": false},
+    {"id": "copperfield", "name": "David Copperfield", "born": 1956, "country": "EE.UU.", "specialty": "Grandes Ilusiones", "complete": false},
+    {"id": "penn-teller", "name": "Penn & Teller", "born": 1955, "country": "EE.UU.", "specialty": "Magia Cómica", "complete": false},
+    {"id": "dynamo", "name": "Dynamo", "born": 1982, "country": "Reino Unido", "specialty": "Magia Urbana", "complete": false},
+    {"id": "criss-angel", "name": "Criss Angel", "born": 1967, "country": "EE.UU.", "specialty": "Ilusionismo Extremo", "complete": false},
+    {"id": "david-blaine", "name": "David Blaine", "born": 1973, "country": "EE.UU.", "specialty": "Magia de Calle", "complete": false},
+    {"id": "derren-brown", "name": "Derren Brown", "born": 1971, "country": "Reino Unido", "specialty": "Mentalismo", "complete": false},
+    {"id": "ascanio", "name": "Arturo de Ascanio", "born": 1929, "died": 1997, "country": "España", "specialty": "Cartomagia", "complete": false},
+    {"id": "rene-lavand", "name": "René Lavand", "born": 1928, "died": 2015, "country": "Argentina", "specialty": "Cartomagia", "complete": false},
+    {"id": "slydini", "name": "Slydini", "born": 1901, "died": 1991, "country": "Italia", "specialty": "Close-up", "complete": false},
+    {"id": "maskelyne", "name": "John Nevil Maskelyne", "born": 1839, "died": 1917, "country": "Reino Unido", "specialty": "Ilusionismo", "complete": false},
+    {"id": "chung-ling-soo", "name": "Chung Ling Soo", "born": 1861, "died": 1918, "country": "EE.UU.", "specialty": "Magia Oriental", "complete": false},
+    {"id": "thurston", "name": "Howard Thurston", "born": 1869, "died": 1936, "country": "EE.UU.", "specialty": "Ilusionismo", "complete": false},
+    {"id": "richiardi", "name": "Richiardi Jr.", "born": 1923, "died": 1985, "country": "Perú", "specialty": "Grandes Ilusiones", "complete": false},
+    {"id": "hofzinser", "name": "Johann Nepomuk Hofzinser", "born": 1806, "died": 1875, "country": "Austria", "specialty": "Cartomagia", "complete": false},
+    {"id": "tommy-wonder", "name": "Tommy Wonder", "born": 1953, "died": 2006, "country": "Países Bajos", "specialty": "Close-up", "complete": false}
+  ],
+  "quotes": [
+    {"text": "La magia es la única forma de arte que puede hacer que el público adulto vuelva a sentir lo que sentía cuando era niño.", "author": "David Copperfield", "category": "inspiración"},
+    {"text": "El verdadero secreto de la magia está en la atención del espectador.", "author": "Dai Vernon", "category": "arte"},
+    {"text": "No hay magia sin misterio, y no hay misterio sin asombro.", "author": "Juan Tamariz", "category": "filosofía"},
+    {"text": "Mi cerebro es el principal órgano de mis trucos.", "author": "Derren Brown", "category": "mentalismo"},
+    {"text": "La magia no es un truco, es una forma de ver el mundo.", "author": "David Blaine", "category": "filosofía"}
+  ],
+  "curiosities": [
+    {"title": "La muerte de Houdini", "epigraph": "El último truco que no pudo completar.", "category": "muertes_misteriosas", "complete": false},
+    {"title": "El secreto de los hermanos Davenport", "epigraph": "El fraude que inició el espiritismo moderno.", "category": "fraudes", "complete": false},
+    {"title": "La bala atrapada al vuelo", "epigraph": "El truco más peligroso de la historia.", "category": "trucos_prohibidos", "complete": false}
+  ],
+  "status": {
+    "home": "complete",
+    "timeline": "preview",
+    "magicians": "listing",
+    "biographies": "pending",
+    "library": "pending",
+    "map": "pending",
+    "registry": "pending",
+    "quotes": "partial",
+    "curiosities": "pending",
+    "documentaries": "pending"
+  },
+  "lastGenerated": "2026-05-25T15:00:00Z"
+}

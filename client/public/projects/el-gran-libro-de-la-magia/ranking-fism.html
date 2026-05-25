@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>Ranking FISM · El Gran Libro de la Magia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/magic-particles.css">
+<style>
+:root{--bg:#0a0a0f;--bg2:#0f0f1a;--card:#14141f;--gold:#c9a84c;--gold-light:#e8d48b;--gold-dark:#8a7030;--text:#f0ece4;--text2:#a09888;--text3:#6b6358;--border:rgba(201,168,76,0.08);--border-gold:rgba(201,168,76,0.2);--font-display:'Cormorant Garamond',serif;--font-body:'Inter',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--gold-dark) var(--bg)}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(10,10,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gold);text-decoration:none}
+nav .logo span{color:var(--text3)}
+nav .back{color:var(--text2);text-decoration:none;font-size:12px;transition:color .3s}
+.hero{position:relative;padding:120px 40px 60px;text-align:center;background:linear-gradient(135deg,#0a0a0f,#1a1a0f);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(201,168,76,.06),transparent 70%)}
+.hero h1{font-family:var(--font-display);font-size:clamp(36px,5vw,56px);font-weight:300;margin-bottom:8px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero .subtitle{font-family:var(--font-display);font-size:16px;color:var(--gold-dark);margin-top:8px;letter-spacing:1px}
+.hero p{color:var(--text2);font-size:15px;font-weight:300;max-width:600px;margin:8px auto 0;line-height:1.6}
+.content{max-width:800px;margin:0 auto;padding:40px 24px 80px}
+.intro-text{font-size:14px;color:var(--text2);line-height:1.7;font-weight:300;margin-bottom:32px;padding:16px;background:var(--card);border-radius:8px;border:1px solid var(--border)}
+.year-group{margin-bottom:6px}
+.year-label{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--gold);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.year-label .yr-city{font-size:12px;color:var(--text3);font-weight:400}
+.winner-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:10px;display:flex;gap:16px;align-items:center;transition:all .3s}
+.winner-card:hover{border-color:var(--border-gold)}
+.winner-card .wc-place{font-size:18px;min-width:32px}
+.winner-card .wc-info{flex:1}
+.winner-card .wc-name{font-size:15px;font-weight:600;color:var(--text)}
+.winner-card .wc-country{font-size:11px;color:var(--text3)}
+.winner-card .wc-specialty{font-size:11px;color:var(--text2);margin-top:2px}
+.winner-card .wc-medal{font-size:24px;min-width:40px;text-align:center}
+footer{text-align:center;padding:32px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
+footer a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+<nav>
+  <a href="." class="logo">El Gran Libro <span>· Ranking FISM</span></a>
+  <a href="index.html" class="back">← Inicio</a>
+</nav>
+<section class="hero">
+  <h1>🏆 Ranking <em>FISM</em></h1>
+  <div class="subtitle">— El campeonato mundial de magia —</div>
+  <p>La Fédération Internationale des Sociétés Magiques (FISM) es el máximo organismo mundial de la magia. Cada tres años, los mejores magos del mundo compiten por el Grand Prix, el galardón más prestigioso del ilusionismo.</p>
+</section>
+<div class="content">
+
+<div class="intro-text">
+  🏅 El Grand Prix de la FISM es el equivalente a los Oscar de la magia. Solo un puñado de magos en cada generación logra alzarse con él. Fred Kaps (Países Bajos) es el único mago que lo ha ganado <strong>tres veces</strong> (1950, 1955, 1961).
+</div>
+
+<div class="year-group">
+  <div class="year-label">2025 <span class="yr-city">· Quebec, Canadá</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Por determinar</div><div class="wc-country">Edición 2025</div><div class="wc-specialty">—</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">2022 <span class="yr-city">· Quebec, Canadá</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Hector Mancha</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia / Close-up</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+  <div class="winner-card">
+    <div class="wc-place">🥈</div>
+    <div class="wc-info"><div class="wc-name">Dani DaOrtiz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🥈</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">2018 <span class="yr-city">· Rimini, Italia</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Yu Ho-Jin</div><div class="wc-country">🇰🇷 Corea del Sur</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">2015 <span class="yr-city">· Rímini, Italia</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Dani DaOrtiz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">2012 <span class="yr-city">· Blackpool, Reino Unido</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Pablo Amengual</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">2009 <span class="yr-city">· Beijing, China</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Miguel Puga</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Mentalismo</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">2006 <span class="yr-city">· Estocolmo, Suecia</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Dani DaOrtiz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">2003 <span class="yr-city">· La Haya, Países Bajos</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Boris Wild</div><div class="wc-country">🇫🇷 Francia</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">2000 <span class="yr-city">· Lisboa, Portugal</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Dani DaOrtiz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1997 <span class="yr-city">· Dresde, Alemania</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Luis de Matos</div><div class="wc-country">🇵🇹 Portugal</div><div class="wc-specialty">Ilusionismo General</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1994 <span class="yr-city">· Yokohama, Japón</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Lance Burton</div><div class="wc-country">🇺🇸 EE.UU.</div><div class="wc-specialty">Ilusionismo Clásico</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1991 <span class="yr-city">· Lausana, Suiza</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">John McGill</div><div class="wc-country">🇺🇸 EE.UU.</div><div class="wc-specialty">Close-up</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1988 <span class="yr-city">· La Haya, Países Bajos</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Juan Tamariz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1985 <span class="yr-city">· Madrid, España</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Dai Vernon (homenaje)</div><div class="wc-country">🇨🇦 Canadá</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1982 <span class="yr-city">· Lausana, Suiza</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Ken Brooke</div><div class="wc-country">🇬🇧 Reino Unido</div><div class="wc-specialty">Close-up</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1979 <span class="yr-city">· Bruselas, Bélgica</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Tony Holliday</div><div class="wc-country">🇬🇧 Reino Unido</div><div class="wc-specialty">Cartomagia General</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1973 <span class="yr-city">· París, Francia</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Juan Tamariz</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1970 <span class="yr-city">· Ámsterdam, Países Bajos</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Arturo de Ascanio</div><div class="wc-country">🇪🇸 España</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1967 <span class="yr-city">· París, Francia</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Dai Vernon</div><div class="wc-country">🇨🇦 Canadá</div><div class="wc-specialty">Cartomagia</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1964 <span class="yr-city">· Ámsterdam, Países Bajos</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Fred Kaps</div><div class="wc-country">🇳🇱 Países Bajos</div><div class="wc-specialty">Cartomagia General</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1961 <span class="yr-city">· Bruselas, Bélgica</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Fred Kaps</div><div class="wc-country">🇳🇱 Países Bajos</div><div class="wc-specialty">Cartomagia General</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1958 <span class="yr-city">· Viena, Austria</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Fred Kaps</div><div class="wc-country">🇳🇱 Países Bajos</div><div class="wc-specialty">Cartomagia General</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1955 <span class="yr-city">· Ámsterdam, Países Bajos</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Fred Kaps</div><div class="wc-country">🇳🇱 Países Bajos</div><div class="wc-specialty">Cartomagia General</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+<div class="year-group">
+  <div class="year-label">1952 <span class="yr-city">· Ámsterdam, Países Bajos</span></div>
+  <div class="winner-card">
+    <div class="wc-place">🥇</div>
+    <div class="wc-info"><div class="wc-name">Tommy Wonder</div><div class="wc-country">🇳🇱 Países Bajos</div><div class="wc-specialty">Close-up</div></div>
+    <div class="wc-medal">🏆</div>
+  </div>
+</div>
+
+</div>
+<footer>© 2026 <a href=".">El Gran Libro de la Magia</a> · <a href="magos.html">Magos</a> · <a href="historia.html">Historia</a></footer>
+<script src="assets/js/magic-particles.js"></script>
+</body>
+</html>

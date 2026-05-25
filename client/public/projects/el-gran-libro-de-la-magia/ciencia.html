@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>Ciencia de la Magia · El Gran Libro de la Magia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/magic-particles.css">
+<style>
+:root{--bg:#0a0a0f;--bg2:#0f0f1a;--card:#14141f;--gold:#c9a84c;--gold-light:#e8d48b;--gold-dark:#8a7030;--text:#f0ece4;--text2:#a09888;--text3:#6b6358;--border:rgba(201,168,76,0.08);--border-gold:rgba(201,168,76,0.2);--font-display:'Cormorant Garamond',serif;--font-body:'Inter',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--gold-dark) var(--bg)}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(10,10,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gold);text-decoration:none}
+nav .logo span{color:var(--text3)}
+nav .back{color:var(--text2);text-decoration:none;font-size:12px;transition:color .3s}
+.hero{position:relative;padding:120px 40px 60px;text-align:center;background:linear-gradient(135deg,#0a0a0f,#0f1a1f);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(100,180,255,.06),transparent 70%)}
+.hero h1{font-family:var(--font-display);font-size:clamp(36px,5vw,56px);font-weight:300;margin-bottom:8px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero .subtitle{font-family:var(--font-display);font-size:16px;color:var(--gold-dark);margin-top:8px;letter-spacing:1px}
+.hero p{color:var(--text2);font-size:15px;font-weight:300;max-width:600px;margin:8px auto 0;line-height:1.6}
+.content{max-width:800px;margin:0 auto;padding:40px 24px 80px}
+.topic{margin-bottom:40px}
+.topic h2{font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.topic p{font-size:14px;color:var(--text2);line-height:1.7;font-weight:300;margin-bottom:8px}
+.topic .highlight{padding:12px 16px;background:var(--card);border-left:2px solid var(--gold-dark);border-radius:0 6px 6px 0;font-size:13px;color:var(--text);line-height:1.5;margin:12px 0}
+footer{text-align:center;padding:32px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
+footer a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+<nav>
+  <a href="." class="logo">El Gran Libro <span>· Ciencia</span></a>
+  <a href="index.html" class="back">← Inicio</a>
+</nav>
+<section class="hero">
+  <h1>🔬 Ciencia de la <em>Magia</em></h1>
+  <div class="subtitle">— Por qué el cerebro cree lo imposible —</div>
+  <p>La magia no es solo trucos: es neurociencia aplicada. Descubre cómo los magos secuestran tu cerebro usando psicología, atención y percepción.</p>
+</section>
+<div class="content">
+
+<div class="topic">
+  <h2>🧠 La Misdirection</h2>
+  <p>El principio fundamental de toda la magia. La misdirection no es "distraer" al espectador, sino gestionar su atención de forma precisa. El mago controla dónde mira el público, pero también dónde piensa.</p>
+  <p>Los estudios con eye-tracking demuestran que incluso cuando el espectador sabe dónde mirar, la magia sigue funcionando — porque la atención no es solo visual, es cognitiva.</p>
+  <div class="highlight">✨ Dato: El neurocientífico Stephen Macknik y Susana Martínez-Conde han dedicado años a estudiar la magia con fMRI. Descubrieron que los magos activan áreas cerebrales que la mayoría de los estímulos no alcanzan.</div>
+</div>
+
+<div class="topic">
+  <h2>🎯 Atención vs. Conciencia</h2>
+  <p>El cerebro tiene un filtro atencional muy limitado. Solo procesamos conscientemente una fracción mínima de lo que percibimos. Los magos explotan este "cuello de botella" para que ocurran cosas ante tus ojos sin que las veas.</p>
+  <p>El experimento del gorila invisible (Don't miss the gorilla!) es el ejemplo perfecto: cuando estamos concentrados en contar pases, no vemos un gorila cruzando la pantalla. La magia funciona igual.</p>
+  <div class="highlight">🔬 Estudio: En 2019, investigadores de la Universidad de Sussex demostraron que los movimientos de un mago experto activan el sistema de recompensa del cerebro (dopamina) incluso cuando el espectador sabe que es un truco.</div>
+</div>
+
+<div class="topic">
+  <h2>🔄 Sesgos Cognitivos</h2>
+  <p>Los magos usan una docena de sesgos cognitivos documentados:</p>
+  <p><strong>Falso consenso</strong> — Asumimos que todos perciben lo mismo que nosotros. El mago lo rompe haciendo que cada espectador vea algo diferente.<br>
+  <strong>Perseverancia de la creencia</strong> — Una vez que creemos saber cómo funciona algo, es muy difícil cambiar esa idea. El mago crea una historia falsa que el público acepta.<br>
+  <strong>Ceguera al cambio</strong> — No notamos cambios graduales. El mago transforma un objeto en otro mientras hablas con él.</p>
+  <div class="highlight">🧪 El mago y psicólogo Derren Brown ha llevado estos sesgos al extremo en sus programas, demostrando que se puede manipular la percepción humana de forma ética.</div>
+</div>
+
+<div class="topic">
+  <h2>✋ Memoria y Sugestión</h2>
+  <p>La memoria humana es frágil y reconstruye el pasado cada vez que lo recordamos. Los magos siembran recuerdos falsos: te hacen "recordar" que viste algo que en realidad nunca ocurrió.</p>
+  <p>Este fenómeno, llamado "efecto de desinformación", se usa especialmente en mentalismo. El mago sugiere sutilmente lo que el espectador va a experimentar, y el cerebro del espectador lo completa solo.</p>
+  <div class="highlight">📖 Lectura recomendada: "Sleights of Mind" de Macknik & Martínez-Conde — el libro que fundó la neuromagia como disciplina científica.</div>
+</div>
+
+<div class="topic">
+  <h2>🕰️ Tiempo y Ritmo</h2>
+  <p>El ritmo de una actuación mágica no es casual. Los magos usan patrones temporales específicos: el "tiempo muerto" de Ascanio (pausas que hacen que el espectador mire donde no debe), el beat de la sorpresa, el anticlímax que desarma la atención crítica.</p>
+  <p>El neurocientífico Gustav Kuhn descubrió que el momento exacto de una palmada, una risa o una palabra clave puede hacer que el cerebro del espectador "salte" un evento visual completo.</p>
+  <div class="highlight">⏱️ Los magos trabajan en milisegundos. Un movimiento 200ms más rápido o más lento cambia si el espectador lo detecta o no.</div>
+</div>
+
+</div>
+<footer>© 2026 <a href=".">El Gran Libro de la Magia</a> · <a href="magos.html">Magos</a> · <a href="historia.html">Historia</a></footer>
+<script src="assets/js/magic-particles.js"></script>
+</body>
+</html>

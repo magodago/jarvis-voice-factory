@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>Magia en el Cine · El Gran Libro de la Magia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/magic-particles.css">
+<style>
+:root{--bg:#0a0a0f;--bg2:#0f0f1a;--card:#14141f;--gold:#c9a84c;--gold-light:#e8d48b;--gold-dark:#8a7030;--text:#f0ece4;--text2:#a09888;--text3:#6b6358;--border:rgba(201,168,76,0.08);--border-gold:rgba(201,168,76,0.2);--font-display:'Cormorant Garamond',serif;--font-body:'Inter',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--gold-dark) var(--bg)}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(10,10,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gold);text-decoration:none}
+nav .logo span{color:var(--text3)}
+nav .back{color:var(--text2);text-decoration:none;font-size:12px;transition:color .3s}
+.hero{position:relative;padding:120px 40px 60px;text-align:center;background:linear-gradient(135deg,#0a0a0f,#1a0f0f);overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(200,50,50,.06),transparent 70%)}
+.hero h1{font-family:var(--font-display);font-size:clamp(36px,5vw,56px);font-weight:300;margin-bottom:8px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero .subtitle{font-family:var(--font-display);font-size:16px;color:var(--gold-dark);margin-top:8px;letter-spacing:1px}
+.hero p{color:var(--text2);font-size:15px;font-weight:300;max-width:600px;margin:8px auto 0;line-height:1.6}
+.content{max-width:800px;margin:0 auto;padding:40px 24px 80px}
+.film-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:20px;transition:all .3s}
+.film-card:hover{border-color:var(--border-gold)}
+.film-card h2{font-family:var(--font-display);font-size:24px;font-weight:600;color:var(--gold);margin-bottom:4px}
+.film-card .fc-year{font-size:11px;color:var(--text3);margin-bottom:8px}
+.film-card .fc-dir{font-size:11px;color:var(--text2);margin-bottom:10px}
+.film-card p{font-size:13px;color:var(--text2);line-height:1.6;font-weight:300;margin-bottom:8px}
+.film-card .fc-dato{padding:8px 12px;background:rgba(201,168,76,.04);border-left:2px solid var(--gold-dark);border-radius:0 4px 4px 0;font-size:12px;color:var(--text);line-height:1.4;margin-top:8px}
+footer{text-align:center;padding:32px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
+footer a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+<nav>
+  <a href="." class="logo">El Gran Libro <span>· Cine</span></a>
+  <a href="index.html" class="back">← Inicio</a>
+</nav>
+<section class="hero">
+  <h1>🎬 Magia en el <em>Cine</em></h1>
+  <div class="subtitle">— Cuando el séptimo arte y el ilusionismo se funden —</div>
+  <p>De Houdini al cine mudo a las superproducciones de Hollywood. Las películas que mejor han retratado —y creado— la magia.</p>
+</section>
+<div class="content">
+
+<div class="film-card">
+  <h2>The Prestige (2006)</h2>
+  <div class="fc-year">2006 · Christopher Nolan</div>
+  <div class="fc-dir">Reparto: Hugh Jackman, Christian Bale, Michael Caine, David Bowie como Tesla</div>
+  <p>La película definitiva sobre magia. Nolan construye una historia que es en sí misma un truco: cada escena importa, cada diálogo es una pista. La estructura en tres actos sigue el esquema clásico del truco: la promesa, la vuelta y el prestige.</p>
+  <p>La película está asesorada por Ricky Jay, uno de los mejores cartómagos del mundo, que también aparece como actor. Los efectos de magia son reales, no CGI — Christian Bale aprendió el truco de la paloma que aparece literalmente de la nada.</p>
+  <div class="fc-dato">🎩 Dato: El "Transporte de Hombre" que Tesla construye para Angier está inspirado en Nikola Tesla real, que sí trabajó con ilusionistas de la época.</div>
+</div>
+
+<div class="film-card">
+  <h2>Now You See Me (2013)</h2>
+  <div class="fc-year">2013 · Louis Leterrier</div>
+  <div class="fc-dir">Reparto: Jesse Eisenberg, Woody Harrelson, Morgan Freeman</div>
+  <p>La visión más thriller de la magia moderna. Un grupo de ilusionistas llamados "Los Cuatro Jinetes" ejecutan atracos imposibles durante sus shows. La película popularizó la idea del mago como hacker social.</p>
+  <p>Aunque los efectos son mayormente CGI, la película introdujo a toda una generación en la cultura mágica. Su secuela (2016) profundizó en la teoría de la magia como arma psicológica.</p>
+  <div class="fc-dato">🎩 Dato: David Copperfield fue asesor técnico de la película. El truco final del "ojo que todo lo ve" está basado en una ilusión real que Copperfield desarrolló.</div>
+</div>
+
+<div class="film-card">
+  <h2>The Illusionist (2006)</h2>
+  <div class="fc-year">2006 · Neil Burger</div>
+  <div class="fc-dir">Reparto: Edward Norton, Jessica Biel, Paul Giamatti</div>
+  <p>Ambientada en la Viena de 1900, cuenta la historia de un ilusionista que usa su arte para recuperar a su amor perdido. Más romántica y clásica que The Prestige, destaca por el retrato del mago de salón del siglo XIX.</p>
+  <p>Los efectos (la naranja que florece, la espada que atraviesa el cuerpo) son magia escénica real de la época. Norton aprendió varios trucos de cartas para el papel.</p>
+  <div class="fc-dato">🎩 Dato: La técnica de "sugestión" que Eisenheim usa en la película está basada en los métodos reales de Robert-Houdin.</div>
+</div>
+
+<div class="film-card">
+  <h2>El Gran Houdini (Houdini, 1953)</h2>
+  <div class="fc-year">1953 · George Marshall</div>
+  <div class="fc-dir">Reparto: Tony Curtis, Janet Leigh</div>
+  <p>El biopic clásico que convirtió a Houdini en leyenda pop. Protagonizada por Tony Curtis (que aprendió escapes reales para el papel), la película popularizó muchos de los mitos sobre Houdini.</p>
+  <p>Aunque inexacta históricamente (Houdini murió de peritonitis, no durante un truco), creó la imagen del escapista trágico que perdura hasta hoy.</p>
+  <div class="fc-dato">🎩 Dato: Tony Curtis insistió en hacer él mismo los escapes. Pasó semanas entrenando con el hermano de Houdini, Theodore Hardeen.</div>
+</div>
+
+<div class="film-card">
+  <h2>Magician: The Astonishing Life of Wilson (Documental)</h2>
+  <div class="fc-year">Documental · Varios</div>
+  <div class="fc-dir">Directores: varios</div>
+  <p>El documental sobre la magia ha ganado terreno en los últimos años. Desde "Make Believe" (seguimiento a jóvenes magos compitiendo en FISM) hasta "The Amazing Johnathan" (la vida del mago de shock), el cine documental ha capturado mejor que nadie la realidad del mundo mágico.</p>
+  <p>"Dealt" (2017) sigue a Richard Turner, un cartómago ciego considerado uno de los mejores del mundo. "An Honest Liar" (2014) narra la vida de James Randi.</p>
+  <div class="fc-dato">🎩 Dato: "Dealt" ganó el premio del público en el Tribeca Film Festival 2017. Turner, completamente ciego, realiza manipulaciones de cartas que magos videntes no pueden igualar.</div>
+</div>
+
+<div class="film-card">
+  <h2>El Prestidigitador (The Magician, 1958)</h2>
+  <div class="fc-year">1958 · Ingmar Bergman</div>
+  <div class="fc-dir">Reparto: Max von Sydow, Ingrid Thulin</div>
+  <p>La visión más filosófica de la magia. Bergman explora el conflicto entre ciencia, fe e ilusionismo en la Suecia del siglo XIX. Un misterioso mago llega a un pueblo y debe demostrar que su arte no es charlatanería.</p>
+  <p>Una de las pocas películas que trata la magia como arte, no como entretenimiento. El debate sobre si la magia es real o no es el corazón de la película.</p>
+</div>
+
+</div>
+<footer>© 2026 <a href=".">El Gran Libro de la Magia</a> · <a href="magos.html">Magos</a> · <a href="historia.html">Historia</a></footer>
+<script src="assets/js/magic-particles.js"></script>
+</body>
+</html>

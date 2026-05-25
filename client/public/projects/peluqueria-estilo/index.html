@@ -47,7 +47,9 @@ nav.scrolled{background:rgba(26,21,16,.95);backdrop-filter:blur(12px);padding:10
 .nav-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
 
 /* ===== HERO ===== */
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(135deg,#1a1510 0%,#241e15 30%,#2a2018 60%,#1a1510 100%);overflow:hidden}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:url('images/hero-banner.png') center/cover no-repeat;filter:brightness(.35) saturate(.8);z-index:0}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,21,16,.7) 0%,rgba(36,30,21,.5) 50%,rgba(26,21,16,.8) 100%);z-index:1}
 .hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% 40%,rgba(201,169,110,.06) 0%,transparent 70%)}
 .hero-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a96e' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");opacity:.5}
 .hero-content{text-align:center;position:relative;z-index:2;padding:0 20px;max-width:800px}
@@ -279,6 +281,7 @@ nav.scrolled{background:rgba(26,21,16,.95);backdrop-filter:blur(12px);padding:10
 
 <!-- ===== HERO ===== -->
 <section class="hero" id="hero">
+  <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-badge">Barbería & Peluquería en Illescas</div>
@@ -586,10 +589,7 @@ function renderStylists(){
   grid.innerHTML = STYLISTS.map(s => `
     <div class="stylist-card" onclick="selectStylist('${s.id}')">
       <div class="stylist-avatar">
-        <svg viewBox="0 0 50 50" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="25" cy="18" r="9" stroke-linecap="round"/>
-          <path d="M8 44c0-10 7-17 17-17s17 7 17 17" stroke-linecap="round"/>
-        </svg>
+        <img src="images/${s.id}.png" alt="${s.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
       </div>
       <h4>${s.name}</h4>
       <div class="role">${s.role}</div>
@@ -989,6 +989,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- Back to Portfolio -->
 
-<a href="https://magodago.github.io/jarvis-voice-factory/projects/" style="position:fixed;top:8px;right:8px;z-index:99999;padding:3px 10px;background:rgba(11,11,26,0.35);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;color:rgba(255,255,255,0.4);text-decoration:none;font-size:11px;font-weight:500;font-family:sans-serif;letter-spacing:0.3px;transition:all 0.3s;display:flex;align-items:center;gap:4px;" onmouseover="this.style.background='rgba(11,11,26,0.7)';this.style.color='rgba(255,255,255,0.9)'" onmouseout="this.style.background='rgba(11,11,26,0.35)';this.style.color='rgba(255,255,255,0.4)'"><span style="font-size:13px;">←</span> Portfolio</a>
+
+<div style="position:fixed;bottom:12px;left:12px;z-index:99999;display:flex;align-items:center;gap:3px;opacity:0.25;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='0.25'"><a href="https://magodago.github.io/jarvis-voice-factory/projects/" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:10px;font-weight:500;font-family:sans-serif;letter-spacing:0.3px;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);padding:3px 8px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:3px;"><span style="font-size:11px;">←</span></a></div>
 </body>
 </html>

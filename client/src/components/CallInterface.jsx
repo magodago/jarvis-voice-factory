@@ -74,6 +74,15 @@ export default function CallInterface({
               </div>
             )}
 
+            {/* Noticias button */}
+            <div className="flex items-center justify-center">
+              <motion.button onClick={() => setNewsOpen(true)} whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/20 text-cyber-cyan/80 hover:bg-cyber-cyan/20 transition-all">
+                <Newspaper size={16} />
+                <span className="text-[11px] font-body">Noticias</span>
+              </motion.button>
+            </div>
+
             {/* BIG Call button with heartbeat — CYAN */}
             <motion.button onClick={() => onStartCall()} whileTap={{ scale: 0.9 }} className="relative group mt-2">
               <div className="absolute -inset-4 rounded-full bg-cyber-cyan/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -117,15 +126,6 @@ export default function CallInterface({
               </motion.div>
             </motion.button>
             <p className="text-[10px] text-cyber-magenta/50 font-body tracking-wide">Traduccion simultanea</p>
-
-            {/* Action buttons — solo Noticias centrado */}
-            <div className="flex items-center justify-center">
-              <motion.button onClick={() => setNewsOpen(true)} whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/20 text-cyber-cyan/80 hover:bg-cyber-cyan/20 transition-all">
-                <Newspaper size={16} />
-                <span className="text-[11px] font-body">Noticias</span>
-              </motion.button>
-            </div>
 
             {error && <div className="w-full bg-cyber-red/5 border border-cyber-red/10 rounded-xl p-3"><p className="text-xs text-cyber-red/80 font-body text-center">{error}</p></div>}
           </motion.div>

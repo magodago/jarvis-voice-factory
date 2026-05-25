@@ -38,11 +38,11 @@ export default function CallInterface({
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="flex flex-col items-center gap-6 w-full"
+            className="flex flex-col items-center gap-3 w-full"
           >
             <JarvisAvatar status="idle" />
 
-            <div className="text-center space-y-1 -mt-6">
+            <div className="text-center space-y-0.5 -mt-4">
               <h1 className="font-display text-2xl tracking-[0.12em] text-cyber-white text-glow-cyber">
                 J.A.R.V.I.S.
               </h1>
@@ -84,10 +84,10 @@ export default function CallInterface({
             </div>
 
             {/* BIG Call button with heartbeat — CYAN */}
-            <motion.button onClick={() => onStartCall()} whileTap={{ scale: 0.9 }} className="relative group mt-2">
+            <motion.button onClick={() => onStartCall()} whileTap={{ scale: 0.9 }} className="relative group">
               <div className="absolute -inset-4 rounded-full bg-cyber-cyan/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <motion.div
-                className="relative w-[90px] h-[90px] rounded-full bg-gradient-to-br from-cyber-cyan to-cyan-600 flex items-center justify-center"
+                className="relative w-[76px] h-[76px] rounded-full bg-gradient-to-br from-cyber-cyan to-cyan-600 flex items-center justify-center"
                 animate={{
                   boxShadow: [
                     '0 0 20px rgba(0,212,255,0.4), 0 0 40px rgba(0,212,255,0.2)',
@@ -97,10 +97,10 @@ export default function CallInterface({
                 }}
                 transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <Phone size={38} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
+                <Phone size={32} className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
               </motion.div>
               <motion.div
-                className="absolute -inset-3 rounded-full border-2 border-cyber-cyan/40"
+                className="absolute -inset-2.5 rounded-full border-2 border-cyber-cyan/40"
                 animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
                 transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
               />
@@ -112,7 +112,7 @@ export default function CallInterface({
             <motion.button onClick={() => onStartCall('translate')} whileTap={{ scale: 0.9 }} className="relative group">
               <div className="absolute -inset-2 rounded-full bg-cyber-magenta/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <motion.div
-                className="relative w-[55px] h-[55px] rounded-full bg-gradient-to-br from-cyber-magenta-bright to-cyber-magenta flex items-center justify-center"
+                className="relative w-[46px] h-[46px] rounded-full bg-gradient-to-br from-cyber-magenta-bright to-cyber-magenta flex items-center justify-center"
                 animate={{
                   boxShadow: [
                     '0 0 15px rgba(255,21,208,0.4), 0 0 25px rgba(255,21,208,0.2)',

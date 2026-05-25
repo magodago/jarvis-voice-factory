@@ -12,7 +12,7 @@
 /* Nav */nav{position:fixed;top:0;width:100%;z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;background:rgba(26,20,16,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}.logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--copper));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px}.nav-links a{color:var(--text);text-decoration:none;margin-left:2rem;font-weight:500;font-size:1.05rem;transition:color .3s;position:relative}.nav-links a:hover{color:var(--gold)}.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--gold);transition:width .3s}.nav-links a:hover::after{width:100%}.mobile-menu-btn{display:none;font-size:1.8rem;background:none;border:none;color:var(--gold);cursor:pointer}
 /* Hero */.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:5rem 2rem 2rem;background:linear-gradient(180deg, rgba(26,20,16,.3) 0%, rgba(26,20,16,.95) 100%);overflow:hidden}.hero-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center, rgba(212,168,83,.08) 0%, transparent 70%);z-index:-1}.hero-badge{font-family:'Playfair Display',serif;font-size:.9rem;color:var(--gold);letter-spacing:6px;text-transform:uppercase;border:1px solid var(--gold);padding:.5rem 1.5rem;border-radius:50px;margin-bottom:2rem;animation:pulse-glow 3s infinite}@keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(212,168,83,.2)}50%{box-shadow:0 0 50px rgba(212,168,83,.4)}}.hero h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,10vw,7rem);font-weight:900;line-height:1;margin-bottom:1rem}.hero h1 .highlight{background:linear-gradient(135deg,var(--gold),#f0d080,var(--copper));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.hero .tagline{font-size:clamp(1.1rem,2.5vw,1.8rem);font-weight:300;color:var(--text-dim);margin-bottom:1rem;letter-spacing:2px}.hero p{font-size:clamp(1rem,1.8vw,1.2rem);max-width:600px;color:var(--text-dim);margin-bottom:2.5rem;line-height:1.7}.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}.btn-primary{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;padding:1rem 2.5rem;border:none;border-radius:50px;background:linear-gradient(135deg,var(--gold),var(--copper));color:var(--darker);cursor:pointer;transition:all .3s;text-decoration:none;display:inline-block}.btn-primary:hover{transform:scale(1.05);box-shadow:0 0 40px rgba(212,168,83,.4)}.btn-secondary{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;padding:1rem 2.5rem;border:2px solid var(--gold);border-radius:50px;background:transparent;color:var(--gold);cursor:pointer;transition:all .3s;text-decoration:none;display:inline-block}.btn-secondary:hover{background:rgba(212,168,83,.1);box-shadow:0 0 30px rgba(212,168,83,.2)}.scroll-indicator{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);color:var(--text-dim);font-size:.75rem;letter-spacing:4px;text-transform:uppercase;animation:bounce 2s infinite;display:flex;flex-direction:column;align-items:center;gap:.5rem}@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}.scroll-indicator .arrow{width:16px;height:16px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg)}
 /* Sections */section{position:relative;z-index:1;padding:6rem 2rem;max-width:1200px;margin:0 auto}.section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;text-align:center;margin-bottom:.5rem;color:var(--gold)}.section-subtitle{text-align:center;color:var(--text-dim);font-size:1.1rem;margin-bottom:3rem;max-width:600px;margin-left:auto;margin-right:auto}
-/* Menu */#menu{padding-top:5rem}.menu-categories{display:flex;justify-content:center;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap}.menu-cat-btn{padding:.6rem 1.5rem;border:1px solid var(--border);border-radius:50px;background:transparent;color:var(--text);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:600;transition:all .3s}.menu-cat-btn:hover,.menu-cat-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,168,83,.1)}.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.2rem}.menu-item{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.5rem;transition:all .3s;display:flex;flex-direction:column}.menu-item:hover{border-color:rgba(212,168,83,.4);transform:translateY(-2px)}.menu-item-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}.menu-item h3{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700}.menu-item .price{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--gold);white-space:nowrap;margin-left:1rem}.menu-item .desc{color:var(--text-dim);font-size:.95rem;line-height:1.5;margin-bottom:.5rem}.menu-item .allergens{display:flex;gap:.4rem;margin-top:auto;flex-wrap:wrap}.allergen-tag{font-size:.7rem;padding:.15rem .6rem;border-radius:4px;font-weight:600;letter-spacing:.5px}.allergen-tag.gf{background:rgba(123,198,126,.15);color:var(--green);border:1px solid rgba(123,198,126,.3)}.allergen-tag.v{background:rgba(232,200,122,.15);color:var(--warm);border:1px solid rgba(232,200,122,.3)}.allergen-tag.vg{background:rgba(76,175,80,.15);color:#4caf50;border:1px solid rgba(76,175,80,.3)}.allergen-tag.l{background:rgba(232,112,96,.15);color:var(--red);border:1px solid rgba(232,112,96,.3)}.allergen-tag.hc{background:rgba(66,165,245,.15);color:#42a5f5;border:1px solid rgba(66,165,245,.3)}
+/* Menu */.menu-item{cursor:pointer}#menu{padding-top:5rem}.menu-categories{display:flex;justify-content:center;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap}.menu-cat-btn{padding:.6rem 1.5rem;border:1px solid var(--border);border-radius:50px;background:transparent;color:var(--text);cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:600;transition:all .3s}.menu-cat-btn:hover,.menu-cat-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,168,83,.1)}.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.2rem}.menu-item{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.2rem;transition:all .3s;display:flex;gap:1rem;align-items:flex-start}.menu-item:hover{border-color:rgba(212,168,83,.4);transform:translateY(-2px)}.menu-item-thumb{width:80px;height:80px;border-radius:12px;overflow:hidden;flex-shrink:0;border:1px solid var(--border);object-fit:cover;transition:transform .3s}.menu-item:hover .menu-item-thumb{transform:scale(1.08)}.menu-item-content{flex:1;min-width:0}.menu-item-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem}.menu-item h3{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700}.menu-item .price{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900;color:var(--gold);white-space:nowrap;margin-left:1rem}.menu-item .desc{color:var(--text-dim);font-size:.9rem;line-height:1.4;margin-bottom:.4rem}.menu-item .allergens{display:flex;gap:.3rem;flex-wrap:wrap}.allergen-tag{font-size:.65rem;padding:.15rem .5rem;border-radius:4px;font-weight:600;letter-spacing:.5px}.allergen-tag.gf{background:rgba(123,198,126,.15);color:var(--green);border:1px solid rgba(123,198,126,.3)}.allergen-tag.v{background:rgba(232,200,122,.15);color:var(--warm);border:1px solid rgba(232,200,122,.3)}.allergen-tag.vg{background:rgba(76,175,80,.15);color:#4caf50;border:1px solid rgba(76,175,80,.3)}.allergen-tag.l{background:rgba(232,112,96,.15);color:var(--red);border:1px solid rgba(232,112,96,.3)}.allergen-tag.hc{background:rgba(66,165,245,.15);color:#42a5f5;border:1px solid rgba(66,165,245,.3)}
 /* Gallery */.gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}.gallery-item{aspect-ratio:4/3;border-radius:14px;overflow:hidden;position:relative;cursor:pointer;border:1px solid var(--border);transition:all .3s}.gallery-item:hover{transform:scale(1.02);border-color:var(--gold)}.gallery-item img{width:100%;height:100%;object-fit:cover;display:block}.gallery-item .overlay{position:absolute;bottom:0;left:0;right:0;padding:1.5rem 1rem 1rem;background:linear-gradient(transparent,rgba(10,8,6,.9));font-weight:600;font-size:.95rem;color:var(--cream);transform:translateY(20px);opacity:0;transition:all .3s}.gallery-item:hover .overlay{transform:translateY(0);opacity:1}
 /* Reviews */.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}.review-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:all .3s}.review-card:hover{border-color:rgba(212,168,83,.3)}
 .review-stars{color:var(--gold);font-size:1.1rem;margin-bottom:.8rem;letter-spacing:2px}.review-text{font-size:1rem;line-height:1.6;color:var(--text-dim);margin-bottom:1rem;font-style:italic}.review-text::before{content:'"'}
@@ -22,6 +22,7 @@
 /* AI Chatbot */.ai-widget{position:fixed;bottom:2rem;right:2rem;z-index:200;font-family:'Rajdhani',sans-serif}.ai-toggle{width:60px;height:60px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--gold),var(--copper));color:var(--darker);font-size:1.5rem;cursor:pointer;box-shadow:0 4px 20px rgba(212,168,83,.4);transition:all .3s;display:flex;align-items:center;justify-content:center}.ai-toggle:hover{transform:scale(1.1)}.ai-modal{display:none;position:absolute;bottom:80px;right:0;width:360px;max-height:520px;background:var(--card-bg);border:1px solid var(--border);border-radius:20px;overflow:hidden;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,.5)}.ai-modal.active{display:flex}.ai-header{background:linear-gradient(135deg,rgba(212,168,83,.15),rgba(193,120,23,.1));padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.ai-header h3{font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold)}.ai-header .close-btn{background:none;border:none;color:var(--text-dim);font-size:1.5rem;cursor:pointer;transition:color .3s}.ai-header .close-btn:hover{color:var(--gold)}.ai-messages{flex:1;padding:1rem;overflow-y:auto;display:flex;flex-direction:column;gap:.8rem;min-height:200px;max-height:300px}.ai-msg{max-width:85%;padding:.7rem 1rem;border-radius:12px;font-size:.95rem;line-height:1.5;animation:fadeInUp .3s ease-out}.ai-msg.bot{align-self:flex-start;background:rgba(212,168,83,.1);border:1px solid rgba(212,168,83,.15);color:var(--text)}.ai-msg.user{align-self:flex-end;background:rgba(212,168,83,.2);border:1px solid rgba(212,168,83,.25);color:#fff}.ai-input{display:flex;padding:.8rem;border-top:1px solid var(--border);gap:.5rem}.ai-input input{flex:1;padding:.7rem 1rem;background:rgba(10,8,6,.5);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.95rem;outline:none;transition:border-color .3s}.ai-input input:focus{border-color:var(--gold)}.ai-input button{padding:.7rem 1.2rem;border:none;border-radius:10px;background:var(--gold);color:var(--darker);font-weight:700;cursor:pointer;transition:all .3s;font-family:'Rajdhani',sans-serif;font-size:.9rem}.ai-input button:hover{background:var(--copper)}.ai-typing{display:flex;gap:4px;padding:.5rem 1rem;align-items:center}.ai-typing span{width:6px;height:6px;border-radius:50%;background:var(--text-dim);animation:typing 1.4s infinite}.ai-typing span:nth-child(2){animation-delay:.2s}.ai-typing span:nth-child(3){animation-delay:.4s}@keyframes typing{0%,60%,100%{opacity:.3}30%{opacity:1}}
 /* Footer */footer{position:relative;z-index:1;text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);color:var(--text-dim);font-size:.9rem}footer .footer-logo{font-family:'Playfair Display',serif;font-size:1.3rem;background:linear-gradient(135deg,var(--gold),var(--copper));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem}
 /* Lightbox */.lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:150;justify-content:center;align-items:center;cursor:pointer}.lightbox.active{display:flex}.lightbox img{max-width:90%;max-height:90%;border-radius:8px;border:1px solid var(--border)}.lightbox-close{position:absolute;top:1.5rem;right:2rem;font-size:2.5rem;color:var(--text);cursor:pointer;background:none;border:none;z-index:151}.lightbox-close:hover{color:var(--gold)}
+/* Dish Card */.dish-card{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:200;justify-content:center;align-items:center;padding:1.5rem;animation:fadeIn .3s}.dish-card.active{display:flex}.dish-card-inner{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;animation:scaleIn .3s}.dish-card-img{width:100%;aspect-ratio:16/11;object-fit:cover;display:block;border-radius:20px 20px 0 0}.dish-card-body{padding:1.8rem}.dish-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.8rem}.dish-card-header h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold)}.dish-card-header .price{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:var(--gold);white-space:nowrap;margin-left:1rem}.dish-card-desc{color:var(--text-dim);font-size:1.05rem;line-height:1.7;margin-bottom:1.5rem}.dish-card-detail{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}.dish-card-close{display:block;width:100%;padding:.8rem;border:1px solid var(--border);border-radius:12px;background:transparent;color:var(--text-dim);font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:all .3s;text-align:center}.dish-card-close:hover{background:rgba(212,168,83,.1);border-color:var(--gold);color:var(--gold)}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes scaleIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
 /* Animations */@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}.animate{animation:fadeInUp .7s ease-out forwards;opacity:0}.animate-delay-1{animation-delay:.15s}.animate-delay-2{animation-delay:.3s}.animate-delay-3{animation-delay:.45s}
 /* Responsive */@media(max-width:768px){nav{padding:1rem}.nav-links{display:none}.nav-links.active{display:flex;flex-direction:column;position:absolute;top:100%;left:0;width:100%;background:rgba(26,20,16,.95);padding:1rem;border-bottom:1px solid var(--border)}.nav-links a{margin:.5rem 0}.mobile-menu-btn{display:block}section{padding:4rem 1rem}.form-row{grid-template-columns:1fr}.location-grid{grid-template-columns:1fr}.gallery-grid{grid-template-columns:repeat(2,1fr)}.ai-modal{width:300px;right:-20px}.booking-form{padding:1.5rem}.reviews-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.gallery-grid{grid-template-columns:1fr}.hero h1{font-size:clamp(2.5rem,12vw,4rem)}.ai-modal{width:280px}}
@@ -192,6 +193,22 @@
   <img id="lightboxImg" src="" alt="Galería SABOR">
 </div>
 
+<!-- DISH CARD MODAL -->
+<div class="dish-card" id="dishCard" onclick="if(event.target===this)closeDishCard()">
+  <div class="dish-card-inner">
+    <img class="dish-card-img" id="dishCardImg" src="" alt="">
+    <div class="dish-card-body">
+      <div class="dish-card-header">
+        <h2 id="dishCardName"></h2>
+        <span class="price" id="dishCardPrice"></span>
+      </div>
+      <div class="dish-card-detail" id="dishCardAllergens"></div>
+      <div class="dish-card-desc" id="dishCardDesc"></div>
+      <button class="dish-card-close" onclick="closeDishCard()">✕ Cerrar</button>
+    </div>
+  </div>
+</div>
+
 <!-- AI CHATBOT -->
 <div class="ai-widget" id="aiWidget">
   <div class="ai-modal" id="aiModal">
@@ -232,27 +249,27 @@ document.querySelectorAll('.animate').forEach(e=>observer.observe(e));
 // === MENU DATA ===
 const menuData = {
   entrantes: [
-    {name:"Croquetas de jamón ibérico",desc:"Bechamel cremosa con jamón 100% ibérico. 6 unidades.",price:"12€",allergens:["gf","l"]},
-    {name:"Tartar de atún rojo",desc:"Con aguacate, salsa de soja y sésamo tostado.",price:"16€",allergens:["hc"]},
-    {name:"Ensalada de tomate raf",desc:"Tomate raf con ventresca, cebolla morada y aceite oliva virgen extra.",price:"11€",allergens:["v","gf"]},
-    {name:"Patatas bravas SABOR",desc:"Con salsa brava casera y alioli negro.",price:"8€",allergens:["v"]}
+    {name:"Croquetas de jamón ibérico",desc:"Bechamel cremosa con jamón 100% ibérico. 6 unidades.",price:"12€",allergens:["gf","l"],img:"croquetas"},
+    {name:"Tartar de atún rojo",desc:"Con aguacate, salsa de soja y sésamo tostado.",price:"16€",allergens:["hc"],img:"tartar-atun"},
+    {name:"Ensalada de tomate raf",desc:"Tomate raf con ventresca, cebolla morada y aceite oliva virgen extra.",price:"11€",allergens:["v","gf"],img:"ensalada-tomate"},
+    {name:"Patatas bravas SABOR",desc:"Con salsa brava casera y alioli negro.",price:"8€",allergens:["v"],img:"patatas-bravas"}
   ],
   principales: [
-    {name:"Solomillo ibérico al Pedro Ximénez",desc:"Solomillo de cerdo ibérico con salsa dulce de Pedro Ximénez y patatas panaderas.",price:"24€",allergens:["l"]},
-    {name:"Arroz con bogavante",desc:"Arroz meloso de bogavante con fumet casero y alioli.",price:"26€",allergens:["gf","hc"]},
-    {name:"Merluza de pincho en salsa verde",desc:"Merluza del Cantábrico con almejas y perejil.",price:"22€",allergens:["gf"]},
-    {name:"Risotto de boletus y parmesano",desc:"Risotto cremoso con boletus edulis y parmesano Reggiano.",price:"18€",allergens:["v","l","gf"]},
-    {name:"Secreto ibérico con pimientos",desc:"Secreto ibérico a la plancha con pimientos de Padrón.",price:"20€",allergens:["gf"]}
+    {name:"Solomillo ibérico al Pedro Ximénez",desc:"Solomillo de cerdo ibérico con salsa dulce de Pedro Ximénez y patatas panaderas.",price:"24€",allergens:["l"],img:"solomillo"},
+    {name:"Arroz con bogavante",desc:"Arroz meloso de bogavante con fumet casero y alioli.",price:"26€",allergens:["gf","hc"],img:"arroz-bogavante"},
+    {name:"Merluza de pincho en salsa verde",desc:"Merluza del Cantábrico con almejas y perejil.",price:"22€",allergens:["gf"],img:"merluza"},
+    {name:"Risotto de boletus y parmesano",desc:"Risotto cremoso con boletus edulis y parmesano Reggiano.",price:"18€",allergens:["v","l","gf"],img:"risotto"},
+    {name:"Secreto ibérico con pimientos",desc:"Secreto ibérico a la plancha con pimientos de Padrón.",price:"20€",allergens:["gf"],img:"secreto-iberico"}
   ],
   postres: [
-    {name:"Tarta de queso vasca",desc:"Con coulis de frutos rojos. Cremosa y espectacular.",price:"8€",allergens:["l","gf"]},
-    {name:"Brownie de chocolate",desc:"Con helado de vainilla y virutas de chocolate blanco.",price:"9€",allergens:["l","gf"]},
-    {name:"Crema catalana",desc:"Con canela y caramelo quemado en el momento.",price:"7€",allergens:["l","gf"]}
+    {name:"Tarta de queso vasca",desc:"Con coulis de frutos rojos. Cremosa y espectacular.",price:"8€",allergens:["l","gf"],img:"tarta-queso"},
+    {name:"Brownie de chocolate",desc:"Con helado de vainilla y virutas de chocolate blanco.",price:"9€",allergens:["l","gf"],img:"brownie"},
+    {name:"Crema catalana",desc:"Con canela y caramelo quemado en el momento.",price:"7€",allergens:["l","gf"],img:"crema-catalana"}
   ],
   vinos: [
-    {name:"Ribera del Duero Crianza",desc:"Protos. Cuerpo y elegancia.",price:"28€",allergens:["hc"]},
-    {name:"Albariño",desc:"Pazo de Señorans. Fresco y afrutado.",price:"24€",allergens:["hc"]},
-    {name:"Rioja Reserva",desc:"Muga. Clásico de la casa.",price:"32€",allergens:["hc"]}
+    {name:"Ribera del Duero Crianza",desc:"Protos. Cuerpo y elegancia.",price:"28€",allergens:["hc"],img:"ribera"},
+    {name:"Albariño",desc:"Pazo de Señorans. Fresco y afrutado.",price:"24€",allergens:["hc"],img:"albariño"},
+    {name:"Rioja Reserva",desc:"Muga. Clásico de la casa.",price:"32€",allergens:["hc"],img:"rioja"}
   ]
 };
 
@@ -289,16 +306,42 @@ function renderMenu(cat) {
       return `<span class="allergen-tag ${cls[a]||''}">${labels[a]||a}</span>`;
     }).join('');
     div.innerHTML = `
-      <div class="menu-item-header"><h3>${item.name}</h3><span class="price">${item.price}</span></div>
-      <div class="desc">${item.desc}</div>
-      <div class="allergens">${alTags}</div>
+      <img class="menu-item-thumb" src="menu-images/${item.img}.png" alt="${item.name}" loading="lazy">
+      <div class="menu-item-content">
+        <div class="menu-item-header"><h3>${item.name}</h3><span class="price">${item.price}</span></div>
+        <div class="desc">${item.desc}</div>
+        <div class="allergens">${alTags}</div>
+      </div>
     `;
+    div.onclick = () => openDishCard(item);
     grid.appendChild(div);
   });
   // Re-observe new items
   document.querySelectorAll('#menuGrid .animate').forEach(el => observer.observe(el));
 }
 renderMenu('all');
+
+// === DISH CARD ===
+function openDishCard(item) {
+  document.getElementById('dishCardImg').src = `menu-images/${item.img}.png`;
+  document.getElementById('dishCardImg').alt = item.name;
+  document.getElementById('dishCardName').textContent = item.name;
+  document.getElementById('dishCardPrice').textContent = item.price;
+  document.getElementById('dishCardDesc').textContent = item.desc;
+  const alContainer = document.getElementById('dishCardAllergens');
+  alContainer.innerHTML = item.allergens.map(a => {
+    const labels = {gf:'🔄 Sin Gluten',v:'🥦 Vegano',vg:'🥬 Vegetariano',l:'🥛 Lactosa',hc:'⚠️ Alérgeno'};
+    const cls = {gf:'gf',v:'v',vg:'vg',l:'l',hc:'hc'};
+    return `<span class="allergen-tag ${cls[a]||''}">${labels[a]||a}</span>`;
+  }).join('');
+  document.getElementById('dishCard').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeDishCard() {
+  document.getElementById('dishCard').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDishCard(); });
 
 // === BOOKING ===
 const today = new Date().toISOString().split('T')[0];

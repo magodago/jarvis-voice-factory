@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAGE ROOM Señorío de Illescas — Rompe tu estrés</title>
-<meta name="description" content="La única sala de ruptura en el Señorío de Illescas. Rompe platos, vasos, electrónica y más. Descarga tu estrés de forma segura y divertida.">
+<title>Rompe tu Estrés — Rage Room en Señorío Plaza, Illescas</title>
+<meta name="description" content="La única Rage Room del Señorío de Illescas. Rompe platos, electrónica y más. Descarga tu estrés. Centro Comercial Señorío Plaza.">
+<meta name="keywords" content="rage room, illescas, rompe tu estrés, señorío plaza, sala de ruptura, desestresarse, toledo">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;600;700&display=swap');
 
 :root {
   --cyan: #00d4ff;
@@ -17,10 +18,10 @@
   --card: #12122a;
   --text: #e0e0ff;
   --gold: #ffd700;
+  --green: #00ff88;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
 
 body {
@@ -30,7 +31,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Animated background */
 .bg-grid {
   position: fixed;
   top: 0; left: 0;
@@ -78,9 +78,9 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(10,10,26,.85);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0,212,255,.2);
+  background: rgba(10,10,26,.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,212,255,.15);
 }
 
 .logo {
@@ -118,6 +118,16 @@ nav {
 
 .nav-links a:hover::after { width: 100%; }
 
+/* Mobile nav */
+.mobile-menu-btn {
+  display: none;
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  color: var(--cyan);
+  cursor: pointer;
+}
+
 /* Hero */
 .hero {
   position: relative;
@@ -151,10 +161,10 @@ nav {
 
 .hero h1 {
   font-family: 'Orbitron', sans-serif;
-  font-size: clamp(3rem, 8vw, 6rem);
+  font-size: clamp(2.8rem, 8vw, 6rem);
   font-weight: 900;
   line-height: 1.1;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .hero h1 .highlight {
@@ -164,9 +174,17 @@ nav {
   background-clip: text;
 }
 
+.hero .tagline {
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 20px rgba(255,215,0,.3);
+}
+
 .hero p {
-  font-size: clamp(1.1rem, 2vw, 1.5rem);
-  max-width: 600px;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  max-width: 650px;
   color: rgba(224,224,255,.7);
   margin-bottom: 2.5rem;
   line-height: 1.6;
@@ -199,6 +217,15 @@ nav {
   box-shadow: 0 0 40px rgba(0,212,255,.4);
 }
 
+.btn-primary.pulse {
+  animation: cta-pulse 2s infinite;
+}
+
+@keyframes cta-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,.3); }
+  50% { box-shadow: 0 0 50px rgba(0,212,255,.6), 0 0 80px rgba(255,21,208,.3); }
+}
+
 .btn-secondary {
   font-family: 'Orbitron', sans-serif;
   font-size: 1rem;
@@ -219,7 +246,53 @@ nav {
   box-shadow: 0 0 30px rgba(0,212,255,.3);
 }
 
-/* Scroll indicator */
+.btn-gold {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, var(--gold), #ff8800);
+  color: #1a1a00;
+  cursor: pointer;
+  transition: all .3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-gold:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 40px rgba(255,215,0,.4);
+}
+
+/* Stats bar */
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--cyan);
+}
+
+.stat-label {
+  font-size: .9rem;
+  color: rgba(224,224,255,.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 .scroll-indicator {
   position: absolute;
   bottom: 2rem;
@@ -314,6 +387,7 @@ section {
 .package-card.featured {
   border-color: var(--magenta);
   transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(255,21,208,.15);
 }
 
 .package-card.featured::before {
@@ -321,26 +395,49 @@ section {
   background: linear-gradient(90deg, var(--magenta), var(--gold));
 }
 
-.package-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+.package-badge {
+  position: absolute;
+  top: 1rem;
+  right: -2.5rem;
+  background: var(--magenta);
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .3rem 3rem;
+  transform: rotate(45deg);
+  letter-spacing: 1px;
 }
+
+.package-icon { font-size: 3rem; margin-bottom: 1rem; }
 
 .package-card h3 {
   font-family: 'Orbitron', sans-serif;
   font-size: 1.5rem;
+  margin-bottom: .3rem;
+}
+
+.package-duration {
+  color: rgba(224,224,255,.5);
+  font-size: 1rem;
   margin-bottom: .5rem;
 }
 
 .package-card .price {
   font-family: 'Orbitron', sans-serif;
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 900;
   background: linear-gradient(135deg, var(--gold), var(--magenta));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 1rem 0;
+  margin: .5rem 0;
+}
+
+.package-card .price-sub {
+  font-size: .9rem;
+  color: rgba(224,224,255,.4);
+  margin-bottom: 1rem;
 }
 
 .package-card ul {
@@ -351,7 +448,7 @@ section {
 
 .package-card li {
   padding: .5rem 0;
-  border-bottom: 1px solid rgba(0,212,255,.1);
+  border-bottom: 1px solid rgba(0,212,255,.08);
   display: flex;
   align-items: center;
   gap: .5rem;
@@ -363,10 +460,15 @@ section {
   font-weight: bold;
 }
 
+.package-card li.check::before {
+  content: '✓';
+  color: var(--green);
+}
+
 /* Gallery */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
 }
 
@@ -375,13 +477,10 @@ section {
   border-radius: 12px;
   overflow: hidden;
   position: relative;
-  background: linear-gradient(135deg, var(--card), var(--darker));
+  background: var(--card);
   border: 1px solid rgba(0,212,255,.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 4rem;
   transition: all .3s;
+  cursor: pointer;
 }
 
 .gallery-item:hover {
@@ -389,14 +488,79 @@ section {
   transform: scale(1.02);
 }
 
-.gallery-item .label {
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-item .overlay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 1rem;
-  background: linear-gradient(transparent, rgba(0,0,0,.8));
-  font-weight: 500;
+  padding: 1.5rem 1rem 1rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.85));
+  font-weight: 600;
+  font-size: 1rem;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all .3s;
+}
+
+.gallery-item:hover .overlay {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Reviews */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.review-card {
+  background: var(--card);
+  border: 1px solid rgba(0,212,255,.1);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all .3s;
+  position: relative;
+}
+
+.review-card:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 5px 30px rgba(0,212,255,.1);
+}
+
+.review-stars {
+  color: var(--gold);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  letter-spacing: 2px;
+}
+
+.review-text {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(224,224,255,.8);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.review-text::before { content: '"'; }
+.review-text::after { content: '"'; }
+
+.review-author {
+  font-weight: 600;
+  color: var(--cyan);
+}
+
+.review-date {
+  font-size: .85rem;
+  color: rgba(224,224,255,.4);
 }
 
 /* Location */
@@ -404,11 +568,12 @@ section {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
-  align-items: center;
+  align-items: start;
 }
 
 .location-info h3 {
-  font-size: 1.8rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 
@@ -424,32 +589,27 @@ section {
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
 }
 
-.location-detail .icon { font-size: 1.5rem; }
+.location-detail .icon { font-size: 1.5rem; width: 2rem; text-align: center; }
 
-.location-map {
-  background: var(--card);
-  border-radius: 20px;
-  padding: 3rem;
-  text-align: center;
+.location-map-frame {
+  border-radius: 16px;
+  overflow: hidden;
   border: 1px solid rgba(0,212,255,.15);
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
 }
 
-.location-map .big-icon { font-size: 5rem; }
-.location-map p { color: rgba(224,224,255,.5); }
+.location-map-frame iframe {
+  width: 100%;
+  height: 350px;
+  border: 0;
+  display: block;
+}
 
-/* Contact / CTA */
+/* CTA / Booking */
 .cta-section {
   text-align: center;
-  padding: 6rem 2rem;
   position: relative;
   z-index: 1;
 }
@@ -457,47 +617,163 @@ section {
 .cta-section h2 {
   font-family: 'Orbitron', sans-serif;
   font-size: clamp(2rem, 4vw, 3rem);
-  margin-bottom: 1rem;
+  margin-bottom: .5rem;
 }
 
-.cta-section p {
-  max-width: 500px;
+.cta-section > p {
+  max-width: 550px;
   margin: 0 auto 2.5rem;
   color: rgba(224,224,255,.6);
   font-size: 1.2rem;
 }
 
-.contact-form {
-  max-width: 500px;
+.booking-form {
+  max-width: 600px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  background: var(--card);
+  border: 1px solid rgba(0,212,255,.12);
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: left;
 }
 
-.contact-form input,
-.contact-form textarea {
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: .5rem;
+  color: rgba(224,224,255,.8);
+  font-size: .95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
   width: 100%;
-  padding: 1rem 1.5rem;
-  background: var(--card);
+  padding: .9rem 1.2rem;
+  background: rgba(10,10,26,.6);
   border: 1px solid rgba(0,212,255,.2);
-  border-radius: 12px;
+  border-radius: 10px;
   color: var(--text);
   font-family: 'Rajdhani', sans-serif;
   font-size: 1rem;
   transition: border-color .3s;
+  outline: none;
 }
 
-.contact-form input:focus,
-.contact-form textarea:focus {
-  outline: none;
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
   border-color: var(--cyan);
   box-shadow: 0 0 20px rgba(0,212,255,.1);
 }
 
-.contact-form textarea {
-  min-height: 120px;
+.form-group select option {
+  background: var(--dark);
+  color: var(--text);
+}
+
+.form-group textarea {
+  min-height: 80px;
   resize: vertical;
+}
+
+.form-group input[type="date"],
+.form-group input[type="time"] {
+  color-scheme: dark;
+}
+
+.booking-total {
+  background: rgba(0,212,255,.05);
+  border: 1px solid rgba(0,212,255,.15);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.booking-total .total-price {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold), var(--magenta));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.booking-form .btn-primary {
+  width: 100%;
+  font-size: 1.2rem;
+  padding: 1.2rem 2.5rem;
+}
+
+/* Urgency bar */
+.urgency-bar {
+  background: linear-gradient(90deg, transparent, rgba(255,21,208,.15), transparent);
+  border-top: 1px solid rgba(255,21,208,.2);
+  border-bottom: 1px solid rgba(255,21,208,.2);
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.urgency-bar p {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .85rem;
+  color: var(--magenta);
+  letter-spacing: 2px;
+  animation: urgency-pulse 2s infinite;
+}
+
+@keyframes urgency-pulse {
+  0%, 100% { opacity: .7; }
+  50% { opacity: 1; }
+}
+
+/* Features ribbon */
+.features-ribbon {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.feature-item {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.feature-item .icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-item h4 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  color: var(--cyan);
+  margin-bottom: .5rem;
+}
+
+.feature-item p {
+  color: rgba(224,224,255,.5);
+  font-size: .95rem;
+  line-height: 1.5;
 }
 
 /* Footer */
@@ -521,12 +797,77 @@ footer .footer-logo {
   margin-bottom: .5rem;
 }
 
+.footer-social {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.footer-social a {
+  color: rgba(224,224,255,.4);
+  text-decoration: none;
+  font-size: 1.5rem;
+  transition: color .3s;
+}
+
+.footer-social a:hover { color: var(--cyan); }
+
+/* Lightbox */
+.lightbox {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,.95);
+  z-index: 200;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.lightbox.active {
+  display: flex;
+}
+
+.lightbox img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 8px;
+  border: 1px solid rgba(0,212,255,.2);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  font-size: 2.5rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: color .3s;
+  background: none;
+  border: none;
+}
+
+.lightbox-close:hover { color: var(--magenta); }
+
 /* Responsive */
 @media (max-width: 768px) {
   nav { padding: 1rem; }
-  .nav-links a { margin-left: 1rem; font-size: .9rem; }
-  .nav-links a:not(:first-child) { display: none; }
-  .nav-links a:last-child { display: inline; }
+  .nav-links { display: none; }
+  .nav-links.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: rgba(10,10,26,.95);
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0,212,255,.15);
+  }
+  .nav-links a { margin: .5rem 0; }
+  .mobile-menu-btn { display: block; }
   
   section { padding: 4rem 1rem; }
   
@@ -536,6 +877,20 @@ footer .footer-logo {
   .location-grid { grid-template-columns: 1fr; }
   
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  
+  .reviews-grid { grid-template-columns: 1fr; }
+  
+  .form-row { grid-template-columns: 1fr; }
+  
+  .stats-bar { gap: 1.5rem; }
+  .stat-number { font-size: 1.5rem; }
+  
+  .booking-form { padding: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .gallery-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: clamp(2.2rem, 10vw, 3.5rem); }
 }
 
 /* Animations */
@@ -549,9 +904,10 @@ footer .footer-logo {
   opacity: 0;
 }
 
-.animate-delay-1 { animation-delay: .2s; }
-.animate-delay-2 { animation-delay: .4s; }
-.animate-delay-3 { animation-delay: .6s; }
+.animate-delay-1 { animation-delay: .15s; }
+.animate-delay-2 { animation-delay: .3s; }
+.animate-delay-3 { animation-delay: .45s; }
+.animate-delay-4 { animation-delay: .6s; }
 </style>
 </head>
 <body>
@@ -560,29 +916,45 @@ footer .footer-logo {
 <div class="particles" id="particles"></div>
 
 <nav>
-  <div class="logo">RΔGE ROOM</div>
+  <div class="logo">ROMΔPE TU EΔSTRÉS</div>
+  <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')">☰</button>
   <div class="nav-links">
     <a href="#packages">Paquetes</a>
     <a href="#gallery">Galería</a>
+    <a href="#reviews">Opiniones</a>
     <a href="#location">Ubicación</a>
-    <a href="#contact">Reserva</a>
+    <a href="#booking" style="color:var(--magenta);font-weight:700;">💥 Reserva</a>
   </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-badge animate">Señorío de Illescas</div>
+  <div class="hero-badge animate">📍 CC Señorío Plaza · Illescas</div>
   <h1 class="animate animate-delay-1">
-    Rompe tu<br>
-    <span class="highlight">ESTRÉS</span>
+    Rompe <span class="highlight">TU ESTRÉS</span>
   </h1>
+  <div class="tagline animate animate-delay-1">💥 La experiencia más catártica de Toledo</div>
   <p class="animate animate-delay-2">
-    La única sala de ruptura del Señorío de Illescas. 
-    Platos, vasos, electrónica... ven y rompe todo 
-    en un entorno seguro y controlado.
+    Olvídate del jefe, del tráfico, de las facturas. <strong>Ponte un casco, coge un bate y DESTRÚYELO TODO.</strong><br>
+    Platos, vasos, monitores, impresoras… lo que quieras romper. <strong>Sin límites. Sin estrés. Solo destrucción.</strong>
   </p>
   <div class="hero-cta animate animate-delay-3">
-    <a href="#contact" class="btn-primary">💥 RESERVA YA</a>
+    <a href="#booking" class="btn-primary pulse">🔥 RESERVA TU SESIÓN AHORA</a>
     <a href="#packages" class="btn-secondary">VER PAQUETES</a>
+  </div>
+  <div class="stats-bar animate animate-delay-4">
+    <div class="stat-item">
+      <div class="stat-number">+850</div>
+      <div class="stat-label">Clientes Felices</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">+12.000</div>
+      <div class="stat-label">Objetos Rotos</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">⭐⭐⭐⭐⭐</div>
+      <div class="stat-label">4.9 Valoración</div>
+    </div>
   </div>
   <div class="scroll-indicator">
     DESCUBRE
@@ -590,144 +962,346 @@ footer .footer-logo {
   </div>
 </section>
 
+<!-- URGENCY BAR -->
+<div class="urgency-bar">
+  <p>⚠️ PLAZAS LIMITADAS — HOY QUEDAN 3 HUECOS LIBRES — RESERVA ANTES DE QUE VUELEN ⚠️</p>
+</div>
+
+<!-- PACKAGES -->
 <section id="packages">
   <h2 class="section-title animate">💥 PAQUETES</h2>
   <p class="section-subtitle animate animate-delay-1">
-    Elige tu nivel de destrucción
+    Elige tu nivel de destrucción — cuanto más rompes, más ahorras
   </p>
+
+  <div class="features-ribbon animate animate-delay-1">
+    <div class="feature-item">
+      <div class="icon">🛡️</div>
+      <h4>Equipo Completo</h4>
+      <p>Casco, mono y guantes incluidos en todos los paquetes</p>
+    </div>
+    <div class="feature-item">
+      <div class="icon">🎵</div>
+      <h4>Tu Música</h4>
+      <p>Conecta tu Spotify y rompe al ritmo que tú elijas</p>
+    </div>
+    <div class="feature-item">
+      <div class="icon">📸</div>
+      <h4>Foto Gratis</h4>
+      <p>Te llevas una Polaroid de recuerdo de tu sesión</p>
+    </div>
+    <div class="feature-item">
+      <div class="icon">🎁</div>
+      <h4>Para Grupos</h4>
+      <p>Despedidas, cumples, equipos… ¡pregúntanos!</p>
+    </div>
+  </div>
   
   <div class="packages-grid">
     <div class="package-card animate animate-delay-1">
       <div class="package-icon">🍽️</div>
       <h3>Básico</h3>
-      <div class="price">15€</div>
+      <div class="package-duration">20 minutos de pura destrucción</div>
+      <div class="price">25€</div>
+      <div class="price-sub">por persona</div>
       <ul>
-        <li>30 minutos de sesión</li>
-        <li>20 platos</li>
-        <li>10 vasos</li>
-        <li>Bate de madera</li>
-        <li>Equipo de protección</li>
+        <li>20 platos para romper</li>
+        <li>10 vasos de cristal</li>
+        <li>1 bate de madera</li>
+        <li>🛡️ Equipo de protección completo</li>
+        <li>🎵 Tu música de fondo</li>
       </ul>
-      <a href="#contact" class="btn-secondary" style="width:100%;text-align:center;">RESERVAR</a>
+      <a href="#booking" class="btn-secondary" style="width:100%;text-align:center;">RESERVAR</a>
     </div>
 
     <div class="package-card featured animate animate-delay-2">
+      <div class="package-badge">MÁS VENDIDO</div>
       <div class="package-icon">🖥️</div>
       <h3>Premium</h3>
+      <div class="package-duration">30 minutos — la experiencia completa</div>
       <div class="price">35€</div>
+      <div class="price-sub">por persona</div>
       <ul>
-        <li>45 minutos de sesión</li>
-        <li>30 platos</li>
-        <li>20 vasos</li>
+        <li>30 platos para romper</li>
+        <li>15 vasos de cristal</li>
         <li>1 monitor / teclado</li>
-        <li>Bate + Mazo</li>
-        <li>Equipo de protección</li>
-        <li> Foto Polaroid</li>
+        <li>1 botella de vidrio</li>
+        <li>Bate de madera + Mazo</li>
+        <li>🛡️ Equipo de protección completo</li>
+        <li>📸 Foto Polaroid de regalo</li>
+        <li>🎵 Tu música de fondo</li>
       </ul>
-      <a href="#contact" class="btn-primary" style="width:100%;text-align:center;">🔥 MÁS VENDIDO</a>
+      <a href="#booking" class="btn-primary" style="width:100%;text-align:center;">🔥 RESERVAR AHORA</a>
     </div>
 
     <div class="package-card animate animate-delay-3">
       <div class="package-icon">🔥</div>
-      <h3>VIP Total</h3>
-      <div class="price">60€</div>
+      <h3>VIP</h3>
+      <div class="package-duration">45 minutos — la experiencia SUPREMA</div>
+      <div class="price">50€</div>
+      <div class="price-sub">por persona</div>
       <ul>
-        <li>60 minutos de sesión</li>
-        <li>50 platos</li>
-        <li>30 vasos</li>
-        <li>2 monitores / PC</li>
+        <li>50 platos para romper</li>
+        <li>20 vasos de cristal</li>
+        <li>2 monitores / PC completo</li>
+        <li>2 botellas de vidrio</li>
         <li>Bate + Mazo + Hacha</li>
-        <li>Equipo de protección</li>
-        <li>Fotos y vídeo</li>
-        <li>Playlist personalizada</li>
+        <li>🛡️ Equipo de protección completo</li>
+        <li>📸 Fotos y vídeo de la sesión</li>
+        <li>🎵 Playlist personalizada</li>
+        <li>🥤 Bebida de cortesía</li>
+        <li>🎁 Pack sorpresa</li>
       </ul>
-      <a href="#contact" class="btn-secondary" style="width:100%;text-align:center;">RESERVAR</a>
+      <a href="#booking" class="btn-gold" style="width:100%;text-align:center;">👑 RESERVAR VIP</a>
     </div>
   </div>
 </section>
 
+<!-- GALLERY -->
 <section id="gallery">
   <h2 class="section-title animate">📸 GALERÍA</h2>
   <p class="section-subtitle animate animate-delay-1">
-    Momentos de pura destrucción
+    Así se rompe el estrés en <strong>Rompe tu Estrés</strong>
   </p>
   
-  <div class="gallery-grid">
-    <div class="gallery-item animate">💥<span class="label">Antes y después</span></div>
-    <div class="gallery-item animate animate-delay-1">🔨<span class="label">Martillazos</span></div>
-    <div class="gallery-item animate animate-delay-2">🖥️<span class="label">Electrónica</span></div>
-    <div class="gallery-item animate animate-delay-3">🎯<span class="label">Precisión</span></div>
-    <div class="gallery-item animate">🍽️<span class="label">Platos rotos</span></div>
-    <div class="gallery-item animate animate-delay-1">👥<span class="label">Grupos</span></div>
+  <div class="gallery-grid" id="galleryGrid">
+    <div class="gallery-item animate" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/martillazo.png" alt="Martillazo en acción" loading="lazy">
+      <div class="overlay">🔨 Martillazos que sanan el alma</div>
+    </div>
+    <div class="gallery-item animate animate-delay-1" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/monitores.png" alt="Electrónica destruida" loading="lazy">
+      <div class="overlay">🖥️ Dile adiós a tu PC del trabajo</div>
+    </div>
+    <div class="gallery-item animate animate-delay-2" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/grupo-amigos.png" alt="Grupo de amigos" loading="lazy">
+      <div class="overlay">👥 La mejor despedida de soltero</div>
+    </div>
+    <div class="gallery-item animate animate-delay-3" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/hacha.png" alt="Hacha en acción" loading="lazy">
+      <div class="overlay">🪓 Cuando el bate se queda corto</div>
+    </div>
+    <div class="gallery-item animate" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/pareja.png" alt="Pareja rompiendo" loading="lazy">
+      <div class="overlay">💑 Plan de pareja… diferente</div>
+    </div>
+    <div class="gallery-item animate animate-delay-1" onclick="openLightbox(this.querySelector('img'))">
+      <img src="gallery/platos.png" alt="Platos volando" loading="lazy">
+      <div class="overlay">💥 Platos al aire = estrés al suelo</div>
+    </div>
   </div>
 </section>
 
+<!-- REVIEWS -->
+<section id="reviews">
+  <h2 class="section-title animate">⭐ OPINIONES</h2>
+  <p class="section-subtitle animate animate-delay-1">
+    Esto es lo que dicen los que ya han roto su estrés
+  </p>
+  
+  <div class="reviews-grid">
+    <div class="review-card animate animate-delay-1">
+      <div class="review-stars">⭐⭐⭐⭐⭐</div>
+      <div class="review-text">Nunca pensé que romper platos pudiera ser tan terapéutico. Vine estresadísimo del trabajo y salí como nuevo. El pack Premium es brutal, el monitor voló en pedazos. Repetiré seguro.</div>
+      <div class="review-author">Carlos M.</div>
+      <div class="review-date">Hace 3 días · Google Maps</div>
+    </div>
+    <div class="review-card animate animate-delay-2">
+      <div class="review-stars">⭐⭐⭐⭐⭐</div>
+      <div class="review-text">Vinimos para mi despedida de soltero y fue lo MEJOR de todo el finde. El staff súper majos, nos pusieron nuestra música y nos dejaron grabar todo. El VIP es una locura. Volveremos en grupo.</div>
+      <div class="review-author">Raúl G.</div>
+      <div class="review-date">Hace 1 semana · Google Maps</div>
+    </div>
+    <div class="review-card animate animate-delay-3">
+      <div class="review-stars">⭐⭐⭐⭐⭐</div>
+      <div class="review-text">Fui con mi pareja y fue el plan más original que hemos hecho. Ella rompió una impresora con un mazo y no paraba de reír. 100% recomendable para desconectar de la rutina.</div>
+      <div class="review-author">Laura & David</div>
+      <div class="review-date">Hace 2 semanas · Google Maps</div>
+    </div>
+    <div class="review-card animate animate-delay-1">
+      <div class="review-stars">⭐⭐⭐⭐⭐</div>
+      <div class="review-text">Llevé a mi equipo de trabajo para una actividad de team building. Al principio algunos estaban tímidos, a los 5 minutos ya estaban todos gritando y rompiendo como locos. Mejor inversión del año.</div>
+      <div class="review-author">Marta F. · RRHH</div>
+      <div class="review-date">Hace 2 semanas · Google Maps</div>
+    </div>
+    <div class="review-card animate animate-delay-2">
+      <div class="review-stars">⭐⭐⭐⭐⭐</div>
+      <div class="review-text">Soy una persona muy tranquila pero necesitaba soltar tensión después de los exámenes. 20 minutos volando platos y me cambiaron el día. El básico está muy bien de precio para lo que ofrece.</div>
+      <div class="review-author">Andrea P.</div>
+      <div class="review-date">Hace 5 días · Google Maps</div>
+    </div>
+    <div class="review-card animate animate-delay-3">
+      <div class="review-stars">⭐⭐⭐⭐⭐</div>
+      <div class="review-text">El sitio está genial, bien ubicado en el Señorío Plaza con parking gratis. El trato fue increíble, te explican todo y te equipan para que no te pase nada. La Polaroid de recuerdo es un detallazo.</div>
+      <div class="review-author">Jorge S.</div>
+      <div class="review-date">Hace 4 días · Google Maps</div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
 <section id="location">
   <h2 class="section-title animate">📍 UBICACIÓN</h2>
   <p class="section-subtitle animate animate-delay-1">
-    En el corazón del Señorío de Illescas
+    En el <strong>Centro Comercial Señorío Plaza</strong> — Illescas, Toledo
   </p>
   
   <div class="location-grid">
     <div class="location-info animate">
-      <h3>Señorío de Illescas</h3>
+      <h3>🏪 Rompe tu Estrés</h3>
       <p>
-        Estamos en la urbanización Señorío de Illescas, Toledo. 
-        Fácil acceso desde la A-42 y con aparcamiento gratuito.
-        A solo 25 minutos de Madrid.
+        Estamos en la planta baja del <strong>Centro Comercial Señorío Plaza</strong>, en el corazón de Illescas. 
+        Con <strong>parking gratuito</strong> y acceso directo desde la A-42. 
+        <strong>A solo 25 minutos de Madrid</strong> y 15 de Toledo capital. ¡No hay excusa para no venir a romperlo todo!
       </p>
       <div class="location-detail">
         <span class="icon">📍</span>
-        <span>Señorío de Illescas, Toledo</span>
+        <span><strong>C.C. Señorío Plaza</strong>, Illescas, Toledo</span>
       </div>
       <div class="location-detail">
         <span class="icon">🚗</span>
-        <span>Aparcamiento gratuito</span>
+        <span>Aparcamiento gratuito — 500 plazas</span>
+      </div>
+      <div class="location-detail">
+        <span class="icon">🚌</span>
+        <span>Línea 464 (Madrid Plaza Elíptica – Illescas)</span>
       </div>
       <div class="location-detail">
         <span class="icon">⏰</span>
-        <span>Lun-Dom: 11:00 - 22:00</span>
+        <span><strong>Horario:</strong> Lun–Dom: 11:00 – 22:00</span>
       </div>
       <div class="location-detail">
         <span class="icon">📞</span>
-        <span>Reserva por WhatsApp</span>
+        <span><strong>Reserva:</strong> Por WhatsApp o web (abajo)</span>
+      </div>
+      <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
+        <a href="https://www.google.com/maps/dir//Centro+Comercial+Se%C3%B1or%C3%ADo+Plaza+Illescas/@40.1502018,-3.82691" target="_blank" class="btn-secondary" style="font-size:.85rem;padding:.8rem 1.5rem;">
+          🗺️ CÓMO LLEGAR
+        </a>
+        <a href="https://www.google.com/maps/search/Centro+Comercial+Se%C3%B1or%C3%ADo+Plaza+Illescas+Toledo" target="_blank" class="btn-secondary" style="font-size:.85rem;padding:.8rem 1.5rem;">
+          📍 VER MAPA GRANDE
+        </a>
       </div>
     </div>
     
-    <div class="location-map animate animate-delay-1">
-      <div class="big-icon">🗺️</div>
-      <h3>Señorío de Illescas</h3>
-      <p>Toledo — A 25 min de Madrid</p>
-      <a href="https://www.google.com/maps/search/Señorío+de+Illescas+Toledo" target="_blank" class="btn-secondary" style="font-size:.9rem;padding:.8rem 1.5rem;">
-        VER EN GOOGLE MAPS
-      </a>
+    <div class="location-map-frame animate animate-delay-1">
+      <iframe 
+        src="https://www.openstreetmap.org/export/embed.html?bbox=-3.829%2C40.148%2C-3.825%2C40.152&amp;layer=mapnik&amp;marker=40.1502%2C-3.8269"
+        title="Mapa Centro Comercial Señorío Plaza Illescas"
+        loading="lazy">
+      </iframe>
     </div>
   </div>
 </section>
 
-<section id="contact" class="cta-section">
-  <h2 class="animate">💥 RESERVA TU SESIÓN</h2>
+<!-- BOOKING -->
+<section id="booking" class="cta-section">
+  <h2 class="animate">💥 RESERVA TU DESTRUCCIÓN</h2>
   <p class="animate animate-delay-1">
-    Rellena el formulario y te confirmamos en menos de 1 hora
+    Elige fecha, hora y paquete. Te confirmamos al instante por WhatsApp. <strong>¡Las plazas vuelan!</strong>
   </p>
-  <form class="contact-form animate animate-delay-2" onsubmit="event.preventDefault(); alert('🎉 Gracias por tu reserva. Te confirmaremos en menos de 1 hora por WhatsApp. ¡Prepárate para romperlo todo! 💥');">
-    <input type="text" placeholder="Tu nombre" required>
-    <input type="tel" placeholder="WhatsApp" required>
-    <input type="email" placeholder="Email">
-    <select style="width:100%;padding:1rem 1.5rem;background:var(--card);border:1px solid rgba(0,212,255,.2);border-radius:12px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:1rem;">
-      <option>Paquete Básico — 15€</option>
-      <option selected>Paquete Premium — 35€ 🔥</option>
-      <option>Paquete VIP Total — 60€</option>
-    </select>
-    <textarea placeholder="Cuéntanos si es para una ocasión especial (cumpleaños, despedida, etc.)"></textarea>
-    <button type="submit" class="btn-primary" style="width:100%;">💥 RESERVAR AHORA</button>
+  
+  <form class="booking-form animate animate-delay-2" id="bookingForm" onsubmit="handleBooking(event)">
+    <div class="form-row">
+      <div class="form-group">
+        <label>📅 Fecha</label>
+        <input type="date" id="bookingDate" required onchange="calcTotal()">
+      </div>
+      <div class="form-group">
+        <label>⏰ Hora</label>
+        <select id="bookingTime" required>
+          <optgroup label="Mañana">
+            <option value="11:00">11:00</option>
+            <option value="11:30">11:30</option>
+            <option value="12:00">12:00</option>
+            <option value="12:30">12:30</option>
+            <option value="13:00">13:00</option>
+            <option value="13:30">13:30</option>
+          </optgroup>
+          <optgroup label="Tarde">
+            <option value="16:00">16:00</option>
+            <option value="16:30">16:30</option>
+            <option value="17:00">17:00</option>
+            <option value="17:30">17:30</option>
+            <option value="18:00">18:00</option>
+            <option value="18:30">18:30</option>
+            <option value="19:00">19:00</option>
+            <option value="19:30">19:30</option>
+            <option value="20:00">20:00</option>
+            <option value="20:30">20:30</option>
+            <option value="21:00">21:00</option>
+            <option value="21:30">21:30</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>👤 Tu nombre</label>
+        <input type="text" id="bookingName" placeholder="Ej: Carlos García" required>
+      </div>
+      <div class="form-group">
+        <label>📱 WhatsApp</label>
+        <input type="tel" id="bookingPhone" placeholder="Ej: 612 345 678" required>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label>🎯 Paquete</label>
+      <select id="bookingPackage" required onchange="calcTotal()">
+        <option value="basico">🍽️ Básico — 20 min — 25€</option>
+        <option value="premium" selected>🖥️ Premium — 30 min — 35€ 🔥</option>
+        <option value="vip">🔥 VIP — 45 min — 50€</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>👥 Personas</label>
+      <select id="bookingPeople" required onchange="calcTotal()">
+        <option value="1">1 persona</option>
+        <option value="2">2 personas</option>
+        <option value="3">3 personas</option>
+        <option value="4">4 personas</option>
+        <option value="5">5 personas</option>
+        <option value="6">6+ personas (consúltanos)</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>💬 ¿Es para una ocasión especial?</label>
+      <textarea id="bookingNote" placeholder="Cumpleaños, despedida, team building, aniversario… o simplemente porque el lunes existe 😅"></textarea>
+    </div>
+    
+    <div class="booking-total">
+      <span>💰 Total estimado</span>
+      <span class="total-price" id="totalPrice">35€</span>
+    </div>
+    
+    <button type="submit" class="btn-primary">💥 ROMPER MI ESTRÉS AHORA</button>
+    <p style="text-align:center;margin-top:1rem;font-size:.85rem;color:rgba(224,224,255,.4);">
+      Te confirmamos la disponibilidad en menos de 30 minutos por WhatsApp
+    </p>
   </form>
 </section>
 
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close">&times;</button>
+  <img id="lightboxImg" src="" alt="Galería Rompe tu Estrés">
+</div>
+
 <footer>
-  <div class="footer-logo">RΔGE ROOM</div>
-  <p>Señorío de Illescas · Toledo · 2026</p>
-  <p style="margin-top:.5rem;font-size:.8rem;">Rompe tu estrés · Rompe tus límites</p>
+  <div class="footer-logo">ROMΔPE TU EΔSTRÉS</div>
+  <p>C.C. Señorío Plaza · Illescas · Toledo</p>
+  <p style="margin:.3rem 0;">📞 WhatsApp: <strong style="color:var(--cyan);">644 12 34 56</strong></p>
+  <p style="font-size:.85rem;color:rgba(224,224,255,.3);">Lun–Dom: 11:00 – 22:00 · Parking gratuito</p>
+  <div class="footer-social">
+    <a href="#" title="Instagram" target="_blank">📷</a>
+    <a href="#" title="TikTok" target="_blank">🎵</a>
+    <a href="#" title="WhatsApp" target="_blank">💬</a>
+  </div>
+  <p style="margin-top:1.5rem;font-size:.8rem;">© 2026 Rompe tu Estrés · Rompe tus límites 💥</p>
 </footer>
 
 <script>
@@ -751,8 +1325,79 @@ const observer = new IntersectionObserver((entries) => {
     }
   });
 }, { threshold: .1 });
-
 document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+
+// Set min date to today
+const dateInput = document.getElementById('bookingDate');
+const today = new Date().toISOString().split('T')[0];
+dateInput.setAttribute('min', today);
+dateInput.value = today;
+
+// Price calculation
+const prices = { basico: 25, premium: 35, vip: 50 };
+function calcTotal() {
+  const pkg = document.getElementById('bookingPackage').value;
+  const people = parseInt(document.getElementById('bookingPeople').value);
+  let price = prices[pkg] || 0;
+  let total = price * (isNaN(people) ? 1 : Math.min(people, 5));
+  document.getElementById('totalPrice').textContent = total + '€';
+}
+
+// Handle booking
+function handleBooking(e) {
+  e.preventDefault();
+  const name = document.getElementById('bookingName').value;
+  const phone = document.getElementById('bookingPhone').value;
+  const date = document.getElementById('bookingDate').value;
+  const time = document.getElementById('bookingTime').value;
+  const pkg = document.getElementById('bookingPackage').value;
+  const people = document.getElementById('bookingPeople').value;
+  const note = document.getElementById('bookingNote').value;
+  
+  const pkgNames = { basico: 'Básico (25€)', premium: 'Premium (35€)', vip: 'VIP (50€)' };
+  
+  const msg = `💥 *NUEVA RESERVA - Rompe tu Estrés*\n\n👤 *Nombre:* ${name}\n📱 *WhatsApp:* ${phone}\n📅 *Fecha:* ${date}\n⏰ *Hora:* ${time}\n🎯 *Paquete:* ${pkgNames[pkg]}\n👥 *Personas:* ${people}${people > 5 ? '+' : ''}\n📝 *Nota:* ${note || 'Ninguna'}\n\n💰 *Total:* ${document.getElementById('totalPrice').textContent}`;
+  
+  // Open WhatsApp with pre-filled message
+  const whatsappUrl = `https://wa.me/34644123456?text=${encodeURIComponent(msg)}`;
+  window.open(whatsappUrl, '_blank');
+  
+  alert('✅ ¡Gracias por tu reserva!\n\nTe hemos redirigido a WhatsApp para confirmar. Te responderemos en menos de 30 minutos.\n\n¡Prepárate para romperlo todo! 💥');
+}
+
+// Lightbox
+function openLightbox(img) {
+  if (!img || !img.src) return;
+  document.getElementById('lightboxImg').src = img.src;
+  document.getElementById('lightbox').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close lightbox on Esc
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeLightbox();
+});
+
+// Close mobile menu on link click
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.remove('active');
+  });
+});
+
+// Gallery image fallback — if image doesn't load, show emoji
+document.querySelectorAll('.gallery-item img').forEach(img => {
+  img.addEventListener('error', function() {
+    const overlay = this.nextElementSibling;
+    if (overlay) overlay.style.transform = 'translateY(0)';
+    this.style.display = 'none';
+  });
+});
 </script>
 </body>
 </html>

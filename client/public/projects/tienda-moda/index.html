@@ -61,7 +61,7 @@ header.scrolled{box-shadow:0 2px 30px rgba(44,62,80,0.08)}
 .hero-image-placeholder span{font-size:1rem;opacity:0.5}
 .hero-badge{position:absolute;top:20px;right:20px;background:#ff6b6b;color:#fff;padding:8px 18px;border-radius:50px;font-size:0.8rem;font-weight:600}
 
-/* ===== FEATURED / PRODUCTS ===== */
+.hero-banner-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;z-index:0;filter:brightness(.35) saturate(.8)}.hero-banner-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.6),rgba(0,0,0,.3));z-index:1}/* ===== FEATURED / PRODUCTS ===== */
 .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:28px}
 .product-card{background:#fff;border-radius:16px;overflow:hidden;transition:all 0.4s ease;border:1px solid rgba(44,62,80,0.06);display:flex;flex-direction:column}
 .product-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(44,62,80,0.1);border-color:rgba(255,107,107,0.2)}
@@ -315,6 +315,8 @@ footer{background:#2c3e50;color:rgba(255,255,255,0.8);padding:60px 0 30px}
 
 <!-- HERO -->
 <section class="hero" id="hero">
+  <img class="hero-banner-img" src="images/hero-banner.png" alt="" loading="lazy">
+  <div class="hero-banner-overlay"></div>
   <div class="container">
     <div class="hero-content">
       <h1>Tu estilo,<br><span class="coral">hecho local</span></h1>
@@ -1002,6 +1004,7 @@ updateCartUI();
 <!-- Back to Portfolio -->
 
 
-<div style="position:fixed;bottom:12px;left:12px;z-index:99999;display:flex;align-items:center;gap:3px;opacity:0.25;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='0.25'"><a href="https://magodago.github.io/jarvis-voice-factory/projects/" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:10px;font-weight:500;font-family:sans-serif;letter-spacing:0.3px;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);padding:3px 8px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:3px;"><span style="font-size:11px;">←</span></a></div>
+
+<a href="https://magodago.github.io/jarvis-voice-factory/projects/" style="position:fixed;bottom:20px;left:20px;z-index:99999;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;text-decoration:none;opacity:0.3;transition:all 0.3s;box-shadow:0 2px 12px rgba(0,0,0,0.2);" onmouseover="this.style.opacity='1';this.style.background='rgba(0,0,0,0.6)';this.style.transform='scale(1.1)'" onmouseout="this.style.opacity='0.3';this.style.background='rgba(0,0,0,0.35)';this.style.transform='scale(1)'"><span style="color:rgba(255,255,255,0.7);font-size:18px;line-height:1;transition:color 0.3s;">←</span></a>
 </body>
 </html>

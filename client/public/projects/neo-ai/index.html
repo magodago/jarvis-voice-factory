@@ -58,7 +58,7 @@ a{color:#00d4ff;text-decoration:none}
 .star:nth-child(11){top:50%;left:50%;animation-delay:1.2s}
 .star:nth-child(12){top:70%;left:70%;animation-delay:.7s}
 
-/* ===== LAYOUT ===== */
+.hero-banner-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;z-index:0;filter:brightness(.25) saturate(.9);object-position:center 20%}.hero-banner-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,10,26,.8),rgba(10,10,26,.4));z-index:1}/* ===== LAYOUT ===== */
 section{position:relative;z-index:1;padding:100px 24px}
 .container{max-width:1200px;margin:0 auto;width:100%}
 .section-label{font-family:'Orbitron',sans-serif;font-size:.75rem;letter-spacing:4px;color:#7b2ff7;text-transform:uppercase;margin-bottom:12px}
@@ -289,6 +289,8 @@ footer{position:relative;z-index:1;background:#070714;border-top:1px solid rgba(
 
 <!-- HERO -->
 <section class="hero">
+  <img class="hero-banner-img" src="images/hero-banner.png" alt="" loading="lazy">
+  <div class="hero-banner-overlay"></div>
   <div class="hero-content">
     <div class="hero-badge"><i class="fas fa-bolt"></i> Inteligencia Artificial para Pymes</div>
     <h1><span class="gradient-text">AI para tu negocio</span></h1>
@@ -857,6 +859,7 @@ calcROI();
 </script>
 
 
-<div style="position:fixed;bottom:12px;left:12px;z-index:99999;display:flex;align-items:center;gap:3px;opacity:0.25;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='0.25'"><a href="https://magodago.github.io/jarvis-voice-factory/projects/" style="color:rgba(255,255,255,0.6);text-decoration:none;font-size:10px;font-weight:500;font-family:sans-serif;letter-spacing:0.3px;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);padding:3px 8px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:3px;"><span style="font-size:11px;">←</span></a></div>
+
+<a href="https://magodago.github.io/jarvis-voice-factory/projects/" style="position:fixed;bottom:20px;left:20px;z-index:99999;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;text-decoration:none;opacity:0.3;transition:all 0.3s;box-shadow:0 2px 12px rgba(0,0,0,0.2);" onmouseover="this.style.opacity='1';this.style.background='rgba(0,0,0,0.6)';this.style.transform='scale(1.1)'" onmouseout="this.style.opacity='0.3';this.style.background='rgba(0,0,0,0.35)';this.style.transform='scale(1)'"><span style="color:rgba(255,255,255,0.7);font-size:18px;line-height:1;transition:color 0.3s;">←</span></a>
 </body>
 </html>

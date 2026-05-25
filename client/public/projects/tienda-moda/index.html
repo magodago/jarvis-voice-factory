@@ -574,12 +574,12 @@ const PRODUCTS = [
 const FEATURED_IDS = [1,5,7,4,9,2];
 
 const GALLERY_ITEMS = [
-  { label:'Fachada', color:'#fef6f5' },
-  { label:'Interior', color:'#fff' },
-  { label:'Probadores', color:'#fef6f5' },
-  { label:'Escaparate', color:'#fff' },
-  { label:'Equipo', color:'#fef6f5' },
-  { label:'Evento', color:'#fff' }
+  { label:'Fachada', img:'gallery/mujer-1.png' },
+  { label:'Interior', img:'gallery/hombre-1.png' },
+  { label:'Probadores', img:'gallery/mujer-2.png' },
+  { label:'Escaparate', img:'gallery/hombre-2.png' },
+  { label:'Equipo', img:'gallery/accesorios-1.png' },
+  { label:'Evento', img:'gallery/accesorios-2.png' }
 ];
 
 const REVIEWS = [
@@ -998,5 +998,10 @@ renderGallery();
 renderReviews();
 updateCartUI();
 </script>
+
+<!-- Back to Portfolio -->
+<div style="position:fixed;top:0;left:0;z-index:99999;padding:8px 14px;background:rgba(11,11,26,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08);border-right:1px solid rgba(255,255,255,.08);border-radius:0 0 12px 0;display:flex;align-items:center;gap:6px;font-family:sans-serif;">
+  <a href="https://magodago.github.io/jarvis-voice-factory/projects/" style="color:#c9a84c;text-decoration:none;font-size:13px;font-weight:600;display:flex;align-items:center;gap:4px;">← Portfolio</a>
+</div>
 </body>
 </html>

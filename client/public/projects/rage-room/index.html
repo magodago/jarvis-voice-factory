@@ -1484,7 +1484,7 @@ footer .footer-logo {
       </div>
       <div class="location-detail">
         <span class="icon">⏰</span>
-        <span><strong>Horario:</strong> Lun–Dom: 11:00 – 22:00</span>
+        <span><strong>Horario:</strong> Lun–Jue: 17:00 – 22:00 · Vie–Dom: 11:00 – 22:00</span>
       </div>
       <div class="location-detail">
         <span class="icon">📞</span>
@@ -1526,28 +1526,7 @@ footer .footer-logo {
       <div class="form-group">
         <label>⏰ Hora</label>
         <select id="bookingTime" required>
-          <optgroup label="Mañana">
-            <option value="11:00">11:00</option>
-            <option value="11:30">11:30</option>
-            <option value="12:00">12:00</option>
-            <option value="12:30">12:30</option>
-            <option value="13:00">13:00</option>
-            <option value="13:30">13:30</option>
-          </optgroup>
-          <optgroup label="Tarde">
-            <option value="16:00">16:00</option>
-            <option value="16:30">16:30</option>
-            <option value="17:00">17:00</option>
-            <option value="17:30">17:30</option>
-            <option value="18:00">18:00</option>
-            <option value="18:30">18:30</option>
-            <option value="19:00">19:00</option>
-            <option value="19:30">19:30</option>
-            <option value="20:00">20:00</option>
-            <option value="20:30">20:30</option>
-            <option value="21:00">21:00</option>
-            <option value="21:30">21:30</option>
-          </optgroup>
+          <option value="">Elige fecha primero</option>
         </select>
       </div>
     </div>
@@ -1625,11 +1604,6 @@ footer .footer-logo {
         <div class="payment-method" data-method="card" onclick="selectMethod(this)">
           <span class="pm-icon">💳</span>
           Tarjeta
-        </div>
-        <div class="payment-method" data-method="cash" onclick="selectMethod(this)">
-          <span class="pm-icon">💵</span>
-          Efectivo
-        </div>
       </div>
       
       <button class="pay-btn" id="payBtn" onclick="processPayment()" disabled>
@@ -1707,7 +1681,7 @@ footer .footer-logo {
   <div class="footer-logo">ROMPE TU ESTRÉS</div>
   <p>C.C. Señorío Plaza · Illescas · Toledo</p>
   <p style="margin:.3rem 0;">📞 WhatsApp: <strong style="color:var(--cyan);">658 23 79 88</strong></p>
-  <p style="font-size:.85rem;color:rgba(224,224,255,.3);">Lun–Dom: 11:00 – 22:00 · Parking gratuito</p>
+  <p style="font-size:.85rem;color:rgba(224,224,255,.3);">Lun–Jue 17-22h · Vie–Dom 11-22h · Parking gratis</p>
   <div class="footer-social">
     <a href="#" title="Instagram" target="_blank">📷</a>
     <a href="#" title="TikTok" target="_blank">🎵</a>
@@ -1752,11 +1726,97 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: .1 });
 document.querySelectorAll('.animate').forEach(el => observer.observe(el));
 
-// Set min date to today
+// Set min date to today + generate time slots on date change
 const dateInput = document.getElementById('bookingDate');
 const today = new Date().toISOString().split('T')[0];
 dateInput.setAttribute('min', today);
 if (!dateInput.value) dateInput.value = today;
+dateInput.addEventListener('change', generateTimeSlots);
+dateInput.addEventListener('input', generateTimeSlots);
+
+// ⏰ Generar slots según día de la semana y hora actual
+function generateTimeSlots() {
+  const select = document.getElementById('bookingTime');
+  const dateVal = document.getElementById('bookingDate').value;
+  select.innerHTML = '';
+  
+  if (!dateVal) {
+    select.innerHTML = '<option value="">Elige fecha primero</option>';
+    return;
+  }
+  
+  const date = new Date(dateVal + 'T12:00:00');
+  const day = date.getDay(); // 0=Dom, 1=Lun... 6=Sáb
+  const isWeekend = (day === 5 || day === 6 || day === 0); // Vie-Sab-Dom
+  const isToday = dateVal === new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMin = now.getMinutes();
+  
+  let slots = [];
+  if (isWeekend) {
+    // Viernes, Sábado, Domingo: 11:00 - 21:30
+    for (let h = 11; h <= 21; h++) {
+      if (h === 11) { slots.push('11:00'); slots.push('11:30'); }
+      else if (h === 12) { slots.push('12:00'); slots.push('12:30'); }
+      else if (h === 12) { }
+      else if (h === 13) { slots.push('13:00'); slots.push('13:30'); }
+      else if (h === 16) { slots.push('16:00'); slots.push('16:30'); }
+      else if (h === 17) { slots.push('17:00'); slots.push('17:30'); }
+      else if (h === 18) { slots.push('18:00'); slots.push('18:30'); }
+      else if (h === 19) { slots.push('19:00'); slots.push('19:30'); }
+      else if (h === 20) { slots.push('20:00'); slots.push('20:30'); }
+      else if (h === 21) { slots.push('21:00'); slots.push('21:30'); }
+    }
+  } else {
+    // Lunes a Jueves: solo 17:00 - 21:30
+    for (let h = 17; h <= 21; h++) {
+      if (h === 17) { slots.push('17:00'); slots.push('17:30'); }
+      else if (h === 18) { slots.push('18:00'); slots.push('18:30'); }
+      else if (h === 19) { slots.push('19:00'); slots.push('19:30'); }
+      else if (h === 20) { slots.push('20:00'); slots.push('20:30'); }
+      else if (h === 21) { slots.push('21:00'); slots.push('21:30'); }
+    }
+  }
+  
+  // Filter past times if it's today
+  let available = slots;
+  if (isToday) {
+    available = slots.filter(slot => {
+      const [h, m] = slot.split(':').map(Number);
+      return h > currentHour || (h === currentHour && m > currentMin);
+    });
+  }
+  
+  if (available.length === 0) {
+    select.innerHTML = '<option value="">No hay horas disponibles para hoy</option>';
+    return;
+  }
+  
+  const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  const label = isWeekend ? 'Todo el día' : 'Solo tarde (17:00+)';
+  
+  available.forEach(slot => {
+    const opt = document.createElement('option');
+    opt.value = slot;
+    opt.textContent = slot;
+    select.appendChild(opt);
+  });
+  
+  // Show day info
+  const info = document.createElement('option');
+  info.disabled = true;
+  info.textContent = `── ${dayNames[day]} · ${label} ──`;
+  select.prepend(info);
+  
+  const empty = document.createElement('option');
+  empty.value = '';
+  empty.textContent = 'Selecciona hora';
+  select.prepend(empty);
+}
+
+// Call on load
+setTimeout(generateTimeSlots, 100);
 
 // Price calculation
 const prices = { basico: 25, premium: 35, vip: 50 };
@@ -1864,7 +1924,7 @@ function showTicket(method) {
   const num = 'RTE-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
   const fmtDate = new Date(bookingData.date + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   
-  const methodNames = { bizum: 'Bizum', card: 'Tarjeta', cash: 'Efectivo' };
+  const methodNames = { bizum: 'Bizum', card: 'Tarjeta' };
   const funMsg = funMessages[Math.floor(Math.random() * funMessages.length)];
   
   document.getElementById('ticketId').textContent = num;

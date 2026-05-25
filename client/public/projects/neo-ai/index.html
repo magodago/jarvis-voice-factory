@@ -109,8 +109,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 24px;
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
 @media(max-width:900px){.services-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.services-grid{grid-template-columns:1fr}}
-.service-card{background:rgba(255,255,255,.03);border:1px solid rgba(123,47,247,.15);border-radius:16px;padding:32px 28px;transition:all .4s;position:relative;overflow:hidden;cursor:default}
-.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#7b2ff7,#00d4ff);opacity:0;transition:opacity .4s}
+.service-card{background:rgba(10,10,26,.85);border:1px solid rgba(123,47,247,.15);border-radius:16px;padding:32px 28px;transition:all .4s;position:relative;overflow:hidden;cursor:default}
+.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#7b2ff7,#00d4ff);opacity:0;transition:opacity .4s;z-index:2}
 .service-card:hover{transform:translateY(-6px);border-color:#7b2ff7;background:rgba(123,47,247,.06);box-shadow:0 20px 60px rgba(123,47,247,.15)}
 .service-card:hover::before{opacity:1}
 .service-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px;
@@ -288,8 +288,8 @@ footer{position:relative;z-index:1;background:#070714;border-top:1px solid rgba(
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <img class="hero-banner-img" src="images/hero-banner.png" alt="" loading="lazy">
+<section class="hero" style="background:#0a0a1a">
+  <div class="hero-bg-img" style="position:absolute;inset:0;z-index:0;background:url('images/hero-banner.png') center/cover no-repeat;filter:brightness(.25) saturate(.9);opacity:0;transition:opacity 1.5s" onload="this.style.opacity='1'"></div>
   <div class="hero-banner-overlay"></div>
   <div class="hero-content">
     <div class="hero-badge"><i class="fas fa-bolt"></i> Inteligencia Artificial para Pymes</div>
@@ -328,32 +328,32 @@ footer{position:relative;z-index:1;background:#070714;border-top:1px solid rgba(
     <h2 class="section-title">Soluciones IA para tu negocio</h2>
     <p class="section-subtitle">Seis herramientas diseñadas para impulsar tu negocio local. Cada una resuelve un problema real.</p>
     <div class="services-grid">
-      <div class="service-card">
+      <div class="service-card" style="background:linear-gradient(135deg,rgba(0,212,255,.05),rgba(123,47,247,.08)),url('gallery/chatbot-demo.png') center/cover no-repeat;background-blend-mode:overlay">
         <div class="service-icon"><i class="fas fa-robot"></i></div>
         <h3>Chatbot IA</h3>
         <p>Atención al cliente 24/7 automatizada. Responde preguntas, capta leads y agenda citas sin intervención humana.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card" style="background:linear-gradient(135deg,rgba(123,47,247,.05),rgba(0,212,255,.08)),url('gallery/ia-imagenes.png') center/cover no-repeat;background-blend-mode:overlay">
         <div class="service-icon"><i class="fas fa-image"></i></div>
         <h3>Generación de Imágenes</h3>
         <p>Crea imágenes de productos, branding y contenido visual para redes sociales con IA generativa de última generación.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card" style="background:linear-gradient(135deg,rgba(0,212,255,.05),rgba(123,47,247,.08)),url('gallery/datos-analytics.png') center/cover no-repeat;background-blend-mode:overlay">
         <div class="service-icon"><i class="fas fa-chart-line"></i></div>
         <h3>Análisis de Datos</h3>
         <p>Analiza ventas, comportamiento de clientes y tendencias del mercado para tomar decisiones informadas.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card" style="background:linear-gradient(135deg,rgba(123,47,247,.05),rgba(0,212,255,.08)),url('gallery/automatizacion.png') center/cover no-repeat;background-blend-mode:overlay">
         <div class="service-icon"><i class="fas fa-envelope"></i></div>
         <h3>Automatización</h3>
         <p>Automatiza emails, WhatsApp, recordatorios de citas y reservas. Ahorra horas cada semana en tareas repetitivas.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card" style="background:linear-gradient(135deg,rgba(0,212,255,.05),rgba(123,47,247,.08)),url('gallery/futuro-negocio.png') center/cover no-repeat;background-blend-mode:overlay">
         <div class="service-icon"><i class="fas fa-file-alt"></i></div>
         <h3>Contenido SEO</h3>
         <p>Genera blogs optimizados, publicaciones para redes sociales y descripciones de productos que venden.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card" style="background:linear-gradient(135deg,rgba(123,47,247,.05),rgba(0,212,255,.08)),url('gallery/cliente-ia.png') center/cover no-repeat;background-blend-mode:overlay">
         <div class="service-icon"><i class="fas fa-database"></i></div>
         <h3>Dashboard IA</h3>
         <p>Cuadro de mando inteligente con métricas en tiempo real. Visualiza el rendimiento de tu negocio de un vistazo.</p>

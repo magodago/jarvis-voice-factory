@@ -354,6 +354,13 @@ img{max-width:100%;display:block}
         <div class="calc-options" id="calcRoom">
           <div class="calc-option active" data-value="bano">🛁 Baño</div>
           <div class="calc-option" data-value="cocina">🍳 Cocina</div>
+          <div class="calc-option" data-value="salon">🛋️ Salón</div>
+          <div class="calc-option" data-value="dormitorio">🛏️ Dormitorio</div>
+          <div class="calc-option" data-value="pasillo">🚪 Pasillo</div>
+          <div class="calc-option" data-value="terraza">🌱 Terraza</div>
+          <div class="calc-option" data-value="aseo">🚻 Aseo</div>
+          <div class="calc-option" data-value="despacho">📚 Despacho</div>
+          <div class="calc-option" data-value="garaje">🚗 Garaje</div>
           <div class="calc-option" data-value="piso">🏠 Piso completo</div>
         </div>
       </div>
@@ -706,15 +713,18 @@ const calcWhatsApp=document.getElementById('calcWhatsApp');
 
 const prices={
   bano:{basica:[2500,4000],media:[4000,6000],premium:[6000,9000]},
-  cocina:{basica:[5000,8000],media:[8000,12000],premium:[12000,18000]},
+  cocina:{basica:[5000,8000],media:[8000,12000],premium:[12000,15000]},
   salon:{basica:[3000,5000],media:[5000,8000],premium:[8000,13000]},
-  dormitorio:{basica:[1500,3000],media:[3000,5000],premium:[5000,8000]},
+  dormitorio:{basica:[1500,2500],media:[2500,4500],premium:[4500,6500]},
   pasillo:{basica:[800,1500],media:[1500,2500],premium:[2500,4000]},
-  terraza:{basica:[2000,3500],media:[3500,5500],premium:[5500,9000]},
+  terraza:{basica:[2000,3500],media:[3500,5500],premium:[5500,7500]},
+  aseo:{basica:[1200,2000],media:[2000,3500],premium:[3500,5000]},
+  despacho:{basica:[1000,2000],media:[2000,3500],premium:[3500,5500]},
+  garaje:{basica:[1000,2000],media:[2000,3500],premium:[3500,6000]},
   piso:{basica:[15000,22000],media:[22000,35000],premium:[35000,50000]}
 };
 
-const roomNames={bano:'Baño',cocina:'Cocina',salon:'Salón',dormitorio:'Dormitorio',pasillo:'Pasillo',terraza:'Terraza',piso:'Piso completo'};
+const roomNames={bano:'Baño',cocina:'Cocina',salon:'Salón',dormitorio:'Dormitorio',pasillo:'Pasillo',terraza:'Terraza',aseo:'Aseo',despacho:'Despacho',garaje:'Garaje',piso:'Piso completo'};
 const qualityNames={basica:'Básica',media:'Media',premium:'Premium'};
 
 let selectedRoom='bano',selectedQuality='media';
@@ -723,7 +733,9 @@ function updateCalc(){
   const size=parseInt(sizeSlider.value);
   sizeDisplay.textContent=size;
   const base=prices[selectedRoom][selectedQuality];
-  const sizeFactor=selectedRoom==='piso'?size/70:size/20;
+  const refSizes={bano:6,cocina:12,salon:28,dormitorio:16,pasillo:5,terraza:18,aseo:3,despacho:12,garaje:18,piso:80};
+  const refSize=refSizes[selectedRoom]||15;
+  const sizeFactor=size/refSize;
   const min=Math.round(base[0]*sizeFactor);
   const max=Math.round(base[1]*sizeFactor);
   priceDisplay.textContent=`${min.toLocaleString('es')} € - ${max.toLocaleString('es')} €`;

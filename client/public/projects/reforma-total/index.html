@@ -705,12 +705,16 @@ const detailDisplay=document.getElementById('calcDetail');
 const calcWhatsApp=document.getElementById('calcWhatsApp');
 
 const prices={
-  bano:{basica:[3000,4500],media:[4500,6500],premium:[6500,9500]},
-  cocina:{basica:[5000,7500],media:[7500,10000],premium:[10000,15000]},
-  piso:{basica:[18000,25000],media:[25000,35000],premium:[35000,50000]}
+  bano:{basica:[2500,4000],media:[4000,6000],premium:[6000,9000]},
+  cocina:{basica:[5000,8000],media:[8000,12000],premium:[12000,18000]},
+  salon:{basica:[3000,5000],media:[5000,8000],premium:[8000,13000]},
+  dormitorio:{basica:[1500,3000],media:[3000,5000],premium:[5000,8000]},
+  pasillo:{basica:[800,1500],media:[1500,2500],premium:[2500,4000]},
+  terraza:{basica:[2000,3500],media:[3500,5500],premium:[5500,9000]},
+  piso:{basica:[15000,22000],media:[22000,35000],premium:[35000,50000]}
 };
 
-const roomNames={bano:'Baño',cocina:'Cocina',piso:'Piso completo'};
+const roomNames={bano:'Baño',cocina:'Cocina',salon:'Salón',dormitorio:'Dormitorio',pasillo:'Pasillo',terraza:'Terraza',piso:'Piso completo'};
 const qualityNames={basica:'Básica',media:'Media',premium:'Premium'};
 
 let selectedRoom='bano',selectedQuality='media';
@@ -748,6 +752,9 @@ qualityBtns.forEach(btn=>{
   });
 });
 
+sizeSlider.min=2;sizeSlider.max=150;
+function updateSliderBounds(){const ref=roomSizeDefaults[selectedRoom]||[10,30];sizeSlider.value=Math.round((ref[0]+ref[1])/2);}
+roomBtns.forEach(b=>{b.addEventListener('click',()=>{updateSliderBounds();});});
 sizeSlider.addEventListener('input',updateCalc);
 updateCalc();
 

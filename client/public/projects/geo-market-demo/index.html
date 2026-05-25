@@ -3,432 +3,604 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>GeoMarket · Demo Geolocalización</title>
+<title>GeoMarket · Señorío Plaza</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="GeoMarket">
 <link rel="manifest" href="data:application/json,{}">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;height:100%}
+html{height:100%;scroll-behavior:smooth}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0e17;color:#e8edf5;height:100%;overflow:hidden;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
-input,textarea,button{font-size:16px}
 ::selection{background:#00d4ff33;color:#fff}
 
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
-@keyframes notifSlide{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
-@keyframes notifOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(100px)}}
-@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(0,212,255,.15)}50%{box-shadow:0 0 40px rgba(0,212,255,.3)}}
-@keyframes dotPulse{0%,100%{r:4;opacity:.6}50%{r:6;opacity:1}}
-@keyframes walkPath{from{stroke-dashoffset:600}to{stroke-dashoffset:0}}
+/* Status bar */
+#status-bar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;gap:8px;padding:8px 14px;padding-top:calc(8px + env(safe-area-inset-top,0px));background:linear-gradient(180deg,#0a0e17 60%,transparent);font-size:11px;color:#6b7a99;pointer-events:none}
+#status-bar .dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite}
+#status-bar .coord{color:#4a5a7a;font-family:monospace;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px}
+#status-bar .badge{background:#1a2a4a;padding:2px 8px;border-radius:4px;color:#00d4ff;font-weight:600;font-size:10px;border:1px solid #00d4ff22}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-.app{height:100%;display:flex;flex-direction:column;position:relative;max-width:480px;margin:0 auto;padding:env(safe-area-inset-top,10px) 0 env(safe-area-inset-bottom,10px)}
+/* Main layout */
+#app{display:flex;flex-direction:column;height:100%;padding-top:40px}
+#map-wrap{flex:1;position:relative;overflow:hidden;margin:0 10px;border-radius:16px;border:1px solid #1a2a4a;background:#0f1420}
 
-/* Header */
-.header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,212,255,.08);flex-shrink:0}
-.header h1{font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#00d4ff,#7b2ff7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.header .status{display:flex;align-items:center;gap:6px;font-size:.7rem;color:rgba(232,237,245,.5)}
-.header .status-dot{width:6px;height:6px;border-radius:50%;background:#666}
-.header .status-dot.active{background:#00ff88;animation:pulse 1.5s ease-in-out infinite}
-.header .status-dot.searching{background:#ffd700;animation:pulse .8s ease-in-out infinite}
+/* Map canvas */
+#map-canvas{width:100%;height:100%;position:relative;background:radial-gradient(ellipse at 50% 60%,#0f1f35 0%,#080c15 100%)}
+#map-canvas svg{width:100%;height:100%}
 
-/* Map area */
-.map-container{flex:1;position:relative;overflow:hidden;background:linear-gradient(135deg,#0d1220,#141b2b)}
-.map-container svg{width:100%;height:100%}
-.map-zones{position:absolute;inset:0}
-.zone-label{position:absolute;font-size:.55rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;padding:2px 8px;border-radius:4px;pointer-events:none;z-index:2}
-.zone-label.active{animation:glow 2s ease-in-out infinite}
-.zone-offer-count{position:absolute;font-size:.5rem;color:rgba(232,237,245,.4);pointer-events:none;z-index:2}
+/* Zones on map */
+.zone{fill-opacity:.15;stroke-width:2;transition:all .4s ease;cursor:pointer}
+.zone.active{fill-opacity:.35;stroke-width:3}
+.zone.tiendas{fill:#00d4ff;stroke:#00d4ff}
+.zone.restauracion{fill:#f97316;stroke:#f97316}
+.zone.ocio{fill:#a855f7;stroke:#a855f7}
+.zone.alimentacion{fill:#22c55e;stroke:#22c55e}
+.zone.servicios{fill:#eab308;stroke:#eab308}
 
-/* User dot */
-.user-dot{position:absolute;width:16px;height:16px;border-radius:50%;background:#00d4ff;box-shadow:0 0 20px rgba(0,212,255,.5),0 0 40px rgba(0,212,255,.2);z-index:5;transform:translate(-50%,-50%);transition:left .8s ease,top .8s ease;pointer-events:none}
-.user-dot::after{content:'';position:absolute;top:-6px;left:-6px;width:28px;height:28px;border-radius:50%;border:2px solid rgba(0,212,255,.3);animation:pulse 2s ease-in-out infinite}
-.user-dot-label{position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:.55rem;color:#00d4ff;white-space:nowrap;font-weight:600;background:rgba(0,212,255,.1);padding:2px 8px;border-radius:4px;backdrop-filter:blur(4px)}
+/* Zone labels */
+.zone-label{font-size:11px;font-weight:700;fill:#b0c4de;text-anchor:middle;pointer-events:none;opacity:.7;font-family:-apple-system,sans-serif}
+.zone-label.active{fill:#fff;opacity:1}
 
-/* Notification overlay */
-.notification-container{position:fixed;top:calc(env(safe-area-inset-top,10px) + 60px);right:12px;z-index:100;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:320px}
-.notification{background:linear-gradient(135deg,rgba(13,18,32,.95),rgba(20,27,43,.95));border:1px solid;border-radius:14px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;animation:notifSlide .4s ease-out;backdrop-filter:blur(20px);box-shadow:0 8px 40px rgba(0,0,0,.4);pointer-events:auto;cursor:pointer;transition:all .3s}
-.notification:hover{transform:scale(1.02)}
-.notification.closing{animation:notifOut .3s ease-in forwards}
-.notif-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
-.notif-text{flex:1;min-width:0}
-.notif-title{font-size:.8rem;font-weight:700;margin-bottom:2px}
-.notif-desc{font-size:.7rem;color:rgba(232,237,245,.6);line-height:1.4}
-.notif-store{font-size:.65rem;margin-top:4px;font-weight:600}
-.notif-time{font-size:.55rem;color:rgba(232,237,245,.3);flex-shrink:0}
+/* Notifications */
+#toasts{position:fixed;top:calc(52px + env(safe-area-inset-top,0px));right:12px;z-index:200;display:flex;flex-direction:column;gap:8px;width:280px;pointer-events:none}
+.toast{background:linear-gradient(135deg,#0f1f35 0%,#1a2a4a 100%);border:1px solid;border-radius:12px;padding:12px 14px;animation:slideInRight .4s ease-out;box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:auto;cursor:pointer}
+.toast.tiendas{border-color:#00d4ff44}.toast.restauracion{border-color:#f9731644}.toast.ocio{border-color:#a855f744}.toast.alimentacion{border-color:#22c55e44}
+.toast .toast-title{font-size:12px;font-weight:700;margin-bottom:2px}
+.toast.tiendas .toast-title{color:#00d4ff}.toast.restauracion .toast-title{color:#f97316}.toast.ocio .toast-title{color:#a855f7}.toast.alimentacion .toast-title{color:#22c55e}
+.toast .toast-body{font-size:13px;line-height:1.4}
+.toast .toast-store{font-size:10px;color:#6b7a99;margin-top:4px}
+.toast .toast-price{font-size:11px;color:#22c55e;font-weight:700;margin-top:2px}
+@keyframes slideInRight{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-/* Bottom bar */
-.bottom-bar{flex-shrink:0;padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(0,212,255,.08);background:rgba(10,14,23,.95);backdrop-filter:blur(20px)}
-.bottom-bar .info{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.bottom-bar .info .zone-name{font-size:.75rem;font-weight:600;color:#00d4ff}
-.bottom-bar .info .offers-count{font-size:.65rem;color:rgba(232,237,245,.4)}
-.bottom-bar .actions{display:flex;gap:8px}
-.bottom-bar .actions button{flex:1;padding:10px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .3s;font-family:inherit}
-.btn-primary{background:linear-gradient(135deg,#00d4ff,#7b2ff7);color:#fff}
-.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
-.btn-secondary{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)!important;color:rgba(232,237,245,.7)}
-.btn-secondary:hover{background:rgba(255,255,255,.1)}
+/* Bottom panel */
+#bottom-panel{background:#0f1420;border-top:1px solid #1a2a4a;padding:10px 14px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));max-height:45vh;overflow:hidden;display:flex;flex-direction:column;transition:max-height .3s ease}
+#bottom-panel.expanded{max-height:70vh}
+#panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-shrink:0}
+#panel-header h2{font-size:15px;font-weight:700;color:#e8edf5}
+#panel-header .zone-indicator{font-size:11px;padding:3px 10px;border-radius:20px;background:#1a2a4a;color:#6b7a99}
+#panel-header .toggle-btn{background:none;border:none;color:#6b7a99;cursor:pointer;padding:4px 8px;font-size:16px}
+#panel-scroll{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#1a2a4a transparent}
+#panel-scroll::-webkit-scrollbar{width:4px}
+#panel-scroll::-webkit-scrollbar-thumb{background:#1a2a4a;border-radius:2px}
 
-/* Intro overlay */
-.intro-overlay{position:fixed;inset:0;z-index:200;background:rgba(10,14,23,.97);backdrop-filter:blur(30px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;animation:fadeIn .5s}
-.intro-overlay h2{font-size:1.5rem;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#00d4ff,#7b2ff7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.intro-overlay p{font-size:.9rem;color:rgba(232,237,245,.6);margin-bottom:24px;max-width:320px;line-height:1.6}
-.intro-overlay .stores-preview{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px}
-.intro-overlay .stores-preview .store-tag{font-size:.7rem;padding:4px 12px;border-radius:20px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15);color:#00d4ff}
-.intro-overlay .btn-start{background:linear-gradient(135deg,#00d4ff,#7b2ff7);color:#fff;border:none;padding:14px 40px;border-radius:14px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .3s;font-family:inherit;box-shadow:0 8px 30px rgba(0,212,255,.3)}
-.intro-overlay .btn-start:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,212,255,.4)}
-.intro-overlay .note{font-size:.7rem;color:rgba(232,237,245,.3);margin-top:16px;max-width:280px}
+/* Store cards */
+.store-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.store-card{background:#131a28;border:1px solid #1a2a4a;border-radius:10px;padding:10px;cursor:pointer;transition:all .2s}
+.store-card:active{transform:scale(.97);border-color:#00d4ff44}
+.store-card .store-name{font-size:12px;font-weight:700;color:#e8edf5}
+.store-card .store-cat{font-size:9px;color:#6b7a99;margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+.store-card .store-offer{font-size:11px;color:#22c55e;margin-top:4px;line-height:1.3}
+.store-card .store-local{font-size:9px;color:#4a5a7a;margin-top:2px;font-family:monospace}
 
 /* Controls */
-.sim-controls{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:8px;background:rgba(10,14,23,.9);backdrop-filter:blur(10px);padding:8px 12px;border-radius:12px;border:1px solid rgba(0,212,255,.1)}
-.sim-controls button{width:32px;height:32px;border-radius:8px;border:1px solid rgba(0,212,255,.15);background:rgba(0,212,255,.05);color:#00d4ff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
-.sim-controls button:hover{background:rgba(0,212,255,.15);border-color:rgba(0,212,255,.3)}
-.sim-controls .zone-name{font-size:.65rem;color:rgba(232,237,245,.5);padding:0 8px;display:flex;align-items:center}
+#controls{display:flex;gap:6px;padding:10px 14px 0;flex-shrink:0;flex-wrap:wrap}
+#controls button{flex:1;padding:8px 12px;border:1px solid #1a2a4a;border-radius:8px;background:#0f1420;color:#b0c4de;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;min-width:0}
+#controls button:active{transform:scale(.96)}
+#controls button.active{border-color:#00d4ff;color:#00d4ff;background:#00d4ff11}
+#controls button.sim-btn{background:#1a2a4a;color:#00d4ff}
 
-@media(max-width:480px){
-  .notification-container{right:8px;left:8px}
-}
+/* Zone detail modal */
+#zone-detail{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#0f1420;border-radius:20px 20px 0 0;border-top:1px solid #1a2a4a;padding:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .3s ease;max-height:80vh;overflow-y:auto}
+#zone-detail.open{transform:translateY(0)}
+#zone-detail .close-btn{float:right;background:none;border:none;color:#6b7a99;font-size:20px;cursor:pointer;padding:4px}
+#zone-detail h3{font-size:16px;font-weight:700;margin-bottom:4px}
+#zone-detail .zone-desc{font-size:12px;color:#6b7a99;margin-bottom:12px}
+#zone-detail .zd-store{background:#131a28;border:1px solid #1a2a4a;border-radius:10px;padding:12px;margin-bottom:8px}
+#zone-detail .zd-store h4{font-size:13px;font-weight:700;color:#e8edf5}
+#zone-detail .zd-store .zd-offer{font-size:12px;color:#22c55e;margin-top:4px}
+#zone-detail .zd-store .zd-desc{font-size:11px;color:#6b7a99;margin-top:2px}
+
+/* GPS debug */
+#gps-debug{position:fixed;bottom:0;left:0;right:0;z-index:99;padding:4px 10px;padding-bottom:calc(4px + env(safe-area-inset-bottom,0px));font-size:9px;font-family:monospace;color:#4a5a7a;background:linear-gradient(0deg,#080c15 60%,transparent);pointer-events:none;text-align:center}
+
+/* Animations for offers appearing */
+.offer-highlight{animation:glowPulse 2s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 rgba(0,212,255,0)}50%{box-shadow:0 0 12px rgba(0,212,255,.15)}}
+
+/* Responsive */
+@media(max-width:480px){.store-grid{grid-template-columns:1fr 1fr;gap:6px}
+.store-card{padding:8px}
+.store-card .store-name{font-size:11px}
+#controls{flex-wrap:nowrap;overflow-x:auto}
+#controls button{font-size:10px;padding:6px 10px;min-width:60px;flex:none}}
 </style>
 </head>
 <body>
 
-<div class="app" id="app">
-  <!-- Header -->
-  <div class="header">
-    <h1>📍 GeoMarket</h1>
-    <div class="status">
-      <span class="status-dot" id="statusDot"></span>
-      <span id="statusText">Esperando ubicación...</span>
-    </div>
-  </div>
+<!-- Status bar -->
+<div id="status-bar">
+  <span class="dot"></span>
+  <span>Señorío Plaza</span>
+  <span class="coord" id="gps-coord">40.1323, -3.8477</span>
+  <span class="badge" id="zone-badge">📍 CENTRO</span>
+</div>
 
+<div id="app">
   <!-- Map -->
-  <div class="map-container" id="mapContainer">
-    <svg viewBox="0 0 400 500" style="width:100%;height:100%">
-      <!-- Mall base -->
-      <rect x="20" y="20" width="360" height="460" rx="12" fill="none" stroke="rgba(0,212,255,.06)" stroke-width="1"/>
-      
-      <!-- Center aisle (main walkway) -->
-      <line x1="200" y1="25" x2="200" y2="475" stroke="rgba(0,212,255,.04)" stroke-width="2" stroke-dasharray="4,4"/>
-      
-      <!-- Cross aisle -->
-      <line x1="25" y1="170" x2="375" y2="170" stroke="rgba(0,212,255,.04)" stroke-width="2" stroke-dasharray="4,4"/>
-      <line x1="25" y1="340" x2="375" y2="340" stroke="rgba(0,212,255,.04)" stroke-width="2" stroke-dasharray="4,4"/>
-      
-      <!-- Zones (rectangles) -->
-      <!-- Zona Moda - left top -->
-      <rect x="30" y="30" width="160" height="130" rx="8" fill="rgba(0,212,255,.03)" stroke="rgba(0,212,255,.08)" stroke-width="1" id="zone-moda"/>
-      <!-- Zona Restauración - right top -->
-      <rect x="210" y="30" width="160" height="130" rx="8" fill="rgba(255,215,0,.03)" stroke="rgba(255,215,0,.08)" stroke-width="1" id="zone-food"/>
-      <!-- Zona Tecnología - left middle -->
-      <rect x="30" y="180" width="160" height="150" rx="8" fill="rgba(123,47,247,.03)" stroke="rgba(123,47,247,.08)" stroke-width="1" id="zone-tech"/>
-      <!-- Zona Ocio - right middle -->
-      <rect x="210" y="180" width="160" height="150" rx="8" fill="rgba(255,69,0,.03)" stroke="rgba(255,69,0,.08)" stroke-width="1" id="zone-ocio"/>
-      <!-- Zona Hogar - left bottom -->
-      <rect x="30" y="350" width="160" height="120" rx="8" fill="rgba(0,255,136,.03)" stroke="rgba(0,255,136,.08)" stroke-width="1" id="zone-hogar"/>
-      <!-- Zona Deportes - right bottom -->
-      <rect x="210" y="350" width="160" height="120" rx="8" fill="rgba(255,136,0,.03)" stroke="rgba(255,136,0,.08)" stroke-width="1" id="zone-deporte"/>
-    </svg>
-    
-    <!-- Zone labels (overlay) -->
-    <div class="zone-label" style="top:80px;left:50px;color:#00d4ff;border:1px solid rgba(0,212,255,.15);background:rgba(0,212,255,.05)" data-zone="moda">👕 Moda</div>
-    <div class="zone-offer-count" style="top:140px;left:50px" data-zone="moda">3 ofertas</div>
-    
-    <div class="zone-label" style="top:80px;left:250px;color:#ffd700;border:1px solid rgba(255,215,0,.15);background:rgba(255,215,0,.05)" data-zone="food">🍕 Restauración</div>
-    <div class="zone-offer-count" style="top:140px;left:250px" data-zone="food">4 ofertas</div>
-    
-    <div class="zone-label" style="top:230px;left:50px;color:#b088ff;border:1px solid rgba(123,47,247,.15);background:rgba(123,47,247,.05)" data-zone="tech">💻 Tecnología</div>
-    <div class="zone-offer-count" style="top:300px;left:50px" data-zone="tech">2 ofertas</div>
-    
-    <div class="zone-label" style="top:230px;left:250px;color:#ff6a33;border:1px solid rgba(255,69,0,.15);background:rgba(255,69,0,.05)" data-zone="ocio">🎬 Ocio</div>
-    <div class="zone-offer-count" style="top:300px;left:250px" data-zone="ocio">5 ofertas</div>
-    
-    <div class="zone-label" style="top:400px;left:50px;color:#66ffaa;border:1px solid rgba(0,255,136,.15);background:rgba(0,255,136,.05)" data-zone="hogar">🏠 Hogar</div>
-    <div class="zone-offer-count" style="top:455px;left:50px" data-zone="hogar">3 ofertas</div>
-    
-    <div class="zone-label" style="top:400px;left:250px;color:#ffaa44;border:1px solid rgba(255,136,0,.15);background:rgba(255,136,0,.05)" data-zone="deporte">⚽ Deportes</div>
-    <div class="zone-offer-count" style="top:455px;left:250px" data-zone="deporte">4 ofertas</div>
+  <div id="map-wrap">
+    <div id="map-canvas">
+      <svg viewBox="0 0 400 360" xmlns="http://www.w3.org/2000/svg">
+        <!-- Building outline -->
+        <rect x="20" y="15" width="360" height="270" rx="8" fill="none" stroke="#1a2a4a" stroke-width="2"/>
+        <rect x="25" y="20" width="350" height="260" rx="6" fill="none" stroke="#0f1f35" stroke-width="1"/>
 
-    <!-- User dot -->
-    <div class="user-dot" id="userDot" style="left:50%;top:50%">
-      <div class="user-dot-label">TÚ</div>
-    </div>
+        <!-- ZONA COMERCIAL (Tiendas) - Left section -->
+        <polygon class="zone tiendas" points="30,25 200,25 200,170 30,170" data-zone="tiendas"/>
+        <text class="zone-label" x="115" y="100">🛍️ TIENDAS</text>
 
-    <!-- Sim controls -->
-    <div class="sim-controls" id="simControls">
-      <button onclick="moveToZone(-1)" id="btnPrev">◀</button>
-      <span class="zone-name" id="currentZoneLabel">Centro</span>
-      <button onclick="moveToZone(1)" id="btnNext">▶</button>
+        <!-- ZONA RESTAURACIÓN - Top right -->
+        <polygon class="zone restauracion" points="210,25 370,25 370,100 210,100" data-zone="restauracion"/>
+        <text class="zone-label" x="290" y="68">🍔 RESTAURACIÓN</text>
+
+        <!-- ZONA OCIO - Middle right -->
+        <polygon class="zone ocio" points="210,110 370,110 370,170 210,170" data-zone="ocio"/>
+        <text class="zone-label" x="290" y="145">🎮 OCIO</text>
+
+        <!-- ZONA ALIMENTACIÓN - Bottom left -->
+        <polygon class="zone alimentacion" points="30,180 200,180 200,275 30,275" data-zone="alimentacion"/>
+        <text class="zone-label" x="115" y="233">🛒 ALIMENTACIÓN</text>
+
+        <!-- ZONA SERVICIOS - Bottom right -->
+        <polygon class="zone servicios" points="210,180 370,180 370,275 210,275" data-zone="servicios"/>
+        <text class="zone-label" x="290" y="233">⚙️ SERVICIOS</text>
+
+        <!-- Center atrium -->
+        <circle cx="200" cy="200" r="25" fill="#0f1420" stroke="#1a2a4a" stroke-width="1"/>
+        <text x="200" y="205" text-anchor="middle" font-size="8" fill="#4a5a7a">📍</text>
+
+        <!-- Corridors -->
+        <line x1="200" y1="25" x2="200" y2="275" stroke="#1a2a4a" stroke-width="1" opacity=".5"/>
+        <line x1="30" y1="170" x2="370" y2="170" stroke="#1a2a4a" stroke-width="1" opacity=".5"/>
+
+        <!-- User position indicator -->
+        <circle cx="200" cy="200" r="6" fill="#00d4ff" opacity=".9" id="user-dot">
+          <animate attributeName="r" values="6;9;6" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="200" cy="200" r="12" fill="none" stroke="#00d4ff" opacity=".3" id="user-glow">
+          <animate attributeName="r" values="12;20;12" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".3;.1;.3" dur="3s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
     </div>
   </div>
 
-  <!-- Bottom bar -->
-  <div class="bottom-bar">
-    <div class="info">
-      <span class="zone-name" id="currentZone">Esperando...</span>
-      <span class="offers-count" id="offersCount">0 ofertas disponibles</span>
+  <!-- Zone filter buttons -->
+  <div id="controls">
+    <button data-zone="all" class="active">📍 Todas</button>
+    <button data-zone="tiendas">🛍️ Tiendas</button>
+    <button data-zone="restauracion">🍔 Comer</button>
+    <button data-zone="ocio">🎮 Ocio</button>
+    <button data-zone="alimentacion">🛒 Mercado</button>
+    <button class="sim-btn" id="sim-walk">🚶 Simular</button>
+  </div>
+
+  <!-- Bottom panel -->
+  <div id="bottom-panel">
+    <div id="panel-header">
+      <h2 id="panel-title">🏪 Tiendas cercanas</h2>
+      <span class="zone-indicator" id="zone-indicator">📍 CENTRO</span>
+      <button class="toggle-btn" id="toggle-panel">▲</button>
     </div>
-    <div class="actions">
-      <button class="btn-primary" onclick="simulateGeolocation()">📍 Simular llegada al centro</button>
-      <button class="btn-secondary" onclick="clearNotifications()">Limpiar</button>
-    </div>
+    <div id="panel-scroll"></div>
   </div>
 </div>
 
-<!-- Intro overlay -->
-<div class="intro-overlay" id="introOverlay">
-  <h2>📍 GeoMarket Demo</h2>
-  <p>Simulación de geolocalización en centros comerciales. Al entrar en una zona del centro, recibirás ofertas de las tiendas cercanas.</p>
-  <div class="stores-preview">
-    <span class="store-tag">👕 Zara</span>
-    <span class="store-tag">👖 Pull&Bear</span>
-    <span class="store-tag">🍕 Telepizza</span>
-    <span class="store-tag">🍔 Burger King</span>
-    <span class="store-tag">💻 MediaMarkt</span>
-    <span class="store-tag">📱 fnac</span>
-    <span class="store-tag">🎬 Cines</span>
-    <span class="store-tag">🎳 Bolera</span>
-    <span class="store-tag">🏠 IKEA</span>
-    <span class="store-tag">⚽ Decathlon</span>
-    <span class="store-tag">💄 Sephora</span>
-    <span class="store-tag">☕ Starbucks</span>
-  </div>
-  <p style="font-size:.8rem;margin-bottom:8px">Funciona en todo el centro comercial, no solo en tiendas individuales.</p>
-  <button class="btn-start" onclick="startDemo()">Comenzar Demo</button>
-  <p class="note">También detectará tu ubicación real si estás en un centro comercial.</p>
+<!-- Zone detail modal -->
+<div id="zone-detail">
+  <button class="close-btn" id="close-detail">✕</button>
+  <h3 id="zd-title"></h3>
+  <p class="zone-desc" id="zd-desc"></p>
+  <div id="zd-stores"></div>
 </div>
 
-<!-- Notification container -->
-<div class="notification-container" id="notifContainer"></div>
+<!-- Toasts container -->
+<div id="toasts"></div>
+
+<!-- GPS Debug -->
+<div id="gps-debug">Señorío Plaza · C. Juan Carlos Onetti, 1 · Illescas, Toledo · GPS: 40.1323, -3.8477</div>
 
 <script>
-// === DATA ===
-const ZONES = [
-  { id:'moda', name:'Moda', color:'#00d4ff', x:110, y:95, stores:[
-    {name:'Zara', offers:['20% en toda la colección','2x1 en complementos','Tarjeta regalo 10€ por cada 50€']},
-    {name:'Pull&Bear', offers:['30% en jeans','Llévate 3 paga 2 en camisetas','10% estudiantes']},
-    {name:'Sephora', offers:['15% en perfumes','Set regalo con tu compra','Maquillaje gratis en tu cumpleaños']},
-  ]},
-  { id:'food', name:'Restauración', color:'#ffd700', x:290, y:95, stores:[
-    {name:'Telepizza', offers:['2x1 en pizzas familiares','Menú del día 9.90€','Envío gratis +10€']},
-    {name:'Burger King', offers:['Whopper + patatas + bebida 7.50€','Cumpleaños: whopper gratis','App: 2x1 en hamburguesas']},
-    {name:'Starbucks', offers:['3€ cualquier café','Tamaño grande por precio pequeño','Tarjeta fidelización: 5º café gratis']},
-    {name:'Restaurante El Fogón', offers:['Menú degustación 25€','20% en cenas entre semana','Vino de la casa con segundo plato']},
-  ]},
-  { id:'tech', name:'Tecnología', color:'#b088ff', x:110, y:255, stores:[
-    {name:'MediaMarkt', offers:['Hasta 40% en electrónica','Financiación 12 meses sin intereses','Mejor precio garantizado']},
-    {name:'fnac', offers:['3x2 en libros','10% en videojuegos','Club fnac: descuento extra 5%']},
-  ]},
-  { id:'ocio', name:'Ocio', color:'#ff6a33', x:290, y:255, stores:[
-    {name:'Cines', offers:['Martes: 2 entradas al precio de 1','Pack palomitas + bebida 5€','Sesión matinal 4.90€']},
-    {name:'Bolera', offers:['2 partidas por el precio de 1','Jueves universitarios 50%','Pack cumpleaños 15€/persona']},
-    {name:'Gaming Center', offers:['1 hora gratis con consumición','Torneo semanal: premio 100€','VR Experience 2x1']},
-  ]},
-  { id:'hogar', name:'Hogar', color:'#66ffaa', x:110, y:410, stores:[
-    {name:'IKEA', offers:['Descuento en muebles seleccionados','Transporte gratis +200€','Pack descanso: colchón + almohada']},
-    {name:'Maisons du Monde', offers:['15% en decoración','Envío gratis online','Cheque regalo 20€']},
-  ]},
-  { id:'deporte', name:'Deportes', color:'#ffaa44', x:290, y:410, stores:[
-    {name:'Decathlon', offers:['30% en ropa deportiva','2x1 en accesorios','Sábados: taller gratuito']},
-    {name:'JD Sports', offers:['20% en zapatillas seleccionadas','Pack deporte: mochila + botella','Club JD: 10% extra']},
-  ]},
-];
-
-const ZONE_COORDS = {
-  moda: {x:110, y:95}, food: {x:290, y:95}, tech: {x:110, y:255},
-  ocio: {x:290, y:255}, hogar: {x:110, y:410}, deporte: {x:290, y:410},
-  center: {x:200, y:250}
+// ============================================================
+// SEÑORÍO PLAZA — Datos reales (Illescas, Toledo)
+// ============================================================
+const CC = {
+  name: 'Señorío Plaza',
+  address: 'C. Juan Carlos Onetti, 1, 45200 Illescas, Toledo',
+  lat: 40.1323,
+  lng: -3.8477,
+  radius: 0.002, // ~200m detection radius
+  hours: 'L-S 10:00-22:00 · Do-Ju 07:00-01:00 · Vi-Sá 08:00-02:30',
+  zones: {
+    tiendas: {
+      label: '🛍️ Zona Comercial',
+      color: '#00d4ff',
+      desc: 'Descubre nuestras tiendas de moda, deporte, hogar y más.',
+      stores: [
+        {name:'Joma', local:'A02', desc:'Prestigiosa marca deportiva española. Calzado y equipamiento técnico.', offer:'👟 2x1 en calzado de running', price:'Desde 39€'},
+        {name:'Max Colchón', local:'A02B', desc:'Fabricante de sistemas de descanso. Colchones, canapés y almohadas.', offer:'💤 -30% en colchones viscoelásticos', price:'249€'},
+        {name:'Hôma', local:'A03/B04', desc:'Decoración, mobiliario y menaje. Inspiración para tu hogar.', offer:'🏠 -20% en muebles seleccionados', price:'Desde 59€'},
+        {name:'Toy Planet', local:'A05', desc:'Juguetería líder. Juegos de mesa, muñecos y artículos infantiles.', offer:'🧸 3x2 en juegos de mesa', price:'Desde 12€'},
+        {name:'Feuvert', local:'B01A', desc:'Mantenimiento del automóvil y recambios. Taller mecánico rápido.', offer:'🔧 Revisión gratuita + -15% en neumáticos', price:'Gratis'},
+        {name:'Bermellón', local:'B01B', desc:'Textil hogar y decoración. Cortinas, ropa de cama y complementos.', offer:'🛏️ -25% en ropa de cama', price:'Desde 29€'},
+        {name:'JYSK', local:'B02-B03B', desc:'Muebles y decoración escandinava. Calidad nórdica a buen precio.', offer:'🇩🇰 -40% en colchones JYSK', price:'Desde 99€'},
+        {name:'Dormity', local:'B04A', desc:'Salud y descanso. Colchones y equipos para mejorar tu sueño.', offer:'😴 2ª unidad al 50% en almohadas', price:'19€'},
+        {name:'Kiwoko', local:'B06', desc:'Todo para mascotas. Alimentación, cuidados y accesorios.', offer:'🐾 -20% en pienso premium + regalo', price:'Desde 8€'},
+        {name:'Sprinter', local:'B08', desc:'Multimarca deportiva. Running, fitness, fútbol y lifestyle.', offer:'🏃 -50% en ropa de entrenamiento', price:'Desde 15€'},
+        {name:'Action', local:'B09', desc:'Tienda de descuentos no alimentarios. Surtido rotativo semanal.', offer:'🎯 Sorpresa: -70% en hobby & craft', price:'Desde 1€'},
+        {name:'Kiabi', local:'—', desc:'Moda para toda la familia a precios imbatibles.', offer:'👕 2x1 en camisetas básicas', price:'6€'},
+      ]
+    },
+    restauracion: {
+      label: '🍔 Zona de Restauración',
+      color: '#f97316',
+      desc: 'Déjate seducir por una propuesta culinaria única. Desde cafés hasta banquetes.',
+      stores: [
+        {name:'100 Montaditos', local:'R01', desc:'Los famosos montaditos a precios de locura. Miércoles y domingos especiales.', offer:'🥪 Miércoles: montaditos a 1€', price:'1€'},
+        {name:'McDonald\'s', local:'R02', desc:'El clásico de siempre. Menús, hamburguesas y Happy Meal.', offer:'🍟 Menú Big Mac por 7.99€', price:'7.99€'},
+        {name:'Ginos', local:'R03', desc:'Cocina italiana. Pastas, pizzas y las mejores ensaladas.', offer:'🍝 Menú pasta + bebida 9.90€', price:'9.90€'},
+        {name:'VIPS', local:'R04', desc:'Restaurante americano. Hamburguesas, costillas y desayunos.', offer:'🥩 Lunes: hamburguesa VIPS 2x1', price:'11.50€'},
+        {name:'Makitoki', local:'R05', desc:'Cocina asiática fusión. Makis, wok y noodles.', offer:'🍣 Menú makis 12.90€ (lleva 2ª ración gratis)', price:'12.90€'},
+        {name:'Anubis', local:'R06', desc:'Restaurante mexicano auténtico. Tacos, burritos y margaritas.', offer:'🌮 Jueves: 3x2 en tacos', price:'9€'},
+        {name:'Foodtrucker', local:'R07', desc:'Comida urbana sobre ruedas. Perritos, burgers y pulled pork.', offer:'🌭 Menú Foodie: burger + patatas + bebida 8.50€', price:'8.50€'},
+        {name:'Churrería', local:'R08', desc:'Churros artesanales recién hechos con chocolate caliente.', offer:'🍫 Churros con chocolate 3.50€ (hasta las 12h)', price:'3.50€'},
+        {name:'Kebap', local:'R09', desc:'Döner, kebab y durum. Comida rápida turca de calidad.', offer:'🥙 Durum + bebida 5.90€ (menú estudiante)', price:'5.90€'},
+      ]
+    },
+    ocio: {
+      label: '🎮 Zona de Ocio',
+      color: '#a855f7',
+      desc: 'Diversión para todas las edades. Bowling, fitness y más.',
+      stores: [
+        {name:'Bowling Co.', local:'O01', desc:'Pistas de bolos profesionales. Ideal para grupos y familias.', offer:'🎳 2 partidas por 1: 9.90€ (lunes-jueves)', price:'9.90€'},
+        {name:'Fitness Gym', local:'O02', desc:'Gimnasio completo. Abierto de 06:00 a 01:00. Sala de máquinas y clases.', offer:'💪 Día de prueba GRATIS + -50% inscripción', price:'Gratis'},
+        {name:'Zona Gaming', local:'O03', desc:'Simuladores, realidad virtual y máquinas arcade.', offer:'🎮 1h VR por 8€ (2 jugadores)', price:'8€'},
+      ]
+    },
+    alimentacion: {
+      label: '🛒 Alimentación',
+      color: '#22c55e',
+      desc: 'Supermercados con los mejores precios y productos frescos.',
+      stores: [
+        {name:'Alcampo', local:'S01', desc:'Hipermercado completo. Alimentación, hogar, textil y electrónica.', offer:'🥩 -20% en carne y pescado fresco (viernes)', price:'Desde 3€'},
+        {name:'Lidl', local:'S02', desc:'Supermercado de descuento. Productos frescos y ofertas semanales.', offer:'🍎 Ofertas de la semana: fruta y verdura -30%', price:'Desde 0.99€'},
+      ]
+    },
+    servicios: {
+      label: '⚙️ Servicios',
+      color: '#eab308',
+      desc: 'Todo lo que necesitas en un solo lugar.',
+      stores: [
+        {name:'Lavandería', local:'SV01', desc:'Lavandería autoservicio 24h. Lavado y secado rápido.', offer:'🧺 Lava + seca 5€ (promo nuevos usuarios)', price:'5€'},
+        {name:'Farmacia', local:'SV02', desc:'Farmacia con horario ampliado. Parafarmacia y consulta.', offer:'💊 -15% en vitaminas y complementos', price:'Desde 5€'},
+        {name:'Óptica', local:'SV03', desc:'Gafas graduadas y de sol. Revisiones gratuitas.', offer:'👓 2x1 en gafas graduadas + revisión gratis', price:'Desde 49€'},
+        {name:'Centro de Belleza', local:'SV04', desc:'Peluquería, estética y manicura.', offer:'💇 Corte + peinado 15€ (entre semana)', price:'15€'},
+        {name:'Loterías', local:'SV05', desc:'Administración de lotería y apuestas del Estado.', offer:'🍀 Lleva 5€ y llévate un boleto de regalo', price:'Desde 2€'},
+      ]
+    }
+  }
 };
 
+// Zone order for sequential walking
+const ZONE_ORDER = ['tiendas','restauracion','ocio','alimentacion','servicios'];
 let currentZone = null;
-let notificationTimers = [];
-let isRealGPS = false;
-let watchId = null;
+let simInterval = null;
+let simZoneIdx = 0;
+let toastCount = 0;
+let visitedZones = new Set();
 
-// === DEMO START ===
-function startDemo() {
-  document.getElementById('introOverlay').style.display = 'none';
-  document.getElementById('statusText').textContent = 'Demo activa';
-  document.getElementById('statusDot').className = 'status-dot active';
-  
-  // Try real GPS first
-  if ('geolocation' in navigator) {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        isRealGPS = true;
-        document.getElementById('statusText').textContent = 'GPS real activo';
-        checkRealLocation(pos.coords.latitude, pos.coords.longitude);
-        // Watch for changes
-        watchId = navigator.geolocation.watchPosition(
-          (p) => checkRealLocation(p.coords.latitude, p.coords.longitude),
-          null, {enableHighAccuracy:true, timeout:10000, maximumAge:5000}
-        );
-      },
-      () => {
-        console.log('GPS denegado - usando demo simulada');
-        document.getElementById('statusText').textContent = 'Modo simulación';
-        // Start simulation after a moment
-        setTimeout(() => simulateZoneEntry('moda'), 1500);
-      },
-      {timeout:5000}
-    );
-  } else {
-    setTimeout(() => simulateZoneEntry('moda'), 1500);
-  }
-}
+// DOM refs
+const mapCanvas = document.getElementById('map-canvas');
+const panelScroll = document.getElementById('panel-scroll');
+const panelTitle = document.getElementById('panel-title');
+const zoneIndicator = document.getElementById('zone-indicator');
+const zoneBadge = document.getElementById('zone-badge');
+const gpsCoord = document.getElementById('gps-coord');
+const toggleBtn = document.getElementById('toggle-panel');
+const bottomPanel = document.getElementById('bottom-panel');
+const zdTitle = document.getElementById('zd-title');
+const zdDesc = document.getElementById('zd-desc');
+const zdStores = document.getElementById('zd-stores');
+const closeDetail = document.getElementById('close-detail');
+const filterBtns = document.querySelectorAll('#controls button[data-zone]');
+const simWalk = document.getElementById('sim-walk');
+const toasts = document.getElementById('toasts');
 
-// === REAL GPS CHECK ===
-function checkRealLocation(lat, lon) {
-  // Check if within a generic shopping center area
-  // Señorío Plaza: ~40.12, -3.85
-  const dist = distance(lat, lon, 40.12, -3.85);
-  if (dist < 0.5) {
-    document.getElementById('statusText').textContent = '📍 CC Señorío Plaza';
-    document.getElementById('statusDot').className = 'status-dot active';
-    // Determine zone by position
-    // In real app, this would use indoor positioning
-    simulateZoneEntry('moda');
-  } else {
-    document.getElementById('statusText').textContent = `📍 ${dist.toFixed(1)}km del CC`;
-    // Still simulate for testing
-    setTimeout(() => simulateZoneEntry('moda'), 2000);
-  }
-}
-
-function distance(lat1, lon1, lat2, lon2) {
-  const R = 6371;
-  const dLat = (lat2-lat1)*Math.PI/180;
-  const dLon = (lon2-lon1)*Math.PI/180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+// ============================================================
+// GPS Detection
+// ============================================================
+function deg2rad(d) { return d * Math.PI / 180; }
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const dLat = deg2rad(lat2-lat1);
+  const dLng = deg2rad(lng2-lng1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(deg2rad(lat1))*Math.cos(deg2rad(lat2))*Math.sin(dLng/2)**2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
-// === SIMULATION ===
-let simZoneIndex = 0;
-const simOrder = ['moda', 'food', 'tech', 'ocio', 'hogar', 'deporte'];
+// Determine which zone based on relative position within CC
+function getZoneByOffset(lat, lng) {
+  const dLat = lat - CC.lat;
+  const dLng = lng - CC.lng;
+  const dist = Math.sqrt(dLat*dLat + dLng*dLng);
+  if (dist > CC.radius * 1.5) return null; // Outside CC
 
-function moveToZone(dir) {
-  simZoneIndex = (simZoneIndex + dir + simOrder.length) % simOrder.length;
-  simulateZoneEntry(simOrder[simZoneIndex]);
+  // Map relative position to zones (matching SVG layout)
+  const relX = (dLng / CC.radius + 1) / 2; // 0-1
+  const relY = (dLat / CC.radius + 1) / 2; // 0-1
+
+  if (relX < 0.5 && relY < 0.55) return 'tiendas';
+  if (relX >= 0.5 && relY < 0.32) return 'restauracion';
+  if (relX >= 0.5 && relY < 0.55) return 'ocio';
+  if (relX < 0.5 && relY >= 0.55) return 'alimentacion';
+  if (relX >= 0.5 && relY >= 0.55) return 'servicios';
+  return null;
 }
 
-function simulateGeolocation() {
-  document.getElementById('statusText').textContent = '📍 Llegando al centro...';
-  document.getElementById('statusDot').className = 'status-dot searching';
-  // Animate user dot from top
-  const dot = document.getElementById('userDot');
-  dot.style.left = '50%';
-  dot.style.top = '0%';
-  setTimeout(() => {
-    dot.style.top = '40%';
-    dot.style.left = '30%';
-  }, 300);
-  setTimeout(() => {
-    document.getElementById('statusDot').className = 'status-dot active';
-    document.getElementById('statusText').textContent = '📍 Dentro del centro comercial';
-    simulateZoneEntry('moda');
-  }, 2000);
-}
+// ============================================================
+// UI Updates
+// ============================================================
+function updateMapZone(zoneKey) {
+  document.querySelectorAll('.zone').forEach(z => z.classList.remove('active'));
+  document.querySelectorAll('.zone-label').forEach(z => z.classList.remove('active'));
+  if (zoneKey) {
+    const el = document.querySelector(`.zone.${zoneKey}`);
+    if (el) el.classList.add('active');
+    const label = document.querySelector(`.zone-label:not(.zone.${zoneKey})`);
+  }
 
-function simulateZoneEntry(zoneId) {
-  const zone = ZONES.find(z => z.id === zoneId);
-  if (!zone) return;
-  
-  currentZone = zoneId;
-  simZoneIndex = simOrder.indexOf(zoneId);
-  
-  // Move user dot to zone
-  const coord = ZONE_COORDS[zoneId];
-  const dot = document.getElementById('userDot');
-  dot.style.left = coord.x + '%';
-  dot.style.top = coord.y + '%';
-  
-  // Update bottom bar
-  document.getElementById('currentZone').textContent = `📍 ${zone.name}`;
-  const totalOffers = zone.stores.reduce((s, st) => s + st.offers.length, 0);
-  document.getElementById('offersCount').textContent = `${totalOffers} ofertas en ${zone.stores.length} tiendas`;
-  
-  // Highlight zone
-  document.querySelectorAll('.zone-label').forEach(el => el.classList.remove('active'));
-  const zl = document.querySelector(`[data-zone="${zoneId}"]`);
-  if (zl) zl.classList.add('active');
-  
-  // Show zone offers
-  showNotifications(zone);
-  
-  document.getElementById('statusText').textContent = `📍 Zona ${zone.name}`;
-}
-
-// === NOTIFICATIONS ===
-function showNotifications(zone) {
-  // Pick one random offer per store in the zone
-  let delay = 0;
-  zone.stores.forEach(store => {
-    const offer = store.offers[Math.floor(Math.random() * store.offers.length)];
-    setTimeout(() => {
-      showNotification(store.name, offer, zone.color, zone.name);
-    }, delay);
-    delay += 800 + Math.random() * 1200;
-  });
-}
-
-function showNotification(storeName, offer, color, zoneName) {
-  const container = document.getElementById('notifContainer');
-  const notif = document.createElement('div');
-  notif.className = 'notification';
-  notif.style.borderColor = color + '30';
-  
-  const colors = ['#00d4ff','#ffd700','#b088ff','#ff6a33','#66ffaa','#ffaa44'];
-  const iconBg = colors[Math.floor(Math.random() * colors.length)];
-  
-  notif.innerHTML = `
-    <div class="notif-icon" style="background:${iconBg}20;color:${iconBg}">🎯</div>
-    <div class="notif-text">
-      <div class="notif-title" style="color:${color}">${storeName}</div>
-      <div class="notif-desc">${offer}</div>
-      <div class="notif-store" style="color:${color}">📍 ${zoneName}</div>
-    </div>
-    <div class="notif-time">Ahora</div>
-  `;
-  
-  notif.onclick = () => {
-    notif.classList.add('closing');
-    setTimeout(() => notif.remove(), 300);
+  // Update user dot position
+  const zoneCenters = {
+    tiendas: {x:115, y:100},
+    restauracion: {x:290, y:68},
+    ocio: {x:290, y:145},
+    alimentacion: {x:115, y:233},
+    servicios: {x:290, y:233},
   };
-  
-  container.appendChild(notif);
-  
-  // Auto-remove after 8 seconds
-  const timer = setTimeout(() => {
-    if (notif.parentNode) {
-      notif.classList.add('closing');
-      setTimeout(() => notif.remove(), 300);
-    }
-  }, 8000);
-  notificationTimers.push(timer);
-  
-  // Max 4 notifications
-  while (container.children.length > 4) {
-    const first = container.children[0];
-    first.classList.add('closing');
-    setTimeout(() => first.remove(), 300);
+  if (zoneKey && zoneCenters[zoneKey]) {
+    const c = zoneCenters[zoneKey];
+    document.getElementById('user-dot').setAttribute('cx', c.x);
+    document.getElementById('user-dot').setAttribute('cy', c.y);
+    document.getElementById('user-glow').setAttribute('cx', c.x);
+    document.getElementById('user-glow').setAttribute('cy', c.y);
   }
 }
 
-function clearNotifications() {
-  const container = document.getElementById('notifContainer');
-  while (container.firstChild) container.removeChild(container.firstChild);
-  notificationTimers.forEach(t => clearTimeout(t));
-  notificationTimers = [];
+function showToast(zoneKey, store) {
+  const zone = CC.zones[zoneKey];
+  const id = `toast-${toastCount++}`;
+  const div = document.createElement('div');
+  div.className = `toast ${zoneKey}`;
+  div.id = id;
+  div.innerHTML = `
+    <div class="toast-title">${zone.label}</div>
+    <div class="toast-body">${store.offer}</div>
+    <div class="toast-store">${store.name} · Local ${store.local || '—'}</div>
+    <div class="toast-price">${store.price}</div>
+  `;
+  div.onclick = () => div.remove();
+  toasts.appendChild(div);
+  setTimeout(() => { const el = document.getElementById(id); if(el) el.remove(); }, 8000);
 }
 
-// Keyboard controls
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') moveToZone(1);
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') moveToZone(-1);
+function enterZone(zoneKey) {
+  if (visitedZones.has(zoneKey)) return;
+  visitedZones.add(zoneKey);
+  currentZone = zoneKey;
+
+  const zone = CC.zones[zoneKey];
+  zoneBadge.textContent = `📍 ${zone.label}`;
+  updateMapZone(zoneKey);
+  updatePanel(zoneKey);
+
+  // Show 2 random offers from this zone
+  const shuffled = [...zone.stores].sort(() => Math.random() - .5);
+  shuffled.slice(0, 2).forEach(s => showToast(zoneKey, s));
+}
+
+function updatePanel(zoneKey) {
+  if (!zoneKey || !CC.zones[zoneKey]) {
+    panelTitle.textContent = '🏪 Todas las tiendas';
+    zoneIndicator.textContent = '📍 CENTRO';
+    renderAllStores();
+    return;
+  }
+  const zone = CC.zones[zoneKey];
+  panelTitle.textContent = zone.label;
+  zoneIndicator.textContent = `📍 ${zoneKey.toUpperCase()}`;
+  renderFilteredStores(zoneKey);
+}
+
+function renderAllStores(filter) {
+  let html = '<div class="store-grid">';
+  Object.entries(CC.zones).forEach(([key, zone]) => {
+    zone.stores.forEach(s => {
+      if (filter && !s.name.toLowerCase().includes(filter.toLowerCase()) &&
+          !zone.label.toLowerCase().includes(filter.toLowerCase())) return;
+      html += `
+        <div class="store-card" onclick="openZoneDetail('${key}')">
+          <div class="store-name">${s.name}</div>
+          <div class="store-cat">${zone.label} · Local ${s.local || '—'}</div>
+          <div class="store-offer">${s.offer}</div>
+          <div class="store-local">${s.price}</div>
+        </div>`;
+    });
+  });
+  html += '</div>';
+  panelScroll.innerHTML = html;
+}
+
+function renderFilteredStores(zoneKey) {
+  const zone = CC.zones[zoneKey];
+  let html = '<div class="store-grid">';
+  zone.stores.forEach(s => {
+    html += `
+      <div class="store-card" onclick="openZoneDetail('${zoneKey}')">
+        <div class="store-name">${s.name}</div>
+        <div class="store-cat">${zone.label} · Local ${s.local || '—'}</div>
+        <div class="store-offer">${s.offer}</div>
+        <div class="store-local">${s.price}</div>
+      </div>`;
+  });
+  html += '</div>';
+  panelScroll.innerHTML = html;
+}
+
+// Zone detail modal
+window.openZoneDetail = function(zoneKey) {
+  const zone = CC.zones[zoneKey];
+  zdTitle.textContent = zone.label;
+  zdDesc.textContent = zone.desc;
+  let html = '';
+  zone.stores.forEach(s => {
+    html += `
+      <div class="zd-store">
+        <h4>${s.name} <span style="font-size:10px;color:#4a5a7a;font-weight:400;">Local ${s.local || '—'}</span></h4>
+        <div class="zd-desc">${s.desc}</div>
+        <div class="zd-offer">${s.offer}</div>
+      </div>`;
+  });
+  zdStores.innerHTML = html;
+  document.getElementById('zone-detail').classList.add('open');
+};
+
+closeDetail.onclick = () => document.getElementById('zone-detail').classList.remove('open');
+
+// Toggle panel
+let panelExpanded = false;
+toggleBtn.onclick = () => {
+  panelExpanded = !panelExpanded;
+  bottomPanel.classList.toggle('expanded', panelExpanded);
+  toggleBtn.textContent = panelExpanded ? '▼' : '▲';
+};
+
+// ============================================================
+// Walking simulation
+// ============================================================
+simWalk.onclick = function() {
+  if (simInterval) {
+    clearInterval(simInterval);
+    simInterval = null;
+    simWalk.textContent = '🚶 Simular';
+    visitedZones.clear();
+    updateMapZone(null);
+    updatePanel(null);
+    zoneBadge.textContent = '📍 CENTRO';
+    return;
+  }
+  simWalk.textContent = '⏹️ Parar';
+  simZoneIdx = 0;
+  visitedZones.clear();
+  toasts.innerHTML = '';
+
+  // Walk through zones sequentially
+  enterZone(ZONE_ORDER[0]);
+  simInterval = setInterval(() => {
+    simZoneIdx++;
+    if (simZoneIdx >= ZONE_ORDER.length) {
+      clearInterval(simInterval);
+      simInterval = null;
+      simWalk.textContent = '🚶 Simular';
+      // Show summary
+      setTimeout(() => {
+        const div = document.createElement('div');
+        div.className = 'toast tiendas';
+        div.innerHTML = `
+          <div class="toast-title">✅ Recorrido completo</div>
+          <div class="toast-body">Has visitado todas las zonas de Señorío Plaza. ¡Vuelve pronto!</div>`;
+        div.onclick = () => div.remove();
+        toasts.appendChild(div);
+      }, 500);
+      return;
+    }
+    enterZone(ZONE_ORDER[simZoneIdx]);
+  }, 3000);
+};
+
+// ============================================================
+// Filter buttons
+// ============================================================
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const zone = btn.dataset.zone;
+    if (zone === 'all') {
+      updateMapZone(null);
+      updatePanel(null);
+      zoneBadge.textContent = '📍 CENTRO';
+    } else {
+      enterZone(zone);
+    }
+  });
 });
+
+// ============================================================
+// Real GPS
+// ============================================================
+if ('geolocation' in navigator) {
+  const geoOpts = { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 };
+  let lastZone = null;
+
+  function onPosition(pos) {
+    const { latitude, longitude } = pos.coords;
+    gpsCoord.textContent = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+
+    const zone = getZoneByOffset(latitude, longitude);
+    if (zone && zone !== lastZone) {
+      enterZone(zone);
+      lastZone = zone;
+    } else if (!zone && lastZone !== null) {
+      lastZone = null;
+      zoneBadge.textContent = '📍 FUERA DEL CC';
+      updateMapZone(null);
+    } else if (zone) {
+      // Already in this zone, just update display
+      zoneBadge.textContent = `📍 ${CC.zones[zone].label}`;
+    }
+
+    updateMapZone(zone);
+  }
+
+  function onError(err) {
+    gpsCoord.textContent = 'GPS no disponible';
+    // Auto-simulate if no GPS
+    setTimeout(() => {
+      if (!simInterval) simWalk.click();
+    }, 2000);
+  }
+
+  navigator.geolocation.watchPosition(onPosition, onError, geoOpts);
+} else {
+  gpsCoord.textContent = 'GPS no soportado';
+  // Auto-simulate
+  setTimeout(() => {
+    if (!simInterval) simWalk.click();
+  }, 2000);
+}
+
+// ============================================================
+// Keyboard controls
+// ============================================================
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') {
+    const idx = ZONE_ORDER.indexOf(currentZone);
+    const next = (idx + 1) % ZONE_ORDER.length;
+    enterZone(ZONE_ORDER[next]);
+  } else if (e.key === 'ArrowLeft') {
+    const idx = ZONE_ORDER.indexOf(currentZone);
+    const prev = (idx - 1 + ZONE_ORDER.length) % ZONE_ORDER.length;
+    enterZone(ZONE_ORDER[prev]);
+  } else if (e.key === 'Escape') {
+    document.getElementById('zone-detail').classList.remove('open');
+  }
+});
+
+// Initial state
+updatePanel(null);
+console.log('🏪 GeoMarket · Señorío Plaza cargado');
+console.log(`📍 ${CC.address}`);
+console.log(`🏪 ${Object.values(CC.zones).reduce((a,z) => a+z.stores.length, 0)} tiendas/restaurantes`);
 </script>
 </body>
 </html>

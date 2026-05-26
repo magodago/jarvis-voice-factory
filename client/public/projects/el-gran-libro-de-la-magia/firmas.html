@@ -314,13 +314,14 @@ async function submitForm(e) {
   // Send to Google Sheets webhook
   const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwv7aUL5UHMppulilfalFbK7q9Kl9eDUs5QawUbOhF5zIOPX-v7IKzpbZ0_FSrzVf95KQ/exec';
   try {
-    await fetch(WEBHOOK_URL, {
+    fetch(WEBHOOK_URL, {
       method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
   } catch(e) {
-    console.log('Webhook not configured yet:', e);
+    console.log('Webhook unavailable:', e);
   }
 
   // Show success

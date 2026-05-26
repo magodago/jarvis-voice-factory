@@ -312,7 +312,7 @@ async function submitForm(e) {
   saveFirmas(firmas);
 
   // Send to Google Sheets webhook
-  const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwv7aUL5UHMppulilfalFbK7q9Kl9eDUs5QawUbOhF5zIOPX-v7IKzpbZ0_FSrzVf95KQ/exec';
+  const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxIYCriINTi2vkcZe9Vmh3vFBBW8ItwV3qcSfTkn1gkIAb7AqvvV1J6JPE-CGuh_cW5kA/exec';
   try {
     fetch(WEBHOOK_URL, {
       method: 'POST',

@@ -25,6 +25,22 @@ export default defineConfig({
         target: 'http://localhost:4000',
         changeOrigin: true,
       },
+      '/session': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
+      '/upload': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
+      '/tunnel-url': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
+      '/health': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
       '/realtime': {
         target: 'ws://localhost:4000',
         ws: true,

@@ -311,35 +311,7 @@ async function submitForm(e) {
   firmas.push(data);
   saveFirmas(firmas);
 
-  // Send to Google Sheets webhook via hidden iframe (CORS-free)
-  const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwv7aUL5UHMppulilfalFbK7q9Kl9eDUs5QawUbOhF5zIOPX-v7IKzpbZ0_FSrzVf95KQ/exec';
-  try {
-    var iframe = document.createElement('iframe');
-    iframe.name = 'webhook_iframe_' + Date.now();
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    var form = document.createElement('form');
-    form.method = 'POST';
-    form.action = WEBHOOK_URL;
-    form.target = iframe.name;
-    form.style.display = 'none';
-    Object.keys(data).forEach(function(k) {
-      var inp = document.createElement('input');
-      inp.type = 'hidden';
-      inp.name = k;
-      inp.value = data[k] || '';
-      form.appendChild(inp);
-    });
-    document.body.appendChild(form);
-    form.submit();
-    // Clean up after 2s
-    setTimeout(function() {
-      if (document.body.contains(form)) document.body.removeChild(form);
-      if (document.body.contains(iframe)) document.body.removeChild(iframe);
-    }, 2000);
-  } catch(e) {
-    console.log('Webhook unavailable:', e);
-  }
+  // Save to localStorage (Sheet integration pending)
  
   // Show success
   document.getElementById('formSection').querySelector('.form-card').style.display = 'none';

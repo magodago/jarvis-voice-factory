@@ -158,12 +158,16 @@ export default function NewsPage({ isOpen, onClose }) {
     try {
       const baseUrl = await discoverBackendUrl();
       const url = baseUrl ? `${baseUrl}/news/article?url=${encodeURIComponent(article.url || article.link)}` : `/news/article?url=${encodeURIComponent(article.url || article.link)}`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
+      const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       setArticleContent(data);
     } catch (err) {
-      setArticleContent({ error: true, message: 'No se pudo cargar el artículo completo.', url: article.url || article.link });
+      // Backend unavailable — open directly in browser
+      const articleUrl = article.url || article.link;
+      window.open(articleUrl, '_blank', 'noopener');
+      setSelectedArticle(null);
+      setArticleContent(null);
     }
     setArticleLoading(false);
   };
@@ -294,10 +298,10 @@ export default function NewsPage({ isOpen, onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-40 flex flex-col bg-[#060010]/98 backdrop-blur-2xl pb-[env(safe-area-inset-bottom,20px)]"
+      className="fixed inset-0 z-40 flex flex-col bg-[#060010]/98 backdrop-blur-2xl pt-[env(safe-area-inset-top,30px)] pb-[env(safe-area-inset-bottom,20px)]"
     >
       {/* === HEADER === */}
-      <div className="px-5 pt-5 pb-3 border-b border-cyber-cyan/10">
+      <div className="px-5 pt-2 pb-3 border-b border-cyber-cyan/10">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-cyber-cyan/20 to-cyber-cyan/5 border-2 border-cyber-cyan/30 flex items-center justify-center shadow-[0_0_20px_rgba(0,212,255,0.2)]">
@@ -314,8 +318,8 @@ export default function NewsPage({ isOpen, onClose }) {
             </div>
           </div>
           <button onClick={onClose}
-            className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cyber-cyan/30 transition-all group">
-            <X size={20} className="text-white/60 group-hover:text-cyber-cyan transition-colors" />
+            className="min-w-[48px] min-h-[48px] flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-cyber-cyan/30 transition-all active:scale-95">
+            <X size={22} className="text-white/60 group-hover:text-cyber-cyan transition-colors" />
           </button>
         </div>
 
@@ -506,10 +510,10 @@ export default function NewsPage({ isOpen, onClose }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex flex-col bg-[#060010]"
+            className="fixed inset-0 z-50 flex flex-col bg-[#060010] pt-[env(safe-area-inset-top,30px)] pb-[env(safe-area-inset-bottom,20px)]"
           >
             {/* Header */}
-            <div className="px-5 pt-5 pb-3 border-b border-white/10 flex items-center justify-between">
+            <div className="px-5 pt-2 pb-3 border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <span className="text-[10px] font-mono px-2 py-1 rounded-lg"
                   style={{

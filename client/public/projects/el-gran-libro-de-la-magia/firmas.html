@@ -311,19 +311,17 @@ async function submitForm(e) {
   firmas.push(data);
   saveFirmas(firmas);
 
-  // Try to send via Web3Forms (free tier)
+  // Send to Google Sheets webhook
+  const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxIYCriINTi2vkcZe9Vmh3vFBBW8ItwV3qcSfTkn1gkIAb7AqvvV1J6JPE-CGuh_cW5kA/exec';
   try {
-    await fetch('https://api.web3forms.com/submit', {
+    await fetch(WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        access_key: 'demo-key', // Replace with real key
-        subject: `🎩 Nueva firma: ${data.artisticName}`,
-        from_name: 'El Gran Libro de la Magia',
-        ...data
-      })
+      body: JSON.stringify(data)
     });
-  } catch {}
+  } catch(e) {
+    console.log('Webhook not configured yet:', e);
+  }
 
   // Show success
   document.getElementById('formSection').querySelector('.form-card').style.display = 'none';

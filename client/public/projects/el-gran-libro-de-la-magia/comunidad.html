@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Comunidad · El Gran Libro de la Magia</title>
+<meta name="description" content="Únete a la comunidad de magos e ilusionistas en Telegram. Conversa, comparte y aprende con magos de todo el mundo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/magic-particles.css">
+<style>
+:root{--bg:#0a0a0f;--bg2:#0f0f1a;--card:#14141f;--gold:#c9a84c;--gold-light:#e8d48b;--gold-dark:#8a7030;--text:#f0ece4;--text2:#a09888;--text3:#6b6358;--border:rgba(201,168,76,0.08);--border-gold:rgba(201,168,76,0.2);--font-display:'Cormorant Garamond',serif;--font-body:'Inter',sans-serif;--font-mono:'JetBrains Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+::selection{background:var(--gold);color:var(--bg)}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:2px}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(10,10,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+nav .logo{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gold);text-decoration:none;letter-spacing:.5px}
+nav .logo span{color:var(--text3)}
+nav .back{color:var(--text2);text-decoration:none;font-size:12px;transition:color .3s;display:flex;align-items:center;gap:6px}
+nav .back:hover{color:var(--gold)}
+
+/* Hero */
+.hero{position:relative;padding:120px 40px 60px;text-align:center;background:linear-gradient(180deg,var(--bg),var(--bg2));overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,.04),transparent 70%);pointer-events:none}
+.hero h1{font-family:var(--font-display);font-size:clamp(36px,5vw,56px);font-weight:300;letter-spacing:-1px;margin-bottom:12px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p{color:var(--text2);font-size:16px;font-weight:300;max-width:600px;margin:0 auto;line-height:1.6}
+
+/* Content */
+.content{flex:1;max-width:640px;margin:0 auto;padding:0 24px 80px;text-align:center}
+
+/* Community card */
+.community-card{background:var(--card);border:1px solid var(--border-gold);border-radius:16px;padding:48px 40px;margin-top:40px;box-shadow:0 4px 40px rgba(201,168,76,.04)}
+.community-card .icon{font-size:56px;margin-bottom:16px;display:block}
+.community-card h2{font-family:var(--font-display);font-size:28px;font-weight:300;margin-bottom:8px}
+.community-card h2 em{font-style:italic;color:var(--gold)}
+.community-card .tagline{color:var(--text2);font-size:14px;line-height:1.6;font-weight:300;margin-bottom:24px}
+.community-card .features{text-align:left;max-width:400px;margin:0 auto 32px}
+.community-card .feature{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2)}
+.community-card .feature:last-child{border-bottom:none}
+.community-card .feature .f-icon{width:28px;height:28px;border-radius:50%;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.community-card .btn-telegram{display:inline-flex;align-items:center;gap:10px;padding:16px 40px;background:#0088cc;color:#fff;border:none;border-radius:50px;font-size:15px;font-weight:600;text-decoration:none;transition:all .3s;font-family:var(--font-body)}
+.community-card .btn-telegram:hover{background:#0099dd;transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,136,204,.25)}
+.community-card .btn-telegram .tg-icon{font-size:20px}
+
+/* Stats */
+.stats{display:flex;justify-content:center;gap:32px;margin-top:40px;flex-wrap:wrap}
+.stat{text-align:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 28px;min-width:120px}
+.stat-num{font-family:var(--font-display);font-size:24px;font-weight:600;color:var(--gold)}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+/* Quote */
+.quote{max-width:560px;margin:40px auto 0;padding:24px;border-left:2px solid var(--gold-dark)}
+.quote p{font-family:var(--font-display);font-size:18px;font-style:italic;color:var(--text2);line-height:1.6}
+.quote cite{display:block;margin-top:8px;font-size:11px;color:var(--text3);font-style:normal}
+
+/* Footer */
+footer{text-align:center;padding:32px;border-top:1px solid var(--border)}
+footer p{font-size:11px;color:var(--text3)}
+footer a{color:var(--gold);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="." class="logo">El Gran Libro <span>· Comunidad</span></a>
+  <a href="magos.html" class="back">← Magos</a>
+</nav>
+
+<section class="hero">
+  <h1>Comunidad de <em>Magia</em></h1>
+  <p>Un espacio para magos, ilusionistas y entusiastas donde compartir conocimientos, experiencias y mantener viva la tradición mágica.</p>
+</section>
+
+<div class="content">
+
+  <div class="community-card">
+    <span class="icon">🪄</span>
+    <h2>Únete al <em>grupo</em></h2>
+    <p class="tagline">Conversa con magos de todo el mundo sobre cartomagia, mentalismo, grandes ilusiones y mucho más.</p>
+
+    <div class="features">
+      <div class="feature"><span class="f-icon">💬</span> Charlas y debates sobre técnicas y presentaciones</div>
+      <div class="feature"><span class="f-icon">📚</span> Recomendaciones de libros, cursos y recursos</div>
+      <div class="feature"><span class="f-icon">🎭</span> Networking con magos profesionales y aficionados</div>
+      <div class="feature"><span class="f-icon">🤝</span> Colaboraciones, eventos y encuentros</div>
+      <div class="feature"><span class="f-icon">✨</span> Un lugar para compartir tu pasión por la magia</div>
+    </div>
+
+    <a href="https://t.me/+Wj3MZnT17_RjZWJk" target="_blank" class="btn-telegram">
+      <span class="tg-icon">✈️</span> Unirse al grupo de Telegram
+    </a>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Magos</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Conocimiento</div></div>
+    <div class="stat"><div class="stat-num">1</div><div class="stat-label">Comunidad</div></div>
+  </div>
+
+  <div class="quote">
+    <p>«La magia compartida se multiplica. Cada mago que enseña a otro está asegurando que el asombro nunca desaparezca.»</p>
+    <cite>— El Gran Libro de la Magia</cite>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <a href=".">El Gran Libro de la Magia</a> · Proyecto de David Ortiz</p>
+</footer>
+
+</body>
+</html>

@@ -109,6 +109,16 @@ app.get('/sw.js', (_, res) => {
   res.sendFile('sw.js', { root: '../client/public' });
 });
 
+// === Scalper bot_status endpoint ===
+let SCALPER_STATUS = {};
+app.post('/scalper-status', (req, res) => {
+  SCALPER_STATUS = req.body || {};
+  res.json({ ok: true });
+});
+app.get('/bot_status.json', (_req, res) => {
+  res.json(SCALPER_STATUS);
+});
+
 server.listen(PORT, () => {
   console.log(`
 ╔══════════════════════════════════════════╗

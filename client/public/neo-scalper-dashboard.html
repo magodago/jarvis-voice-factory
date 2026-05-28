@@ -278,12 +278,12 @@ body{
     <div class="indicator-card">
       <div class="label">EMA Rápida</div>
       <div class="value cyan" id="emaFast" style="font-size:18px">--</div>
-      <div class="sub" id="emaFastSub">9 periodos</div>
+      <div class="sub" id="emaFastSub">5 periodos</div>
     </div>
     <div class="indicator-card">
       <div class="label">EMA Lenta</div>
       <div class="value" id="emaSlow" style="font-size:18px;color:var(--magenta)">--</div>
-      <div class="sub" id="emaSlowSub">21 periodos</div>
+      <div class="sub" id="emaSlowSub">13 periodos</div>
     </div>
   </div>
 </div>
@@ -419,7 +419,7 @@ function updateUI(d){
   $('rsiLabel').textContent = rsiLabel;
 
   // Bollinger Bands
-  const bbMid = d.bb_mid || 0;
+  const bbMid = d.bb_middle || 0;
   const bbUpper = d.bb_upper || 0;
   const bbLower = d.bb_lower || 0;
   if(bbMid > 0){
@@ -433,13 +433,13 @@ function updateUI(d){
   // EMA
   const emaF = d.ema_fast || 0;
   const emaS = d.ema_slow || 0;
-  if(emaF > 0){
+  if(emaF > 0 && emaS > 0){
     $('emaFast').textContent = '$'+emaF.toFixed(2);
     $('emaFast').style.color = emaF > emaS ? 'var(--green)' : 'var(--red)';
     $('emaSlow').textContent = '$'+emaS.toFixed(2);
     $('emaSlow').style.color = emaS > emaF ? 'var(--green)' : 'var(--red)';
     const trend = emaF > emaS ? '📈 Alcista' : (emaF < emaS ? '📉 Bajista' : '➡️ Plana');
-    $('emaFastSub').textContent = '9 · '+trend;
+    $('emaFastSub').textContent = '5 · '+trend;
   }
 
   // Positions
@@ -476,7 +476,8 @@ function updateUI(d){
         const side = p.side === 'BUY' ? 'buy' : 'sell';
         const pnl = p.pnl || 0;
         const reason = (p.exit_reason||'').includes('TP') ? '<span class="tag tag-tp">TP</span>' : 
-                      (p.exit_reason||'').includes('SL') ? '<span class="tag tag-sl">SL</span>' : '-';
+                      (p.exit_reason||'').includes('SL') ? '<span class="tag tag-sl">SL</span>' : 
+                      (p.exit_reason||'').includes('Time') ? '<span class="tag" style="border:1px solid var(--cyan);color:var(--cyan)">⏱</span>' : '-';
         return `<tr class="trade-row ${side}"><td>${p.side}</td>
           <td>${p.entry ? '$'+p.entry.toFixed(2) : '-'} → ${p.exit_price ? '$'+p.exit_price.toFixed(2) : '-'}</td>
           <td class="right ${pnl>=0?'pnl-pos':'pnl-neg'}">${pnl>=0?'+':''}$${pnl.toFixed(2)}</td>
@@ -487,6 +488,8 @@ function updateUI(d){
   }else if(totalTrades > 0){
     // Trades exist but none closed (all open)
     historyEl.innerHTML = '<div class="empty-state" style="padding:12px;font-size:11px">Trades en curso...</div>';
+  }else{
+    historyEl.innerHTML = '<div class="empty-state" style="padding:20px;font-size:12px">Sin historial de trades</div>';
   }
 
   // Fees
